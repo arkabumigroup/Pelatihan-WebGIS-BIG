@@ -2,6 +2,9 @@ import { defineConfig } from 'vitepress'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
+  ignoreDeadLinks: [
+    /^https?:\/\/localhost/
+  ],
   base: '/pelatihan-webgis-big/',
   title: "Pelatihan WebGIS",
   description: "Materi pelatihan WebGIS tinggat dasar hingga lanjutan yang diselenggarakan oleh PPKIG BIG dan bekerjasama dengan Arkabumi",

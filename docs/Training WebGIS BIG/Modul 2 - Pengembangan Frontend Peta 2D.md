@@ -19,7 +19,7 @@ Setelah menyelasaikan modul ini, peserta diharapkan mampu untuk memahami dan men
 
 [Perancangan dan Pembangunan Awal Peta 2D](Modul%202%20-%20Pengembangan%20Frontend%20Peta%202D/Perancangan%20dan%20Pembangunan%20Awal%20Peta%202D.md)
 
-[menampilkan Layer GeoJSON, KML dan WMS Geoserver](Modul%202%20-%20Pengembangan%20Frontend%20Peta%202D/menampilkan%20Layer%20GeoJSON,%20KML%20dan%20WMS%20Geoserver.md)
+[Menampilkan Layer GeoJSON, KML dan WMS Geoserver](Modul%202%20-%20Pengembangan%20Frontend%20Peta%202D/Menampilkan%20Layer%20GeoJSON,%20KML%20dan%20WMS%20Geoserver.md)
 
 [Menampilkan Data Raster](Modul%202%20-%20Pengembangan%20Frontend%20Peta%202D/Menampilkan%20Data%20Raster.md)
 
