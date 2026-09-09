@@ -1,0 +1,19 @@
+{
+  "name": "notebook",
+  "version": "1.0.0",
+  "description": "Modul Pelatihan WebGIS",
+  "main": "index.js",
+  "scripts": {
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
+  },
+  "devDependencies": {
+    "vite-plugin-vitepress-auto-sidebar": "^1.7.1",
+    "vitepress": "^1.0.0",
+    "vue": "^3.3.4"
+  },
+  "dependencies": {
+    "medium-zoom": "^1.1.0"
+  }
+}
