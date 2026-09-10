@@ -5,7 +5,7 @@ export default defineConfig({
   ignoreDeadLinks: [
     /^https?:\/\/localhost/
   ],
-  base: '/pelatihan-webgis-big/',
+  base: '/Pelatihan-WebGIS-BIG/',
   title: "Pelatihan WebGIS",
   description: "Materi pelatihan WebGIS tinggat dasar hingga lanjutan yang diselenggarakan oleh PPKIG BIG dan bekerjasama dengan Arkabumi",
   themeConfig: {
