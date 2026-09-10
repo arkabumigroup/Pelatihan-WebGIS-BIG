@@ -1,7 +1,7 @@
 import DefaultTheme from 'vitepress/theme'
 import mediumZoom from 'medium-zoom'
 import { onMounted, watch, nextTick, h } from 'vue'
-import { useRoute } from 'vitepress'
+import { useRoute, withBase } from 'vitepress'
 import './custom.css'
 
 export default {
@@ -9,7 +9,7 @@ export default {
   Layout() {
     return h(DefaultTheme.Layout, null, {
       'nav-bar-content-after': () => h('img', {
-        src: 'src/Logo-Light.png',
+        src: withBase('src/Logo-Light.png'),
         alt: 'Logo',
         class: 'navbar-extra-logo'
       })
