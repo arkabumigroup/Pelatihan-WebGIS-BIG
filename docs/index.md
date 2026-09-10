@@ -18,6 +18,6 @@ hero:
 
 <div class="logo-row">
   <a href="https://arkabumi.id" target="_blank" rel="noreferrer">
-    <img src="/src/Logo-Light.png" alt="Arkabumi" />
+    <img src="/public/Logo-Light.png" alt="Arkabumi" />
   </a>
 </div>
