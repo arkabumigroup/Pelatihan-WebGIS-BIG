@@ -9,7 +9,7 @@ export default {
   Layout() {
     return h(DefaultTheme.Layout, null, {
       'nav-bar-content-after': () => h('img', {
-        src: '/src/Logo-Light.png',
+        src: 'src/Logo-Light.png',
         alt: 'Logo',
         class: 'navbar-extra-logo'
       })
