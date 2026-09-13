@@ -38,8 +38,14 @@
   object-fit: contain;
 }
 
-.navbar-extra-logo {
-  height: 24px;
-  width: auto;
-  margin-left: 12px;
+.my-footer {
+  text-align: center;
+  padding: 24px 0;
+  font-size: 13px;
+  color: var(--vp-c-text-2);
+  border-top: 1px solid var(--vp-c-divider);
+}
+
+.my-footer p {
+  margin: 4px 0;
 }

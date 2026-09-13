@@ -3,16 +3,16 @@
 layout: home
 
 hero:
-  name: "Materi Pelatihan WebGIS Dasar Hingga Lanjutan"
+  name: "Materi Pelatihan WebGIS Tingkat Dasar Hingga Lanjutan"
   text: ""
-  tagline: "Pelatihan WebGIS tinggat dasar hingga lanjutan yang diselenggarakan oleh PPKIG BIG dan bekerjasama dengan Arkabumi"
+  tagline: "Pelatihan WebGIS tinggat dasar hingga lanjutan yang diselenggarakan oleh Arkabumi dan PPKIG BIG"
   actions:
     - theme: brand
       text: Materi Pelatihan
       link: /Training WebGIS BIG
     - theme: alt
       text: File Pelatihan
-      link: 
+      link: https://drive.google.com/drive/folders/1QeAUjifzbcNrAYXyyyYRfseNaPX2k42U
 
 ---
 

@@ -23,4 +23,4 @@ Setelah menyelasaikan modul ini, peserta diharapkan mampu untuk memahami dan men
 
 [Menampilkan Data Raster](Modul%202%20-%20Pengembangan%20Frontend%20Peta%202D/Menampilkan%20Data%20Raster.md)
 
-[Styling Layer Dengan Javascript - 1](Modul%202%20-%20Pengembangan%20Frontend%20Peta%202D/Styling%20Layer%20Dengan%20Javascript%20-%201.md)
+[Styling Layer Dengan Javascript](Modul%202%20-%20Pengembangan%20Frontend%20Peta%202D/Styling%20Layer%20Dengan%20Javascript.md)
