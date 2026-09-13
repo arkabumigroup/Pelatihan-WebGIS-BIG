@@ -1,6 +1,6 @@
 # Menampilkan Data Raster
 
-**Menampilkan data raster**
+## **Menampilkan data raster**
 
 1. Tahap pertama install library untuk menampilkan raster menggunakan leaflet dengan menginput perintah pada terminal **npm install georaster georaster-layer-for-leaflet**.
     

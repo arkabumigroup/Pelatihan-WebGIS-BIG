@@ -10,7 +10,15 @@ export default {
     return h(DefaultTheme.Layout, null, {
       'layout-bottom': () => h('div', { class: 'my-footer' }, [
         h('p', 'Pelatihan WebGIS Tingkat Dasar Hingga Lanjutan'),
-        h('p', '© 2026 Arkabumi & PPKIG BIG')
+        h('p', [
+          '© 2026 ',
+          h('a', {
+            href: 'https://arkabumi.id',
+            target: '_blank',
+            rel: 'noreferrer'
+          }, 'Arkabumi'),
+          ' & PPKIG BIG'
+        ])
       ])
     })
   },

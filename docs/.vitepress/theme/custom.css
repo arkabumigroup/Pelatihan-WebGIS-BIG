@@ -49,3 +49,11 @@
 .my-footer p {
   margin: 4px 0;
 }
+
+.my-footer a {
+  color: var(--vp-c-brand-1);
+}
+
+.my-footer a:hover {
+  color: var(--vp-c-brand-2);
+}

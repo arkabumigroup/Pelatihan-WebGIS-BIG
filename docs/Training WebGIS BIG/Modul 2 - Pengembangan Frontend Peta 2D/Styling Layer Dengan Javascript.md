@@ -1,6 +1,4 @@
-# Styling Layer Dengan Javascript - 1
-
-**Styling Layer Dengan Javascript**
+# Styling Layer Dengan Javascript
 
 ## **Styling Layer Geojson**
 
