@@ -391,11 +391,27 @@ Biarkan kosong di laptop, lalu isi di VM:
 Bagian `POSTGIS_*` diisi dengan kredensial Supabase, sama seperti di laptop.
 
 ::: warning Jangan tertukar antara dua alamat itu
-Ini penyebab kegagalan yang sulit dilacak.
+
+Keduanya harus menunjuk ke tempat GeoServer benar-benar dapat dijangkau, dan tempat itu berbeda menurut aplikasi berjalan di mana.
 
 `GEOSERVER_URL=http://localhost:8080/geoserver` **salah** di VM, karena di dalam container, `localhost` menunjuk ke container aplikasi sendiri. Unggahan layer gagal dengan `connection refused`.
 
 `GEOSERVER_PUBLIC_URL=http://geoserver:8080/geoserver` **salah** di VM, karena nama `geoserver` hanya dikenal di dalam jaringan Docker. Alamat yang tersimpan di katalog tidak dapat dibuka dari browser Anda, dan tidak ada pesan galat yang menjelaskan sebabnya.
+
+::: danger Bila memasang GeoServer di laptop, ubah KEDUANYA
+Dua kesalahan berikut terjadi di laptop, dan keduanya membuat unggahan layer gagal.
+
+**Mengubah `GEOSERVER_PUBLIC_URL` saja.** Aplikasi memakai `GEOSERVER_URL` lebih dahulu, yaitu saat menerbitkan layer lewat REST API. Bila baris itu masih berisi `http://geoserver:8080/geoserver` dari contoh, laptop tidak dapat mengenali nama `geoserver`, karena nama itu hanya ada di dalam jaringan Docker VM.
+
+Gejalanya menyesatkan: aplikasi hanya melaporkan `fetch failed`, tanpa menyebut penyebabnya. Penyebab sebenarnya baru terlihat di log server:
+
+```text
+getaddrinfo ENOTFOUND geoserver
+```
+
+**Mengubah `GEOSERVER_URL` saja.** Layer berhasil diterbitkan, tetapi alamat yang tersimpan di katalog memakai nilai `GEOSERVER_PUBLIC_URL` yang masih kosong, sehingga alamat itu jatuh ke nilai cadangan dan tidak dapat dibuka dari browser.
+
+Jadi di laptop, **kedua baris harus berisi alamat yang sama**, yaitu `http://localhost:8080/geoserver`.
 :::
 
 ### Pastikan .env tidak ikut ter-commit
