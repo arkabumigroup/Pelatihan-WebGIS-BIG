@@ -346,45 +346,50 @@ Halaman connection string Supabase juga menampilkan `DIRECT_URL`. Untuk aplikasi
 
 ### Bagian DATA SPASIAL
 
-Bagian ini hanya perlu diisi bila Anda akan mengunggah layer 2D. Bila tidak, biarkan kosong.
+**Di laptop, biarkan bagian ini kosong.** Seluruh variabel `POSTGIS_*` dan `GEOSERVER_*` diisi nanti di VM, pada [Tahap 18 halaman Google Cloud Platform](/hari-3/deployment-project/google-cloud-platform#tahap-18-isi-berkas-env).
 
-Satu hal yang mudah salah: alamat GeoServer harus memakai nama service, bukan localhost.
+Alasannya, GeoServer berjalan di dalam VM lewat `docker-compose.yml`, bukan di laptop Anda. Mengisi alamat `localhost:8080` sekarang berarti menunjuk ke sesuatu yang belum ada.
 
-```bash
-# Benar. "geoserver" adalah nama service pada docker-compose.yml, dan Docker
-# menerjemahkannya ke container yang tepat.
-GEOSERVER_URL=http://geoserver:8080/geoserver
+Yang Anda perlukan di laptop hanya bagian **WAJIB** di atas, yaitu `DATABASE_URL` dan kunci-kunci rahasia. Itu sudah cukup untuk login dan menguji portal.
 
-# Salah. Di dalam container, localhost menunjuk ke container aplikasi sendiri,
-# sehingga unggahan layer gagal dengan connection refused.
-GEOSERVER_URL=http://localhost:8080/geoserver
-```
+#### Bila Anda menjalankan GeoServer di laptop
 
-### Dua alamat GeoServer yang berbeda
+Sebagian peserta memasang GeoServer di laptop untuk latihan Hari 2. Bila Anda melakukannya dan ingin menguji unggah layer 2D sebelum ke VM, isi bagian ini sebagai berikut.
 
-Ada dua variabel alamat GeoServer, dan keduanya berbeda keperluan.
+| Variabel | Nilai di laptop |
+|---|---|
+| `POSTGIS_HOST` | Sesuai database yang dipakai, `localhost` bila PostgreSQL lokal |
+| `POSTGIS_PORT` | `5432` |
+| `POSTGIS_DB` | Nama database Anda |
+| `POSTGIS_USER` | `postgres` |
+| `POSTGIS_PASSWORD` | Kata sandi database Anda |
+| `POSTGIS_SCHEMA` | `gis` |
+| `GEOSERVER_URL` | `http://localhost:8080/geoserver` |
+| `GEOSERVER_PUBLIC_URL` | `http://localhost:8080/geoserver`, sama dengan di atas |
+| `GEOSERVER_USERNAME` | `admin` |
+| `GEOSERVER_PASSWORD` | Kata sandi GeoServer Anda |
+| `GEOSERVER_WORKSPACE` | `geoportal` |
+| `GEOSERVER_POSTGIS_DATASTORE` | Nama datastore yang Anda buat di GeoServer |
 
-| Variabel | Dipakai untuk | Nilai di laptop | Nilai di VM |
-|---|---|---|---|
-| `GEOSERVER_URL` | Dipanggil aplikasi dari dalam container | `http://localhost:8080/geoserver` | `http://geoserver:8080/geoserver` |
-| `GEOSERVER_PUBLIC_URL` | Disimpan sebagai `wms_url` dan `wfs_url`, lalu ditampilkan di halaman katalog | `http://localhost:8080/geoserver` | `http://IP_EKSTERNAL_VM/geoserver` |
+Di laptop, `GEOSERVER_URL` dan `GEOSERVER_PUBLIC_URL` bernilai **sama**, karena aplikasi dan browser berjalan di komputer yang sama.
 
-Yang kedua itu alamat yang **dipakai Anda** untuk membuka layer di QGIS, browser, atau aplikasi lain. Karena itu nilainya harus dapat dijangkau dari luar VM.
+#### Bila GeoServer hanya ada di VM
 
-```bash
-# Di laptop, keduanya sama
-GEOSERVER_URL=http://localhost:8080/geoserver
-GEOSERVER_PUBLIC_URL=http://localhost:8080/geoserver
+Biarkan kosong di laptop, lalu isi di VM:
 
-# Di VM, keduanya berbeda
-GEOSERVER_URL=http://geoserver:8080/geoserver
-GEOSERVER_PUBLIC_URL=http://IP_EKSTERNAL_VM/geoserver
-```
+| Variabel | Nilai di VM | Mengapa |
+|---|---|---|
+| `GEOSERVER_URL` | `http://geoserver:8080/geoserver` | Dipanggil aplikasi dari dalam jaringan Docker, jadi memakai nama service |
+| `GEOSERVER_PUBLIC_URL` | `http://IP_EKSTERNAL_VM/geoserver` | Disimpan sebagai `wms_url`, lalu dibuka dari browser Anda, jadi harus alamat publik |
 
-Nginx di VM sudah mem-proxy `/geoserver/` ke container GeoServer, sehingga port 8080 tidak perlu dibuka untuk umum.
+Bagian `POSTGIS_*` diisi dengan kredensial Supabase, sama seperti di laptop.
 
-::: warning Bila GEOSERVER_PUBLIC_URL dibiarkan kosong di VM
-Nilai `GEOSERVER_URL` yang dipakai, yaitu `http://geoserver:8080/geoserver`. Alamat itu hanya dikenal di dalam jaringan Docker, sehingga `wms_url` yang tersimpan di katalog **tidak dapat dibuka dari browser Anda**.
+::: warning Jangan tertukar antara dua alamat itu
+Ini penyebab kegagalan yang sulit dilacak.
+
+`GEOSERVER_URL=http://localhost:8080/geoserver` **salah** di VM, karena di dalam container, `localhost` menunjuk ke container aplikasi sendiri. Unggahan layer gagal dengan `connection refused`.
+
+`GEOSERVER_PUBLIC_URL=http://geoserver:8080/geoserver` **salah** di VM, karena nama `geoserver` hanya dikenal di dalam jaringan Docker. Alamat yang tersimpan di katalog tidak dapat dibuka dari browser Anda, dan tidak ada pesan galat yang menjelaskan sebabnya.
 :::
 
 ### Pastikan .env tidak ikut ter-commit
