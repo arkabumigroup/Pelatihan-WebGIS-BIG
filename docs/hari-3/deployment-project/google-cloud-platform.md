@@ -788,29 +788,34 @@ git log --oneline -1
 
 Dijalankan di: Terminal VM
 
-#### Cara cepat: salin `.env` dari laptop
+#### Cara cepat: salin isi `.env` dari laptop
 
-Berkas `.env` di laptop Anda sudah terisi lengkap, 195 baris. Mengisinya ulang dari nol di VM hanya membuang waktu.
+Berkas `.env` di laptop Anda sudah terisi lengkap, 195 baris. Mengisinya ulang dari nol di VM hanya membuang waktu, karena hanya **lima baris** yang berbeda.
 
-Hanya **lima baris** yang berbeda di VM. Jadi salin berkasnya apa adanya, lalu ubah lima baris itu.
+Cara ini **tidak memerlukan gcloud CLI di laptop**. Anda hanya menyalin isi berkas.
 
-**Di laptop**, kirim berkas `.env` ke VM. Ganti `VM_NAME` dan `ZONE` dengan nilai Anda, karena variabel itu hanya ada di Cloud Shell:
-
-```bash
-cd ~/fork-deploy/personal-geoportal-peserta
-
-VM_NAME="webgis-dhanypedia"
-ZONE="asia-southeast2-b"
-
-gcloud compute scp .env "$VM_NAME:/opt/webgis/app/.env" \
-  --zone="$ZONE" \
-  --tunnel-through-iap
-```
-
-**Di VM**, ubah kelima baris sekaligus. Ganti `IP_EKSTERNAL_VM` dengan alamat dari Tahap 9:
+**Langkah 1.** Di terminal VM, siapkan penerimanya:
 
 ```bash
 cd /opt/webgis/app
+cat > .env << 'ENVEOF'
+```
+
+Perintah itu menunggu masukan. Kursor akan turun ke baris baru tanpa menampilkan apa pun.
+
+**Langkah 2.** Buka `.env` di laptop, pilih seluruh isinya, lalu tempel ke terminal VM.
+
+**Langkah 3.** Setelah semua baris tertempel, ketik penutupnya pada baris tersendiri, lalu tekan Enter:
+
+```text
+ENVEOF
+```
+
+Tanda kutip pada `'ENVEOF'` wajib. Tanpa kutip, shell akan mencoba menerjemahkan isi berkas, sehingga karakter seperti `$` berubah sebelum tersimpan.
+
+**Langkah 4.** Ubah kelima baris yang berbeda. Ganti `IP_EKSTERNAL_VM` dengan alamat dari Tahap 9:
+
+```bash
 IP="IP_EKSTERNAL_VM"
 
 sed -i \
@@ -824,9 +829,29 @@ sed -i \
 grep -E '^(NEXTAUTH_URL|BASE_URL|NEXT_PUBLIC_URL_BASE_PATH|GEOSERVER_PUBLIC_URL|GEOSERVER_POSTGIS_DATASTORE)=' .env
 ```
 
-Kelima baris terakhir itu harus menampilkan alamat IP VM Anda, bukan `localhost`.
+Kelima baris terakhir harus menampilkan alamat IP VM, bukan `localhost`.
 
-Bila memakai cara ini, **lewati** tabel "Nilai yang sudah Anda siapkan di laptop" di bawah, karena semuanya sudah ikut tersalin.
+**Langkah 5.** Periksa jumlah barisnya. Harus 195, sama seperti di laptop:
+
+```bash
+wc -l .env
+```
+
+Bila jumlahnya jauh lebih sedikit, penempelannya terputus. Ulangi dari Langkah 1.
+
+::: tip Cara lain bila penempelan terlalu panjang
+Unggah berkas `.env` ke Cloud Shell lewat tombol **Upload** pada menu di kanan atas, lalu kirim ke VM dari sana:
+
+```bash
+gcloud compute scp .env "$VM_NAME:/opt/webgis/app/.env" \
+  --zone="$ZONE" \
+  --tunnel-through-iap
+```
+
+Cara ini memakai Cloud Shell, tempat `VM_NAME` dan `ZONE` sudah tersedia, sehingga tidak perlu memasang gcloud di laptop.
+:::
+
+Bila memakai salah satu cara di atas, **lewati** tabel "Nilai yang sudah Anda siapkan di laptop", karena semuanya sudah ikut tersalin.
 
 #### Cara manual: sunting dengan nano
 
