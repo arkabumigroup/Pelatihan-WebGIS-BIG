@@ -581,6 +581,40 @@ gcloud compute ssh "$VM_NAME" \
 
 Setelah perintah ini berhasil, terminal yang Anda gunakan adalah terminal VM, bukan Cloud Shell. Semua perintah pada Bagian B dijalankan di sana.
 
+#### Periksa ukuran partisi disk
+
+VM dibuat dengan disk 30 GB, sedangkan image Ubuntu yang dipakai berukuran sekitar 10 GB. Saat pembuatan, Google Cloud menampilkan peringatan seperti ini:
+
+```text
+WARNING: Disk size: '30 GB' is larger than image size: '10 GB'.
+You might need to resize the root repartition
+```
+
+Biasanya partisinya sudah tumbuh sendiri saat boot pertama. Perlu dipastikan, bukan diasumsikan, karena Docker akan kehabisan ruang bila partisinya masih 10 GB.
+
+Jalankan di dalam VM:
+
+```bash
+df -h /
+```
+
+Yang diharapkan, kolom `Size` menunjukkan sekitar **29G**:
+
+```text
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/root        29G  1.8G   27G   7% /
+```
+
+Bila masih menunjukkan sekitar **9.7G**, tumbuhkan partisinya:
+
+```bash
+sudo growpart /dev/sda 1
+sudo resize2fs /dev/sda1
+df -h /
+```
+
+Perintah pertama menambah ukuran partisi, yang kedua menambah ukuran sistem berkasnya agar memakai seluruh partisi. Keduanya hanya mengubah ukuran dan tidak menghapus data. Setelah itu `df -h /` harus menunjukkan sekitar 29G.
+
 ### Tahap 11. Pasang Docker, Git, dan Google Cloud CLI
 
 ![Perintah sudo apt update di terminal VM](google-cloud-platform/image%203.png)
