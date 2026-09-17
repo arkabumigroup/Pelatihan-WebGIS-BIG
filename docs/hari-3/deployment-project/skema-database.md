@@ -33,6 +33,30 @@ Jangan menyalin sebagian, karena `01-schema.sql` dan `02-seed-super-admin.sql` m
 
 Kolomnya sudah dicocokkan dengan kode aplikasi, jadi jangan mengubah nama atau tipe kolomnya.
 
+## Gambaran Relasi Antar Tabel
+
+Diagram berikut menunjukkan ketiga tabel beserta kolomnya dan hubungan di antaranya. Bentuknya mengikuti notasi ERD standar, sehingga dapat dibandingkan dengan rancangan basis data lain.
+
+![Diagram relasi tabel database: users, katalog_data_2d, dan katalog_data_3d. Tabel users menyimpan akun pengguna dengan kunci utama user_id. Tabel katalog_data_2d menyimpan metadata layer peta 2D, dan katalog_data_3d menyimpan metadata model 3D. Keduanya menunjuk ke users lewat kolom author.](erd-skema-database.svg)
+
+### Cara membaca diagram
+
+| Tanda | Artinya |
+|---|---|
+| **PK** | Primary key, kunci utama yang membedakan tiap baris |
+| **FK** | Foreign key, kolom yang menunjuk ke tabel lain |
+| **U** | Unique, nilainya tidak boleh sama pada dua baris |
+| Tiga garis mengembang | Sisi banyak. Satu baris di sisi lain dapat berpasangan dengan banyak baris di sini |
+| Satu garis tegak | Sisi satu. Satu baris di sini hanya berpasangan dengan satu baris di sisi lain |
+
+Relasinya satu ke banyak, dari `users` ke masing-masing tabel katalog. Artinya:
+
+- Satu pengguna boleh punya banyak katalog, baik 2D maupun 3D.
+- Satu katalog hanya dimiliki satu pengguna, yaitu yang tercatat pada kolom `author`.
+- Kolom `author` memakai aturan `ON DELETE RESTRICT`. Pengguna yang masih memiliki katalog tidak dapat dihapus, sehingga tidak ada katalog yang kehilangan pemiliknya.
+
+Nilai `author` boleh kosong. Katalog tanpa penulis tetap dapat disimpan, dan itu dipakai untuk data yang dimuat dari sumber luar.
+
 ## 01-schema.sql
 
 Aman dijalankan lebih dari sekali, karena memakai `CREATE TABLE IF NOT EXISTS`.
