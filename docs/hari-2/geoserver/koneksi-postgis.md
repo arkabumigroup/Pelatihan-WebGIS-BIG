@@ -29,7 +29,16 @@
     
 ![image.png](koneksi-postgis/image%202.png)
     
-4. Klik Stores dan buat Stores baru lalu pilih PostGIS untuk type of data source
+4. Klik Stores lalu **Add new Store**, kemudian pilih **PostGIS** sebagai type of data source.
+
+    Isi kolom **Data Source Name** dengan nama berikut, lalu catat karena nama ini dipakai lagi di halaman Deployment Project:
+
+    ```text
+    Workspace        : geoportal
+    Data Source Name : postgis_geoportal
+    ```
+
+    Nama itu bebas, tetapi gunakan yang sama sepanjang pelatihan supaya tidak perlu diingat-ingat lagi. Nama yang berbeda antar peserta tidak menimbulkan masalah, karena setiap peserta memakai VM sendiri.
     
 ![image.png](koneksi-postgis/image%203.png)
     

@@ -346,45 +346,72 @@ Halaman connection string Supabase juga menampilkan `DIRECT_URL`. Untuk aplikasi
 
 ### Bagian DATA SPASIAL
 
-Bagian ini hanya perlu diisi bila Anda akan mengunggah layer 2D. Bila tidak, biarkan kosong.
+**Di laptop, biarkan bagian ini kosong.** Seluruh variabel `POSTGIS_*` dan `GEOSERVER_*` diisi nanti di VM, pada [Tahap 18 halaman Google Cloud Platform](/hari-3/deployment-project/google-cloud-platform#tahap-18-isi-berkas-env).
 
-Satu hal yang mudah salah: alamat GeoServer harus memakai nama service, bukan localhost.
+Alasannya, GeoServer berjalan di dalam VM lewat `docker-compose.yml`, bukan di laptop Anda. Mengisi alamat `localhost:8080` sekarang berarti menunjuk ke sesuatu yang belum ada.
 
-```bash
-# Benar. "geoserver" adalah nama service pada docker-compose.yml, dan Docker
-# menerjemahkannya ke container yang tepat.
-GEOSERVER_URL=http://geoserver:8080/geoserver
+Yang Anda perlukan di laptop hanya bagian **WAJIB** di atas, yaitu `DATABASE_URL` dan kunci-kunci rahasia. Itu sudah cukup untuk login dan menguji portal.
 
-# Salah. Di dalam container, localhost menunjuk ke container aplikasi sendiri,
-# sehingga unggahan layer gagal dengan connection refused.
-GEOSERVER_URL=http://localhost:8080/geoserver
+#### Bila Anda menjalankan GeoServer di laptop
+
+Sebagian peserta memasang GeoServer di laptop untuk latihan Hari 2. Bila Anda melakukannya dan ingin menguji unggah layer 2D sebelum ke VM, isi bagian ini sebagai berikut.
+
+| Variabel | Nilai di laptop |
+|---|---|
+| `POSTGIS_HOST` | Sesuai database yang dipakai, `localhost` bila PostgreSQL lokal |
+| `POSTGIS_PORT` | `5432` |
+| `POSTGIS_DB` | Nama database Anda |
+| `POSTGIS_USER` | `postgres` |
+| `POSTGIS_PASSWORD` | Kata sandi database Anda |
+| `POSTGIS_SCHEMA` | `gis` |
+| `GEOSERVER_URL` | `http://localhost:8080/geoserver` |
+| `GEOSERVER_PUBLIC_URL` | `http://localhost:8080/geoserver`, sama dengan di atas |
+| `GEOSERVER_USERNAME` | `admin` |
+| `GEOSERVER_PASSWORD` | Kata sandi GeoServer Anda |
+| `GEOSERVER_WORKSPACE` | `geoportal` |
+| `GEOSERVER_POSTGIS_DATASTORE` | `postgis_geoportal`, nama datastore yang Anda buat di [Koneksi PostgreSQL ke GeoServer](/hari-2/geoserver/koneksi-postgis) |
+
+Di laptop, `GEOSERVER_URL` dan `GEOSERVER_PUBLIC_URL` bernilai **sama**, karena aplikasi dan browser berjalan di komputer yang sama.
+
+#### Kapan datastore GeoServer dibuat
+
+`GEOSERVER_POSTGIS_DATASTORE` berisi nama datastore yang Anda buat sendiri di antarmuka GeoServer, pada halaman [Koneksi PostgreSQL ke GeoServer](/hari-2/geoserver/koneksi-postgis). Nama yang dipakai sepanjang pelatihan adalah `postgis_geoportal`.
+
+Karena datastore itu belum ada sebelum GeoServer berjalan, variabel ini **dibiarkan kosong di laptop** dan diisi di VM pada Tahap 18, setelah datastore-nya dibuat. Bila namanya tidak sama persis dengan yang ada di GeoServer, unggahan layer gagal dengan `Could not find datastore`.
+
+#### Bila GeoServer hanya ada di VM
+
+Biarkan kosong di laptop, lalu isi di VM:
+
+| Variabel | Nilai di VM | Mengapa |
+|---|---|---|
+| `GEOSERVER_URL` | `http://geoserver:8080/geoserver` | Dipanggil aplikasi dari dalam jaringan Docker, jadi memakai nama service |
+| `GEOSERVER_PUBLIC_URL` | `http://IP_EKSTERNAL_VM/geoserver` | Disimpan sebagai `wms_url`, lalu dibuka dari browser Anda, jadi harus alamat publik |
+
+Bagian `POSTGIS_*` diisi dengan kredensial Supabase, sama seperti di laptop.
+
+::: warning Jangan tertukar antara dua alamat itu
+
+Keduanya harus menunjuk ke tempat GeoServer benar-benar dapat dijangkau, dan tempat itu berbeda menurut aplikasi berjalan di mana.
+
+`GEOSERVER_URL=http://localhost:8080/geoserver` **salah** di VM, karena di dalam container, `localhost` menunjuk ke container aplikasi sendiri. Unggahan layer gagal dengan `connection refused`.
+
+`GEOSERVER_PUBLIC_URL=http://geoserver:8080/geoserver` **salah** di VM, karena nama `geoserver` hanya dikenal di dalam jaringan Docker. Alamat yang tersimpan di katalog tidak dapat dibuka dari browser Anda, dan tidak ada pesan galat yang menjelaskan sebabnya.
+
+::: danger Bila memasang GeoServer di laptop, ubah KEDUANYA
+Dua kesalahan berikut terjadi di laptop, dan keduanya membuat unggahan layer gagal.
+
+**Mengubah `GEOSERVER_PUBLIC_URL` saja.** Aplikasi memakai `GEOSERVER_URL` lebih dahulu, yaitu saat menerbitkan layer lewat REST API. Bila baris itu masih berisi `http://geoserver:8080/geoserver` dari contoh, laptop tidak dapat mengenali nama `geoserver`, karena nama itu hanya ada di dalam jaringan Docker VM.
+
+Gejalanya menyesatkan: aplikasi hanya melaporkan `fetch failed`, tanpa menyebut penyebabnya. Penyebab sebenarnya baru terlihat di log server:
+
+```text
+getaddrinfo ENOTFOUND geoserver
 ```
 
-### Dua alamat GeoServer yang berbeda
+**Mengubah `GEOSERVER_URL` saja.** Layer berhasil diterbitkan, tetapi alamat yang tersimpan di katalog memakai nilai `GEOSERVER_PUBLIC_URL` yang masih kosong, sehingga alamat itu jatuh ke nilai cadangan dan tidak dapat dibuka dari browser.
 
-Ada dua variabel alamat GeoServer, dan keduanya berbeda keperluan.
-
-| Variabel | Dipakai untuk | Nilai di laptop | Nilai di VM |
-|---|---|---|---|
-| `GEOSERVER_URL` | Dipanggil aplikasi dari dalam container | `http://localhost:8080/geoserver` | `http://geoserver:8080/geoserver` |
-| `GEOSERVER_PUBLIC_URL` | Disimpan sebagai `wms_url` dan `wfs_url`, lalu ditampilkan di halaman katalog | `http://localhost:8080/geoserver` | `http://IP_EKSTERNAL_VM/geoserver` |
-
-Yang kedua itu alamat yang **dipakai Anda** untuk membuka layer di QGIS, browser, atau aplikasi lain. Karena itu nilainya harus dapat dijangkau dari luar VM.
-
-```bash
-# Di laptop, keduanya sama
-GEOSERVER_URL=http://localhost:8080/geoserver
-GEOSERVER_PUBLIC_URL=http://localhost:8080/geoserver
-
-# Di VM, keduanya berbeda
-GEOSERVER_URL=http://geoserver:8080/geoserver
-GEOSERVER_PUBLIC_URL=http://IP_EKSTERNAL_VM/geoserver
-```
-
-Nginx di VM sudah mem-proxy `/geoserver/` ke container GeoServer, sehingga port 8080 tidak perlu dibuka untuk umum.
-
-::: warning Bila GEOSERVER_PUBLIC_URL dibiarkan kosong di VM
-Nilai `GEOSERVER_URL` yang dipakai, yaitu `http://geoserver:8080/geoserver`. Alamat itu hanya dikenal di dalam jaringan Docker, sehingga `wms_url` yang tersimpan di katalog **tidak dapat dibuka dari browser Anda**.
+Jadi di laptop, **kedua baris harus berisi alamat yang sama**, yaitu `http://localhost:8080/geoserver`.
 :::
 
 ### Pastikan .env tidak ikut ter-commit
@@ -426,13 +453,29 @@ Dua folder lainnya, `tls` dan `certbot-webroot`, berisi sertifikat HTTPS dan ber
 
 ### Periksa dengan perintah
 
-Jalankan dari root folder proyek:
+Jalankan dari root folder proyek. Perhatikan **garis miring di akhir** setiap nama:
 
 ```bash
-git check-ignore -v geoserver-data tls certbot-webroot
+git check-ignore -v geoserver-data/ tls/ certbot-webroot/
 ```
 
-Keluaran yang diharapkan menyebut ketiga folder itu beserta baris `.gitignore` yang mengabaikannya. Bila ada yang tidak muncul, berarti folder itu **tidak** diabaikan, dan hentikan pekerjaan sampai barisnya ditambahkan.
+Keluaran yang diharapkan, tiga baris seperti ini:
+
+```
+.gitignore:52:/geoserver-data/	geoserver-data/
+.gitignore:56:/tls/	tls/
+.gitignore:57:/certbot-webroot/	certbot-webroot/
+```
+
+::: warning Garis miring di akhir itu wajib
+Ketiga baris pada `.gitignore` diakhiri garis miring, dan dalam aturan `.gitignore` artinya pola itu **hanya berlaku untuk direktori**.
+
+Folder `geoserver-data`, `tls`, dan `certbot-webroot` belum ada di laptop Anda. Ketiganya baru dibuat di VM saat container berjalan. Tanpa garis miring pada perintah di atas, Git tidak tahu bahwa yang Anda maksud adalah direktori, sehingga perintahnya **tidak mengeluarkan apa pun**.
+
+Keluaran yang kosong di sini berarti perintahnya kurang tepat, bukan berarti folder Anda tidak diabaikan.
+:::
+
+Bila salah satu baris benar-benar tidak muncul walaupun garis miringnya sudah disertakan, berarti folder itu **tidak** diabaikan. Hentikan pekerjaan sampai barisnya ditambahkan ke `.gitignore`.
 
 ## Tahap 7. Periksa folder scripts
 
@@ -564,6 +607,19 @@ for (const m of masalah) console.log(` - ${m}`);
 process.exit(1);
 ```
 
+### 7c. Berkas lain di folder scripts
+
+Selain empat skrip di atas, folder `scripts` memuat empat berkas yang dipakai pada keperluan tertentu. Tidak diperlukan untuk menyiapkan atau menjalankan portal, tetapi berguna saat Anda mengerjakan data spasial di Hari 2.
+
+| Berkas | Untuk apa |
+|---|---|
+| `geojson-ke-csv-wkt.mjs` | Mengubah GeoJSON menjadi CSV dengan kolom WKT. Dipakai karena store GeoJSON tidak tersedia pada GeoServer bawaan |
+| `geojson-ke-shapefile-zip.mjs` | Mengubah GeoJSON menjadi shapefile lalu membungkusnya menjadi satu zip, untuk diunggah ke GeoServer |
+| `verifikasi-shapefile.mjs` | Memeriksa berkas shapefile hasil skrip di atas, tanpa pustaka luar |
+| `uji-periksa-nginx.mjs` | Menguji `periksa-nginx.mjs` memakai berkas yang sengaja dirusak |
+
+Menjalankan salah satunya tanpa argumen akan menampilkan cara pakainya.
+
 ## Tahap 8. Uji seluruh berkas di laptop
 
 ### Uji berkas konfigurasi
@@ -607,9 +663,37 @@ Periksa apakah skema database sudah benar dan alur login bekerja:
 node scripts/uji-database.mjs
 ```
 
-Skrip itu memeriksa dua belas hal sekaligus: ketiga tabel dapat dibaca, akun belum aktif ditolak, kata sandi salah ditolak, login setelah diaktifkan berhasil, katalog 2D dan 3D dapat disimpan, serta constraint dan unique email bekerja. Data ujinya dihapus kembali di akhir.
+Skrip itu memeriksa **tiga belas** hal sekaligus. Data ujinya dihapus kembali di akhir, jadi database Anda tidak ditinggalkan dalam keadaan kotor.
 
-Keluaran yang diharapkan berakhir dengan `12 lulus, 0 gagal`. Bila ada yang gagal, keluarannya menyebut bagian mana yang belum siap.
+Keluaran yang diharapkan, tiga belas baris `LULUS` tanpa satu pun `GAGAL`:
+
+```text
+HASIL UJI DATABASE
+======================================================================
+  LULUS  tabel users dapat dibaca
+  LULUS  tabel katalog_data_2d dapat dibaca
+  LULUS  tabel katalog_data_3d dapat dibaca
+  LULUS  menulis user baru
+  LULUS  akun belum aktif ditolak
+  LULUS  kata sandi salah ditolak
+  LULUS  login setelah diaktifkan berhasil
+  LULUS  menyimpan katalog 3D
+  LULUS  tipe_file terisi otomatis
+  LULUS  menyimpan katalog 2D
+  LULUS  role tidak sah ditolak
+  LULUS  role editor ditolak
+  LULUS  email ganda ditolak
+======================================================================
+13 lulus, 0 gagal
+```
+
+Baris terakhir harus berbunyi `13 lulus, 0 gagal`. Bila ada yang gagal, keluarannya menyebut bagian mana yang belum siap.
+
+::: tip Angka 13, bukan 12
+Jumlah pemeriksaan bertambah satu setelah peran `editor` dihapus dari sistem. Ditambahkan uji yang memastikan database **menolak** peran itu, supaya peran lama tidak dapat masuk lagi tanpa disadari.
+
+Bila Anda membaca panduan versi lama yang menyebut `12 lulus`, angka yang benar sekarang adalah 13.
+:::
 
 ## Tahap 9. Jalankan portal di laptop
 

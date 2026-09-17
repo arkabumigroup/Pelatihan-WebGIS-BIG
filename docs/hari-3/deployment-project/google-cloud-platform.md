@@ -19,7 +19,7 @@ Fork `https://github.com/dhanyyudi/personal-geoportal-peserta` di akun GitHub An
 - Project Supabase sudah dibuat.
 - Skrip `sql/01-schema.sql` sampai `sql/03-periksa.sql` sudah dijalankan lewat SQL Editor.
 - Akun super admin sudah dibuat lewat `sql/02-seed-super-admin.sql`.
-- `node scripts/uji-database.mjs` melaporkan `12 lulus, 0 gagal`.
+- `node scripts/uji-database.mjs` melaporkan `13 lulus, 0 gagal`.
 - Portal sudah berjalan di laptop dengan `npm run dev`, dan Anda berhasil login.
 
 Kelima butir itu dikerjakan pada Tahap 2 dan Tahap 8 sampai 9 halaman Konfigurasi Project.
