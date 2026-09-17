@@ -81,14 +81,6 @@ Cara membuat fork:
 
 Repositori itu sudah memuat seluruh berkas konfigurasi container, `Dockerfile`, `cloudbuild.yaml`, dan skrip SQL. Anda **tidak perlu membuatnya dari nol**. Yang perlu Anda kerjakan adalah memeriksanya, menyesuaikan beberapa nilai, lalu mengunggahnya.
 
-::: tip Repositori pembanding
-Bila ada bagian yang meragukan, bandingkan dengan repositori acuan berikut. Repositori itu dipakai untuk menguji seluruh alur pada modul ini.
-
-`https://github.com/dhanypedia/personal-geoportal-testing`
-
-Jangan menyalin mentah. Nama image, nama VM, dan kata sandi harus tetap berbeda untuk setiap peserta.
-:::
-
 ## Pembagian Resource
 
 Tabel ini perlu dibaca sebelum Tahap 2. Salah menebak pemilik resource adalah penyebab kegagalan paling sering di halaman ini.

@@ -4,31 +4,55 @@
 
 1. Buka Supabase [https://supabase.com/](https://supabase.com/)
     
-    ![image.png](cloud-postgresql/image.png)
+![image.png](cloud-postgresql/image.png)
     
 2. SignUp untuk register akun baru jika belum punya
     
-    ![image.png](cloud-postgresql/image%201.png)
+![image.png](cloud-postgresql/image%201.png)
     
 3. Setelah verifikasi email akan diminta untuk membuat organization, pilih type personal dan plan free
     
-    ![image.png](cloud-postgresql/image%202.png)
+![image.png](cloud-postgresql/image%202.png)
     
 4. Setelah membuat organization akan muncul tampilan pembuatan project, biarkan semua pilihan default, buat database password dan simpan password tersebut
     
-    ![image.png](cloud-postgresql/image%203.png)
+![image.png](cloud-postgresql/image%203.png)
     
 5. Berikut adalah tampilan awal jika project sudah dibuat
     
-    ![image.png](cloud-postgresql/image%204.png)
+![image.png](cloud-postgresql/image%204.png)
     
 6. Klik Connect pada menu di sebelah atas, maka detail connection untuk melakukan koneksi ke database ini akan muncul, pilih bagian ORM Third-party library
     
-    ![image.png](cloud-postgresql/image%205.png)
+![image.png](cloud-postgresql/image%205.png)
     
 7. Di bagian env local ada variabel bernama `DATABASE_URL`. Variabel itu berisi informasi koneksi ke database. Simpan nama user dan host yang terlihat di sana.
     
-    ::: warning Pilih Session pooler, bukan Transaction pooler
+    ::: warning Tiga bentuk connection string, dan syaratnya
+Supabase menampilkan tiga bentuk alamat koneksi. Ketiganya dapat dipakai, dengan satu syarat pada bentuk kedua.
+
+| Bentuk | Port | Syarat |
+|---|---|---|
+| Session pooler | 5432 | Tidak ada, langsung bekerja |
+| Transaction pooler | 6543 | **Wajib** menambahkan `?pgbouncer=true` di akhir alamat |
+| Koneksi langsung `db.<ref>.supabase.co` | 5432 | Sering gagal pada project baru, karena hostnya hanya punya alamat IPv6 |
+
+Yang disarankan **Session pooler pada port 5432**, karena paling sedikit syaratnya.
+
+```bash
+DATABASE_URL="postgresql://postgres.aefvxqjmwtbeysjyfzgo:[YOUR-PASSWORD]@aws-0-ap-southeast-1.pooler.supabase.com:5432/postgres"
+```
+
+Bila memakai Transaction pooler, contohnya seperti ini. Perhatikan `?pgbouncer=true` di akhir:
+
+```bash
+DATABASE_URL="postgresql://postgres.aefvxqjmwtbeysjyfzgo:[YOUR-PASSWORD]@aws-0-ap-southeast-1.pooler.supabase.com:6543/postgres?pgbouncer=true"
+```
+
+Halaman connection string Supabase juga menampilkan `DIRECT_URL`. Untuk aplikasi ini, **hanya `DATABASE_URL` yang dipakai**, karena tabel dibuat lewat skrip di folder `sql/`, bukan lewat `prisma migrate`.
+
+Ganti `[YOUR-PASSWORD]` dengan kata sandi database yang Anda buat pada langkah 4. Kalau kata sandinya memuat karakter khusus seperti `@` atau `#`, tulis dalam bentuk persen: `%40` dan `%23`.
+::: warning Pilih Session pooler, bukan Transaction pooler
     Supabase menampilkan beberapa bentuk connection string. Yang bekerja dengan Prisma adalah **Session pooler pada port 5432**.
     
     | Bentuk | Port | Hasil |
@@ -50,37 +74,37 @@
     
 8. Buka Dbeaver kemudian buat New Database Connection ke database yang sudah dibuat dengan connection detail yang ada di project supabase
     
-    ![image.png](cloud-postgresql/image%206.png)
+![image.png](cloud-postgresql/image%206.png)
     
 9. Isikan detail koneksi dengan host dan nama user yang sudah kita simpan dari supabase, masukan juga Password yang sudah kita buat di awal pembuatan project. Lalu klik test connection
     
-    ![image.png](cloud-postgresql/image%207.png)
+![image.png](cloud-postgresql/image%207.png)
     
 10. Database sudah terhubung menggunakan Dbeaver
     
-    ![image.png](cloud-postgresql/image%208.png)
+![image.png](cloud-postgresql/image%208.png)
     
-    ![](cloud-postgresql/image8.png)
+![](cloud-postgresql/image8.png)
     
 11. Kembali ke web supabase di halaman overview project, klik Database yang ada di Menu sebelah kiri
     
-    ![image.png](cloud-postgresql/image%209.png)
+![image.png](cloud-postgresql/image%209.png)
     
 12. Setelah itu klik Extensions
     
-    ![image.png](cloud-postgresql/image%2010.png)
+![image.png](cloud-postgresql/image%2010.png)
     
 13. Cari extension postgis dengan mengetik postgis di kolom pencarian kemudian enable extension bernama postgis saja
     
-    ![image.png](cloud-postgresql/image%2011.png)
+![image.png](cloud-postgresql/image%2011.png)
     
 14. Setelah klik enable akan ada pilihan untuk memilik schema, ganti pilihan tersebut dengan Create New Schema, kemudian buat Nama Schema nya menjadi gis
     
-    ![image.png](cloud-postgresql/image%2012.png)
+![image.png](cloud-postgresql/image%2012.png)
     
 15. Jika berhasil klik Schema Visualizer kemudian ganti schema menjadi gis maka tampilan akan seperti ini
     
-    ![image.png](cloud-postgresql/image%2013.png)
+![image.png](cloud-postgresql/image%2013.png)
     
 
 ## **Membuat Tabel dengan SQL Editor**
@@ -99,7 +123,7 @@ Cara membukanya:
 2. Pada menu kiri, klik **SQL Editor**.
 3. Halaman itu punya kotak besar untuk menulis atau menempel perintah, tombol **Run** di kanan bawah, dan daftar riwayat perintah di sisi kiri.
 
-    ![Menu SQL Editor pada sidebar kiri dashboard Supabase](cloud-postgresql/image%2015.png)
+![Menu SQL Editor pada sidebar kiri dashboard Supabase](cloud-postgresql/image%2015.png)
 
 Dua tombol yang perlu dibedakan:
 
@@ -186,15 +210,15 @@ Akun super admin hanya bisa lahir dari `02-seed-super-admin.sql`. Jadi berkas it
 
 1. Buka QGIS kemudian buat koneksi database baru
     
-    ![image.png](cloud-postgresql/image%2014.png)
+![image.png](cloud-postgresql/image%2014.png)
     
 2. Kemudian masukkan credential dari Supabase anda
     
-    ![](cloud-postgresql/image3.png)
+![](cloud-postgresql/image3.png)
     
 3. Credential Supabase yang anda gunakan bukanlah super user seperti saat anda menggunakan PostgreSQL lokal, oleh karena itu perlu pengaturan tambahan dari Supabase. Buka Supabase kemudian pergi ke SQL Editor
     
-    ![image.png](cloud-postgresql/image%2015.png)
+![image.png](cloud-postgresql/image%2015.png)
     
 4. Jalankan perintah berikut di SQL Editor
     
@@ -234,9 +258,9 @@ Akun super admin hanya bisa lahir dari `02-seed-super-admin.sql`. Jadi berkas it
     
     GRANT EXECUTE ON FUNCTION public.addgeometrycolumn TO PUBLIC, postgres, anon, authenticated, service_role;
     ```
-    
-    ![](cloud-postgresql/image20.png)
-    
+
+![](cloud-postgresql/image20.png)
+
 5. Buat layer baru sama seperti di local database
     
-    ![image.png](cloud-postgresql/image%2016.png)
+![image.png](cloud-postgresql/image%2016.png)
