@@ -22,6 +22,12 @@
     
 5. Setelah proses instalasi Git dan Node.js telah selesai, untuk melihat apakah proses instalasi telah selesai dan terpasang pada perangkat yang digunakan, pengguna dapat melakukan pengecekan pada Windows Powershell kemudian melakukan pengetikan perintah git version untuk melihat versi git yang telah di install serta node --version untuk melihat versi node yang telah di install.
 
+    ```bash
+    git --version
+    node --version
+    npm --version
+    ```
+
 ![](instalasi-aplikasi/image6.png)
 
 ## **Instalasi Postgresql**
@@ -43,6 +49,10 @@
 ![](instalasi-aplikasi/image23.png)
     
 5. Setelah tahapan instalasi selesai,buka pgadmin untuk melihat tampilan dari Postgresql yang telah terpasang pada perangkat pengguna.
+
+    ```text
+    pgAdmin: buka dari Start Menu, lalu masukkan kata sandi yang dibuat saat instalasi.
+    ```
     
 ![](instalasi-aplikasi/image15.png)
     
