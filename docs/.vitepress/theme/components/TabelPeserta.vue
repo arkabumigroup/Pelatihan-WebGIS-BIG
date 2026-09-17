@@ -30,6 +30,7 @@ const hasil = computed(() => {
         if (!cari) return true
         return (
           p.nama.toLowerCase().includes(cari) ||
+          p.namaPeserta.toLowerCase().includes(cari) ||
           p.email.toLowerCase().includes(cari) ||
           k.master.toLowerCase().includes(cari)
         )
@@ -116,6 +117,7 @@ function bersihkan() {
           <thead>
             <tr>
               <th scope="col">Nama</th>
+              <th scope="col">Nama Peserta</th>
               <th scope="col">Email</th>
               <th scope="col">Kelompok</th>
             </tr>
@@ -123,6 +125,7 @@ function bersihkan() {
           <tbody>
             <tr v-for="p in k.peserta" :key="p.email">
               <td>{{ p.nama }}</td>
+              <td><code>{{ p.namaPeserta }}</code></td>
               <td>
                 <!-- Tanda @ dipisah sebagai elemen tersendiri. Tujuannya
                      supaya alamatnya tidak mudah dipanen bot pengumpul email,

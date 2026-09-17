@@ -8,7 +8,7 @@ Urutannya penting: record DNS harus sudah mengarah ke VM sebelum Certbot dijalan
 
 - Bagian A sampai D pada halaman [Google Cloud Platform](/hari-3/deployment-project/google-cloud-platform) sudah selesai, dan variabel `PROJECT_ID`, `ZONE`, `VM_NAME`, serta `SUBDOMAIN` masih tersedia di Cloud Shell.
 - Bila sesi Cloud Shell sudah berganti, jalankan kembali blok Tahap 2 halaman sebelumnya lebih dahulu.
-- Subdomain sudah ditetapkan penyelenggara. Pola yang dipakai adalah `<identitas-peserta>.webgisbig.com`.
+- Subdomain sudah ditetapkan penyelenggara. Pola yang dipakai adalah `<nama-peserta>.webgisbig.com`, memakai nilai dari kolom Nama Peserta pada tabel peserta.
 - Record DNS ditambahkan penyelenggara. Siapkan subdomain dan alamat IP statis VM untuk dilaporkan pada Tahap 3.
 
 ## Bagian A. Mengarahkan Subdomain ke VM
@@ -166,7 +166,13 @@ Bila balasan yang muncul `502` atau `200`, hentikan tahap ini. Periksa kembali `
 
 Dijalankan di: Cloud Shell
 
-Ganti `EMAIL` dengan alamat email yang aktif, karena Let's Encrypt mengirim pemberitahuan ke alamat itu bila sertifikat mendekati kedaluwarsa.
+Ganti `EMAIL` dengan alamat email yang aktif. Let's Encrypt mengirim pemberitahuan ke alamat itu bila sertifikat mendekati kedaluwarsa.
+
+::: warning Ini bukan email peserta
+`EMAIL` di sini hanya alamat kontak untuk Let's Encrypt, dan tidak berhubungan dengan identitas Anda di Google Cloud. Isinya bebas, yang penting alamatnya aktif dan bisa Anda buka. Alamat yang sama boleh dipakai semua peserta.
+
+Identitas Anda sudah ditetapkan pada Tahap 2 halaman sebelumnya, melalui `NAMA_PESERTA`.
+:::
 
 ```bash
 EMAIL="nama01@example.com"
