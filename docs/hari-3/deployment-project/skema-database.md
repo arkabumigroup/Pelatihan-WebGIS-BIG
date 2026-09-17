@@ -182,7 +182,19 @@ CREATE INDEX IF NOT EXISTS katalog_data_3d_author_idx ON katalog_data_3d (author
 
 -- View baca-saja: join yang sama dengan yang dilakukan kode API, supaya
 -- query ad-hoc tidak perlu menuliskan join berulang.
-CREATE OR REPLACE VIEW v_katalog_2d_lengkap AS
+-- security_invoker = true WAJIB ada di sini.
+--
+-- Bawaannya, view berjalan dengan hak PEMILIKNYA, bukan hak pemanggilnya.
+-- Karena pemilik tabel melewati Row Level Security, view tanpa opsi ini
+-- membuat RLS pada katalog_data_2d dan users tidak berlaku ketika view itu
+-- yang dibaca. Diuji: dengan RLS aktif, peran anon tidak melihat satu baris
+-- pun dari tabel katalog_data_2d, tetapi MASIH melihat baris berakses
+-- 'private' beserta email penulisnya melalui view ini.
+--
+-- Dengan security_invoker = true, view berjalan dengan hak pemanggilnya,
+-- sehingga RLS ikut berlaku.
+CREATE OR REPLACE VIEW v_katalog_2d_lengkap
+WITH (security_invoker = true) AS
 SELECT k.data_2d_id,
        k.layer_name,
        k.akses,
@@ -548,6 +560,31 @@ Artinya tanpa RLS, siapa pun yang memegang kunci `anon` dapat membaca seluruh ak
 
 RLS tanpa policy berarti menutup akses bagi semua peran selain pemilik. Itu memang yang diinginkan di sini: seluruh akses data dilakukan lewat API aplikasi sendiri, yang sudah memeriksa token dan peran pengguna.
 
+### View juga perlu ditangani
+
+Mengaktifkan RLS pada tabel saja belum cukup. Berkas SQL ini juga membuat satu view, `v_katalog_2d_lengkap`, yang menggabungkan katalog 2D dengan data penulisnya.
+
+Bawaannya, view di PostgreSQL berjalan dengan hak **pemiliknya**, bukan hak pemanggilnya. Karena pemilik tabel melewati RLS, view membuat kebijakan pada tabel di bawahnya tidak berlaku. Diuji pada project Supabase sungguhan, dengan satu baris berakses `private`:
+
+| Yang dibaca | Peran `anon` melihat |
+|---|---|
+| Tabel `katalog_data_2d` | kosong, 0 baris |
+| View `v_katalog_2d_lengkap` | **1 baris, termasuk yang berakses `private`**, beserta nama dan email penulisnya |
+
+Jadi tanpa penanganan khusus, seluruh isi katalog masih dapat dibaca lewat view itu.
+
+Karena itulah view dibuat memakai `security_invoker = true`, sehingga berjalan dengan hak pemanggilnya dan RLS ikut berlaku. Opsi ini tersedia sejak PostgreSQL 15, dan Supabase memakai PostgreSQL 15 atau lebih baru.
+
+Setelah perbaikan:
+
+| Peran | Tabel | View |
+|---|---|---|
+| `anon` | 0 baris | 0 baris |
+| `authenticated` | 0 baris | 0 baris |
+| `postgres` (pemilik) | 1 baris | 1 baris |
+
+Aplikasi tidak terpengaruh, karena koneksi Prisma memakai peran `postgres`, dan view itu sendiri tidak dipanggil kode aplikasi mana pun.
+
 ### Bila tabel Anda dibuat sebelum bagian ini ada
 
 Jalankan `07-aktifkan-rls.sql`. Berkas itu hanya mengaktifkan RLS, tanpa mengubah data.
@@ -557,14 +594,16 @@ Jalankan `07-aktifkan-rls.sql`. Berkas itu hanya mengaktifkan RLS, tanpa menguba
 Jalankan di SQL Editor. Ketiga baris harus bernilai `true`:
 
 ```sql
-SELECT c.relname AS tabel, c.relrowsecurity AS rls
+SELECT c.relname AS objek, c.relkind AS jenis,
+       c.relrowsecurity AS rls, c.reloptions AS opsi
 FROM pg_class c
 JOIN pg_namespace n ON n.oid = c.relnamespace
 WHERE n.nspname = 'public'
-  AND c.relkind = 'r'
-  AND c.relname IN ('users', 'katalog_data_2d', 'katalog_data_3d')
+  AND c.relname IN ('users', 'katalog_data_2d', 'katalog_data_3d', 'v_katalog_2d_lengkap')
 ORDER BY c.relname;
 ```
+
+Harapannya: ketiga tabel bernilai `rls = true`, dan view memuat `security_invoker=true` pada kolom `opsi`.
 
 ## Bila Login Gagal
 
