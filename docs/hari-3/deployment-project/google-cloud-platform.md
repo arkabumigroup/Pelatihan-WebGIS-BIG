@@ -393,12 +393,30 @@ Variabel pada blok di atas hanya bertahan selama sesi Cloud Shell terbuka. Bila 
 Dijalankan di: Cloud Shell
 
 ```bash
-gcloud services list --enabled \
-  --filter="config.name:(compute.googleapis.com OR cloudbuild.googleapis.com OR artifactregistry.googleapis.com OR iap.googleapis.com OR dns.googleapis.com OR domains.googleapis.com OR secretmanager.googleapis.com)" \
-  --format="value(config.name)"
+gcloud services list --enabled --project="$PROJECT_ID" \
+  --filter="config.name:(compute.googleapis.com OR cloudbuild.googleapis.com OR artifactregistry.googleapis.com OR iap.googleapis.com)" \
+  --format="table(config.name:label=LAYANAN)"
 ```
 
-Bila ada layanan yang belum muncul, hentikan tahap ini dan lapor ke koordinator. Peserta tidak punya izin mengaktifkan API pada project kelompok.
+Empat layanan itu adalah yang benar-benar dipakai:
+
+| Layanan | Dipakai untuk |
+|---|---|
+| `compute.googleapis.com` | VM, alamat IP statis, firewall |
+| `cloudbuild.googleapis.com` | Membangun image dari setiap push |
+| `artifactregistry.googleapis.com` | Menyimpan image aplikasi |
+| `iap.googleapis.com` | Masuk ke VM lewat `--tunnel-through-iap` |
+
+Bila ada yang belum muncul, hentikan tahap ini dan lapor ke koordinator. Peserta tidak punya izin mengaktifkan API pada project kelompok.
+
+::: tip Cloud DNS, Cloud Domains, dan Secret Manager tidak diperlukan
+Ketiganya sempat ikut diperiksa pada versi sebelumnya, padahal tidak dipakai di mana pun pada pelatihan ini.
+
+- **Cloud DNS** dan **Cloud Domains** tidak dipakai karena subdomain diatur penyelenggara melalui Cloudflare
+- **Secret Manager** tidak dipakai karena rahasia aplikasi disimpan pada berkas `.env` di VM
+
+Bila ketiganya belum aktif, abaikan saja. Tidak ada tahap yang membutuhkannya.
+:::
 
 ### Tahap 4. Buat Service Account deployment
 
@@ -1123,7 +1141,7 @@ Halaman ini mengasumsikan Anda memakai project kelompok yang disiapkan koordinat
 
 | Bagian | Perbedaan pada akun sendiri |
 |---|---|
-| Tahap 2 | `PARTICIPANT_ID` boleh diisi nama sendiri. Penjagaan tabrakan tetap berguna bila Anda memakai lebih dari satu identitas. |
+| Tahap 2 | `NAMA_PESERTA` boleh diisi nama sendiri, sampai 12 karakter. Penjagaan tabrakan tetap berguna bila Anda memakai lebih dari satu identitas. |
 | Tahap 4 | Service Account dibuat di project sendiri, bukan project kelompok. |
 | Tahap 5 | Repository `katalog-images` perlu dibuat sendiri di Artifact Registry. |
 | Tahap 8 | Firewall rule perlu dibuat sendiri, karena tidak ada koordinator yang menyiapkannya. |
