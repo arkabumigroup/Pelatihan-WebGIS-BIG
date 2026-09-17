@@ -438,10 +438,21 @@ Berkas ini hanya berisi perintah `SELECT`. Tidak mengubah apa pun, jadi aman dij
 -- ---------------------------------------------------------------------
 -- 1. Semua constraint di tiga tabel, apa adanya
 --
--- Harapan setelah sql/01-schema.sql dijalankan:
---   users            10 baris  (p, u, c, dan 7 NOT NULL)
---   katalog_data_2d   8 baris
---   katalog_data_3d   8 baris
+-- Harapan setelah sql/01-schema.sql dijalankan. Jumlahnya BERBEDA menurut
+-- versi PostgreSQL, jadi perhatikan versi yang Anda pakai.
+--
+-- PostgreSQL 17 dan lebih lama, termasuk Supabase:
+--   users             3 baris  (1 primary key, 1 unique, 1 check)
+--   katalog_data_2d   4 baris  (1 primary key, 1 unique, 1 foreign key, 1 check)
+--   katalog_data_3d   6 baris  (1 primary key, 1 foreign key, 4 check)
+--
+-- PostgreSQL 18 dan lebih baru, termasuk PostgreSQL yang dipasang di laptop:
+--   jumlahnya lebih banyak, karena sejak versi 18 batasan NOT NULL ikut
+--   tercatat di pg_constraint dengan kode 'n'. Di versi sebelumnya, NOT NULL
+--   disimpan di pg_attribute dan tidak muncul pada query ini.
+--
+-- Jadi angka yang lebih kecil di Supabase BUKAN tanda ada yang salah. Yang
+-- penting, ketiga tabel muncul dan kolom check_ tidak bernilai nol.
 --
 -- Kode jenis: p primary key, u unique, f foreign key, c check, n not null
 -- ---------------------------------------------------------------------
@@ -619,6 +630,23 @@ Selain berkas di atas, folder `sql/` pada repositori Anda memuat tiga berkas yan
 | `07-aktifkan-rls.sql` | Mengaktifkan Row Level Security pada tabel dan view | Hanya bila tabel Anda dibuat sebelum perintah itu ada di `01-schema.sql` |
 
 Penjelasan lengkap tiap berkas ada di `sql/README.md` pada repositori Anda.
+
+## Jumlah Constraint Berbeda Menurut Versi PostgreSQL
+
+Saat menjalankan `03-periksa.sql`, bagian **2. Jumlah constraint per tabel** menampilkan jumlah yang berbeda di Supabase dan di PostgreSQL lokal. Itu wajar, bukan tanda ada yang salah.
+
+| Tabel | Supabase (PostgreSQL 17) | PostgreSQL 18 lokal |
+|---|---|---|
+| `users` | 3 | 10 |
+| `katalog_data_2d` | 4 | 8 |
+| `katalog_data_3d` | 6 | 8 |
+
+Sebabnya, sejak PostgreSQL 18 batasan `NOT NULL` ikut tercatat di `pg_constraint` dengan kode `n`. Pada versi sebelumnya, `NOT NULL` disimpan di `pg_attribute` dan tidak muncul pada query itu. Karena itu kolom `not_null` bernilai `0` di Supabase.
+
+Yang perlu Anda pastikan bukan angkanya, melainkan:
+
+- Ketiga tabel muncul pada hasilnya.
+- Kolom `check_` tidak bernilai nol, karena `CHECK` itulah yang mencegah peran dan nilai tidak sah masuk ke database.
 
 ## Bila Login Gagal
 

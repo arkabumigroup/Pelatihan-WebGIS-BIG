@@ -647,9 +647,37 @@ Periksa apakah skema database sudah benar dan alur login bekerja:
 node scripts/uji-database.mjs
 ```
 
-Skrip itu memeriksa dua belas hal sekaligus: ketiga tabel dapat dibaca, akun belum aktif ditolak, kata sandi salah ditolak, login setelah diaktifkan berhasil, katalog 2D dan 3D dapat disimpan, serta constraint dan unique email bekerja. Data ujinya dihapus kembali di akhir.
+Skrip itu memeriksa **tiga belas** hal sekaligus. Data ujinya dihapus kembali di akhir, jadi database Anda tidak ditinggalkan dalam keadaan kotor.
 
-Keluaran yang diharapkan berakhir dengan `12 lulus, 0 gagal`. Bila ada yang gagal, keluarannya menyebut bagian mana yang belum siap.
+Keluaran yang diharapkan, tiga belas baris `LULUS` tanpa satu pun `GAGAL`:
+
+```text
+HASIL UJI DATABASE
+======================================================================
+  LULUS  tabel users dapat dibaca
+  LULUS  tabel katalog_data_2d dapat dibaca
+  LULUS  tabel katalog_data_3d dapat dibaca
+  LULUS  menulis user baru
+  LULUS  akun belum aktif ditolak
+  LULUS  kata sandi salah ditolak
+  LULUS  login setelah diaktifkan berhasil
+  LULUS  menyimpan katalog 3D
+  LULUS  tipe_file terisi otomatis
+  LULUS  menyimpan katalog 2D
+  LULUS  role tidak sah ditolak
+  LULUS  role editor ditolak
+  LULUS  email ganda ditolak
+======================================================================
+13 lulus, 0 gagal
+```
+
+Baris terakhir harus berbunyi `13 lulus, 0 gagal`. Bila ada yang gagal, keluarannya menyebut bagian mana yang belum siap.
+
+::: tip Angka 13, bukan 12
+Jumlah pemeriksaan bertambah satu setelah peran `editor` dihapus dari sistem. Ditambahkan uji yang memastikan database **menolak** peran itu, supaya peran lama tidak dapat masuk lagi tanpa disadari.
+
+Bila Anda membaca panduan versi lama yang menyebut `12 lulus`, angka yang benar sekarang adalah 13.
+:::
 
 ## Tahap 9. Jalankan portal di laptop
 
