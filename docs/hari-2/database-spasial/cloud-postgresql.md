@@ -28,7 +28,31 @@
     
 7. Di bagian env local ada variabel bernama `DATABASE_URL`. Variabel itu berisi informasi koneksi ke database. Simpan nama user dan host yang terlihat di sana.
     
-    ::: warning Pilih Session pooler, bukan Transaction pooler
+    ::: warning Tiga bentuk connection string, dan syaratnya
+Supabase menampilkan tiga bentuk alamat koneksi. Ketiganya dapat dipakai, dengan satu syarat pada bentuk kedua.
+
+| Bentuk | Port | Syarat |
+|---|---|---|
+| Session pooler | 5432 | Tidak ada, langsung bekerja |
+| Transaction pooler | 6543 | **Wajib** menambahkan `?pgbouncer=true` di akhir alamat |
+| Koneksi langsung `db.<ref>.supabase.co` | 5432 | Sering gagal pada project baru, karena hostnya hanya punya alamat IPv6 |
+
+Yang disarankan **Session pooler pada port 5432**, karena paling sedikit syaratnya.
+
+```bash
+DATABASE_URL="postgresql://postgres.aefvxqjmwtbeysjyfzgo:[YOUR-PASSWORD]@aws-0-ap-southeast-1.pooler.supabase.com:5432/postgres"
+```
+
+Bila memakai Transaction pooler, contohnya seperti ini. Perhatikan `?pgbouncer=true` di akhir:
+
+```bash
+DATABASE_URL="postgresql://postgres.aefvxqjmwtbeysjyfzgo:[YOUR-PASSWORD]@aws-0-ap-southeast-1.pooler.supabase.com:6543/postgres?pgbouncer=true"
+```
+
+Halaman connection string Supabase juga menampilkan `DIRECT_URL`. Untuk aplikasi ini, **hanya `DATABASE_URL` yang dipakai**, karena tabel dibuat lewat skrip di folder `sql/`, bukan lewat `prisma migrate`.
+
+Ganti `[YOUR-PASSWORD]` dengan kata sandi database yang Anda buat pada langkah 4. Kalau kata sandinya memuat karakter khusus seperti `@` atau `#`, tulis dalam bentuk persen: `%40` dan `%23`.
+::: warning Pilih Session pooler, bukan Transaction pooler
     Supabase menampilkan beberapa bentuk connection string. Yang bekerja dengan Prisma adalah **Session pooler pada port 5432**.
     
     | Bentuk | Port | Hasil |

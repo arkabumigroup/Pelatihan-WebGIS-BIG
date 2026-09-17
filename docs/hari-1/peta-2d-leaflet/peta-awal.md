@@ -24,12 +24,20 @@
     ![image.png](peta-awal/image%202.png)
     
 2. Selanjutnya didalam **export default function map** buat variabel berfungsi sebagai referensi atau penghubung antara kode React dengan elemen yang akan digunakan sebagai tempat menampilkan peta dengan library Leaflet.
+
+    ```jsx
+    const mapRef = useRef(null);
+    ```
     
     ```jsx
     const mapRef = useRef(null);
     ```
     
 3. Tahapan berikutnya buat **container** menggunakan elemen `<div>` sebagai tempat untuk menampilkan peta. Container dibuat utuk mengatur lebar dan tinggi. Tahapan berikutnya hubungkan dengan mapRef sehingga ukuran peta sudah sesuai persentasenya.
+
+    ```jsx
+    <div style={{ width: "100%", height: "100%" }} ref={mapRef}></div>
+    ```
     
     ```jsx
     <div style={{ width: "100%", height: "100%" }} ref={mapRef}></div>
@@ -44,6 +52,10 @@
     ![](peta-awal/image6.png)
     
 6. Tahapan berikutnya buat variabel didalam useEffect yang akan digunakan untuk membuat peta, serta tentukan posisi awal yang menjadi titik koordinat yang akan ditampilkan serta tambahkan level zoom menggunakan setView().
+
+    ```jsx
+    const map = L.map(mapRef.current).setView([-6.2088, 106.8456], 13);
+    ```
     
     ```jsx
     const map = L.map(mapRef.current)
@@ -51,6 +63,12 @@
     ```
     
 7. Kemudian buat variabel untuk menambahkan basemap menggunakan L.tileLayer() dibawah setView.
+
+    ```jsx
+    const basemap = L.tileLayer(
+      "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+    );
+    ```
     
     ```jsx
     const basemap =
