@@ -196,6 +196,8 @@ Isi `PROJECT_ID` dan `NAMA_PESERTA` dengan nilai dari tabel itu. Keduanya harus 
 
 **Gunakan Nama Peserta dari tabel, jangan mengarang sendiri.** Nama itu sudah disusun pendek, 3 sampai 8 karakter, satu kata, dan dipastikan tidak sama dengan peserta lain.
 
+Bila Anda tidak tercantum di tabel dan memilih nama sendiri, panjangnya boleh sampai 12 karakter. Gunakan huruf kecil dan angka saja, tanpa spasi dan tanpa tanda hubung.
+
 Nama Peserta menjadi dasar penamaan seluruh resource Anda: nama VM, nama Service Account, nama trigger, dan subdomain. Karena itu nama yang sudah dipakai peserta lain akan menggagalkan pekerjaan Anda di tengah jalan, dan pada saat itu sebagian resource mungkin sudah terlanjur dibuat.
 
 Tempel seluruh blok berikut di Cloud Shell. Ubah hanya dua baris pertama.
@@ -245,7 +247,7 @@ fi
 if printf '%s' "$PARTICIPANT_ID" | grep -qE '[^a-z0-9]'; then
   merah "Nama Peserta '$PARTICIPANT_ID' mengandung karakter yang tidak sah."
   echo "  Hanya huruf kecil dan angka, tanpa spasi dan tanpa tanda hubung."
-  echo "  Contoh yang benar: amelliak, dhany, d21utomo"
+  echo "  Contoh yang benar: amelliak, dhanypedia, d21utomo"
   exit 1
 fi
 
@@ -254,11 +256,24 @@ if [ "${#PARTICIPANT_ID}" -lt 3 ]; then
   exit 1
 fi
 
-# Batas 8 karakter menjaga nama VM, Service Account, dan subdomain tetap
-# pendek. Ketiganya sebenarnya masih longgar pada batas ini, jadi angka 8
-# dipilih untuk keterbacaan, bukan karena batas teknis.
-if [ "${#PARTICIPANT_ID}" -gt 8 ]; then
-  merah "Nama Peserta '$PARTICIPANT_ID' ${#PARTICIPANT_ID} karakter, melebihi batas 8."
+# Batas 12 karakter adalah pilihan, bukan batas teknis.
+#
+# Batas teknis berasal dari Service Account, yang paling ketat:
+#
+#   cb-<nama>              30 karakter, sehingga nama masih muat sampai 27
+#   webgis-<nama>          63 karakter, sehingga nama masih muat sampai 56
+#   <nama>.webgisbig.com   63 karakter, sehingga nama masih muat sampai 45
+#
+# Diuji langsung pada Google Cloud: nama Service Account 30 karakter diterima,
+# 31 karakter ditolak dengan pesan "between 6 and 30".
+#
+# Angka 12 diambil jauh di bawah 27 supaya nama tetap pendek dan mudah dibaca
+# pada daftar resource, sementara nama seperti dhanypedia atau arkabumihd1
+# tetap dapat dipakai.
+if [ "${#PARTICIPANT_ID}" -gt 12 ]; then
+  merah "Nama Peserta '$PARTICIPANT_ID' ${#PARTICIPANT_ID} karakter, melebihi batas 12."
+  echo "  Batas 12 dipilih supaya nama resource tetap pendek dan mudah dibaca."
+  echo "  Batas teknisnya sendiri 27, berasal dari Service Account."
   exit 1
 fi
 
