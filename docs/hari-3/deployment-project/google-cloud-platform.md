@@ -170,15 +170,21 @@ if printf '%s' "$PARTICIPANT_ID" | grep -qE '[^a-z0-9-]'; then
   exit 1
 fi
 
-if [ "${#PARTICIPANT_ID}" -gt 18 ]; then
-  merah "Identitas '$PARTICIPANT_ID' ${#PARTICIPANT_ID} karakter, melebihi batas 18."
-  echo "  Identitas dipakai membentuk cb-deployer-<identitas> dan webgis-<identitas>."
+# Batas 27 berasal dari Service Account, bukan dari nama VM.
+#
+# Nama Service Account di Google Cloud paling panjang 30 karakter, dan
+# cb-<identitas> memakai 3 di antaranya. Nama VM justru jauh lebih longgar,
+# yaitu 63 karakter, sehingga bukan itu yang menentukan.
+if [ "${#PARTICIPANT_ID}" -gt 27 ]; then
+  merah "Identitas '$PARTICIPANT_ID' ${#PARTICIPANT_ID} karakter, melebihi batas 27."
+  echo "  Identitas dipakai membentuk cb-<identitas> dan webgis-<identitas>."
+  echo "  Batasnya dari Service Account, yang paling panjang 30 karakter."
   exit 1
 fi
 
 VM_NAME="webgis-${PARTICIPANT_ID}"
 STATIC_IP_NAME="webgis-ip-${PARTICIPANT_ID}"
-BUILD_SA_NAME="cb-deployer-${PARTICIPANT_ID}"
+BUILD_SA_NAME="cb-${PARTICIPANT_ID}"
 CONNECTION_NAME="github-${PARTICIPANT_ID}"
 LINKED_REPO_NAME="repo-${PARTICIPANT_ID}"
 TRIGGER_NAME="deploy-${PARTICIPANT_ID}"
