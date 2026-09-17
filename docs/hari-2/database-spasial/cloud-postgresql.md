@@ -201,7 +201,7 @@ NOTICE: Akun super admin nama@email.com siap dipakai.
 Email dan kata sandi itulah yang dipakai untuk masuk ke portal.
 
 ::: warning Peserta yang mendaftar sendiri tidak menjadi super admin
-Halaman `/register` pada aplikasi selalu menghasilkan peran `editor` dan status belum aktif. Itu memang disengaja, supaya tidak ada yang bisa menaikkan perannya sendiri.
+Halaman `/register` pada aplikasi selalu menghasilkan peran `viewer` dan status belum aktif. Itu memang disengaja, supaya tidak ada yang bisa menaikkan perannya sendiri.
 
 Akun super admin hanya bisa lahir dari `02-seed-super-admin.sql`. Jadi berkas itu wajib dijalankan, bukan pilihan.
 :::
