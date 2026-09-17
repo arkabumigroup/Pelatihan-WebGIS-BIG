@@ -6,31 +6,31 @@
 
 1. Buat **folder baru** yang akan digunakan sebagai tempat penyimpanan project, kemudian buka **Virtual Studio Code**, lalu **pilih folder** tersebut dengan cara **klik file,** kemudian **klik open folder**, lalu **pilih folder** yang telah dibuat.
     
-    ![](konfigurasi-framework/image9.png)
+![](konfigurasi-framework/image9.png)
     
 2. Selanjutnya setelah memilih folder yang akan menjadi tersebut, berikut ini merupakan halaman awal folder dan project yang akan dirancang dan dibangun.
     
-    ![](konfigurasi-framework/image18.png)
+![](konfigurasi-framework/image18.png)
     
 
 ## **Konfigurasi Framework Next.JS**
 
 1. Buka tautan [**https://nextjs.org/**](https://nextjs.org/) untuk melihat dokumentasi framework yang akan digunakan oleh penguna.
     
-    ![](konfigurasi-framework/image16.png)
+![](konfigurasi-framework/image16.png)
     
 2. Tahapan berikutnya untuk melakukan konfigurasi framework dalam perancangan dan pembangunan WebGIS, maka **buka virtual studio code** kemudian **klik terminal** untuk menjalankan perintah konfigurasi framework.
     
-    ![](konfigurasi-framework/image19.png)
+![](konfigurasi-framework/image19.png)
     
 3. Selanjutnya pada bagian terminal lakukan konfigurasi Next.js dengan menginput perintah berikut ini **npx create-next-app@latest** kemudian **klik enter**. Selanjutnya input nama project yang akan dirancang oleh penggguna.
 
     ```bash
     npx create-next-app@latest
     ```
-    
-    ![](konfigurasi-framework/image22.png)
-    
+
+![](konfigurasi-framework/image22.png)
+
 4. Tahapan berikutnya lakukan konfigurasi next.js pada terminal dengan konfigurasi sebagai berikut.
 
     Jawaban yang dipakai pada pelatihan ini, dibaca dari tangkapan layar langkah 4:
@@ -61,55 +61,55 @@
 
     Bila jawaban Anda berbeda dari tabel di atas, langkah pada materi berikutnya bisa gagal. Yang paling sering menggagalkan adalah `src/` directory dan App Router.
     
-    ![](konfigurasi-framework/image5.png)
+![](konfigurasi-framework/image5.png)
     
 5. Selanjutnya tunggu hingga proses konfigurasi dan instalasi framework Next.js selesai, berikut merupakan hasil konfigurasi yang telah selesai.
     
-    ![](konfigurasi-framework/image1.png)
+![](konfigurasi-framework/image1.png)
     
 6. Hasil dari konfigurasi framework Next.js pada Virtual Studio Code akan menampilkan folder-folder yang menjadi tempat perancangan dan pembangunan WebGIS.
     
-    ![](konfigurasi-framework/image20.png)
+![](konfigurasi-framework/image20.png)
     
 7. Tahapan berikutnya buka folder yang telah dibuat sebelumnya dengan nama **folder webgis-latihan** dengan cara **klik file**, kemudian **klik open folder**, lalu pilih folder tersebut. Selanjutnya untuk menjalakan web yang telah dikonfigurasi dengan next js dilakukan dengan cara pada **terminal** ketik **npm run dev**.
     
-    ![](konfigurasi-framework/image17.png)
+![](konfigurasi-framework/image17.png)
     
 8. Untuk melihat dan menjalankan web tersebut, buka **browser** yang terdapat dalam perangkat pengguna kemudian masukan url lokal yang terdapat pada **terminal** yaitu [**http://localhost:3000/**](http://localhost:3000/) maka hasilnya dapat dilihat sebagai berikut.
     
-    ![](konfigurasi-framework/image14.png)
+![](konfigurasi-framework/image14.png)
     
 
 ## **Konfigurasi Project dengan Repository Github**
 
 1. Buka **web github** melalui tautan berikut ini [**https://github.com/**](https://github.com/) apabila belum memiliki akun maka dapat melakukan registrasi untuk melakukan pembuatan akun github terlebih dahulu.
     
-    ![](konfigurasi-framework/image8.png)
+![](konfigurasi-framework/image8.png)
     
 2. Selanjutnya setelah login pada github, untuk membuat repository baru sebagai tempat penyimpanan project pada github dengan melakukan **klik tombol new**.
 3. Selanjutnya pada halaman new, buat halaman baru dengan menginput nama project yang akan dibuat pada github kemudian klik **create repository**.
     
-    ![](konfigurasi-framework/image10.png)
+![](konfigurasi-framework/image10.png)
     
 4. Setelah selesai pembuatan repository barunya selanjutnya untuk melakukan unggah project yang telah dirancang sebelumnya mengikuti perintah yang ada pada github.
     
-    ![](konfigurasi-framework/image7.png)
+![](konfigurasi-framework/image7.png)
     
 5. Selanjutnya untuk mengunggah project yang kita miliki berdasarkan perintah yang sudah ada pada github dilakukan dengan cara **klik kanan** pada folder project, klik **show more option** lalu klik **gitbash**.
     
-    ![](konfigurasi-framework/image4.png)
+![](konfigurasi-framework/image4.png)
     
 6. Pada tampilan gitbash, input perintah-perintah yang telah ada sebelumnya pada poin nomor 4 dengan menyalinnya dari github.
 7. Hasil dari project yang telah diunggah pada github maka hasilnya akan menjadi seperti berikut.
     
-    ![](konfigurasi-framework/image13.png)
+![](konfigurasi-framework/image13.png)
     
 
 ## **Cloning Project Github**
 
 1. Untuk melakukan cloning / menyalin project web yang ada pada github kedalam perangkat peserta, dapat dilakukan dengan mengklik **tombol code** kemudian salin url github project tersebut.
     
-    ![](konfigurasi-framework/image2.png)
+![](konfigurasi-framework/image2.png)
     
 2. Kemudian buka folder yang akan dijadikan tempat penyimpanan, klik kanan, pilih **gitbash**, kemudian pada tampilan gitbash ketik **git clone** lalu **klik kanan** p**aste url project**, lalu **klik enter**.
 
@@ -122,9 +122,8 @@
     npm install
     npm run dev
     ```
-    
-    ![](konfigurasi-framework/image12.png)
-    
+
+![](konfigurasi-framework/image12.png)
 
 ## **Mengirim Perubahan dan Mengambil Hasil Perubahan Web dengan Git**
 
