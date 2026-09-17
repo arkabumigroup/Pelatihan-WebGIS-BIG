@@ -1,43 +1,246 @@
+/* =====================================================================
+   Tema situs Materi Pelatihan WebGIS
+   Arah visual: DESIGN.md di akar repositori.
+   Setiap aturan di bawah memuat alasan satu baris, sesuai R-31.
+   ===================================================================== */
+
+/* Pembesaran gambar: lapisan zoom harus berada di atas seluruh antarmuka,
+   termasuk sidebar dan navbar, karena letaknya di luar alur dokumen. */
 .medium-zoom-overlay,
 .medium-zoom-image--opened {
   z-index: 999 !important;
 }
 
+/* ---------------------------------------------------------------------
+   Palet
+   Tiga warna diambil dari logo resmi di docs/public/Logo-Light.png,
+   bukan dipilih dari selera. Lihat DESIGN.md bagian Palet.
+   --------------------------------------------------------------------- */
 :root {
-  --vp-c-brand-1: #2563eb;
-  --vp-c-brand-2: #3b82f6;
-  --vp-c-brand-3: #60a5fa;
-  --vp-c-brand-soft: rgba(59, 130, 246, 0.14);
+  /* Navy dari badan huruf ARKABUMI. Dipakai untuk tautan dan tombol utama
+     supaya teks yang dapat diklik langsung terbaca sebagai milik lembaga. */
+  --vp-c-brand-1: #003060;
+  --vp-c-brand-2: #0a4a86; /* navy satu tingkat lebih terang, untuk hover */
+  --vp-c-brand-3: #1070b0; /* biru langit dari globe logo */
+  --vp-c-brand-soft: rgba(0, 48, 96, 0.12);
+
+  /* Oranye dari segitiga Arkabumi, digelapkan satu tingkat.
+     Oranye asli #e08000 hanya mencapai 2,68:1 pada latar sidebar terang,
+     sedangkan batang penanda posisi memerlukan minimum 3:1. Nilai di bawah
+     adalah oranye yang sama dengan kecerahan diturunkan, dan terukur 4,65:1
+     pada latar sidebar serta 5,02:1 pada latar dokumen putih. */
+  --pelatihan-aksen: #b45309;
+
+  /* Tinggi batang penanda posisi pada sidebar. Angka ini juga dipakai
+     sebagai lebar garis pada daftar isi, supaya keduanya konsisten. */
+  --pelatihan-penanda: 3px;
+
+  /* Panah kecil penanda tautan luar, dipakai oleh aturan di bawah. */
+  --pelatihan-panah-luar: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M5 2H2v12h12v-3h-2v1H4V4h1V2zm6.7 0-1.4 1.4L12.6 5.7 8 10.3l1.4 1.4L14 7.1l2.3 2.3L17.7 8l-1.4-1.4L16.3 6 15 4.7 17 2.7 15.6 1.3 13.6 3.3 11.9 1.6 10.5 3z'/%3E%3C/svg%3E");
 }
 
 .dark {
-  --vp-c-brand-1: #60a5fa;
-  --vp-c-brand-2: #3b82f6;
-  --vp-c-brand-3: #93c5fd;
-  --vp-c-brand-soft: rgba(96, 165, 250, 0.16);
+  /* Pada latar gelap, navy terlalu dekat dengan warna latar sehingga kontras
+     teks turun di bawah 4,5:1. Biru langit dari logo dipakai sebagai
+     penggantinya karena warnanya sama-sama berasal dari logo. */
+  --vp-c-brand-1: #6cb6e8;
+  --vp-c-brand-2: #1070b0;
+  --vp-c-brand-3: #8ecbf5;
+  --vp-c-brand-soft: rgba(108, 182, 232, 0.16);
+
+  /* Pada latar gelap, oranye asli logo justru yang memenuhi syarat:
+     6,25:1 pada latar sidebar dan 5,93:1 pada latar dokumen. Nilainya
+     dikembalikan ke oranye logo, sehingga identitasnya paling dekat pada
+     mode yang paling sering dipakai peserta. */
+  --pelatihan-aksen: #e08000;
 }
 
+/* ---------------------------------------------------------------------
+   Motif identitas: batang penanda posisi
+   Menjawab pertanyaan "saya sedang di bagian mana" pada materi panjang.
+   --------------------------------------------------------------------- */
+
+/* Butir sidebar yang sedang dibuka. VitePress menandainya dengan kelas
+   has-active, sehingga penanda mengikuti halaman tanpa skrip tambahan. */
+.VPSidebarItem.has-active > .item {
+  position: relative;
+}
+
+.VPSidebarItem.has-active > .item::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 4px;
+  bottom: 4px;
+  width: var(--pelatihan-penanda);
+  border-radius: var(--pelatihan-penanda);
+  background: var(--pelatihan-aksen);
+}
+
+/* Ruang di kiri ditambah supaya teks tidak menempel pada batang penanda. */
+.VPSidebarItem.has-active > .item .link {
+  padding-left: 10px;
+}
+
+/* Judul kelompok yang sedang dibuka, misalnya "Praktik 11 - Deploy Project".
+   Ditebalkan supaya peserta tahu bab mana yang aktif, bukan hanya butirnya. */
+.VPSidebarItem.level-0.has-active > .item .text,
+.VPSidebarItem.level-1.has-active > .item .text {
+  font-weight: 700;
+}
+
+/* Daftar isi di sisi kanan. VitePress menambah kelas active pada tautan
+   yang sedang terlihat saat menggulir. */
+.VPDocAsideOutline .outline-link {
+  position: relative;
+  padding-left: 12px;
+}
+
+.VPDocAsideOutline .outline-link.active {
+  color: var(--vp-c-brand-1);
+  font-weight: 600;
+}
+
+.VPDocAsideOutline .outline-link.active::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: var(--pelatihan-penanda);
+  height: 14px;
+  border-radius: var(--pelatihan-penanda);
+  background: var(--pelatihan-aksen);
+}
+
+/* ---------------------------------------------------------------------
+   Fokus keyboard
+   Penanda fokus bawaan VitePress tipis dan mudah terlewat saat peserta
+   berpindah bagian dengan Tab. Diganti penanda yang lebih tebal, memakai
+   warna aksen supaya sejalan dengan batang penanda posisi.
+   --------------------------------------------------------------------- */
+:focus-visible {
+  outline: 2px solid var(--pelatihan-aksen);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+/* Tautan pada isi dokumen sering berbentuk teks panjang. Tanpa offset,
+   penanda fokusnya menempel pada teks di baris atas dan bawah. */
+.vp-doc a:focus-visible {
+  outline-offset: 3px;
+}
+
+/* ---------------------------------------------------------------------
+   Tabel
+   Banyak tabel pada materi memuat perintah dan jalur berkas yang panjang.
+   Pada layar sempit, tabel digulir mendatar di dalam wadahnya sendiri,
+   sehingga halaman tidak ikut melebar. Perilaku ini yang membuat seluruh
+   halaman bebas dari gulir mendatar.
+   --------------------------------------------------------------------- */
+.vp-doc table {
+  display: block;
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+/* Batas kolom diberi garis tipis supaya mata tidak kehilangan baris saat
+   tabelnya panjang. */
+.vp-doc th,
+.vp-doc td {
+  border-color: var(--vp-c-divider);
+}
+
+/* ---------------------------------------------------------------------
+   Blok kode
+   Perintah terminal adalah isi utama situs ini. Barisnya dibiarkan
+   menggulir, tidak dibungkus, supaya perintah panjang tidak terpotong
+   menjadi dua baris yang terlihat seperti dua perintah berbeda.
+   --------------------------------------------------------------------- */
+.vp-doc div[class*="language-"] {
+  border: 1px solid var(--vp-c-divider);
+}
+
+/* Judul bahasa pada blok kode ditahan huruf kecil. Huruf kapital dengan
+   jarak lebar akan terbaca sebagai hiasan, bukan keterangan. */
+.vp-doc div[class*="language-"] > span.lang {
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 12px;
+}
+
+/* ---------------------------------------------------------------------
+   Tautan luar
+   Beranda memuat tombol menuju folder berkas pelatihan. Ikonnya
+   ditambahkan oleh theme/index.js, aturan di bawah hanya mengatur letaknya.
+   --------------------------------------------------------------------- */
+.VPHero .action .VPButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pelatihan-ikon-tombol {
+  width: 16px;
+  height: 16px;
+  flex: none;
+}
+
+/* Tautan luar pada isi dokumen. Panah kecil ini menjelaskan bahwa tautannya
+   membuka tab baru, sehingga peserta tidak kehilangan halaman yang dibaca. */
+.vp-doc a[target="_blank"]::after {
+  content: "";
+  display: inline-block;
+  width: 11px;
+  height: 11px;
+  margin-left: 3px;
+  vertical-align: -1px;
+  opacity: 0.65;
+  background-color: currentColor;
+  -webkit-mask: var(--pelatihan-panah-luar) no-repeat center / contain;
+  mask: var(--pelatihan-panah-luar) no-repeat center / contain;
+}
+
+/* ---------------------------------------------------------------------
+   Logo di beranda
+   Logo adalah dua lembaga dalam satu berkas gambar, jadi tingginya dibatasi
+   supaya tidak mendominasi halaman. Aturan sebelumnya ditulis dua kali
+   dengan nilai justify-content yang berlawanan, dan yang kedua menimpa yang
+   pertama. Sekarang hanya ada satu aturan, dengan perataan ke kiri karena
+   teks di sekitarnya juga rata kiri.
+   --------------------------------------------------------------------- */
 .logo-row {
   display: flex;
-  justify-content: center;
   align-items: center;
   gap: 24px;
   margin: 24px 0;
 }
 
-.logo-row {
+/* Tautan dibuat flex supaya tingginya tepat setinggi gambarnya.
+   Tanpa ini, gambar inline menyisakan ruang garis kosong di bawahnya, dan
+   panah penanda tautan luar ikut turun ke ruang kosong itu sehingga terlihat
+   terlepas dari logo. */
+.logo-row a {
   display: flex;
-  justify-content: flex-start; /* ini yang bikin ke kiri */
   align-items: center;
-  gap: 24px;
 }
 
 .logo-row img {
+  display: block;
   height: 56px;
   width: auto;
   object-fit: contain;
 }
 
+/* Logo sudah menandakan tautan luar lewat bentuknya, dan panah kecil di sini
+   hanya menambah bintik yang tidak menjelaskan apa pun. */
+.logo-row a[target="_blank"]::after {
+  content: none;
+}
+
+/* ---------------------------------------------------------------------
+   Kaki halaman
+   --------------------------------------------------------------------- */
 .my-footer {
   text-align: center;
   padding: 24px 0;
