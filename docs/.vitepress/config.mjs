@@ -92,12 +92,12 @@ export default defineConfig({
           ]
         },
         {
-          text: 'Praktik 11 - Deploy Project',
+          text: 'Deployment Project',
           collapsed: true,
           items: [
-            { text: '1. Konfigurasi Project', link: '/hari-3/praktik-11-deploy/konfigurasi-project' },
-            { text: '2. Google Cloud Platform', link: '/hari-3/praktik-11-deploy/google-cloud-platform' },
-            { text: '3. Penambahan Subdomain', link: '/hari-3/praktik-11-deploy/subdomain' }
+            { text: '1. Konfigurasi Project', link: '/hari-3/deployment-project/konfigurasi-project' },
+            { text: '2. Google Cloud Platform', link: '/hari-3/deployment-project/google-cloud-platform' },
+            { text: '3. Penambahan Subdomain', link: '/hari-3/deployment-project/subdomain' }
           ]
         }
       ]),

@@ -28,16 +28,16 @@ Bagian ini menghubungkan aplikasi Next.js ke basis data dan menambahkan sistem l
 
 Halaman-halaman berikut adalah satu rangkaian. Berkas yang dibuat pada tahap pertama dipakai pada tahap kedua, dan konfigurasi Nginx yang dibuat pada tahap pertama baru berguna setelah sertifikat pada tahap ketiga terbit.
 
-1. [Konfigurasi Project](/hari-3/praktik-11-deploy/konfigurasi-project) - menyiapkan `docker-compose.yml`, `nginx.conf`, `.env.example`, dan pemeriksa konfigurasi di repositori proyek.
-2. [Google Cloud Platform](/hari-3/praktik-11-deploy/google-cloud-platform) - menyiapkan Cloud Shell, service account, VM, IP statis, Docker, lalu menjalankan GeoServer dan Nginx.
-3. [Penambahan Subdomain](/hari-3/praktik-11-deploy/subdomain) - mengarahkan subdomain ke IP statis VM dan menerbitkan sertifikat Let's Encrypt.
+1. [Konfigurasi Project](/hari-3/deployment-project/konfigurasi-project) - menyiapkan `docker-compose.yml`, `nginx.conf`, `.env.example`, dan pemeriksa konfigurasi di repositori proyek.
+2. [Google Cloud Platform](/hari-3/deployment-project/google-cloud-platform) - menyiapkan Cloud Shell, service account, VM, IP statis, Docker, lalu menjalankan GeoServer dan Nginx.
+3. [Penambahan Subdomain](/hari-3/deployment-project/subdomain) - mengarahkan subdomain ke IP statis VM dan menerbitkan sertifikat Let's Encrypt.
 
 ## Yang Perlu Disiapkan Peserta
 
 - Akses ke Google Cloud project dari koordinator, beserta identitas peserta untuk `PARTICIPANT_ID`.
 - Akun GitHub berisi fork repositori proyek. Berkas `cloudbuild.yaml` dan pemeriksa konfigurasi diambil dari sana.
-- Domain dari penyelenggara beserta subdomain yang sudah ditetapkan, dipakai pada [Penambahan Subdomain](/hari-3/praktik-11-deploy/subdomain).
-- Berkas `.env.example` dari instruktur, dipakai pada [Konfigurasi Project](/hari-3/praktik-11-deploy/konfigurasi-project).
+- Domain dari penyelenggara beserta subdomain yang sudah ditetapkan, dipakai pada [Penambahan Subdomain](/hari-3/deployment-project/subdomain).
+- Berkas `.env.example` dari instruktur, dipakai pada [Konfigurasi Project](/hari-3/deployment-project/konfigurasi-project).
 
 ## Hasil Akhir Hari 3
 

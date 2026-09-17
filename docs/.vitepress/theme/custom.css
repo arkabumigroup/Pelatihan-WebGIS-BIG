@@ -61,12 +61,21 @@
    --------------------------------------------------------------------- */
 
 /* Butir sidebar yang sedang dibuka. VitePress menandainya dengan kelas
-   has-active, sehingga penanda mengikuti halaman tanpa skrip tambahan. */
-.VPSidebarItem.has-active > .item {
+   has-active, sehingga penanda mengikuti halaman tanpa skrip tambahan.
+   
+   PENTING: VitePress menandai SETIAP tingkat yang memuat halaman aktif, bukan
+   hanya butir terakhirnya. Pada satu halaman, tiga tingkat sekaligus memakai
+   kelas itu: nama hari, nama praktik, lalu nama halamannya. Karena itu batang
+   penanda dibatasi pada butir terakhir saja. Lihat catatan di bawah. */
+.VPSidebarItem.is-link.has-active:not(:has(.VPSidebarItem.has-active)) > .item {
   position: relative;
 }
 
-.VPSidebarItem.has-active > .item::before {
+/* Batang penanda hanya pada butir terakhir yang dapat diklik. Aturan ini
+   sengaja memakai is-link, sehingga judul kelompok yang memuat halaman aktif
+   tidak ikut mendapat batang. Tanpa pembatasan itu, tiga batang oranye muncul
+   bertumpuk pada satu halaman, dan penandanya kehilangan arti. */
+.VPSidebarItem.is-link.has-active:not(:has(.VPSidebarItem.has-active)) > .item::before {
   content: "";
   position: absolute;
   left: 0;
@@ -78,14 +87,14 @@
 }
 
 /* Ruang di kiri ditambah supaya teks tidak menempel pada batang penanda. */
-.VPSidebarItem.has-active > .item .link {
+.VPSidebarItem.is-link.has-active:not(:has(.VPSidebarItem.has-active)) > .item .link {
   padding-left: 10px;
 }
 
-/* Judul kelompok yang sedang dibuka, misalnya "Praktik 11 - Deploy Project".
-   Ditebalkan supaya peserta tahu bab mana yang aktif, bukan hanya butirnya. */
-.VPSidebarItem.level-0.has-active > .item .text,
-.VPSidebarItem.level-1.has-active > .item .text {
+/* Judul kelompok yang memuat halaman aktif, misalnya "Praktik 11 - Deploy
+   Project". Ditebalkan saja tanpa batang, supaya peserta tahu bab mana yang
+   sedang dibuka sementara penanda tetap satu. */
+.VPSidebarItem.collapsible.has-active > .item .text {
   font-weight: 700;
 }
 

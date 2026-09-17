@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 940" role="img"
+     aria-labelledby="t d"
+     font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif">
+  <title id="t">Alur Deployment Project, dari titik mulai sampai hasil akhir</title>
+  <desc id="d">Peserta mulai dari fork repositori, lalu clone ke laptop. Sesudah itu database Supabase disiapkan lewat SQL Editor dan akun super admin dibuat. Berkas konfigurasi diperiksa, berkas .env diisi, dan portal diuji di laptop sampai bisa login. Setelah terbukti berjalan, repositori disalin ke VM dan Cloud Build dihubungkan. Satu perintah git push memicu Cloud Build membangun image dan memperbarui container, sehingga Geoportal terbit di alamat HTTPS bersama GeoServer.</desc>
+
+  <defs>
+    <marker id="p" viewBox="0 0 10 10" refX="8" refY="5"
+            markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0 0 L10 5 L0 10 z" fill="#7a8b9e"/>
+    </marker>
+  </defs>
+
+  <style>
+    /* Warna ditulis tetap, bukan currentColor. Diagram ini dimuat lewat tag img,
+       sehingga menjadi dokumen terpisah dan tidak mewarisi warna halaman.
+       Dengan warna tetap, diagram terbaca sama di mode terang maupun gelap. */
+    .latar { fill: #ffffff; }
+    .kartu { fill: #f4f6f9; stroke: #c9d2dd; stroke-width: 1.2; }
+    .sorot { fill: #fdf1e3; stroke: #b45309; stroke-width: 1.8; }
+    .hasil { fill: #eef2f7; stroke: #7a8b9e; stroke-width: 1.6; }
+    .alir  { stroke: #7a8b9e; stroke-width: 1.6; fill: none; marker-end: url(#p); }
+    .poros { stroke: #dde3ea; stroke-width: 1; }
+    .judul { fill: #003060; font-size: 13.5px; font-weight: 600; }
+    .isi   { fill: #46566b; font-size: 12px; }
+    .mono  { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; }
+    .tahap { fill: #7a8b9e; font-size: 10.5px; font-weight: 700; letter-spacing: .1em; }
+  </style>
+
+  <rect class="latar" x="0" y="0" width="760" height="940" rx="10"/>
+  <line class="poros" x1="100" y1="24" x2="100" y2="916"/>
+
+  <text class="tahap" x="16" y="58">DI LAPTOP</text>
+  <text class="tahap" x="16" y="372">DI LAPTOP</text>
+  <text class="tahap" x="16" y="592">DI VM</text>
+  <text class="tahap" x="16" y="772">OTOMATIS</text>
+  <text class="tahap" x="16" y="912">HASIL</text>
+
+  <rect class="kartu" x="120" y="24" width="620" height="60" rx="8"/>
+  <text class="judul" x="140" y="48">Fork repositori, lalu clone ke laptop</text>
+  <text class="isi mono" x="140" y="68">personal-geoportal-peserta</text>
+  <path class="alir" d="M430 84 V 104"/>
+
+  <rect class="sorot" x="120" y="104" width="620" height="60" rx="8"/>
+  <text class="judul" x="140" y="128">Siapkan database Supabase</text>
+  <text class="isi mono" x="140" y="148">sql/01-schema.sql lewat SQL Editor</text>
+  <path class="alir" d="M430 164 V 184"/>
+
+  <rect class="sorot" x="120" y="184" width="620" height="60" rx="8"/>
+  <text class="judul" x="140" y="208">Buat akun super admin</text>
+  <text class="isi mono" x="140" y="228">hash-password.mjs, lalu sql/02-seed-super-admin.sql</text>
+  <path class="alir" d="M430 244 V 264"/>
+
+  <rect class="kartu" x="120" y="264" width="620" height="60" rx="8"/>
+  <text class="judul" x="140" y="288">Periksa berkas konfigurasi</text>
+  <text class="isi" x="140" y="308">docker-compose.yml, nginx.conf, .gitignore, dan scripts</text>
+  <path class="alir" d="M430 324 V 344"/>
+
+  <rect class="kartu" x="120" y="344" width="620" height="60" rx="8"/>
+  <text class="judul" x="140" y="368">Isi berkas .env</text>
+  <text class="isi mono" x="140" y="388">DATABASE_URL · JWT_SECRET · NEXTAUTH_SECRET</text>
+  <path class="alir" d="M430 404 V 424"/>
+
+  <rect class="sorot" x="120" y="424" width="620" height="60" rx="8"/>
+  <text class="judul" x="140" y="448">Uji di laptop sampai bisa login</text>
+  <text class="isi mono" x="140" y="468">uji-database.mjs, lalu npm run dev</text>
+  <path class="alir" d="M430 484 V 504"/>
+
+  <rect class="kartu" x="120" y="504" width="620" height="60" rx="8"/>
+  <text class="judul" x="140" y="528">Salin repositori ke VM</text>
+  <text class="isi mono" x="140" y="548">git clone ke /opt/webgis/app</text>
+  <path class="alir" d="M430 564 V 584"/>
+
+  <rect class="kartu" x="120" y="584" width="620" height="60" rx="8"/>
+  <text class="judul" x="140" y="608">Hubungkan Cloud Build ke GitHub</text>
+  <text class="isi" x="140" y="628">Buat trigger, isi 4 substitution variable</text>
+  <path class="alir" d="M430 644 V 664"/>
+
+  <rect class="kartu" x="120" y="664" width="620" height="60" rx="8"/>
+  <text class="judul" x="140" y="688">git push origin main</text>
+  <text class="isi" x="140" y="708">Perintah terakhir yang Anda jalankan</text>
+  <path class="alir" d="M430 724 V 744"/>
+
+  <rect class="hasil" x="120" y="744" width="620" height="60" rx="8" stroke-dasharray="6 4"/>
+  <text class="judul" x="140" y="768">Cloud Build bekerja sendiri</text>
+  <text class="isi" x="140" y="788">Bangun image, dorong ke Artifact Registry, nyalakan container</text>
+  <path class="alir" d="M430 804 V 824"/>
+
+  <rect class="hasil" x="120" y="824" width="620" height="60" rx="8" stroke-dasharray="6 4"/>
+  <text class="judul" x="140" y="848">Container diperbarui di VM, tanpa Anda masuk ke VM</text>
+  <text class="isi" x="140" y="868">Diulang setiap kali push berikutnya</text>
+  <path class="alir" d="M430 884 V 896"/>
+
+  <rect class="sorot" x="120" y="896" width="620" height="46" rx="8"/>
+  <text class="judul" x="140" y="918">Hasil akhir: Geoportal terbit di alamat HTTPS</text>
+  <text class="isi" x="140" y="935">Satu alamat melayani dua layanan: Geoportal dan GeoServer</text>
+</svg>

@@ -1,12 +1,12 @@
 # Penambahan Subdomain
 
-Halaman ini melanjutkan [Google Cloud Platform](/hari-3/praktik-11-deploy/google-cloud-platform). Setelah tahap ini selesai, Geoportal dapat dibuka melalui `https://nama01.gisbigtrainer.com/portal` dengan sertifikat yang dipercaya browser, bukan lagi melalui alamat IP.
+Halaman ini melanjutkan [Google Cloud Platform](/hari-3/deployment-project/google-cloud-platform). Setelah tahap ini selesai, Geoportal dapat dibuka melalui `https://nama01.gisbigtrainer.com/portal` dengan sertifikat yang dipercaya browser, bukan lagi melalui alamat IP.
 
 Urutannya penting: record DNS harus sudah mengarah ke VM sebelum Certbot dijalankan. Let's Encrypt memverifikasi kepemilikan domain dengan mengakses alamat tersebut dari internet, sehingga sertifikat tidak akan terbit selama alamatnya belum bisa dijangkau.
 
 ## Prasyarat
 
-- Bagian A sampai D pada halaman [Google Cloud Platform](/hari-3/praktik-11-deploy/google-cloud-platform) sudah selesai, dan variabel `PROJECT_ID`, `ZONE`, `VM_NAME`, serta `SUBDOMAIN` masih tersedia di Cloud Shell.
+- Bagian A sampai D pada halaman [Google Cloud Platform](/hari-3/deployment-project/google-cloud-platform) sudah selesai, dan variabel `PROJECT_ID`, `ZONE`, `VM_NAME`, serta `SUBDOMAIN` masih tersedia di Cloud Shell.
 - Bila sesi Cloud Shell sudah berganti, jalankan kembali blok Tahap 2 halaman sebelumnya lebih dahulu.
 - Subdomain sudah ditetapkan penyelenggara. Pola yang dipakai adalah `<identitas-peserta>.gisbigtrainer.com`.
 - Akses ke pengelola DNS domain, atau koordinator yang bersedia menambahkan record untuk Anda.
@@ -291,6 +291,6 @@ Buka `https://SUBDOMAIN/portal`, lalu periksa satu per satu:
 | `dig` mengembalikan alamat berbeda | Record A masih menunjuk ke IP lama, atau ada record lain dengan nama sama. |
 | Login berhasil di HTTP tetapi gagal di HTTPS | `NEXTAUTH_URL` dan `BASE_URL` belum diubah ke alamat HTTPS, atau container belum dinyalakan ulang. |
 
-## Hasil Akhir Praktik 11
+## Hasil Akhir Deployment Project
 
 Geoportal berjalan di alamat HTTPS dengan subdomain sendiri, sertifikatnya dipercaya browser dan diperbarui otomatis, GeoServer dapat diakses dari halaman yang sama, dan setiap push ke branch `main` membangun ulang aplikasi tanpa perlu masuk ke VM.
