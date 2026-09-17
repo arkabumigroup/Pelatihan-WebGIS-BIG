@@ -38,9 +38,13 @@ Enam variabel berikut wajib ada. Tanpa salah satunya, login tidak bekerja.
 | `DATABASE_URL` | Connection string Supabase, Session pooler port 5432 |
 | `JWT_SECRET` | Hasil perintah acak |
 | `NEXTAUTH_SECRET` | Hasil perintah acak, harus berbeda dari di atas |
-| `NEXTAUTH_URL` | `http://IP_EKSTERNAL_VM/portal` |
+| `NEXTAUTH_URL` | Di laptop: `http://localhost:3000/portal`. Di VM: `http://IP_EKSTERNAL_VM/portal` |
 | `ADMIN_CONTACT_EMAIL` | Email Anda sendiri |
 | `JWT_EXPIRES_IN` | `1h`, sudah terisi di `.env.example` |
+
+`NEXTAUTH_URL` berubah seiring tempat aplikasi berjalan. Di laptop isinya `localhost`, dan di VM isinya alamat IP eksternal VM. Nilai yang salah membuat login gagal meskipun database dan kata sandinya benar.
+
+Berkas `.env` di laptop dan di VM adalah **dua berkas terpisah**. Yang di laptop tidak ikut ter-commit, dan yang di VM dibuat langsung di sana. Jadi mengubah nilai di VM tidak memengaruhi yang di laptop.
 
 Cara membuat nilai acak, pilih sesuai sistem Anda:
 
@@ -603,39 +607,62 @@ Bila GitHub meminta kata sandi, isi dengan Personal Access Token, bukan kata san
 
 Dijalankan di: Terminal VM
 
-Buat lebih dahulu kata sandi GeoServer dan dua nilai acak. Simpan ketiga hasilnya.
-
-```bash
-GEOSERVER_PASSWORD="$(openssl rand -hex 16)"
-echo "GEOSERVER_ADMIN_PASSWORD=$GEOSERVER_PASSWORD"
-
-openssl rand -hex 32
-openssl rand -hex 32
-```
-
-Selanjutnya buka berkas `.env` dan isi nilainya.
+Buka berkas `.env` yang tadi disalin dari `.env.example`.
 
 ```bash
 nano /opt/webgis/app/.env
 ```
 
+#### Nilai yang sudah Anda siapkan di laptop
+
+Empat nilai berikut sudah Anda buat pada [Prasyarat bagian 3](#_3-berkas-env-sudah-terisi). Pakai nilai yang sama, jangan membuat yang baru.
+
 | Variabel | Nilai |
 |---|---|
-| `NEXTJS_IMAGE` | Biarkan `nginx:1.27-alpine`. Diisi otomatis oleh Cloud Build pada deploy pertama. |
-| `DATABASE_URL` | Connection string PostgreSQL dari materi basis data. Boleh dikosongkan untuk menguji build. |
-| `JWT_SECRET` | Hasil `openssl rand -hex 32` yang pertama |
-| `NEXTAUTH_SECRET` | Hasil `openssl rand -hex 32` yang kedua |
-| `NEXTAUTH_URL` | `http://IP_EKSTERNAL_VM/portal/` |
-| `GEOSERVER_ADMIN_PASSWORD` | Hasil `openssl rand -hex 16` |
+| `DATABASE_URL` | Connection string Supabase, Session pooler port 5432. **Jangan dikosongkan.** |
+| `JWT_SECRET` | Hasil perintah acak yang pertama |
+| `NEXTAUTH_SECRET` | Hasil perintah acak yang kedua |
+| `ADMIN_CONTACT_EMAIL` | Email Anda sendiri |
+
+#### Nilai yang berubah karena sekarang di VM
+
+Tiga nilai berikut berbeda dari yang di laptop, karena alamat aplikasinya sudah berganti.
+
+| Variabel | Nilai |
+|---|---|
+| `NEXTAUTH_URL` | `http://IP_EKSTERNAL_VM/portal`, tanpa slash di akhir |
 | `BASE_URL` | `http://IP_EKSTERNAL_VM/portal` |
+| `NEXT_PUBLIC_URL_BASE_PATH` | `http://IP_EKSTERNAL_VM/portal` |
 
+Ketiganya memakai bentuk yang sama, yaitu alamat IP eksternal VM diikuti `/portal`, tanpa slash di akhir. Ganti `IP_EKSTERNAL_VM` dengan alamat dari Tahap 9.
 
-Dua hal tentang nilai di atas:
+Slash di akhir membuat alamat tidak cocok dengan `basePath` pada `next.config.mjs`, dan gejalanya adalah login yang berhasil di API tetapi gagal di browser.
 
-- `NEXTAUTH_URL` diakhiri slash, `BASE_URL` tidak. Keduanya memang berbeda bentuk.
-- Kata sandi GeoServer sebaiknya hanya berisi huruf dan angka, karena tanda dolar dibaca compose sebagai awal nama variabel dan karakter setelahnya bisa hilang tanpa peringatan.
+#### Kata sandi untuk GeoServer
 
-Saat login ke GeoServer nanti, gunakan username `admin` dan kata sandi hasil `GEOSERVER_PASSWORD`.
+Buat kata sandi GeoServer di sini, karena GeoServer baru berjalan di VM.
+
+```bash
+GEOSERVER_PASSWORD="$(node -e "console.log(require('crypto').randomBytes(16).toString('hex'))")"
+echo "$GEOSERVER_PASSWORD"
+```
+
+Simpan hasilnya, lalu isi dua baris berikut dengan nilai yang sama:
+
+| Variabel | Nilai |
+|---|---|
+| `GEOSERVER_ADMIN_PASSWORD` | Hasil perintah di atas |
+| `GEOSERVER_PASSWORD` | Nilai yang sama persis |
+
+Keduanya harus sama, karena satu dipakai container GeoServer untuk membuat akun admin, dan satu lagi dipakai aplikasi untuk login ke REST API GeoServer. Bila berbeda, unggahan layer gagal dengan pesan kosong.
+
+Perintah di atas memakai Node.js, bukan openssl, supaya dapat dijalankan di Windows juga. Hasilnya hanya berisi huruf dan angka, sehingga aman dari masalah tanda dolar yang dibaca compose sebagai awal nama variabel.
+
+#### Nilai yang dibiarkan apa adanya
+
+`NEXTJS_IMAGE` dibiarkan `nginx:1.27-alpine`. Cloud Build mengisinya otomatis pada deploy pertama.
+
+Saat login ke antarmuka GeoServer nanti, gunakan username `admin` dan kata sandi hasil `GEOSERVER_PASSWORD`.
 
 ### Tahap 19. Bangun image aplikasi
 
