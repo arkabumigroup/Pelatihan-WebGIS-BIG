@@ -1,6 +1,6 @@
 # Penambahan Subdomain
 
-Halaman ini melanjutkan [Google Cloud Platform](/hari-3/deployment-project/google-cloud-platform). Setelah tahap ini selesai, Geoportal dapat dibuka melalui `https://nama01.gisbigtrainer.com/portal` dengan sertifikat yang dipercaya browser, bukan lagi melalui alamat IP.
+Halaman ini melanjutkan [Google Cloud Platform](/hari-3/deployment-project/google-cloud-platform). Setelah tahap ini selesai, Geoportal dapat dibuka melalui `https://nama01.webgisbig.com/portal` dengan sertifikat yang dipercaya browser, bukan lagi melalui alamat IP.
 
 Urutannya penting: record DNS harus sudah mengarah ke VM sebelum Certbot dijalankan. Let's Encrypt memverifikasi kepemilikan domain dengan mengakses alamat tersebut dari internet, sehingga sertifikat tidak akan terbit selama alamatnya belum bisa dijangkau.
 
@@ -8,8 +8,8 @@ Urutannya penting: record DNS harus sudah mengarah ke VM sebelum Certbot dijalan
 
 - Bagian A sampai D pada halaman [Google Cloud Platform](/hari-3/deployment-project/google-cloud-platform) sudah selesai, dan variabel `PROJECT_ID`, `ZONE`, `VM_NAME`, serta `SUBDOMAIN` masih tersedia di Cloud Shell.
 - Bila sesi Cloud Shell sudah berganti, jalankan kembali blok Tahap 2 halaman sebelumnya lebih dahulu.
-- Subdomain sudah ditetapkan penyelenggara. Pola yang dipakai adalah `<identitas-peserta>.gisbigtrainer.com`.
-- Akses ke pengelola DNS domain, atau koordinator yang bersedia menambahkan record untuk Anda.
+- Subdomain sudah ditetapkan penyelenggara. Pola yang dipakai adalah `<identitas-peserta>.webgisbig.com`.
+- Record DNS ditambahkan penyelenggara. Siapkan subdomain dan alamat IP statis VM untuk dilaporkan pada Tahap 3.
 
 ## Bagian A. Mengarahkan Subdomain ke VM
 
@@ -30,24 +30,76 @@ Status harus `RESERVED`, dan alamat yang tampil harus sama dengan IP eksternal V
 Dijalankan di: Cloud Shell
 
 ```bash
-SUBDOMAIN="${PARTICIPANT_ID}.gisbigtrainer.com"
+SUBDOMAIN="${PARTICIPANT_ID}.webgisbig.com"
 echo "$SUBDOMAIN"
 ```
 
-### Tahap 3. Buat record A pada pengelola DNS
+### Tahap 3. Kirim IP VM dan subdomain ke penyelenggara
 
-Dijalankan di: Pengelola DNS
+Dijalankan di: Cloud Shell
 
-Tambahkan satu record baru.
+Record DNS **ditambahkan oleh penyelenggara**, bukan oleh peserta. Domain `webgisbig.com` dikelola satu akun Cloudflare oleh penyelenggara, dan peserta tidak diberi akses ke sana.
+
+Yang perlu Anda lakukan hanya melaporkan dua nilai:
+
+| Yang dilaporkan | Contoh | Diambil dari |
+|---|---|---|
+| Subdomain | `dhanypedia.webgisbig.com` | `$SUBDOMAIN` |
+| Alamat IP statis | `34.101.xx.xx` | `$STATIC_IP` |
+
+Kirim keduanya ke penyelenggara:
+
+```bash
+echo "Subdomain : $SUBDOMAIN"
+echo "IP statis : $(gcloud compute addresses describe "$STATIC_IP_NAME" \
+  --region="$VM_REGION" --project="$PROJECT_ID" --format='value(address)')"
+```
+
+Selama record belum ditambahkan, `dig` pada Tahap 4 akan mengembalikan kosong. Itu wajar, bukan tanda ada yang salah pada VM Anda.
+
+::: warning Cara menambahkan record di Cloudflare
+Bagian ini untuk penyelenggara, bukan peserta.
+
+Isi record sebagai berikut:
 
 | Kolom | Nilai |
 |---|---|
-| Nama | `PARTICIPANT_ID` saja, tanpa `.gisbigtrainer.com` |
-| Jenis | `A` |
-| TTL | `300` |
-| Isi | Alamat IP statis VM dari Tahap 1 |
+| Type | `A` |
+| Name | `PARTICIPANT_ID` saja, tanpa `.webgisbig.com` |
+| IPv4 address | Alamat IP statis VM peserta |
+| Proxy status | **DNS only**, bukan Proxied |
+| TTL | `Auto` |
 
-![Form Create record set pada Cloud DNS](google-cloud-platform/cb-image4.png)
+**Proxy status harus DNS only**, yaitu awan kelabu, bukan awan jingga. Alasannya dijelaskan pada bagian berikut.
+:::
+
+### Mengapa proxy Cloudflare harus dimatikan
+
+Certbot pada halaman ini memakai metode `webroot`, sehingga Let's Encrypt memverifikasi kepemilikan domain dengan mengakses alamat berikut dari internet:
+
+```text
+http://<subdomain>/.well-known/acme-challenge/<token>
+```
+
+Bila record diproksikan, permintaan itu tidak langsung menuju VM, melainkan melewati Cloudflare lebih dahulu. Cloudflare kemudian meneruskannya ke VM memakai mode SSL/TLS yang sedang berlaku, dan beberapa mode yang umum dipakai justru menggagalkan penerbitan sertifikat pertama.
+
+Mode **Full (strict)** adalah contohnya. Cloudflare meminta sertifikat yang sah dari VM, sedangkan sertifikat itu justru yang sedang hendak diterbitkan. Keadaannya berputar: sertifikat butuh verifikasi, verifikasi butuh sertifikat.
+
+Masalah ini dikenal luas di luar pelatihan ini, misalnya pada [Stack Harbor](https://stackharbor.com/en/knowledge-base/cffix-lets-encrypt-http01-behind-proxy/) dan [diskusi cert-manager](https://github.com/cert-manager/cert-manager/discussions/6471).
+
+Dengan **DNS only**, Let's Encrypt menghubungi VM secara langsung. Tidak ada lapisan yang perlu diatur, tidak ada mode SSL yang bisa salah, dan perpanjangan otomatis pada Tahap 12 bekerja tanpa perubahan.
+
+Yang dikorbankan hanya caching dan perlindungan DDoS Cloudflare. Untuk pelatihan ini keduanya tidak diperlukan.
+
+::: tip Bila proxy tetap diinginkan
+Pilihannya masuk akal, tetapi jangan dikerjakan pada hari pelatihan. Yang perlu disiapkan:
+
+- Mode SSL/TLS diset **Full**, bukan Full (strict), sampai sertifikat asli terbit
+- Aturan Page Rule atau WAF yang mengecualikan `/.well-known/acme-challenge/*` dari pengalihan ke HTTPS
+- Setelah sertifikat terbit, mode boleh dinaikkan ke Full (strict)
+
+Tiga hal itu menambah kemungkinan gagal yang tidak sebanding dengan manfaatnya untuk satu sesi pelatihan.
+:::
 
 ### Tahap 4. Periksa resolusi DNS
 
@@ -118,7 +170,28 @@ Ganti `EMAIL` dengan alamat email yang aktif, karena Let's Encrypt mengirim pemb
 
 ```bash
 EMAIL="nama01@example.com"
+```
 
+#### 9a. Uji coba lebih dahulu
+
+**Jangan lewati langkah ini.** Jalankan dengan `--dry-run` untuk menguji seluruh proses tanpa menerbitkan sertifikat sungguhan:
+
+```bash
+gcloud compute ssh "$VM_NAME" \
+  --zone="$ZONE" \
+  --tunnel-through-iap \
+  --command="cd /opt/webgis/app && sudo certbot certonly --webroot -w /opt/webgis/app/certbot-webroot -d $SUBDOMAIN --non-interactive --agree-tos -m $EMAIL --dry-run"
+```
+
+Harus berakhir dengan kalimat yang menyatakan simulasi berhasil. Bila gagal, perbaiki lebih dahulu. Penyebab yang paling sering adalah record DNS belum tersimpan, atau jalur ACME pada Tahap 8 belum dapat diakses dari internet.
+
+Opsi `--dry-run` memakai server uji Let's Encrypt, sehingga **tidak memakai kuota penerbitan yang sebenarnya.**
+
+#### 9b. Terbitkan sertifikat
+
+Setelah uji coba berhasil, jalankan perintah yang sama **tanpa** `--dry-run`:
+
+```bash
 gcloud compute ssh "$VM_NAME" \
   --zone="$ZONE" \
   --tunnel-through-iap \
@@ -126,6 +199,16 @@ gcloud compute ssh "$VM_NAME" \
 ```
 
 Sertifikat tersimpan di `/etc/letsencrypt/live/$SUBDOMAIN/`.
+
+::: danger Kuota penerbitan ini dipakai bersama seluruh peserta
+Let's Encrypt membatasi **50 sertifikat per domain per 7 hari**, dan batas itu berlaku untuk semua orang yang memakai domain yang sama, bukan per peserta.
+
+Dengan 41 peserta pada satu domain, tersisa sekitar 9 cadangan untuk seluruh angkatan. Bila belasan peserta mengulang penerbitan karena satu kesalahan yang sama, peserta berikutnya akan gagal dengan pesan `too many certificates already issued`, dan **tidak ada cara mempercepat pemulihannya.** Kuota itu terisi ulang satu sertifikat setiap 202 menit.
+
+Karena itu langkah 9a bukan formalitas. Uji coba memakai server uji, tidak memakai kuota, dan menangkap hampir semua penyebab kegagalan.
+
+Satu hal lagi yang perlu diketahui: batas 5 kegagalan verifikasi per alamat per jam juga berlaku. Mengulang perintah yang gagal lebih dari lima kali dalam satu jam akan mengunci alamat itu untuk sementara. Bila sudah gagal dua kali, **berhenti dan periksa penyebabnya**, jangan mengulang terus.
+:::
 
 ### Tahap 10. Aktifkan HTTPS pada Nginx
 
@@ -148,16 +231,16 @@ cd /opt/webgis/app
 nano tls/aktifkan.conf
 ```
 
-Isi dengan konfigurasi berikut. Ganti `nama01.gisbigtrainer.com` dengan subdomain Anda.
+Isi dengan konfigurasi berikut. Ganti `nama01.webgisbig.com` dengan subdomain Anda.
 
 ```nginx
 server {
     listen 443 ssl;
     http2 on;
-    server_name nama01.gisbigtrainer.com;
+    server_name nama01.webgisbig.com;
 
-    ssl_certificate     /etc/letsencrypt/live/nama01.gisbigtrainer.com/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/nama01.gisbigtrainer.com/privkey.pem;
+    ssl_certificate     /etc/letsencrypt/live/nama01.webgisbig.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/nama01.webgisbig.com/privkey.pem;
     ssl_protocols       TLSv1.2 TLSv1.3;
     ssl_prefer_server_ciphers off;
 
@@ -257,8 +340,8 @@ nano /opt/webgis/app/.env
 Ubah dua baris berikut:
 
 ```bash
-NEXTAUTH_URL=https://nama01.gisbigtrainer.com/portal/
-BASE_URL=https://nama01.gisbigtrainer.com/portal
+NEXTAUTH_URL=https://nama01.webgisbig.com/portal/
+BASE_URL=https://nama01.webgisbig.com/portal
 ```
 
 Setelah tersimpan, nyalakan ulang container aplikasi supaya nilai barunya terbaca:
