@@ -437,13 +437,29 @@ Dua folder lainnya, `tls` dan `certbot-webroot`, berisi sertifikat HTTPS dan ber
 
 ### Periksa dengan perintah
 
-Jalankan dari root folder proyek:
+Jalankan dari root folder proyek. Perhatikan **garis miring di akhir** setiap nama:
 
 ```bash
-git check-ignore -v geoserver-data tls certbot-webroot
+git check-ignore -v geoserver-data/ tls/ certbot-webroot/
 ```
 
-Keluaran yang diharapkan menyebut ketiga folder itu beserta baris `.gitignore` yang mengabaikannya. Bila ada yang tidak muncul, berarti folder itu **tidak** diabaikan, dan hentikan pekerjaan sampai barisnya ditambahkan.
+Keluaran yang diharapkan, tiga baris seperti ini:
+
+```
+.gitignore:52:/geoserver-data/	geoserver-data/
+.gitignore:56:/tls/	tls/
+.gitignore:57:/certbot-webroot/	certbot-webroot/
+```
+
+::: warning Garis miring di akhir itu wajib
+Ketiga baris pada `.gitignore` diakhiri garis miring, dan dalam aturan `.gitignore` artinya pola itu **hanya berlaku untuk direktori**.
+
+Folder `geoserver-data`, `tls`, dan `certbot-webroot` belum ada di laptop Anda. Ketiganya baru dibuat di VM saat container berjalan. Tanpa garis miring pada perintah di atas, Git tidak tahu bahwa yang Anda maksud adalah direktori, sehingga perintahnya **tidak mengeluarkan apa pun**.
+
+Keluaran yang kosong di sini berarti perintahnya kurang tepat, bukan berarti folder Anda tidak diabaikan.
+:::
+
+Bila salah satu baris benar-benar tidak muncul walaupun garis miringnya sudah disertakan, berarti folder itu **tidak** diabaikan. Hentikan pekerjaan sampai barisnya ditambahkan ke `.gitignore`.
 
 ## Tahap 7. Periksa folder scripts
 
@@ -574,6 +590,19 @@ console.log(`HASIL: ${masalah.length} masalah`);
 for (const m of masalah) console.log(` - ${m}`);
 process.exit(1);
 ```
+
+### 7c. Berkas lain di folder scripts
+
+Selain empat skrip di atas, folder `scripts` memuat empat berkas yang dipakai pada keperluan tertentu. Tidak diperlukan untuk menyiapkan atau menjalankan portal, tetapi berguna saat Anda mengerjakan data spasial di Hari 2.
+
+| Berkas | Untuk apa |
+|---|---|
+| `geojson-ke-csv-wkt.mjs` | Mengubah GeoJSON menjadi CSV dengan kolom WKT. Dipakai karena store GeoJSON tidak tersedia pada GeoServer bawaan |
+| `geojson-ke-shapefile-zip.mjs` | Mengubah GeoJSON menjadi shapefile lalu membungkusnya menjadi satu zip, untuk diunggah ke GeoServer |
+| `verifikasi-shapefile.mjs` | Memeriksa berkas shapefile hasil skrip di atas, tanpa pustaka luar |
+| `uji-periksa-nginx.mjs` | Menguji `periksa-nginx.mjs` memakai berkas yang sengaja dirusak |
+
+Menjalankan salah satunya tanpa argumen akan menampilkan cara pakainya.
 
 ## Tahap 8. Uji seluruh berkas di laptop
 
