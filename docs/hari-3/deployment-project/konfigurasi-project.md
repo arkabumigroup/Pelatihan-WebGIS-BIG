@@ -12,7 +12,7 @@ Deployment Project bukan satu pekerjaan, melainkan rangkaian yang berujung pada 
 
 Diagram berikut menunjukkan titik mulai Anda, pekerjaan yang Anda kerjakan sendiri, bagian yang berjalan otomatis, dan hasil akhirnya.
 
-![Alur Deployment Project dari titik mulai sampai hasil akhir. Dari atas ke bawah: fork repositori, siapkan database Supabase, buat akun super admin, isi berkas .env, uji di laptop, salin repositori ke VM, hubungkan Cloud Build, lalu git push. Setelah itu Cloud Build bekerja otomatis membangun image dan memperbarui container di VM, sehingga Geoportal terbit di alamat HTTPS bersama GeoServer.](alur-deployment-project.svg)
+![Alur Deployment Project dari titik mulai sampai hasil akhir. Dari atas ke bawah: fork repositori, siapkan database Supabase, buat akun super admin, isi berkas .env, uji di laptop, salin repositori ke VM, hubungkan Cloud Build, lalu git push. Setelah itu Cloud Build bekerja otomatis membangun image dan memperbarui container di VM, sehingga Geoportal terbit di alamat HTTPS bersama GeoServer.](alur-deployment-project.webp)
 
 Ada dua batas yang perlu diperhatikan pada diagram itu:
 
@@ -359,6 +359,33 @@ GEOSERVER_URL=http://geoserver:8080/geoserver
 # sehingga unggahan layer gagal dengan connection refused.
 GEOSERVER_URL=http://localhost:8080/geoserver
 ```
+
+### Dua alamat GeoServer yang berbeda
+
+Ada dua variabel alamat GeoServer, dan keduanya berbeda keperluan.
+
+| Variabel | Dipakai untuk | Nilai di laptop | Nilai di VM |
+|---|---|---|---|
+| `GEOSERVER_URL` | Dipanggil aplikasi dari dalam container | `http://localhost:8080/geoserver` | `http://geoserver:8080/geoserver` |
+| `GEOSERVER_PUBLIC_URL` | Disimpan sebagai `wms_url` dan `wfs_url`, lalu ditampilkan di halaman katalog | `http://localhost:8080/geoserver` | `http://IP_EKSTERNAL_VM/geoserver` |
+
+Yang kedua itu alamat yang **dipakai Anda** untuk membuka layer di QGIS, browser, atau aplikasi lain. Karena itu nilainya harus dapat dijangkau dari luar VM.
+
+```bash
+# Di laptop, keduanya sama
+GEOSERVER_URL=http://localhost:8080/geoserver
+GEOSERVER_PUBLIC_URL=http://localhost:8080/geoserver
+
+# Di VM, keduanya berbeda
+GEOSERVER_URL=http://geoserver:8080/geoserver
+GEOSERVER_PUBLIC_URL=http://IP_EKSTERNAL_VM/geoserver
+```
+
+Nginx di VM sudah mem-proxy `/geoserver/` ke container GeoServer, sehingga port 8080 tidak perlu dibuka untuk umum.
+
+::: warning Bila GEOSERVER_PUBLIC_URL dibiarkan kosong di VM
+Nilai `GEOSERVER_URL` yang dipakai, yaitu `http://geoserver:8080/geoserver`. Alamat itu hanya dikenal di dalam jaringan Docker, sehingga `wms_url` yang tersimpan di katalog **tidak dapat dibuka dari browser Anda**.
+:::
 
 ### Pastikan .env tidak ikut ter-commit
 

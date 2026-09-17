@@ -621,13 +621,18 @@ Empat nilai berikut sudah Anda buat pada [Prasyarat bagian 3](#_3-berkas-env-sud
 
 #### Nilai yang berubah karena sekarang di VM
 
-Tiga nilai berikut berbeda dari yang di laptop, karena alamat aplikasinya sudah berganti.
+Empat nilai berikut berbeda dari yang di laptop, karena alamat aplikasinya dan alamat GeoServer sudah berganti.
 
 | Variabel | Nilai |
 |---|---|
 | `NEXTAUTH_URL` | `http://IP_EKSTERNAL_VM/portal`, tanpa slash di akhir |
 | `BASE_URL` | `http://IP_EKSTERNAL_VM/portal` |
 | `NEXT_PUBLIC_URL_BASE_PATH` | `http://IP_EKSTERNAL_VM/portal` |
+| `GEOSERVER_PUBLIC_URL` | `http://IP_EKSTERNAL_VM/geoserver`, tanpa slash di akhir |
+
+`GEOSERVER_PUBLIC_URL` adalah alamat GeoServer yang dapat dijangkau dari browser Anda. Nilai itu disimpan ke kolom `wms_url` dan `wfs_url` pada katalog, dan dipakai Anda untuk membuka layer di QGIS atau aplikasi lain. Nginx sudah mem-proxy `/geoserver/`, sehingga port 8080 tidak perlu dibuka.
+
+`GEOSERVER_URL` **tidak diubah**, tetap `http://geoserver:8080/geoserver`, karena variabel itu dipakai aplikasi untuk memanggil GeoServer dari dalam jaringan Docker.
 
 Ketiganya memakai bentuk yang sama, yaitu alamat IP eksternal VM diikuti `/portal`, tanpa slash di akhir. Ganti `IP_EKSTERNAL_VM` dengan alamat dari Tahap 9.
 

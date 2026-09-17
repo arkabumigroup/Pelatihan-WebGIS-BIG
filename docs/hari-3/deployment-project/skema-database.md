@@ -4,6 +4,23 @@ Halaman ini memuat tiga berkas SQL yang membuat dan memeriksa tabel database. Is
 
 Berkas aslinya juga ada di folder `sql/` pada repositori Anda, dan isinya sama. Bila Anda sudah menjalankan [Tahap 1 hingga 2 pada halaman Konfigurasi Project](/hari-3/deployment-project/konfigurasi-project), berkas itu sudah ada di laptop Anda.
 
+## Jangan membuat tabel secara manual
+
+Tabel dibuat **hanya** dengan menjalankan ketiga berkas SQL di halaman ini. Jangan membuat tabel lewat menu Create New Table pada DBeaver, pgAdmin, atau Table Editor Supabase.
+
+Alasannya, membuat tabel secara manual hanya menghasilkan kolom dan primary key. Yang hilang justru bagian yang menentukan aplikasi berjalan:
+
+| Yang hilang | Akibat |
+|---|---|
+| `DEFAULT 'viewer'` pada kolom `role` | Peran akun baru menjadi kosong |
+| `DEFAULT false` pada `is_active` | Status aktivasi akun baru tidak jelas |
+| `DEFAULT now()` pada `created_at` | Waktu pembuatan akun tidak tercatat |
+| `DEFAULT 'glb'` pada `tipe_file` | Data 3D tersimpan tanpa jenis berkas |
+| `CHECK (role IN (...))` | Peran tidak sah dapat masuk ke database |
+| `UNIQUE` pada `email` | Dua akun dapat memakai email yang sama |
+
+Berkas `01-schema.sql` sudah memuat semuanya, jadi menjalankannya jauh lebih cepat daripada mengisi satu per satu secara manual.
+
 ## Menjalankan di SQL Editor
 
 Ketiga berkas dijalankan lewat **SQL Editor** Supabase, bukan lewat terminal.
@@ -37,7 +54,7 @@ Kolomnya sudah dicocokkan dengan kode aplikasi, jadi jangan mengubah nama atau t
 
 Diagram berikut menunjukkan ketiga tabel beserta kolomnya dan hubungan di antaranya. Bentuknya mengikuti notasi ERD standar, sehingga dapat dibandingkan dengan rancangan basis data lain.
 
-![Diagram relasi tabel database: users, katalog_data_2d, dan katalog_data_3d. Tabel users menyimpan akun pengguna dengan kunci utama user_id. Tabel katalog_data_2d menyimpan metadata layer peta 2D, dan katalog_data_3d menyimpan metadata model 3D. Keduanya menunjuk ke users lewat kolom author.](erd-skema-database.svg)
+![Diagram relasi tabel database: users, katalog_data_2d, dan katalog_data_3d. Tabel users menyimpan akun pengguna dengan kunci utama user_id. Tabel katalog_data_2d menyimpan metadata layer peta 2D, dan katalog_data_3d menyimpan metadata model 3D. Keduanya menunjuk ke users lewat kolom author.](erd-skema-database.webp)
 
 ### Cara membaca diagram
 
@@ -63,7 +80,7 @@ Aman dijalankan lebih dari sekali, karena memakai `CREATE TABLE IF NOT EXISTS`.
 
 ```sql
 -- =====================================================================
--- Management Database Non Spasial
+-- Praktik 6 - Management Database Non Spasial
 -- Membuat tiga tabel: users, katalog_data_2d, dan katalog_data_3d.
 --
 -- Cara pakai: buka SQL Editor di dashboard Supabase, salin SELURUH isi
@@ -88,7 +105,7 @@ CREATE TABLE IF NOT EXISTS users (
     nama        varchar(100) NOT NULL,
     email       varchar(150) NOT NULL,
     password    varchar(255) NOT NULL,
-    role        varchar(20)  NOT NULL DEFAULT 'editor',
+    role        varchar(20)  NOT NULL DEFAULT 'viewer',
     is_active   boolean      NOT NULL DEFAULT false,
     created_at  timestamptz  NOT NULL DEFAULT now(),
 
@@ -97,7 +114,7 @@ CREATE TABLE IF NOT EXISTS users (
     -- bisa masuk lewat jalur lain, misalnya import CSV atau klien database.
     CONSTRAINT users_email_key UNIQUE (email),
     CONSTRAINT users_role_valid
-        CHECK (role IN ('viewer', 'editor', 'admin', 'super_admin'))
+        CHECK (role IN ('viewer', 'admin', 'super_admin'))
 );
 
 COMMENT ON COLUMN users.password IS
