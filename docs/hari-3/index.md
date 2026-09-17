@@ -29,8 +29,9 @@ Bagian ini menghubungkan aplikasi Next.js ke basis data dan menambahkan sistem l
 Halaman-halaman berikut adalah satu rangkaian. Berkas yang dibuat pada tahap pertama dipakai pada tahap kedua, dan konfigurasi Nginx yang dibuat pada tahap pertama baru berguna setelah sertifikat pada tahap ketiga terbit.
 
 1. [Konfigurasi Project](/hari-3/deployment-project/konfigurasi-project) - menyiapkan `docker-compose.yml`, `nginx.conf`, `.env.example`, dan pemeriksa konfigurasi di repositori proyek.
-2. [Google Cloud Platform](/hari-3/deployment-project/google-cloud-platform) - menyiapkan Cloud Shell, service account, VM, IP statis, Docker, lalu menjalankan GeoServer dan Nginx.
-3. [Penambahan Subdomain](/hari-3/deployment-project/subdomain) - mengarahkan subdomain ke IP statis VM dan menerbitkan sertifikat Let's Encrypt.
+2. [Skema Database](/hari-3/deployment-project/skema-database) - berkas SQL yang membuat tabel, lengkap dengan isinya
+3. [Google Cloud Platform](/hari-3/deployment-project/google-cloud-platform) - menyiapkan Cloud Shell, service account, VM, IP statis, Docker, lalu menjalankan GeoServer dan Nginx.
+4. [Penambahan Subdomain](/hari-3/deployment-project/subdomain) - mengarahkan subdomain ke IP statis VM dan menerbitkan sertifikat Let's Encrypt.
 
 ## Yang Perlu Disiapkan Peserta
 
