@@ -6,6 +6,23 @@ Halaman ini memeriksa berkas yang dibutuhkan container sebelum aplikasi bisa ber
 
 Menulis berkas YAML sepanjang ini dari nol adalah sumber kesalahan paling sering. Satu spasi yang salah membuat container gagal jalan, dan pesan galatnya tidak menyebut baris yang bermasalah.
 
+## Alur Praktik 11
+
+Sebelum mulai, penting diketahui bahwa Praktik 11 bukan satu pekerjaan, melainkan rangkaian yang berujung pada satu hasil: Geoportal yang berjalan di alamat HTTPS dengan subdomain sendiri.
+
+Diagram berikut menunjukkan titik mulai Anda, pekerjaan yang Anda kerjakan sendiri, bagian yang berjalan otomatis, dan hasil akhirnya.
+
+![Alur Praktik 11 dari titik mulai sampai hasil akhir. Dari atas ke bawah: fork repositori, siapkan database Supabase, buat akun super admin, isi berkas .env, uji di laptop, salin repositori ke VM, hubungkan Cloud Build, lalu git push. Setelah itu Cloud Build bekerja otomatis membangun image dan memperbarui container di VM, sehingga Geoportal terbit di alamat HTTPS bersama GeoServer.](alur-praktik-11.svg)
+
+Ada dua batas yang perlu diperhatikan pada diagram itu:
+
+| Batas | Artinya |
+|---|---|
+| Sampai `git push origin main` | Anda yang mengerjakan |
+| Setelah `git push origin main` | Cloud Build mengerjakan sendiri, tanpa Anda masuk ke VM |
+
+Jadi seluruh pekerjaan manual ada di laptop dan di VM, dan berhenti pada satu perintah push. Setelah itu, setiap perubahan yang Anda push akan otomatis sampai ke server.
+
 ## Berkas yang Diperiksa
 
 | Berkas | Isi | Status di repositori |
