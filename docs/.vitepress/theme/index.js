@@ -2,6 +2,7 @@ import DefaultTheme from 'vitepress/theme'
 import mediumZoom from 'medium-zoom'
 import { onMounted, watch, nextTick, h } from 'vue'
 import { useRoute } from 'vitepress'
+import TabelPeserta from './components/TabelPeserta.vue'
 import './custom.css'
 
 // =====================================================================
@@ -88,6 +89,14 @@ const GAYA_LOGO = `
 
 export default {
   extends: DefaultTheme,
+
+  // Komponen harus didaftarkan sendiri. VitePress TIDAK memuat folder
+  // theme/components secara otomatis, dan komponen yang tidak terdaftar
+  // dihilangkan dari keluaran tanpa pesan galat, sehingga halamannya kosong
+  // tanpa penjelasan.
+  enhanceApp({ app }) {
+    app.component('TabelPeserta', TabelPeserta)
+  },
 
   // Kaki halaman ditambahkan lewat slot layout-bottom, satu-satunya slot
   // yang tersedia pada tema bawaan untuk isi di bawah dokumen.
