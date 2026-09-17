@@ -717,41 +717,11 @@ ls -ld /opt/webgis
 ```
 
 
-### Tahap 16. Pindahkan berkas konfigurasi ke VM
-
-![Hasil perintah ls: dua berkas ada di home directory VM](google-cloud-platform/image%2024.png)
-
-![Dua berkas dipindahkan ke folder app](google-cloud-platform/image%2025.png)
-
-
-Dijalankan di: Terminal Laptop, lalu Terminal VM
-
-Tiga berkas dari halaman [Konfigurasi Project](/hari-3/deployment-project/konfigurasi-project) ada di laptop. Salin ketiganya ke VM.
-
-```bash
-gcloud compute scp docker-compose.yml nginx.conf .env.example \
-  "$VM_NAME:/opt/webgis/" \
-  --zone="$ZONE" \
-  --tunnel-through-iap
-```
-
-Selanjutnya di terminal VM, pindahkan ketiganya ke folder aplikasi:
-
-
-
-
-```bash
-sudo mkdir -p /opt/webgis/app
-sudo chown "$USER:$USER" /opt/webgis/app
-mv /opt/webgis/docker-compose.yml /opt/webgis/nginx.conf /opt/webgis/.env.example /opt/webgis/app/
-ls -la /opt/webgis/app
-```
-
-
-### Tahap 17. Clone repositori
-![Selesaian git clone: objek diterima dan delta diselesaikan](google-cloud-platform/image%2030.png)
+### Tahap 16. Clone repositori
 
 Dijalankan di: Terminal VM
+
+Perintah ini membawa seluruh berkas repositori, termasuk `docker-compose.yml`, `nginx.conf`, dan `.env.example`, sehingga tidak ada yang perlu disalin terpisah dari laptop.
 
 Ganti `USERNAME_GITHUB_PESERTA` dengan username GitHub Anda.
 
@@ -762,23 +732,105 @@ GITHUB_REPOSITORY="https://github.com/${GITHUB_USERNAME}/personal-geoportal-pese
 git clone "$GITHUB_REPOSITORY" /opt/webgis/app
 cd /opt/webgis/app
 cp .env.example .env
-
-ls -ld /opt/webgis/app
-git remote -v
-git log --oneline -1
 ```
-
 
 Bila fork Anda memakai nama bawaan `personal-geoportal`, ganti nilai `GITHUB_REPOSITORY` menjadi `https://github.com/${GITHUB_USERNAME}/personal-geoportal.git`.
 
 Bila GitHub meminta kata sandi, isi dengan Personal Access Token, bukan kata sandi akun.
 
+::: warning Jangan menyalin berkas konfigurasi dari laptop
+Versi sebelumnya pada halaman ini menyuruh menyalin `docker-compose.yml`, `nginx.conf`, dan `.env.example` dari laptop memakai `gcloud compute scp` **sebelum** tahap ini.
+
+Langkah itu tidak diperlukan, karena `git clone` di atas sudah membawa ketiganya dengan isi yang sama persis.
+
+Yang lebih penting, langkah itu **menggagalkan tahap ini.** `git clone` menolak menulis ke folder yang sudah berisi berkas:
+
+```text
+fatal: destination path '/opt/webgis/app' already exists and is not an empty directory.
+```
+
+Bila Anda pernah menjalankan langkah lama itu dan `/opt/webgis/app` sudah berisi berkas, hapus dulu isinya:
+
+```bash
+rm -rf /opt/webgis/app
+```
+:::
+
+### Tahap 17. Periksa berkas konfigurasi
+
+Dijalankan di: Terminal VM
+
+Pastikan ketiga berkas yang dibutuhkan sudah ada. Semuanya berasal dari clone pada tahap sebelumnya, bukan dari salinan terpisah.
+
+```bash
+cd /opt/webgis/app
+ls -la docker-compose.yml nginx.conf .env.example
+```
+
+Keluaran yang diharapkan, ketiganya berukuran lebih dari nol:
+
+```text
+-rw-rw-r-- 1 dhanypedia_gmail_com dhanypedia_gmail_com  9876 .env.example
+-rw-rw-r-- 1 dhanypedia_gmail_com dhanypedia_gmail_com  1600 docker-compose.yml
+-rw-rw-r-- 1 dhanypedia_gmail_com dhanypedia_gmail_com  3000 nginx.conf
+```
+
+Lalu periksa bahwa repositori ini tertaut ke fork Anda, dan isinya sudah terbaru:
+
+```bash
+git remote -v
+git log --oneline -1
+```
+
+`git remote -v` harus menampilkan alamat fork Anda, bukan alamat repositori sumber.
 
 ### Tahap 18. Isi berkas .env
 
 Dijalankan di: Terminal VM
 
-Buka berkas `.env` yang tadi disalin dari `.env.example`.
+#### Cara cepat: salin `.env` dari laptop
+
+Berkas `.env` di laptop Anda sudah terisi lengkap, 195 baris. Mengisinya ulang dari nol di VM hanya membuang waktu.
+
+Hanya **lima baris** yang berbeda di VM. Jadi salin berkasnya apa adanya, lalu ubah lima baris itu.
+
+**Di laptop**, kirim berkas `.env` ke VM. Ganti `VM_NAME` dan `ZONE` dengan nilai Anda, karena variabel itu hanya ada di Cloud Shell:
+
+```bash
+cd ~/fork-deploy/personal-geoportal-peserta
+
+VM_NAME="webgis-dhanypedia"
+ZONE="asia-southeast2-b"
+
+gcloud compute scp .env "$VM_NAME:/opt/webgis/app/.env" \
+  --zone="$ZONE" \
+  --tunnel-through-iap
+```
+
+**Di VM**, ubah kelima baris sekaligus. Ganti `IP_EKSTERNAL_VM` dengan alamat dari Tahap 9:
+
+```bash
+cd /opt/webgis/app
+IP="IP_EKSTERNAL_VM"
+
+sed -i \
+  -e "s|^NEXTAUTH_URL=.*|NEXTAUTH_URL=http://$IP/portal|" \
+  -e "s|^BASE_URL=.*|BASE_URL=http://$IP/portal|" \
+  -e "s|^NEXT_PUBLIC_URL_BASE_PATH=.*|NEXT_PUBLIC_URL_BASE_PATH=http://$IP/portal|" \
+  -e "s|^GEOSERVER_PUBLIC_URL=.*|GEOSERVER_PUBLIC_URL=http://$IP/geoserver|" \
+  -e "s|^GEOSERVER_POSTGIS_DATASTORE=.*|GEOSERVER_POSTGIS_DATASTORE=postgis_geoportal|" \
+  .env
+
+grep -E '^(NEXTAUTH_URL|BASE_URL|NEXT_PUBLIC_URL_BASE_PATH|GEOSERVER_PUBLIC_URL|GEOSERVER_POSTGIS_DATASTORE)=' .env
+```
+
+Kelima baris terakhir itu harus menampilkan alamat IP VM Anda, bukan `localhost`.
+
+Bila memakai cara ini, **lewati** tabel "Nilai yang sudah Anda siapkan di laptop" di bawah, karena semuanya sudah ikut tersalin.
+
+#### Cara manual: sunting dengan nano
+
+Bila Anda ingin memeriksa setiap nilai satu per satu, buka berkasnya:
 
 ```bash
 nano /opt/webgis/app/.env
