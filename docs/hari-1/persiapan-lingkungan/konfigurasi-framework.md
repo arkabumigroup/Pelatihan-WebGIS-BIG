@@ -24,10 +24,42 @@
     ![](konfigurasi-framework/image19.png)
     
 3. Selanjutnya pada bagian terminal lakukan konfigurasi Next.js dengan menginput perintah berikut ini **npx create-next-app@latest** kemudian **klik enter**. Selanjutnya input nama project yang akan dirancang oleh penggguna.
+
+    ```bash
+    npx create-next-app@latest
+    ```
     
     ![](konfigurasi-framework/image22.png)
     
 4. Tahapan berikutnya lakukan konfigurasi next.js pada terminal dengan konfigurasi sebagai berikut.
+
+    Jawaban yang dipakai pada pelatihan ini, dibaca dari tangkapan layar langkah 4:
+
+    ```text
+    What is your project named? ... webgis-latihan
+    Would you like to use the recommended Next.js defaults? ... No, customize settings
+    Would you like to use TypeScript? ... No
+    Which linter would you like to use? ... None
+    Would you like to use React Compiler? ... No
+    Would you like to use Tailwind CSS? ... No
+    Would you like your code inside a `src/` directory? ... Yes
+    Would you like to use App Router? (recommended) ... Yes
+    Would you like to customize the import alias (`@/*` by default)? ... No
+    Would you like to include AGENTS.md to guide coding agents ... No
+    ```
+
+    Pilihan yang perlu diperhatikan:
+
+    | Pertanyaan | Jawaban | Alasan |
+    |---|---|---|
+    | Recommended defaults | No, customize settings | Supaya tiap pertanyaan dapat dijawab satu per satu |
+    | TypeScript | No | Materi memakai JavaScript, bukan TypeScript |
+    | Linter | None | Materi tidak memakai linter, dan `npm run lint` tidak akan tersedia |
+    | `src/` directory | Yes | Struktur folder mengikuti `src/app`, seperti pada materi berikutnya |
+    | App Router | Yes | Materi memakai App Router, sehingga halaman berupa `page.js` |
+    | Import alias | No | Impor ditulis relatif, misalnya `./components/Map` |
+
+    Bila jawaban Anda berbeda dari tabel di atas, langkah pada materi berikutnya bisa gagal. Yang paling sering menggagalkan adalah `src/` directory dan App Router.
     
     ![](konfigurasi-framework/image5.png)
     
@@ -80,7 +112,16 @@
     ![](konfigurasi-framework/image2.png)
     
 2. Kemudian buka folder yang akan dijadikan tempat penyimpanan, klik kanan, pilih **gitbash**, kemudian pada tampilan gitbash ketik **git clone** lalu **klik kanan** p**aste url project**, lalu **klik enter**.
+
+    ```bash
+    git clone https://github.com/USERNAME_GITHUB/NAMA_REPOSITORY.git
+    ```
 3. Ketika pertama kali membuka project baru hasil salinan dari github, peserta dapat menjalankan perintah **npm install** pada menu terminal untuk menginstall library yang ada pada project tersebut. Setelah itu peserta dapat menjalankan project tersebut dengan menginput perintah **npm run dev.**
+
+    ```bash
+    npm install
+    npm run dev
+    ```
     
     ![](konfigurasi-framework/image12.png)
     
@@ -88,7 +129,17 @@
 ## **Mengirim Perubahan dan Mengambil Hasil Perubahan Web dengan Git**
 
 1. Pertama jika project dikerjakan oleh beberapa orang, peserta dapat mengambil perubahan tersebut dengan menginput perintah git pull pada menu terminal serta tunggu hingga selesai.
+
+    ```bash
+    git pull
+    ```
 2. Kedua jika peserta ingin mengirim perubahan hasil web yang telah dibuat peserta dapat menginput perintah pada github pertama **git add .** kemudian klik enter, lanjutkan perintah kedua yaitu input git commit -m “ isi komentar ” dan tambahkan komentar sebagai informasi perubahan yang telah dibuat lalu klik enter, kemudian tahap terakhir input perintah git push maka hasil perubahan yang telah dibuat oleh peserta akan masuk kedalam project github.
+
+    ```bash
+    git add .
+    git commit -m "menambah halaman peta"
+    git push
+    ```
 
 ## **Penjelasan Perintah Dasar Next.js, NPM, Git, dan GitHub**
 

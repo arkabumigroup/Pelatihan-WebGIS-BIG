@@ -25,6 +25,21 @@
     ![](layer-geojson-kml-wms/image5.png)
     
 6. Tahapan keempat buat fungsi untuk menambahkan layer geojson kedalam peta dengan menambahkan fungsi **L.geoJSON.**
+
+    ```jsx
+    const geojsonLayer = L.geoJSON(dataGeojson, {
+      pointToLayer: function (feature, latlng) {
+        return L.marker(latlng, { icon: markerIcon });
+      },
+    
+      onEachFeature: function (feature, layer) {
+        layer.bindPopup(`
+          <b>${feature.properties.nama}</b><br/>
+          Kategori: ${feature.properties.kategori}
+        `);
+      }
+    });
+    ```
     
     ![](layer-geojson-kml-wms/image6.png)
     
@@ -56,6 +71,10 @@
     ![](layer-geojson-kml-wms/image2%201.png)
     
 3. Tahap ketiga pada terminal install library **npm install leaflet-kml** sebagai library untuk mendukung proses data dengan bentuk kml.
+
+    ```bash
+    npm install leaflet-kml
+    ```
     
     ![](layer-geojson-kml-wms/image3%201.png)
     
@@ -103,6 +122,18 @@
     ![](layer-geojson-kml-wms/image1%202.png)
     
 2. Kemudian tahap kedua buat fungsi **const wmsLayer = L.tileLayer.wms()** untuk menambahkan layer wms kemudian tambahkan service layer berikut sebagai contoh layer yang ditampilkan kedalam peta **"https://geoserver.bps.go.id/rw-kumuh-dki/wms".**
+
+    ```jsx
+    const wmsLayer = L.tileLayer.wms(
+      "https://geoserver.bps.go.id/rw-kumuh-dki/wms",
+      {
+        layers: "rw-kumuh-dki:peta_kabupaten-kota",
+        format: "image/png",
+        transparent: true,
+        attribution: "GeoServer WMS - BPS"
+      }
+    );
+    ```
     
     ![](layer-geojson-kml-wms/image2%202.png)
     

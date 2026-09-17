@@ -3,6 +3,17 @@
 ## **Styling Layer Geojson**
 
 1. Pada tahap pertama, lakukan styling pada file **Geojson.jsx** untuk mengatur ukuran icon pada variabel **const markerIcon.** Pertama lakukan styling untuk mengatur ukuran icon dengan menggunakan variabel **iconSize** kemudian tentukan ukuran lebar dan tingginya dalam [ ].
+
+    ```jsx
+    const markerIcon = new L.Icon({
+      iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+      shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+    
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34]
+    });
+    ```
     
     ![](styling-layer/image1.png)
     
@@ -15,6 +26,21 @@
     ![](styling-layer/image3.png)
     
 4. Kemudian buat fungsi dibawah variabel markerIcon yang akan digunakan untuk mengatur styling jika data geojson dalam bentuk polygon dengan cara membuat **function getPolygonstyle** serta tambahkan parameter **feature** untuk mengambil tampilan layer.
+
+    ```jsx
+    function getPolygonStyle(feature) {
+    
+      const kategori = feature.properties.kategori;
+    
+      if (kategori === "Landmark") {
+        return {
+          color: "red",
+          weight: 3,
+          fillColor: "orange",
+          fillOpacity: 0.5
+        };
+      }
+    ```
     
     ![](styling-layer/image4.png)
     
@@ -39,10 +65,25 @@
     ![image.png](styling-layer/image%203.png)
     
 10. Kemudian buat fungsi **return** jika layer tidak terdapat dalam dua kategori tersebut, styling layernya akan dibuat menjadi warna abu-abu.
+
+    ```jsx
+      return {
+        color: "gray",
+        weight: 2,
+        fillColor: "lightgray",
+        fillOpacity: 0.5
+      };
+    }
+    ```
     
     ![](styling-layer/image10.png)
     
 11. Selanjutnya pada fungsi c**onst geojsonLayer** yang sudah ada sebelumnya, tambahkan fungsi style dan buat return berupa **getPolygonsStyle** untuk mengambil styling yang telah dibuat.
+
+    ```jsx
+    const geojsonLayer = L.geoJSON(dataGeojson, {
+      style: getPolygonStyle,
+    ```
     
     ![](styling-layer/image11.png)
     
@@ -54,6 +95,21 @@
 ## **Styling Layer KML**
 
 1. Tahap pertama buka file **Kml.jsx** kemudian pada fungsi script yang digunakan untuk menerima dan mengolah Kml yaitu pada fungsi berupa **.then(function(kmlText)** buat fungsi untuk mengakses objek dalam kml melalui **kmlLayer.eachLayer(function(layer)**.
+
+    ```jsx
+    kmlLayer.eachLayer(function (layer) {
+    
+      if (layer.setStyle) {
+    
+        layer.setStyle({
+          color: "blue",
+          weight: 3,
+          fillColor: "blue",
+          fillOpacity: 0.5
+        });
+      }
+    });
+    ```
     
     ![image.png](styling-layer/image%204.png)
     
