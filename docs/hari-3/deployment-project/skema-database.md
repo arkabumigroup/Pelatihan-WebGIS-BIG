@@ -80,7 +80,7 @@ Aman dijalankan lebih dari sekali, karena memakai `CREATE TABLE IF NOT EXISTS`.
 
 ```sql
 -- =====================================================================
--- Praktik 6 - Management Database Non Spasial
+-- Skema database non spasial
 -- Membuat tiga tabel: users, katalog_data_2d, dan katalog_data_3d.
 --
 -- Cara pakai: buka SQL Editor di dashboard Supabase, salin SELURUH isi
@@ -98,7 +98,7 @@ BEGIN;
 -- ---------------------------------------------------------------------
 -- users
 -- Sumber kebenaran untuk autentikasi. Kolom mengikuti pemakaian di
--- Praktik 9 (lib/auth) dan Praktik 10 (NextAuth).
+-- Dipakai oleh lib/auth dan konfigurasi NextAuth.
 -- ---------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS users (
     user_id     uuid         PRIMARY KEY,
@@ -109,7 +109,7 @@ CREATE TABLE IF NOT EXISTS users (
     is_active   boolean      NOT NULL DEFAULT false,
     created_at  timestamptz  NOT NULL DEFAULT now(),
 
-    -- Baseline nilai. Validasi di Praktik 9 hanya ada di kode aplikasi,
+    -- Baseline nilai. Validasi hanya ada di kode aplikasi,
     -- sehingga batasan berikut ditambahkan di database supaya data tidak
     -- bisa masuk lewat jalur lain, misalnya import CSV atau klien database.
     CONSTRAINT users_email_key UNIQUE (email),
@@ -122,7 +122,7 @@ COMMENT ON COLUMN users.password IS
 
 -- ---------------------------------------------------------------------
 -- katalog_data_2d
--- Kolom mengikuti "Praktik 6/.../File latihan/katalog_data_2d.csv".
+-- Kolom mengikuti berkas contoh katalog_data_2d.csv.
 -- ---------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS katalog_data_2d (
     data_2d_id  uuid         PRIMARY KEY,
@@ -143,7 +143,7 @@ CREATE TABLE IF NOT EXISTS katalog_data_2d (
 
 -- ---------------------------------------------------------------------
 -- katalog_data_3d
--- Kolom mengikuti "Praktik 8/.../File latihan/katalog_data_3d.csv".
+-- Kolom mengikuti berkas contoh katalog_data_3d.csv.
 -- ---------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS katalog_data_3d (
     data_3d_id uuid         PRIMARY KEY,
@@ -216,6 +216,50 @@ COMMIT;
 --   FROM katalog_data_2d k
 --   LEFT JOIN users u ON u.user_id = k.author
 --   WHERE k.author IS NOT NULL AND u.user_id IS NULL;
+
+-- =====================================================================
+-- Keamanan: aktifkan Row Level Security pada ketiga tabel
+--
+-- Tanpa ini, tabel di schema public dapat dibaca dan diubah lewat REST API
+-- Supabase memakai kunci anon, tanpa perlu login ke aplikasi. Kunci anon
+-- memang dirancang untuk dipakai di sisi peramban, jadi nilainya tidak
+-- dianggap rahasia. Yang mencegah penyalahgunaan adalah RLS, bukan
+-- kerahasiaan kunci itu.
+--
+-- Diuji pada project Supabase sungguhan:
+--
+--   SEBELUM RLS   peran anon dapat membaca kolom password, dan memiliki
+--                 izin SELECT, INSERT, UPDATE, DELETE, dan TRUNCATE
+--                 pada tabel users.
+--
+--   SESUDAH RLS   peran anon dan authenticated tidak melihat satu baris pun.
+--                 Aplikasi tetap berjalan normal, karena koneksi Prisma
+--                 memakai peran postgres yang merupakan PEMILIK tabel,
+--                 dan pemilik tabel melewati RLS secara bawaan.
+--
+-- RLS tanpa policy berarti menutup akses untuk semua peran selain pemilik.
+-- Itu memang yang diinginkan di sini: seluruh akses data dilakukan lewat
+-- API aplikasi sendiri, yang sudah memeriksa token dan peran pengguna.
+-- =====================================================================
+BEGIN;
+
+ALTER TABLE users           ENABLE ROW LEVEL SECURITY;
+ALTER TABLE katalog_data_2d ENABLE ROW LEVEL SECURITY;
+ALTER TABLE katalog_data_3d ENABLE ROW LEVEL SECURITY;
+
+COMMIT;
+
+-- ---------------------------------------------------------------------
+-- Periksa hasilnya. Harus menampilkan rls = true untuk ketiga tabel.
+--
+--   SELECT relname AS tabel, relrowsecurity AS rls
+--   FROM pg_class c
+--   JOIN pg_namespace n ON n.oid = c.relnamespace
+--   WHERE n.nspname = 'public'
+--     AND c.relkind = 'r'
+--     AND c.relname IN ('users', 'katalog_data_2d', 'katalog_data_3d')
+--   ORDER BY relname;
+-- ---------------------------------------------------------------------
 ```
 
 ## 02-seed-super-admin.sql
@@ -235,9 +279,9 @@ Cara mengisinya ada pada bagian **Membuat Akun Super Admin** di bawah.
 
 ```sql
 -- =====================================================================
--- seed akun super admin
+-- Seed akun super admin
 --
--- Menggantikan langkah manual pada modul Praktik 9: jalankan potongan JS
+-- Menggantikan langkah manual berikut: jalankan potongan JS
 -- di REPL node, salin hash-nya, lalu tempel ke kolom password lewat SQL Editor.
 -- Cara itu gampang salah ketik dan tidak bisa diulang orang lain.
 --
@@ -354,7 +398,7 @@ NOTICE: Akun super admin nama@email.com siap dipakai.
 Email dan kata sandi itulah yang dipakai untuk masuk ke portal.
 
 ::: warning Peserta yang mendaftar sendiri tidak menjadi super admin
-Halaman `/register` pada aplikasi selalu menghasilkan peran `editor` dan status belum aktif. Itu memang disengaja, supaya tidak ada yang bisa menaikkan perannya sendiri.
+Halaman `/register` pada aplikasi selalu menghasilkan peran `viewer` dan status belum aktif. Itu memang disengaja, supaya tidak ada yang bisa menaikkan perannya sendiri.
 
 Akun super admin hanya bisa lahir dari `02-seed-super-admin.sql`. Jadi berkas itu wajib dijalankan, bukan pilihan.
 :::
@@ -365,7 +409,7 @@ Berkas ini hanya berisi perintah `SELECT`. Tidak mengubah apa pun, jadi aman dij
 
 ```sql
 -- =====================================================================
--- periksa constraint yang benar-benar terpasang
+-- Periksa constraint yang benar-benar terpasang
 --
 -- Tempel seluruh isi berkas ini ke SQL Editor Supabase, lalu klik Run.
 -- Semua di sini hanya SELECT. Tidak mengubah apa pun.
@@ -467,6 +511,59 @@ ORDER BY s.tabel, s.nama;
 
 -- Bila bagian 4 berisi baris, jalankan sql/01-schema.sql. Berkas
 -- itu aman dijalankan berulang dan hanya menambahkan yang belum ada.
+```
+
+## Row Level Security
+
+Saat menjalankan `01-schema.sql`, Supabase mungkin menampilkan peringatan seperti ini:
+
+```
+This query creates a table without enabling Row Level Security.
+Clients using anon or authenticated keys may be able to access users.
+```
+
+Peringatan itu benar, dan berkas SQL di halaman ini sudah menanganinya. Tiga perintah terakhir pada `01-schema.sql` mengaktifkan Row Level Security pada ketiga tabel:
+
+```sql
+ALTER TABLE users           ENABLE ROW LEVEL SECURITY;
+ALTER TABLE katalog_data_2d ENABLE ROW LEVEL SECURITY;
+ALTER TABLE katalog_data_3d ENABLE ROW LEVEL SECURITY;
+```
+
+Jadi bila Anda menjalankan berkas itu seluruhnya, **tidak ada yang perlu Anda putuskan**. Peringatan itu muncul karena Supabase memeriksa perintah `CREATE TABLE` saja, dan tidak melihat perintah `ALTER TABLE` yang menyusul.
+
+### Mengapa ini perlu
+
+Supabase menyediakan REST API otomatis untuk setiap tabel di schema `public`. Kunci `anon` yang dipakai API itu memang dirancang untuk dipakai di sisi peramban, sehingga nilainya tidak dianggap rahasia. Yang mencegah penyalahgunaan adalah Row Level Security, bukan kerahasiaan kunci tersebut.
+
+Diuji pada project Supabase sungguhan:
+
+| Keadaan | Hasil |
+|---|---|
+| Sebelum RLS | Peran `anon` dapat membaca kolom `password`, dan memiliki izin `SELECT`, `INSERT`, `UPDATE`, `DELETE`, serta `TRUNCATE` pada tabel `users` |
+| Sesudah RLS | Peran `anon` dan `authenticated` tidak melihat satu baris pun |
+| Aplikasi | Tetap berjalan normal, karena koneksi Prisma memakai peran `postgres` yang merupakan pemilik tabel, dan pemilik tabel melewati RLS secara bawaan |
+
+Artinya tanpa RLS, siapa pun yang memegang kunci `anon` dapat membaca seluruh akun beserta hash kata sandinya, dan dapat mengubah atau menghapusnya.
+
+RLS tanpa policy berarti menutup akses bagi semua peran selain pemilik. Itu memang yang diinginkan di sini: seluruh akses data dilakukan lewat API aplikasi sendiri, yang sudah memeriksa token dan peran pengguna.
+
+### Bila tabel Anda dibuat sebelum bagian ini ada
+
+Jalankan `07-aktifkan-rls.sql`. Berkas itu hanya mengaktifkan RLS, tanpa mengubah data.
+
+### Periksa hasilnya
+
+Jalankan di SQL Editor. Ketiga baris harus bernilai `true`:
+
+```sql
+SELECT c.relname AS tabel, c.relrowsecurity AS rls
+FROM pg_class c
+JOIN pg_namespace n ON n.oid = c.relnamespace
+WHERE n.nspname = 'public'
+  AND c.relkind = 'r'
+  AND c.relname IN ('users', 'katalog_data_2d', 'katalog_data_3d')
+ORDER BY c.relname;
 ```
 
 ## Bila Login Gagal

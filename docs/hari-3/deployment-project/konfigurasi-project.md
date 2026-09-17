@@ -121,7 +121,7 @@ Ringkasnya: jalankan `node scripts/hash-password.mjs` untuk membuat hash kata sa
 Langkah lengkapnya ada pada halaman [Skema Database](/hari-3/deployment-project/skema-database).
 
 ::: warning Peserta yang mendaftar sendiri tidak menjadi super admin
-Halaman `/register` pada aplikasi selalu menghasilkan peran `editor` dan status belum aktif. Itu memang disengaja, supaya tidak ada yang bisa menaikkan perannya sendiri.
+Halaman `/register` pada aplikasi selalu menghasilkan peran `viewer` dan status belum aktif. Itu memang disengaja, supaya tidak ada yang bisa menaikkan perannya sendiri.
 
 Akun super admin hanya bisa lahir dari `02-seed-super-admin.sql`. Jadi berkas itu wajib dijalankan, bukan pilihan.
 :::
