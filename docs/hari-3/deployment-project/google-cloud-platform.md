@@ -229,6 +229,26 @@ if [ "$PROJECT_ID" = "geoportal-kelompok-a-xxxxx" ]; then
   exit 1
 fi
 
+# Tetapkan project aktif. Ini WAJIB, dan sebelumnya terlewat.
+#
+# Banyak perintah pada tahap berikutnya tidak menyebut --project, misalnya
+# gcloud compute instances create dan gcloud iam service-accounts create.
+# Tanpa baris ini, perintah tersebut memakai project yang sedang aktif di
+# Cloud Shell, yang belum tentu project Anda.
+#
+# Akibatnya resource dibuat di project KELOMPOK LAIN, dan karena perintahnya
+# berhasil, tidak ada pesan galat yang memberitahu. VM baru ditemukan pada
+# tahap berikutnya ketika alamatnya tidak muncul di project yang benar.
+gcloud config set project "$PROJECT_ID" >/dev/null
+
+AKTIF="$(gcloud config get-value project 2>/dev/null)"
+if [ "$AKTIF" != "$PROJECT_ID" ]; then
+  merah "Project aktif '$AKTIF' tidak sama dengan PROJECT_ID '$PROJECT_ID'."
+  echo "  Jalankan: gcloud config set project $PROJECT_ID"
+  exit 1
+fi
+hijau "Project aktif: $AKTIF"
+
 # Identitas peserta memakai NAMA_PESERTA apa adanya, tanpa diturunkan.
 # Nilainya sudah pendek dan satu kata, diambil dari kolom Nama Peserta pada
 # tabel peserta.
