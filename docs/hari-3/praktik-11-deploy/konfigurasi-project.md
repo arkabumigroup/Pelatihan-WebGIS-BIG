@@ -23,6 +23,58 @@ Ada dua batas yang perlu diperhatikan pada diagram itu:
 
 Jadi seluruh pekerjaan manual ada di laptop dan di VM, dan berhenti pada satu perintah push. Setelah itu, setiap perubahan yang Anda push akan otomatis sampai ke server.
 
+## Tahap 1. Fork dan clone repositori
+
+Halaman ini memeriksa berkas yang sudah ada di repositori. Karena itu repositori itu harus ada di laptop Anda lebih dahulu.
+
+### Fork repositori
+
+1. Buka `https://github.com/dhanyyudi/personal-geoportal-peserta` pada browser.
+2. Pilih **Fork**, lalu pilih akun GitHub Anda sebagai tujuan.
+3. Biarkan nama fork apa adanya, yaitu `personal-geoportal-peserta`, supaya seluruh contoh perintah pada Praktik 11 cocok.
+4. Pastikan branch default fork adalah `main`.
+
+### Clone fork Anda ke laptop
+
+Ganti `USERNAME_GITHUB` dengan username GitHub Anda.
+
+```bash
+git clone https://github.com/USERNAME_GITHUB/personal-geoportal-peserta.git
+cd personal-geoportal-peserta
+```
+
+### Pasang dependensi
+
+```bash
+npm install
+```
+
+Perintah itu memuat paket yang dipakai aplikasi, termasuk Prisma dan skrip pemeriksa di folder `scripts`.
+
+### Periksa isi repositori
+
+Pastikan lima berkas berikut ada di root folder. Bila salah satunya tidak ada, berarti clone Anda belum lengkap.
+
+```bash
+ls docker-compose.yml nginx.conf .env.example Dockerfile cloudbuild.yaml
+ls scripts/check-config.mjs scripts/periksa-nginx.mjs
+```
+
+### Yang TIDAK perlu Anda ubah
+
+Ini sering ditanyakan, jadi perlu ditegaskan di awal.
+
+| Berkas | Perlu diedit? | Alasan |
+|---|---|---|
+| `docker-compose.yml` | Tidak | Tidak ada nilai yang berbeda antar peserta. Nama service seperti `geoserver` dipakai antar container di dalam VM yang sama |
+| `nginx.conf` | Tidak | Alamat tujuan memakai nama service internal, bukan alamat peserta |
+| `cloudbuild.yaml` | Tidak | Seluruh nilai yang berbeda antar peserta diisi sebagai substitution variable pada trigger Cloud Build, bukan di berkas ini |
+| `.env.example` | Tidak | Berkas contoh. Yang diisi adalah `.env`, dan itu dibuat di VM |
+
+Nilai yang memang harus berbeda antar peserta, yaitu nama VM, nama image, dan subdomain, seluruhnya diatur pada trigger Cloud Build. Caranya ada di halaman [Google Cloud Platform](/hari-3/praktik-11-deploy/google-cloud-platform).
+
+Jadi pekerjaan Anda di halaman ini adalah **memeriksa**, bukan mengubah.
+
 ## Berkas yang Diperiksa
 
 | Berkas | Isi | Status di repositori |
@@ -35,7 +87,7 @@ Jadi seluruh pekerjaan manual ada di laptop dan di VM, dan berhenti pada satu pe
 
 Seluruh isi tiap berkas tetap ditampilkan di halaman ini supaya Anda dapat memeriksa dan memahami maksudnya. Bandingkan dengan berkas di repositori Anda. Bila ada perbedaan, samakan dengan yang ada di repositori, bukan dengan yang tercetak di sini.
 
-## Tahap 1. Periksa docker-compose.yml
+## Tahap 2. Periksa docker-compose.yml
 
 Buka folder proyek di Visual Studio Code, lalu buka berkas `docker-compose.yml` di root folder. Berkas itu sudah ada di repositori Anda.
 
@@ -107,7 +159,7 @@ Dua hal pada service `nginx` yang mudah terlewat, dan keduanya membuat HTTPS tid
 - Port `443:443` harus dipublikasikan. Tanpa itu Nginx mendengarkan di dalam container, tetapi host tidak meneruskan trafik ke sana.
 - Volume `/etc/letsencrypt` menunjuk lokasi di VM, bukan di repository. Tanpa itu, `nginx -t` gagal dengan pesan berkas sertifikat tidak ditemukan meskipun sertifikatnya ada.
 
-## Tahap 2. Periksa nginx.conf
+## Tahap 3. Periksa nginx.conf
 
 Buka berkas `nginx.conf` di root folder proyek. Berkas itu sudah ada di repositori Anda.
 
@@ -180,7 +232,7 @@ include /etc/nginx/tls/*.conf;
 Perhatikan baris terakhir. Berkas ini sengaja sudah memuat direktori `tls/`, walaupun direktori itu masih kosong pada tahap ini. Dengan begitu, berkas yang ditulis pada halaman [Penambahan Subdomain](/hari-3/praktik-11-deploy/subdomain) nanti langsung terbaca tanpa mengubah `nginx.conf` lagi.
 
 
-## Tahap 3. Periksa .env.example
+## Tahap 4. Periksa .env.example
 
 Buka berkas `.env.example` di root folder proyek. Berkas itu sudah ada di repositori Anda.
 
@@ -208,7 +260,7 @@ GEOSERVER_URL=http://geoserver:8080/geoserver
 GEOSERVER_URL=http://localhost:8080/geoserver
 ```
 
-## Tahap 4. Periksa .gitignore
+## Tahap 5. Periksa .gitignore
 
 Buka `.gitignore` di root folder proyek. Pastikan di dalamnya ada baris berikut:
 
@@ -219,7 +271,7 @@ Buka `.gitignore` di root folder proyek. Pastikan di dalamnya ada baris berikut:
 Direktori itu diisi GeoServer saat container pertama kali berjalan. Isinya besar dan bersifat lokal, jadi tidak perlu ikut masuk ke repositori.
 
 
-## Tahap 5. Periksa folder scripts
+## Tahap 6. Periksa folder scripts
 
 Di root folder proyek, pastikan ada folder bernama `scripts`, sejajar dengan folder `public` dan `src`. Folder itu berisi dua berkas pemeriksa.
 
@@ -349,7 +401,7 @@ for (const m of masalah) console.log(` - ${m}`);
 process.exit(1);
 ```
 
-## Tahap 6. Uji seluruh berkas di laptop
+## Tahap 7. Uji seluruh berkas di laptop
 
 Buka terminal di Visual Studio Code, pada folder proyek. Jalankan pemeriksa YAML:
 
@@ -384,7 +436,7 @@ HASIL: struktur konfigurasi valid
 
 Baris `resolver : ada` yang paling penting. Tanpa directive itu, Nginx menolak start dengan `host not found in upstream` ketika container `nextjs` belum ada.
 
-## Tahap 7. Pastikan tidak ada rahasia yang ikut ter-commit
+## Tahap 8. Pastikan tidak ada rahasia yang ikut ter-commit
 
 Berkas konfigurasi Anda sudah ada di repositori, jadi pada tahap ini tidak ada yang perlu di-commit. Yang perlu diperiksa hanya satu hal: pastikan berkas `.env` tidak pernah ikut masuk ke Git.
 

@@ -65,21 +65,33 @@ Variabel lain pada `.env.example` hanya diperlukan untuk fitur katalog data spas
 
 ## Repositori yang Dipakai
 
-Modul ini bekerja pada satu repositori GitHub: **fork repositori peserta di akun Anda sendiri.**
+Praktik 11 bekerja pada fork repositori peserta di akun GitHub Anda sendiri.
 
 | | Repositori |
 |---|---|
 | Sumber, yang di-fork | `https://github.com/dhanyyudi/personal-geoportal-peserta` |
 | Fork Anda | `https://github.com/<username-anda>/personal-geoportal-peserta` |
 
-Cara membuat fork:
+Fork dan clone repositori itu dikerjakan pada halaman [Konfigurasi Project](/hari-3/praktik-11-deploy/konfigurasi-project), Tahap 1 sampai 8. Pastikan tahap itu sudah selesai sebelum melanjutkan, karena halaman ini mengandaikan proyek sudah ada di laptop dan seluruh berkasnya sudah diperiksa.
 
-1. Buka `https://github.com/dhanyyudi/personal-geoportal-peserta` pada browser.
-2. Pilih **Fork**, lalu pilih akun GitHub Anda sebagai tujuan.
-3. Biarkan nama fork apa adanya, yaitu `personal-geoportal-peserta`, supaya seluruh contoh perintah pada halaman ini cocok.
-4. Pastikan branch default fork adalah `main`.
+## Nilai yang Harus Unik per Peserta
 
-Repositori itu sudah memuat seluruh berkas konfigurasi container, `Dockerfile`, `cloudbuild.yaml`, dan skrip SQL. Anda **tidak perlu membuatnya dari nol**. Yang perlu Anda kerjakan adalah memeriksanya, menyesuaikan beberapa nilai, lalu mengunggahnya.
+Empat peserta memakai satu project Google Cloud bersama. Karena itu sebagian nilai harus berbeda antar peserta, dan sebagian justru harus sama.
+
+Yang penting diketahui di awal: **nilai unik itu tidak ada di berkas repositori Anda.** Seluruhnya diatur pada trigger Cloud Build, sebagai substitution variable. Jadi tidak ada berkas yang perlu diedit di laptop.
+
+| Nilai | Unik per peserta? | Diatur di mana |
+|---|---|---|
+| `_VM_NAME` | Ya | Substitution variable pada trigger, Tahap 28 |
+| `_IMAGE_NAME` | Ya | Substitution variable pada trigger, Tahap 28 |
+| `_VM_ZONE` | Tidak, sama untuk semua | Sudah punya nilai bawaan pada `cloudbuild.yaml` |
+| `_VM_APP_DIR` | Tidak, sama untuk semua | Substitution variable pada trigger |
+| Nama Project ID | Tidak, milik kelompok | Dari koordinator |
+| `katalog-images` | Tidak, milik kelompok | Dibuat koordinator, peserta hanya memakai |
+| `nextjs_portal`, `geoserver_app`, `nginx_proxy` | Tidak | Nama container di dalam VM Anda sendiri. Tidak bertabrakan dengan peserta lain karena VM-nya terpisah |
+| Alamat `geoserver` dan `nextjs` pada `nginx.conf` | Tidak | Nama service di dalam jaringan Docker VM Anda sendiri |
+
+Baris terakhir sering menimbulkan kekhawatiran. Nama kontainer dan nama service memang sama untuk semua peserta, tetapi tidak bertabrakan, karena keempat peserta memakai VM yang berbeda. Yang bertabrakan hanya resource yang berada di project bersama, dan itulah yang ditangani pada tabel di bawah.
 
 ## Pembagian Resource
 
