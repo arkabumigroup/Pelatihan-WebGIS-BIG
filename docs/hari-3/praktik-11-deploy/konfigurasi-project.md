@@ -53,7 +53,7 @@ Perintah itu memuat paket yang dipakai aplikasi, termasuk Prisma dan skrip pemer
 
 ### Periksa isi repositori
 
-Pastikan lima berkas berikut ada di root folder. Bila salah satunya tidak ada, berarti clone Anda belum lengkap.
+Pastikan berkas-berkas berikut ada. Bila salah satunya tidak ada, berarti clone Anda belum lengkap.
 
 ```bash
 ls docker-compose.yml nginx.conf .env.example Dockerfile cloudbuild.yaml
@@ -84,6 +84,9 @@ Jadi pekerjaan Anda di halaman ini adalah **memeriksa**, bukan mengubah.
 | `.env.example` | Daftar variabel lingkungan beserta penjelasannya | sudah ada |
 | `scripts/check-config.mjs` | Memeriksa struktur YAML pada berkas compose dan Cloud Build | sudah ada |
 | `scripts/periksa-nginx.mjs` | Memeriksa struktur `nginx.conf` | sudah ada |
+| `.gitignore` | Daftar berkas yang tidak boleh masuk repositori | sudah ada |
+| `Dockerfile` | Cara aplikasi dibangun menjadi image container | sudah ada |
+| `cloudbuild.yaml` | Otomatisasi build saat push ke branch `main` | sudah ada |
 
 Seluruh isi tiap berkas tetap ditampilkan di halaman ini supaya Anda dapat memeriksa dan memahami maksudnya. Bandingkan dengan berkas di repositori Anda. Bila ada perbedaan, samakan dengan yang ada di repositori, bukan dengan yang tercetak di sini.
 
@@ -262,20 +265,48 @@ GEOSERVER_URL=http://localhost:8080/geoserver
 
 ## Tahap 5. Periksa .gitignore
 
-Buka `.gitignore` di root folder proyek. Pastikan di dalamnya ada baris berikut:
+Buka `.gitignore` di root folder proyek. Pastikan di dalamnya ada tiga baris berikut.
 
 ```
 /geoserver-data/
+/tls/
+/certbot-webroot/
 ```
 
-Direktori itu diisi GeoServer saat container pertama kali berjalan. Isinya besar dan bersifat lokal, jadi tidak perlu ikut masuk ke repositori.
+Baris itu sudah ada di repositori, jadi tidak perlu ditambahkan. Yang perlu Anda lakukan hanya memastikan ketiganya masih ada.
 
+### Mengapa ini penting
+
+Ketiga folder itu dibuat di **dalam VM**, oleh container yang berjalan di sana, bukan di laptop Anda. Karena itu langkah ini berlaku untuk semua sistem, termasuk Windows.
+
+Yang paling berbahaya adalah `geoserver-data`, karena di dalamnya GeoServer menyimpan:
+
+| Folder | Isinya |
+|---|---|
+| `security/` | Konfigurasi pengguna dan **kata sandi admin GeoServer** |
+| `styles/` | Gaya tampilan layer |
+| `gwc/` | Cache tile |
+| `logs/` | Catatan aktivitas |
+
+Pada mesin pengembang, folder itu berisi 60 berkas. Yang paling perlu diperhatikan bukan ukurannya, melainkan isi `security/`. Bila folder itu ikut ter-commit dan Anda push ke repositori publik, kata sandi admin GeoServer Anda dapat dibaca siapa pun.
+
+Dua folder lainnya, `tls` dan `certbot-webroot`, berisi sertifikat HTTPS dan berkas tantangan Let's Encrypt. Fungsinya sama: keduanya dibuat di VM dan tidak boleh masuk repositori.
+
+### Periksa dengan perintah
+
+Jalankan dari root folder proyek:
+
+```bash
+git check-ignore -v geoserver-data tls certbot-webroot
+```
+
+Keluaran yang diharapkan menyebut ketiga folder itu beserta baris `.gitignore` yang mengabaikannya. Bila ada yang tidak muncul, berarti folder itu **tidak** diabaikan, dan hentikan pekerjaan sampai barisnya ditambahkan.
 
 ## Tahap 6. Periksa folder scripts
 
 Di root folder proyek, pastikan ada folder bernama `scripts`, sejajar dengan folder `public` dan `src`. Folder itu berisi dua berkas pemeriksa.
 
-### 5a. scripts/check-config.mjs
+### 6a. scripts/check-config.mjs
 
 ```javascript
 import { readFileSync } from 'node:fs';
@@ -319,7 +350,7 @@ npm install yaml
 ```
 :::
 
-### 5b. scripts/periksa-nginx.mjs
+### 6b. scripts/periksa-nginx.mjs
 
 ```javascript
 import { readFileSync } from 'node:fs';
@@ -451,4 +482,4 @@ Berkas `.gitignore` di repositori sudah memuat pola `.env*`, sehingga `.env` dan
 
 ## Hasil Tahap Ini
 
-Kelima berkas konfigurasi sudah diperiksa dan lolos uji di laptop. Berkas `docker-compose.yml` dan `nginx.conf` akan dipakai lagi di VM pada halaman berikutnya, dan `cloudbuild.yaml` mengambil alih proses build mulai deploy pertama.
+Seluruh berkas konfigurasi sudah diperiksa dan lolos uji di laptop. Berkas `docker-compose.yml` dan `nginx.conf` akan dipakai lagi di VM pada halaman berikutnya, dan `cloudbuild.yaml` mengambil alih proses build mulai deploy pertama.
