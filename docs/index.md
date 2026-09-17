@@ -9,7 +9,7 @@ hero:
   actions:
     - theme: brand
       text: Materi Pelatihan
-      link: /Training WebGIS BIG
+      link: /materi-pelatihan
     - theme: alt
       text: File Pelatihan
       link: https://drive.google.com/drive/folders/1QeAUjifzbcNrAYXyyyYRfseNaPX2k42U
