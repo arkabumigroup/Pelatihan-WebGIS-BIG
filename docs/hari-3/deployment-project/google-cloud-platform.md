@@ -6,57 +6,42 @@ Seluruh tahapan memakai satu project kelompok yang dipakai bersama **empat peser
 
 ## Prasyarat
 
-Halaman ini melanjutkan pekerjaan dari Hari 2. Empat hal berikut harus sudah selesai sebelum Anda mulai. Kalau belum, kerjakan lebih dahulu.
+Halaman ini melanjutkan pekerjaan dari halaman [Konfigurasi Project](/hari-3/deployment-project/konfigurasi-project). Tahap 1 sampai 10 di sana harus sudah selesai, karena halaman ini memindahkan aplikasi yang sudah terbukti berjalan di laptop.
 
-### 1. Repositori sudah di-fork
+Ringkasnya, empat hal berikut harus sudah benar.
 
-Fork `https://github.com/dhanyyudi/personal-geoportal-peserta` di akun GitHub Anda. Rinciannya pada [Repositori yang Dipakai](#repositori-yang-dipakai).
+### 1. Repositori sudah di-fork dan di-clone
 
-### 2. Database Supabase sudah siap dan bisa login
+Fork `https://github.com/dhanyyudi/personal-geoportal-peserta` di akun GitHub Anda, lalu clone fork itu ke laptop. Dikerjakan pada Tahap 1 halaman Konfigurasi Project.
 
-Portal memerlukan database. Aplikasi tidak akan bisa login tanpa ini.
+### 2. Database Supabase sudah siap, dan login sudah terbukti
 
 - Project Supabase sudah dibuat.
-- Skrip `sql/01-schema.sql` sudah dijalankan lewat SQL Editor Supabase.
+- Skrip `sql/01-schema.sql` sampai `sql/03-periksa.sql` sudah dijalankan lewat SQL Editor.
 - Akun super admin sudah dibuat lewat `sql/02-seed-super-admin.sql`.
-- Portal sudah pernah dijalankan di laptop dengan `npm run dev`, dan Anda berhasil login.
+- `node scripts/uji-database.mjs` melaporkan `12 lulus, 0 gagal`.
+- Portal sudah berjalan di laptop dengan `npm run dev`, dan Anda berhasil login.
 
-Panduan lengkapnya ada di `sql/README.md` pada repositori Anda, dan pada halaman [Setup Cloud PostgreSQL + PostGIS + Koneksi Dbeaver](/hari-2/database-spasial/cloud-postgresql).
-
-::: warning Jangan mengosongkan DATABASE_URL
-Modul versi lama menyatakan `DATABASE_URL` boleh dikosongkan untuk menguji build. Itu keliru untuk tahap ini. Tanpa `DATABASE_URL` yang valid, container `nextjs` berjalan tetapi halaman login selalu gagal. Isi sejak awal.
-:::
+Kelima butir itu dikerjakan pada Tahap 2 dan Tahap 8 sampai 9 halaman Konfigurasi Project.
 
 ### 3. Berkas .env sudah terisi
 
-Saat menyalin repositori ke VM nanti, Anda akan membuat `.env` dari `.env.example`. Siapkan nilainya sekarang supaya tidak terhenti di tengah tahap.
+`.env` di laptop sudah diisi pada Tahap 5. Yang perlu Anda siapkan di sini adalah nilai untuk `.env` di VM, yang merupakan berkas terpisah.
 
-Enam variabel berikut wajib ada. Tanpa salah satunya, login tidak bekerja.
+Enam variabel berikut wajib ada. Tanpa salah satunya, login di VM tidak bekerja.
 
 | Variabel | Isi |
 |---|---|
-| `DATABASE_URL` | Connection string Supabase, Session pooler port 5432 |
-| `JWT_SECRET` | Hasil perintah acak |
-| `NEXTAUTH_SECRET` | Hasil perintah acak, harus berbeda dari di atas |
-| `NEXTAUTH_URL` | Di laptop: `http://localhost:3000/portal`. Di VM: `http://IP_EKSTERNAL_VM/portal` |
+| `DATABASE_URL` | Connection string Supabase, sama seperti di laptop |
+| `JWT_SECRET` | Hasil perintah acak, boleh sama dengan di laptop |
+| `NEXTAUTH_SECRET` | Hasil perintah acak, boleh sama dengan di laptop |
+| `NEXTAUTH_URL` | Untuk VM: `http://IP_EKSTERNAL_VM/portal` |
 | `ADMIN_CONTACT_EMAIL` | Email Anda sendiri |
 | `JWT_EXPIRES_IN` | `1h`, sudah terisi di `.env.example` |
 
-`NEXTAUTH_URL` berubah seiring tempat aplikasi berjalan. Di laptop isinya `localhost`, dan di VM isinya alamat IP eksternal VM. Nilai yang salah membuat login gagal meskipun database dan kata sandinya benar.
+Dua nilai yang berbeda antara laptop dan VM hanya `NEXTAUTH_URL`, `BASE_URL`, dan `NEXT_PUBLIC_URL_BASE_PATH`, karena ketiganya memuat alamat aplikasi. Nilainya diisi pada Tahap 18.
 
-Berkas `.env` di laptop dan di VM adalah **dua berkas terpisah**. Yang di laptop tidak ikut ter-commit, dan yang di VM dibuat langsung di sana. Jadi mengubah nilai di VM tidak memengaruhi yang di laptop.
-
-Cara membuat nilai acak, pilih sesuai sistem Anda:
-
-```bash
-# macOS atau Linux
-openssl rand -hex 32
-
-# Windows, PowerShell, atau Command Prompt
-node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
-```
-
-Variabel lain pada `.env.example` hanya diperlukan untuk fitur katalog data spasial. Bila Anda akan mengunggah layer 2D, isi juga bagian **DATA SPASIAL**. Bila tidak, biarkan kosong.
+Berkas `.env` di laptop tidak ikut ter-commit, dan tidak ikut tersalin ke VM. Berkas di VM dibuat langsung di sana.
 
 ### 4. Akses Google Cloud dari koordinator
 
@@ -65,14 +50,14 @@ Variabel lain pada `.env.example` hanya diperlukan untuk fitur katalog data spas
 
 ## Repositori yang Dipakai
 
-Praktik 11 bekerja pada fork repositori peserta di akun GitHub Anda sendiri.
+Deployment Project bekerja pada fork repositori peserta di akun GitHub Anda sendiri.
 
 | | Repositori |
 |---|---|
 | Sumber, yang di-fork | `https://github.com/dhanyyudi/personal-geoportal-peserta` |
 | Fork Anda | `https://github.com/<username-anda>/personal-geoportal-peserta` |
 
-Fork dan clone repositori itu dikerjakan pada halaman [Konfigurasi Project](/hari-3/praktik-11-deploy/konfigurasi-project), Tahap 1 sampai 8. Pastikan tahap itu sudah selesai sebelum melanjutkan, karena halaman ini mengandaikan proyek sudah ada di laptop dan seluruh berkasnya sudah diperiksa.
+Fork dan clone repositori itu dikerjakan pada halaman [Konfigurasi Project](/hari-3/deployment-project/konfigurasi-project), Tahap 1 sampai 8. Pastikan tahap itu sudah selesai sebelum melanjutkan, karena halaman ini mengandaikan proyek sudah ada di laptop dan seluruh berkasnya sudah diperiksa.
 
 ## Nilai yang Harus Unik per Peserta
 
@@ -408,7 +393,7 @@ Kedua firewall rule dibuat koordinator dan hasil perintah di atas seharusnya men
 
 Dijalankan di: Cloud Shell
 
-Alamat IP perlu dikunci supaya tidak berubah saat VM dimatikan dan dinyalakan kembali. Ini penting karena record DNS pada halaman [Penambahan Subdomain](/hari-3/praktik-11-deploy/subdomain) menunjuk ke alamat tersebut.
+Alamat IP perlu dikunci supaya tidak berubah saat VM dimatikan dan dinyalakan kembali. Ini penting karena record DNS pada halaman [Penambahan Subdomain](/hari-3/deployment-project/subdomain) menunjuk ke alamat tersebut.
 
 ```bash
 EXTERNAL_IP="$(gcloud compute instances describe "$VM_NAME" \
@@ -559,7 +544,7 @@ ls -ld /opt/webgis
 
 Dijalankan di: Terminal Laptop, lalu Terminal VM
 
-Tiga berkas dari halaman [Konfigurasi Project](/hari-3/praktik-11-deploy/konfigurasi-project) ada di laptop. Salin ketiganya ke VM.
+Tiga berkas dari halaman [Konfigurasi Project](/hari-3/deployment-project/konfigurasi-project) ada di laptop. Salin ketiganya ke VM.
 
 ```bash
 gcloud compute scp docker-compose.yml nginx.conf .env.example \
@@ -824,7 +809,7 @@ options:
   logging: CLOUD_LOGGING_ONLY
 ```
 
-Periksa kembali pemeriksa YAML pada Tahap 6 halaman [Konfigurasi Project](/hari-3/praktik-11-deploy/konfigurasi-project). Sekarang kedua berkas sudah ada, sehingga keluaran yang diharapkan adalah:
+Periksa kembali pemeriksa YAML pada Tahap 6 halaman [Konfigurasi Project](/hari-3/deployment-project/konfigurasi-project). Sekarang kedua berkas sudah ada, sehingga keluaran yang diharapkan adalah:
 
 ```
 OK   docker-compose.yml -> services, networks

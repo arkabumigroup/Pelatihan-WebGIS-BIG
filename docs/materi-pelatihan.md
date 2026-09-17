@@ -35,4 +35,4 @@ Sebagian sesi pada susunan acara belum punya berkas materi di repositori ini, da
 
 ## Berkas Pendukung
 
-Beberapa halaman menyertakan berkas yang bisa diunduh langsung, misalnya `docker-compose.yml`, `nginx.conf`, dan `.env.example` pada [Konfigurasi Project](hari-3/praktik-11-deploy/konfigurasi-project.md). Berkas lain dibagikan instruktur melalui folder berkas pelatihan.
+Beberapa halaman menyertakan berkas yang bisa diunduh langsung, misalnya `docker-compose.yml`, `nginx.conf`, dan `.env.example` pada [Konfigurasi Project](hari-3/deployment-project/konfigurasi-project.md). Berkas lain dibagikan instruktur melalui folder berkas pelatihan.

@@ -6,13 +6,13 @@ Halaman ini memeriksa berkas yang dibutuhkan container sebelum aplikasi bisa ber
 
 Menulis berkas YAML sepanjang ini dari nol adalah sumber kesalahan paling sering. Satu spasi yang salah membuat container gagal jalan, dan pesan galatnya tidak menyebut baris yang bermasalah.
 
-## Alur Praktik 11
+## Alur Deployment Project
 
-Sebelum mulai, penting diketahui bahwa Praktik 11 bukan satu pekerjaan, melainkan rangkaian yang berujung pada satu hasil: Geoportal yang berjalan di alamat HTTPS dengan subdomain sendiri.
+Sebelum mulai, penting diketahui bahwa Deployment Project bukan satu pekerjaan, melainkan rangkaian yang berujung pada satu hasil: Geoportal yang berjalan di alamat HTTPS dengan subdomain sendiri.
 
 Diagram berikut menunjukkan titik mulai Anda, pekerjaan yang Anda kerjakan sendiri, bagian yang berjalan otomatis, dan hasil akhirnya.
 
-![Alur Praktik 11 dari titik mulai sampai hasil akhir. Dari atas ke bawah: fork repositori, siapkan database Supabase, buat akun super admin, isi berkas .env, uji di laptop, salin repositori ke VM, hubungkan Cloud Build, lalu git push. Setelah itu Cloud Build bekerja otomatis membangun image dan memperbarui container di VM, sehingga Geoportal terbit di alamat HTTPS bersama GeoServer.](alur-praktik-11.svg)
+![Alur Deployment Project dari titik mulai sampai hasil akhir. Dari atas ke bawah: fork repositori, siapkan database Supabase, buat akun super admin, isi berkas .env, uji di laptop, salin repositori ke VM, hubungkan Cloud Build, lalu git push. Setelah itu Cloud Build bekerja otomatis membangun image dan memperbarui container di VM, sehingga Geoportal terbit di alamat HTTPS bersama GeoServer.](alur-deployment-project.svg)
 
 Ada dua batas yang perlu diperhatikan pada diagram itu:
 
@@ -71,9 +71,87 @@ Ini sering ditanyakan, jadi perlu ditegaskan di awal.
 | `cloudbuild.yaml` | Tidak | Seluruh nilai yang berbeda antar peserta diisi sebagai substitution variable pada trigger Cloud Build, bukan di berkas ini |
 | `.env.example` | Tidak | Berkas contoh. Yang diisi adalah `.env`, dan itu dibuat di VM |
 
-Nilai yang memang harus berbeda antar peserta, yaitu nama VM, nama image, dan subdomain, seluruhnya diatur pada trigger Cloud Build. Caranya ada di halaman [Google Cloud Platform](/hari-3/praktik-11-deploy/google-cloud-platform).
+Nilai yang memang harus berbeda antar peserta, yaitu nama VM, nama image, dan subdomain, seluruhnya diatur pada trigger Cloud Build. Caranya ada di halaman [Google Cloud Platform](/hari-3/deployment-project/google-cloud-platform).
 
 Jadi pekerjaan Anda di halaman ini adalah **memeriksa**, bukan mengubah.
+
+## Tahap 2. Siapkan database Supabase
+
+Portal memerlukan database. Tanpa ini, aplikasi berjalan tetapi halaman login selalu gagal. Tahap ini dikerjakan sebelum berkas konfigurasi, karena `DATABASE_URL` dari sini dipakai pada Tahap 5.
+
+Database yang dipakai adalah **Supabase**, layanan PostgreSQL yang berjalan di cloud. Peserta memakai project Supabase masing-masing.
+
+### Buat project Supabase
+
+1. Buka [supabase.com/dashboard](https://supabase.com/dashboard), lalu masuk atau daftar.
+2. Buat project baru dengan pilihan berikut.
+
+    | Kolom | Nilai |
+    |---|---|
+    | Name | Bebas, misalnya `geoportal-nama-anda` |
+    | Database Password | Buat kata sandi, lalu **simpan**. Nilainya dibutuhkan pada Tahap 5 |
+    | Region | Southeast Asia (Singapore), supaya dekat dengan VM nanti |
+
+3. Tunggu sekitar dua menit sampai project selesai dibuat.
+
+::: warning Batas dua project pada paket gratis
+Satu akun Supabase dibatasi dua project aktif. Jadi satu akun untuk satu peserta, jangan membuat beberapa project untuk satu peserta. Bila kuota habis, hapus atau pause project yang tidak dipakai.
+:::
+
+### Jalankan skrip SQL
+
+Tabel database dibuat lewat **SQL Editor**, bukan dibuat manual satu per satu. SQL Editor adalah halaman di dalam dashboard Supabase untuk menjalankan perintah SQL, dan bentuknya seperti terminal khusus database.
+
+Cara membukanya:
+
+1. Buka project Anda di [supabase.com/dashboard](https://supabase.com/dashboard).
+2. Pada menu kiri, klik **SQL Editor**.
+3. Halaman itu punya kotak besar untuk menulis atau menempel perintah, tombol **Run** di kanan bawah, dan daftar riwayat perintah di sisi kiri.
+
+Untuk tiap berkas di bawah, lakukan hal yang sama: buka berkasnya di editor kode, salin **seluruh** isinya, tempel ke SQL Editor, lalu klik **Run**.
+
+| # | Berkas | Yang dilakukan |
+|---|---|---|
+| 1 | `sql/01-schema.sql` | Membuat tiga tabel: `users`, `katalog_data_2d`, dan `katalog_data_3d` |
+| 2 | `sql/02-seed-super-admin.sql` | Membuat satu akun super admin untuk login pertama |
+| 3 | `sql/03-periksa.sql` | Memeriksa hasilnya, hanya membaca |
+
+Jangan menyalin sebagian, karena beberapa berkas memakai `BEGIN` dan `COMMIT` yang harus berpasangan.
+
+### Buat akun super admin
+
+`sql/02-seed-super-admin.sql` tidak bisa langsung dijalankan. Berkas itu memuat dua penanda yang harus Anda isi lebih dahulu, supaya kata sandi tidak pernah ditulis dalam bentuk asli.
+
+**Langkah 1.** Di root folder proyek, jalankan:
+
+```bash
+node scripts/hash-password.mjs
+```
+
+Skrip itu meminta kata sandi lewat prompt tersembunyi, jadi kata sandinya tidak muncul di layar dan tidak masuk riwayat terminal. Hasilnya satu baris berawalan `$2b$12$`. Salin baris itu.
+
+**Langkah 2.** Buka `sql/02-seed-super-admin.sql`, lalu ganti dua penanda:
+
+```sql
+email_admin text := '<ISI_EMAIL_DI_SINI>';
+hash_admin  text := '<ISI_HASH_DI_SINI>';
+```
+
+**Langkah 3.** Salin seluruh isi berkas ke SQL Editor, lalu Run. Hasilnya:
+
+```
+NOTICE: Akun super admin nama@email.com siap dipakai.
+```
+
+Email dan kata sandi itulah yang dipakai untuk masuk ke portal.
+
+::: warning Peserta yang mendaftar sendiri tidak menjadi super admin
+Halaman `/register` pada aplikasi selalu menghasilkan peran `editor` dan status belum aktif. Itu memang disengaja, supaya tidak ada yang bisa menaikkan perannya sendiri.
+
+Akun super admin hanya bisa lahir dari `sql/02-seed-super-admin.sql`. Jadi berkas itu wajib dijalankan, bukan pilihan.
+:::
+
+Penjelasan lebih rinci tiap berkas ada di `sql/README.md` pada repositori Anda.
 
 ## Berkas yang Diperiksa
 
@@ -90,7 +168,7 @@ Jadi pekerjaan Anda di halaman ini adalah **memeriksa**, bukan mengubah.
 
 Seluruh isi tiap berkas tetap ditampilkan di halaman ini supaya Anda dapat memeriksa dan memahami maksudnya. Bandingkan dengan berkas di repositori Anda. Bila ada perbedaan, samakan dengan yang ada di repositori, bukan dengan yang tercetak di sini.
 
-## Tahap 2. Periksa docker-compose.yml
+## Tahap 3. Periksa docker-compose.yml
 
 Buka folder proyek di Visual Studio Code, lalu buka berkas `docker-compose.yml` di root folder. Berkas itu sudah ada di repositori Anda.
 
@@ -162,7 +240,7 @@ Dua hal pada service `nginx` yang mudah terlewat, dan keduanya membuat HTTPS tid
 - Port `443:443` harus dipublikasikan. Tanpa itu Nginx mendengarkan di dalam container, tetapi host tidak meneruskan trafik ke sana.
 - Volume `/etc/letsencrypt` menunjuk lokasi di VM, bukan di repository. Tanpa itu, `nginx -t` gagal dengan pesan berkas sertifikat tidak ditemukan meskipun sertifikatnya ada.
 
-## Tahap 3. Periksa nginx.conf
+## Tahap 4. Periksa nginx.conf
 
 Buka berkas `nginx.conf` di root folder proyek. Berkas itu sudah ada di repositori Anda.
 
@@ -232,26 +310,72 @@ server {
 include /etc/nginx/tls/*.conf;
 ```
 
-Perhatikan baris terakhir. Berkas ini sengaja sudah memuat direktori `tls/`, walaupun direktori itu masih kosong pada tahap ini. Dengan begitu, berkas yang ditulis pada halaman [Penambahan Subdomain](/hari-3/praktik-11-deploy/subdomain) nanti langsung terbaca tanpa mengubah `nginx.conf` lagi.
+Perhatikan baris terakhir. Berkas ini sengaja sudah memuat direktori `tls/`, walaupun direktori itu masih kosong pada tahap ini. Dengan begitu, berkas yang ditulis pada halaman [Penambahan Subdomain](/hari-3/deployment-project/subdomain) nanti langsung terbaca tanpa mengubah `nginx.conf` lagi.
 
 
-## Tahap 4. Periksa .env.example
+## Tahap 5. Isi berkas .env
 
-Buka berkas `.env.example` di root folder proyek. Berkas itu sudah ada di repositori Anda.
+`DATABASE_URL` dari Tahap 2 dan `JWT_SECRET` dari perintah acak sekarang diisi ke dalam berkas `.env`. Tahap ini penting karena aplikasi tidak bisa login tanpa berkas ini.
 
-Berkas ini adalah contoh yang di-commit ke GitHub, sedangkan `.env` yang berisi nilai asli hanya dibuat di VM dan tidak pernah di-commit.
+### Salin berkas contoh
 
-Berkas itu tersusun dalam tiga bagian, dan pembagiannya penting:
+```bash
+cp .env.example .env
+```
 
-| Bagian | Isi | Perlu diisi? |
+Berkas `.env.example` adalah contoh yang di-commit ke GitHub, sedangkan `.env` yang berisi nilai asli tidak pernah di-commit.
+
+### Isi bagian WAJIB
+
+Buka `.env`, lalu isi lima nilai berikut.
+
+| Variabel | Dari mana |
+|---|---|
+| `DATABASE_URL` | Tombol **Connect** di dashboard Supabase, pilih ORM/Prisma, lalu salin. Lihat catatan di bawah |
+| `JWT_SECRET` | Hasil perintah acak |
+| `NEXTAUTH_SECRET` | Hasil perintah acak, harus berbeda dari di atas |
+| `NEXTAUTH_URL` | `http://localhost:3000/portal` untuk sekarang |
+| `ADMIN_CONTACT_EMAIL` | Email Anda sendiri |
+
+Perintah untuk membuat dua nilai acak:
+
+```bash
+# macOS atau Linux
+openssl rand -hex 32
+
+# Windows, PowerShell, atau Command Prompt
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+```
+
+`NEXTAUTH_URL` diisi `localhost` untuk sekarang, dan diubah menjadi alamat VM nanti pada [Tahap 18 halaman Google Cloud Platform](/hari-3/deployment-project/google-cloud-platform#tahap-18-isi-berkas-env).
+
+### Catatan tentang DATABASE_URL
+
+Nilai ini paling sering salah, jadi dibaca pelan-pelan.
+
+Supabase menampilkan tiga bentuk alamat koneksi, dan ketiganya dapat dipakai dengan satu syarat pada bentuk kedua:
+
+| Bentuk | Port | Syarat |
 |---|---|---|
-| **WAJIB** | `DATABASE_URL`, `JWT_SECRET`, `NEXTAUTH_SECRET`, `NEXTAUTH_URL`, `ADMIN_CONTACT_EMAIL` | Ya, tanpa ini login tidak bekerja |
-| **NILAI BAWAAN** | `JWT_EXPIRES_IN`, `NEXTJS_IMAGE`, dan alamat aplikasi lainnya | Biasanya tidak, sudah terisi |
-| **DATA SPASIAL** | `POSTGIS_*` dan `GEOSERVER_*` | Hanya bila Anda mengunggah layer 2D |
+| Session pooler | 5432 | Tidak ada, langsung bekerja |
+| Transaction pooler | 6543 | **Wajib** menambahkan `?pgbouncer=true` di akhir alamat |
+| Koneksi langsung `db.<ref>.supabase.co` | 5432 | Sering gagal pada project baru, karena hostnya hanya punya alamat IPv6 |
 
-Bagian **WAJIB** sudah dijelaskan pada [Prasyarat halaman Google Cloud Platform](/hari-3/praktik-11-deploy/google-cloud-platform#_3-berkas-env-sudah-terisi).
+Yang disarankan **Session pooler pada port 5432**.
 
-Satu hal yang perlu diperhatikan pada bagian DATA SPASIAL. Alamat GeoServer harus memakai nama service, bukan localhost:
+```bash
+DATABASE_URL="postgresql://postgres.abcdefghijklm:[YOUR-PASSWORD]@aws-0-ap-southeast-1.pooler.supabase.com:5432/postgres"
+```
+
+Perhatikan bentuk nama penggunanya, yaitu `postgres.<ref>`, bukan `postgres` saja. Ganti `[YOUR-PASSWORD]` dengan kata sandi database dari Tahap 2. Bila kata sandinya memuat karakter khusus seperti `@` atau `#`, tulis dalam bentuk persen: `%40` dan `%23`.
+
+Halaman connection string Supabase juga menampilkan `DIRECT_URL`. Untuk aplikasi ini, **hanya `DATABASE_URL` yang dipakai**, karena tabel dibuat lewat skrip di folder `sql/`, bukan lewat `prisma migrate`.
+
+### Bagian DATA SPASIAL
+
+Bagian ini hanya perlu diisi bila Anda akan mengunggah layer 2D. Bila tidak, biarkan kosong.
+
+Satu hal yang mudah salah: alamat GeoServer harus memakai nama service, bukan localhost.
 
 ```bash
 # Benar. "geoserver" adalah nama service pada docker-compose.yml, dan Docker
@@ -263,7 +387,15 @@ GEOSERVER_URL=http://geoserver:8080/geoserver
 GEOSERVER_URL=http://localhost:8080/geoserver
 ```
 
-## Tahap 5. Periksa .gitignore
+### Pastikan .env tidak ikut ter-commit
+
+```bash
+git check-ignore -v .env
+```
+
+Keluaran yang diharapkan menyebut `.env`. Bila perintah itu tidak mengeluarkan apa pun, berarti `.env` **tidak** diabaikan dan isinya bisa ikut ter-push ke GitHub publik. Hentikan pekerjaan sampai barisnya ditambahkan ke `.gitignore`.
+
+## Tahap 6. Periksa .gitignore
 
 Buka `.gitignore` di root folder proyek. Pastikan di dalamnya ada tiga baris berikut.
 
@@ -302,11 +434,11 @@ git check-ignore -v geoserver-data tls certbot-webroot
 
 Keluaran yang diharapkan menyebut ketiga folder itu beserta baris `.gitignore` yang mengabaikannya. Bila ada yang tidak muncul, berarti folder itu **tidak** diabaikan, dan hentikan pekerjaan sampai barisnya ditambahkan.
 
-## Tahap 6. Periksa folder scripts
+## Tahap 7. Periksa folder scripts
 
 Di root folder proyek, pastikan ada folder bernama `scripts`, sejajar dengan folder `public` dan `src`. Folder itu berisi dua berkas pemeriksa.
 
-### 6a. scripts/check-config.mjs
+### 7a. scripts/check-config.mjs
 
 ```javascript
 import { readFileSync } from 'node:fs';
@@ -350,7 +482,7 @@ npm install yaml
 ```
 :::
 
-### 6b. scripts/periksa-nginx.mjs
+### 7b. scripts/periksa-nginx.mjs
 
 ```javascript
 import { readFileSync } from 'node:fs';
@@ -432,7 +564,9 @@ for (const m of masalah) console.log(` - ${m}`);
 process.exit(1);
 ```
 
-## Tahap 7. Uji seluruh berkas di laptop
+## Tahap 8. Uji seluruh berkas di laptop
+
+### Uji berkas konfigurasi
 
 Buka terminal di Visual Studio Code, pada folder proyek. Jalankan pemeriksa YAML:
 
@@ -447,8 +581,6 @@ OK   docker-compose.yml -> services, networks
      service: nextjs, geoserver, nginx
 OK   cloudbuild.yaml -> substitutions, steps, images, options
 ```
-
-Baris pertama memastikan tiga service terbaca. Baris kedua memastikan `cloudbuild.yaml` dapat diurai.
 
 Selanjutnya jalankan pemeriksa Nginx:
 
@@ -467,7 +599,49 @@ HASIL: struktur konfigurasi valid
 
 Baris `resolver : ada` yang paling penting. Tanpa directive itu, Nginx menolak start dengan `host not found in upstream` ketika container `nextjs` belum ada.
 
-## Tahap 8. Pastikan tidak ada rahasia yang ikut ter-commit
+### Uji database
+
+Periksa apakah skema database sudah benar dan alur login bekerja:
+
+```bash
+node scripts/uji-database.mjs
+```
+
+Skrip itu memeriksa dua belas hal sekaligus: ketiga tabel dapat dibaca, akun belum aktif ditolak, kata sandi salah ditolak, login setelah diaktifkan berhasil, katalog 2D dan 3D dapat disimpan, serta constraint dan unique email bekerja. Data ujinya dihapus kembali di akhir.
+
+Keluaran yang diharapkan berakhir dengan `12 lulus, 0 gagal`. Bila ada yang gagal, keluarannya menyebut bagian mana yang belum siap.
+
+## Tahap 9. Jalankan portal di laptop
+
+Ini tahap yang membuktikan seluruh persiapan berhasil, sebelum aplikasi dipindahkan ke server. Bila login gagal di sini, penyebabnya masih mudah dilacak.
+
+```bash
+npm run dev
+```
+
+Buka [http://localhost:3000/portal](http://localhost:3000/portal), lalu masuk memakai email dan kata sandi super admin dari Tahap 2.
+
+Yang harus terjadi:
+
+| Yang diperiksa | Hasil yang diharapkan |
+|---|---|
+| Halaman login terbuka | Formulir email dan kata sandi tampil |
+| Login super admin | Berhasil masuk ke halaman `/portal/internal` |
+| Dashboard | Menampilkan jumlah data dan jumlah akun |
+| Menu Kelola Akun | Menampilkan daftar akun, termasuk akun super admin Anda |
+
+Bila login gagal, periksa berurutan:
+
+| Gejala | Penyebab yang paling sering |
+|---|---|
+| `Can't reach database server` | `DATABASE_URL` salah, atau memakai port 6543 tanpa `?pgbouncer=true` |
+| `Email atau password salah` | Kata sandi tidak cocok dengan hash di database |
+| `Akun anda belum di aktivasi` | Kolom `is_active` masih `false`. Jalankan `UPDATE users SET is_active = true WHERE email = 'email-anda';` di SQL Editor |
+| Halaman login terbuka tetapi tombol tidak bekerja | `JWT_SECRET` atau `NEXTAUTH_SECRET` kosong |
+
+Setelah berhasil login, hentikan server dengan `Ctrl+C`. Aplikasi siap dipindahkan ke server.
+
+## Tahap 10. Pastikan tidak ada rahasia yang ikut ter-commit
 
 Berkas konfigurasi Anda sudah ada di repositori, jadi pada tahap ini tidak ada yang perlu di-commit. Yang perlu diperiksa hanya satu hal: pastikan berkas `.env` tidak pernah ikut masuk ke Git.
 
