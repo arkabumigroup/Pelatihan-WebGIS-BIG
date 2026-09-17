@@ -105,6 +105,12 @@ Masuk memakai email yang diberikan koordinator, lalu pilih project kelompok yang
 
 Dijalankan di: Cloud Shell
 
+::: tip Ambil dua nilai ini dari tabel peserta
+Sebelum menempel blok di bawah, cari nama atau email Anda pada halaman [Peserta dan Project](/hari-3/deployment-project/peserta-project). Halaman itu memuat **Project ID** dan **email** yang terdaftar untuk Anda, beserta kelompok Anda.
+
+Isi `PROJECT_ID` dengan nilai dari kolom Project ID, dan `EMAIL_PESERTA` dengan email Anda. Keduanya harus sama persis dengan yang terdaftar, karena identitas peserta diturunkan dari sana.
+:::
+
 Identitas peserta **diturunkan dari email**, bukan diketik manual. Empat peserta menerima empat email berbeda dari koordinator, sehingga empat identitas yang dihasilkan pasti berbeda. Tabrakan tidak dicegah dengan peringatan, melainkan dengan menghilangkan nilai yang bisa salah diisi.
 
 Tempel seluruh blok berikut di Cloud Shell. Ubah hanya dua baris pertama.
