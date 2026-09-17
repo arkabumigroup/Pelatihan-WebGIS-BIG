@@ -63,7 +63,7 @@ Fork dan clone repositori itu dikerjakan pada halaman [Konfigurasi Project](/har
 
 Empat peserta memakai satu project Google Cloud bersama. Karena itu sebagian nilai harus berbeda antar peserta, dan sebagian justru harus sama.
 
-Yang penting diketahui di awal: **nilai unik itu tidak ada di berkas repositori Anda.** Seluruhnya diatur pada trigger Cloud Build, sebagai substitution variable. Jadi tidak ada berkas yang perlu diedit di laptop.
+Nilai unik itu **tidak ada di berkas repositori Anda**. Seluruhnya diatur pada trigger Cloud Build sebagai substitution variable, sehingga tidak ada berkas yang perlu diedit di laptop.
 
 | Nilai | Unik per peserta? | Diatur di mana |
 |---|---|---|
