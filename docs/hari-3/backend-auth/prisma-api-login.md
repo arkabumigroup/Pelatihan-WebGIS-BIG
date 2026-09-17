@@ -89,6 +89,57 @@
 ![](prisma-api-login/image13.png)
     
 
+### prisma/schema.prisma, kode lengkap
+
+```prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model users {
+  user_id         String            @id(map: "users_pk") @db.VarChar
+  email           String            @unique(map: "users_unique") @db.VarChar
+  password        String?           @db.VarChar
+  role            String?           @db.VarChar
+  is_active       Boolean           @default(false)
+  nama            String?           @db.VarChar
+  katalog_data_2d katalog_data_2d[]
+  katalog_data_3d katalog_data_3d[]
+}
+
+model katalog_data_2d {
+  data_2d_id  String   @id(map: "katalog_data_2d_pk") @db.VarChar
+  layer_name  String?  @db.VarChar
+  akses       String?  @db.VarChar
+  is_editable Boolean?
+  wms_url     String?  @db.VarChar
+  wfs_url     String?  @db.VarChar
+  author      String?  @db.VarChar
+  users       users?   @relation(fields: [author], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "katalog_data_2d_users_fk")
+}
+
+model katalog_data_3d {
+  data_3d_id String  @id(map: "katalog_data_3d_pk") @db.VarChar
+  author     String? @db.VarChar
+  nama       String? @db.VarChar
+  akses      String? @db.VarChar
+  url        String? @db.VarChar
+  latitude   Float?
+  longitude  Float?
+  heading    Int?
+  pitch      Int?
+  roll       Int?
+  scale      Int?
+  tipe_file  String? @db.VarChar
+  users      users?  @relation(fields: [author], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "katalog_data_3d_users_fk")
+}
+```
+
 ## **Membuat API Login**
 
 1. Buat folder baru di dalam folder app bernama api/users dua folder akan otomatis terbuat api => users
@@ -150,6 +201,42 @@
 ![](prisma-api-login/image7.png)
     
 
+### src/app/api/users/login/route.js, kode lengkap
+
+```js
+import { NextResponse } from "next/server";
+import { verifyCredentials } from "../../../../../lib/auth/verifyCredentials";
+import { signAccessToken } from "../../../../../lib/auth/jwt";
+
+export async function POST(request) {
+  try {
+    const { email, password } = await request.json();
+
+    if (!email || !password) {
+      return NextResponse.json(
+        { message: "Email dan password wajib diisi!" },
+        { status: 400 }
+      );
+    }
+
+    const user = await verifyCredentials(email, password);
+    const accessToken = signAccessToken(user);
+
+    return NextResponse.json(
+      {
+        message: "Login berhasil",
+        access_token: accessToken,
+        user: { id: user.user_id, email: user.email, role: user.role },
+      },
+      { status: 200 }
+    );
+  } catch (error) {
+    const status = error.message.includes("aktivasi") ? 403 : 401;
+    return NextResponse.json({ message: error.message }, { status });
+  }
+}
+```
+
 ## **Konfigurasi File-File CICD Setelah Koneksi Database Menggunakan Prisma**
 
 1. Saat melakukan setup di atas ada beberapa file baru di project NextJS yang akan di push ke GitHub dan juga ada beberapa perintah di terminal yang dijalankan seperti npx prisma generate. Semua prosedur ini harus dimasukan ke proses CICD agar web production kita bisa berjalan sama persis seperti web local. Buka Dockerfile, ubah menjadi seperti ini
@@ -207,3 +294,85 @@
 11. Setelah selesai pergi ke domain anda dengan /portal dibelakangnya [https://matiur-geoportal.com/portal](https://matiur-geoportal.com/portal)
     
 ![](prisma-api-login/image21.png)
+
+## Berkas Pendukung Autentikasi
+
+Berikut berkas yang dipakai oleh API login. Salin isinya apa adanya.
+
+### lib/auth/verifyCredentials.js
+
+```js
+import bcrypt from "bcryptjs";
+import { db } from "../db";
+
+export async function verifyCredentials(email, password) {
+    const user = await db.users.findFirst({ where: { email } });
+
+    if (!user) {
+        throw new Error("Email atau password salah!");
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+        throw new Error("Email atau password salah!");
+    }
+
+    if (!user.is_active) {
+        throw new Error(
+            "Akun anda belum di aktivasi. Silahkan request aktivasi ke email arimatiur@gmail.com"
+        );
+    }
+
+    return {
+        user_id: user.user_id,
+        email: user.email,
+        role: user.role
+    };
+}
+```
+
+### lib/auth/jwt.js
+
+```js
+import jwt from "jsonwebtoken";
+
+const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN;
+
+export function signAccessToken(user) {
+  return jwt.sign(
+    {
+      id: user.user_id || user.id,
+      user_id: user.user_id || user.id,
+      email: user.email,
+      role: user.role,
+    },
+    JWT_SECRET,
+    { expiresIn: JWT_EXPIRES_IN },
+  );
+}
+
+export function verifyAccessToken(token) {
+  return jwt.verify(token, JWT_SECRET);
+}
+```
+
+### lib/auth/roles.js
+
+```js
+// Semakin besar angka semakin banyak priviledge yang didapat.
+// Super admin bisa melakukan semuanya tanpa batasan,
+// Admin tidak bisa melakukan hal dikususkan super_admin
+// Viewer tidak bisa melakukan hal yang dikususkan admin dan super_admin
+export const ROLE_LEVELS = {
+    viewer: 1,
+    admin: 2,
+    super_admin: 3,
+};
+
+export function hasRequiredRole(userRole, requiredRole) { // userRole = role yang dimiliki user, requiredRole = role yang harus dimiliki user
+    const userLevel = ROLE_LEVELS[userRole]; // ubah user role string menjadi angka (user level) contoh jika user maka jadi 1 
+    const requiredLevel = ROLE_LEVELS[requiredRole]; // ubah required role string menjadi angka (user level) contoh jika user maka jadi 1
+    return userLevel >= requiredLevel; // user level harus lebih dari sama dengan required level
+}
+```

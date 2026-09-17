@@ -58,6 +58,44 @@
 ![](aset-3d-tiles/image13.png)
     
 
+### addModel3D.jsx, kode lengkap
+
+```jsx
+export default function addModel3D(viewer, opsi) {
+  const Cesium = window.Cesium;
+
+   const {
+    url,
+    latitude,
+    longitude,
+    ketinggian = 0,
+    skala = 1,
+    heading = 0,
+    nama = 'Model 3D',
+  } = opsi;
+
+  const posisi = Cesium.Cartesian3.fromDegrees(longitude, latitude, ketinggian);  
+
+  const orientasi = Cesium.Transforms.headingPitchRollQuaternion(
+    posisi,
+    new Cesium.HeadingPitchRoll(Cesium.Math.toRadians(heading), 0, 0)
+  );
+
+   return viewer.entities.add({
+    name: nama,
+    position: posisi,
+    orientation: orientasi,
+    show: true,
+    model: {
+      uri: url,
+      scale: skala,
+      minimumPixelSize: 64,
+    },
+  });
+
+}
+```
+
 ## **Menambahkan Model 3D Tiles ke Peta CesiumJS**
 
 1. Tahap pertama buat file baru pada folder **components** dengan nama **ad3DTileset.jsx** untuk menambahkan data 3D Tiles ke dalam Cesium Viewer. Selanjutnya tambahkan parameter **viewer, opsi** dan **selesai.**
@@ -108,6 +146,44 @@
     
 ![image.png](aset-3d-tiles/image%204.png)
     
+
+### add3DTileset.jsx, kode lengkap
+
+```jsx
+export default function add3DTileset(viewer, opsi, selesai) {
+  const Cesium = window.Cesium;
+
+   const {
+    url,
+    assetId,
+    nama = '3D Tiles',
+    otomatisZoom = true,
+   } = opsi;
+  
+   let proses; 
+
+   if (assetId) {
+    proses = Cesium.Cesium3DTileset.fromIonAssetId(assetId);
+   } else if (url) {
+     proses = Cesium.Cesium3DTileset.fromUrl(url);
+   } else {
+     if (selesai) selesai(null);
+     return;
+   }
+
+   proses.then(function (tileset) {
+      tileset.show = true;
+      viewer.scene.primitives.add(tileset);
+
+      if (otomatisZoom) {
+        viewer.zoomTo(tileset);
+      }
+
+      if (selesai) selesai(tileset); 
+    })
+    
+}
+```
 
 ## **Pembuatan Panel 3D Aset**
 
@@ -160,6 +236,67 @@
 ![image.png](aset-3d-tiles/image%2010.png)
     
 
+### PanelLayer3D.jsx, kode lengkap
+
+```jsx
+export default function addPanelLayer3D(viewer, daftarLayer) {
+
+  const panel = document.createElement('div');
+
+  panel.style.cssText = `
+    position:absolute;
+    top:50px;
+    right:50px;
+    z-index:999;
+    background:white;
+    padding:10px 14px;
+    border-radius:6px;
+    font-family:sans-serif;
+    font-size:13px;
+    box-shadow:0 1px 6px rgba(0,0,0,0.3);
+    min-width:180px;
+    color:#111;
+  `;
+
+  panel.innerHTML = `
+    <div style="font-weight:bold;margin-bottom:8px;color:#111;">
+      Layer 3D
+    </div>
+  `;
+
+  Object.entries(daftarLayer).forEach(([nama, objek]) => {
+
+    if (!objek) return;
+
+    const baris = document.createElement('label');
+
+    baris.style.cssText = `
+      display:flex;
+      align-items:center;
+      gap:8px;
+      margin-bottom:6px;
+      cursor:pointer;
+      color:#111;
+    `;
+
+    baris.innerHTML = `
+      <input type="checkbox" checked />
+      <span style="color:#111;">${nama}</span>
+    `;
+
+    baris.querySelector('input').addEventListener('change', (e) => {
+      objek.show = e.target.checked;
+    });
+
+    panel.appendChild(baris);
+  });
+
+  viewer.container.appendChild(panel);
+
+  return panel;
+}
+```
+
 ## **Pemanggilan Data 3D Dalam Peta**
 
 1. Tahap pertama buka file **CesiumViewer.jsx** lalu tambahkan Cesium Ion Access Token dibawah **const CESIUM_STYLE_URL** dengan menggunakan token yang sebelumnya telah dibuat pada poin A.
@@ -201,3 +338,215 @@
 10. Hasil tampilan objek 3D dengan menggunakan model data glb.
     
 ![image.png](aset-3d-tiles/image%2013.png)
+
+### CesiumViewer.jsx, kode lengkap
+
+```jsx
+'use client';
+
+import { useEffect, useRef, useState } from 'react';
+import addLayerBasemap from './Basemap';
+import add3DTileset from './add3DTileset';
+import addPanelLayer3D from './PanelLayer3D';
+import addModel3D from './addModel3D';
+import addTerrain from './addTerrain';
+import addCameraNav from './addCameraNav';
+import addDataVektor2D from './addDataVektor2D';
+import addInteraksiPengguna from './addInteraksiPengguna';
+
+const CESIUM_VERSION = '1.120';
+const CESIUM_BASE_URL = `https://cesium.com/downloads/cesiumjs/releases/${CESIUM_VERSION}/Build/Cesium/`;
+const CESIUM_SCRIPT_URL = `${CESIUM_BASE_URL}Cesium.js`;
+const CESIUM_STYLE_URL = `${CESIUM_BASE_URL}Widgets/widgets.css`;
+
+const CESIUM_ION_TOKEN = process.env.CESIUM_ION_TOKEN;
+
+const LOKASI_AWAL = {
+  latitude: -6.2432495,
+  longitude: 106.7979208,
+  ketinggian: 2000,
+  heading: 20,
+  pitch: -35,
+};
+
+const VIEWER_OPTIONS = {
+  timeline: false,
+  animation: false,
+  baseLayerPicker: false,
+  geocoder: false,
+  homeButton: true,
+  navigationHelpButton: false,
+  sceneModePicker: false,
+  infoBox: false,
+  selectionIndicator: false,
+  shadows: true,
+};
+
+function LoadCesium(onBerhasil, onGagal) {
+  if (window.Cesium) {
+    onBerhasil();
+    return;
+  }
+
+  const cssTag = document.createElement('link');
+  cssTag.rel = 'stylesheet';
+  cssTag.href = CESIUM_STYLE_URL;
+  document.head.appendChild(cssTag);
+
+  const scriptTag = document.createElement('script');
+  scriptTag.src = CESIUM_SCRIPT_URL;
+  scriptTag.async = true;
+  scriptTag.onload = onBerhasil;
+  scriptTag.onerror = () => onGagal('Gagal memuat CesiumJS dari CDN. Cek koneksi internet.');
+  document.body.appendChild(scriptTag);
+}
+
+function createViewerCesium(container) {
+  const Cesium = window.Cesium;
+  Cesium.buildModuleUrl.setBaseUrl(CESIUM_BASE_URL);
+  Cesium.Ion.defaultAccessToken = CESIUM_ION_TOKEN;
+
+  const viewer = new Cesium.Viewer(container, {
+    ...VIEWER_OPTIONS,
+    terrainProvider: new Cesium.EllipsoidTerrainProvider(),
+    imageryProvider: false,
+  });
+
+  addLayerBasemap(viewer);
+  viewer.scene.globe.depthTestAgainstTerrain = true;
+  viewer.scene.globe.enableLighting = true;
+  viewer.scene.light = new Cesium.SunLight();
+
+  viewer.camera.setView({
+    destination: Cesium.Cartesian3.fromDegrees(
+      LOKASI_AWAL.longitude,
+      LOKASI_AWAL.latitude,
+      LOKASI_AWAL.ketinggian
+    ),
+    orientation: {
+      heading: Cesium.Math.toRadians(LOKASI_AWAL.heading),
+      pitch: Cesium.Math.toRadians(LOKASI_AWAL.pitch),
+      roll: 0,
+    },
+  });
+
+  return viewer;
+}
+
+function addContent3D(viewer) {
+  const Cesium = window.Cesium;
+
+  const kontrolTerrain = addTerrain(viewer, {
+    aktifTerrainAwal: true,
+  });
+
+  const kontrolKamera = addCameraNav(viewer, {
+    lokasiAwal: LOKASI_AWAL,
+    tampilkanPanel: true,
+  });
+
+  add3DTileset(
+    viewer,
+    {
+      assetId: 96188,
+      nama: 'Gedung 3D (OSM Buildings)',
+      otomatisZoom: false,
+    },
+    function (gedung3D) {
+      const modelBox = addModel3D(viewer, {
+        url: 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/main/2.0/Box/glTF-Binary/Box.glb',
+        latitude: LOKASI_AWAL.latitude,
+        longitude: LOKASI_AWAL.longitude,
+        ketinggian: 30,
+        skala: 20,
+        heading: 0,
+        nama: 'Bangunan Kotak (Contoh GLB)',
+      });
+
+    addDataVektor2D(
+      viewer,
+      {
+        url: '/portal/data/jalan.geojson',
+        nama: 'Jaringan Jalan',
+        warnaGaris: Cesium.Color.YELLOW,
+        lebarGaris: 4,
+        otomatisZoom: false,
+      },
+      function (jaringanJalan) {
+        addDataVektor2D(
+          viewer,
+          {
+            url: '/portal/data/batas_admin.geojson',
+            nama: 'Batas Administrasi',
+            warnaArea: Cesium.Color.CYAN.withAlpha(0.4),
+            otomatisZoom: false,
+          },
+      function (batasAdmin) {
+        const kontrolInteraksi = addInteraksiPengguna(viewer);
+        addPanelLayer3D(
+            viewer,
+            {
+              'Gedung 3D (OSM Buildings)': gedung3D,
+              'Bangunan Kotak (Contoh GLB)': modelBox,
+              'Jaringan Jalan': jaringanJalan,
+              'Batas Administrasi': batasAdmin,
+            },
+            kontrolTerrain,
+            kontrolInteraksi
+            );
+
+            kontrolKamera.terbangKe(
+              LOKASI_AWAL.latitude,
+              LOKASI_AWAL.longitude,
+              800,
+              20,
+              -40
+            );
+          }
+        );
+
+      }
+    );
+    }
+  );
+
+  return { kontrolTerrain, kontrolKamera };
+}
+
+export default function CesiumViewer() {
+  const containerRef = useRef(null);
+  const viewerRef = useRef(null);
+  const [status, setStatus] = useState('memuat');
+
+  useEffect(() => {
+    LoadCesium(
+      () => setStatus('siap'),
+      (pesan) => {
+        setPesanError(pesan);
+        setStatus('error');
+      }
+    );
+  }, []);
+
+  useEffect(() => {
+    if (status !== 'siap' || viewerRef.current) return;
+
+    try {
+      viewerRef.current = createViewerCesium(containerRef.current);
+
+      addContent3D(viewerRef.current);
+
+    } catch (err) {
+      console.error('Cesium init error:', err);
+      setPesanError('Gagal membuat peta. Cek console untuk detail.');
+      setStatus('error');
+    }
+
+    return () => {
+      viewerRef.current?.destroy();
+      viewerRef.current = null;
+    };
+  }, [status]);
+return <div ref={containerRef} style={{ width: '100%', height: '100vh' }} />;
+}
+```
