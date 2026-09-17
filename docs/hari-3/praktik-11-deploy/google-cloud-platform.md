@@ -6,33 +6,79 @@ Seluruh tahapan memakai satu project kelompok yang dipakai bersama **empat peser
 
 ## Prasyarat
 
-- Akses ke Google Cloud project dari koordinator. Project ID berbentuk `geoportal-kelompok-a-xxxxx`.
+Halaman ini melanjutkan pekerjaan dari Hari 2. Empat hal berikut harus sudah selesai sebelum Anda mulai. Kalau belum, kerjakan lebih dahulu.
+
+### 1. Repositori sudah di-fork
+
+Fork `https://github.com/dhanyyudi/personal-geoportal-peserta` di akun GitHub Anda. Rinciannya pada [Repositori yang Dipakai](#repositori-yang-dipakai).
+
+### 2. Database Supabase sudah siap dan bisa login
+
+Portal memerlukan database. Aplikasi tidak akan bisa login tanpa ini.
+
+- Project Supabase sudah dibuat.
+- Skrip `sql/01-schema.sql` sudah dijalankan lewat SQL Editor Supabase.
+- Akun super admin sudah dibuat lewat `sql/02-seed-super-admin.sql`.
+- Portal sudah pernah dijalankan di laptop dengan `npm run dev`, dan Anda berhasil login.
+
+Panduan lengkapnya ada di `sql/README.md` pada repositori Anda, dan pada halaman [Setup Cloud PostgreSQL + PostGIS + Koneksi Dbeaver](/hari-2/database-spasial/cloud-postgresql).
+
+::: warning Jangan mengosongkan DATABASE_URL
+Modul versi lama menyatakan `DATABASE_URL` boleh dikosongkan untuk menguji build. Itu keliru untuk tahap ini. Tanpa `DATABASE_URL` yang valid, container `nextjs` berjalan tetapi halaman login selalu gagal. Isi sejak awal.
+:::
+
+### 3. Berkas .env sudah terisi
+
+Saat menyalin repositori ke VM nanti, Anda akan membuat `.env` dari `.env.example`. Siapkan nilainya sekarang supaya tidak terhenti di tengah tahap.
+
+Enam variabel berikut wajib ada. Tanpa salah satunya, login tidak bekerja.
+
+| Variabel | Isi |
+|---|---|
+| `DATABASE_URL` | Connection string Supabase, Session pooler port 5432 |
+| `JWT_SECRET` | Hasil perintah acak |
+| `NEXTAUTH_SECRET` | Hasil perintah acak, harus berbeda dari di atas |
+| `NEXTAUTH_URL` | `http://IP_EKSTERNAL_VM/portal` |
+| `ADMIN_CONTACT_EMAIL` | Email Anda sendiri |
+| `JWT_EXPIRES_IN` | `1h`, sudah terisi di `.env.example` |
+
+Cara membuat nilai acak, pilih sesuai sistem Anda:
+
+```bash
+# macOS atau Linux
+openssl rand -hex 32
+
+# Windows, PowerShell, atau Command Prompt
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+```
+
+Variabel lain pada `.env.example` hanya diperlukan untuk fitur katalog data spasial. Bila Anda akan mengunggah layer 2D, isi juga bagian **DATA SPASIAL**. Bila tidak, biarkan kosong.
+
+### 4. Akses Google Cloud dari koordinator
+
+- Akses ke Google Cloud project, dengan Project ID berbentuk `geoportal-kelompok-a-xxxxx`.
 - Email peserta yang sudah terdaftar di project tersebut. Email ini dipakai menurunkan identitas peserta.
-- Fork `https://github.com/matiurari/personal-geoportal` di akun GitHub sendiri. Rinciannya pada [Repositori yang Dipakai](#repositori-yang-dipakai).
-- Berkas dari halaman [Konfigurasi Project](/hari-3/praktik-11-deploy/konfigurasi-project) sudah di-push ke fork tersebut.
 
 ## Repositori yang Dipakai
 
-Modul ini bekerja pada satu repositori GitHub: fork repositori instruktur di akun Anda sendiri.
+Modul ini bekerja pada satu repositori GitHub: **fork repositori peserta di akun Anda sendiri.**
 
 | | Repositori |
 |---|---|
-| Sumber, yang di-fork | `https://github.com/matiurari/personal-geoportal` |
+| Sumber, yang di-fork | `https://github.com/dhanyyudi/personal-geoportal-peserta` |
 | Fork Anda | `https://github.com/<username-anda>/personal-geoportal-peserta` |
 
 Cara membuat fork:
 
-1. Buka `https://github.com/matiurari/personal-geoportal` pada browser.
+1. Buka `https://github.com/dhanyyudi/personal-geoportal-peserta` pada browser.
 2. Pilih **Fork**, lalu pilih akun GitHub Anda sebagai tujuan.
-
-   ![Dashboard Google Cloud dengan tombol Create a VM](google-cloud-platform/vm-image.png)
-3. Beri nama fork `personal-geoportal-peserta` supaya seluruh contoh perintah pada halaman ini cocok. Bila nama itu sudah dipakai repositori lain di akun Anda, biarkan nama bawaan `personal-geoportal`, lalu sesuaikan URL pada Tahap 17.
+3. Biarkan nama fork apa adanya, yaitu `personal-geoportal-peserta`, supaya seluruh contoh perintah pada halaman ini cocok.
 4. Pastikan branch default fork adalah `main`.
 
-Repositori instruktur bersifat publik, jadi fork dapat dibuat tanpa izin khusus dan clone di VM cukup memakai HTTPS.
+Repositori itu sudah memuat seluruh berkas konfigurasi container, `Dockerfile`, `cloudbuild.yaml`, dan skrip SQL. Anda **tidak perlu membuatnya dari nol**. Yang perlu Anda kerjakan adalah memeriksanya, menyesuaikan beberapa nilai, lalu mengunggahnya.
 
 ::: tip Repositori pembanding
-Bila ada bagian yang meragukan, bandingkan dengan repositori acuan berikut. Repositori itu sudah memuat `docker-compose.yml`, `nginx.conf`, `.env.example`, `cloudbuild.yaml`, dan `Dockerfile` dalam keadaan bekerja.
+Bila ada bagian yang meragukan, bandingkan dengan repositori acuan berikut. Repositori itu dipakai untuk menguji seluruh alur pada modul ini.
 
 `https://github.com/dhanypedia/personal-geoportal-testing`
 

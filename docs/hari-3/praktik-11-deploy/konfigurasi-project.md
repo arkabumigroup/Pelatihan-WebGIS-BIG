@@ -1,24 +1,28 @@
 # Konfigurasi Project
 
-Halaman ini menyiapkan berkas yang dibutuhkan container sebelum aplikasi bisa berjalan di server. Semuanya dikerjakan di laptop, di dalam folder proyek Next.js yang sudah terhubung ke GitHub.
+Halaman ini memeriksa berkas yang dibutuhkan container sebelum aplikasi bisa berjalan di server. Semuanya dikerjakan di laptop, di dalam folder proyek yang sudah Anda fork.
 
-Ada tiga berkas baru dan dua berkas pemeriksa. Setelah selesai, seluruh berkas diuji di laptop lebih dahulu, lalu di-push ke GitHub.
+**Berkasnya sudah tersedia di repositori Anda.** Anda tidak perlu membuatnya dari nol. Yang perlu dikerjakan adalah memastikan kelimanya ada, memahami isinya, lalu mengujinya sebelum di-push.
 
-## Berkas yang Akan Dibuat
+Menulis berkas YAML sepanjang ini dari nol adalah sumber kesalahan paling sering. Satu spasi yang salah membuat container gagal jalan, dan pesan galatnya tidak menyebut baris yang bermasalah.
 
-| Berkas | Isi |
-|---|---|
-| `docker-compose.yml` | Tiga service: `nextjs`, `geoserver`, dan `nginx` |
-| `nginx.conf` | Rute reverse proxy untuk portal dan GeoServer |
-| `.env.example` | Daftar variabel lingkungan beserta penjelasannya |
-| `scripts/check-config.mjs` | Memeriksa struktur YAML pada berkas compose dan Cloud Build |
-| `scripts/periksa-nginx.mjs` | Memeriksa struktur `nginx.conf` |
+## Berkas yang Diperiksa
 
-## Tahap 1. Buat docker-compose.yml
+| Berkas | Isi | Status di repositori |
+|---|---|---|
+| `docker-compose.yml` | Tiga service: `nextjs`, `geoserver`, dan `nginx` | sudah ada |
+| `nginx.conf` | Rute reverse proxy untuk portal dan GeoServer | sudah ada |
+| `.env.example` | Daftar variabel lingkungan beserta penjelasannya | sudah ada |
+| `scripts/check-config.mjs` | Memeriksa struktur YAML pada berkas compose dan Cloud Build | sudah ada |
+| `scripts/periksa-nginx.mjs` | Memeriksa struktur `nginx.conf` | sudah ada |
 
-Buka folder proyek Next.js di Visual Studio Code, lalu buat berkas baru bernama `docker-compose.yml` di root folder. Salin isi berkas berikut.
+Seluruh isi tiap berkas tetap ditampilkan di halaman ini supaya Anda dapat memeriksa dan memahami maksudnya. Bandingkan dengan berkas di repositori Anda. Bila ada perbedaan, samakan dengan yang ada di repositori, bukan dengan yang tercetak di sini.
 
-Isi lengkapnya bisa diunduh di sini: [docker-compose.yml](/unduhan/docker-compose.yml)
+## Tahap 1. Periksa docker-compose.yml
+
+Buka folder proyek di Visual Studio Code, lalu buka berkas `docker-compose.yml` di root folder. Berkas itu sudah ada di repositori Anda.
+
+Isi yang seharusnya terlihat:
 
 ```yaml
 services:
@@ -86,9 +90,11 @@ Dua hal pada service `nginx` yang mudah terlewat, dan keduanya membuat HTTPS tid
 - Port `443:443` harus dipublikasikan. Tanpa itu Nginx mendengarkan di dalam container, tetapi host tidak meneruskan trafik ke sana.
 - Volume `/etc/letsencrypt` menunjuk lokasi di VM, bukan di repository. Tanpa itu, `nginx -t` gagal dengan pesan berkas sertifikat tidak ditemukan meskipun sertifikatnya ada.
 
-## Tahap 2. Buat nginx.conf
+## Tahap 2. Periksa nginx.conf
 
-Buat berkas baru bernama `nginx.conf` di root folder proyek. Isi lengkapnya bisa diunduh di sini: [nginx.conf](/unduhan/nginx.conf)
+Buka berkas `nginx.conf` di root folder proyek. Berkas itu sudah ada di repositori Anda.
+
+Isi yang seharusnya terlihat:
 
 ```nginx
 server {
@@ -157,48 +163,37 @@ include /etc/nginx/tls/*.conf;
 Perhatikan baris terakhir. Berkas ini sengaja sudah memuat direktori `tls/`, walaupun direktori itu masih kosong pada tahap ini. Dengan begitu, berkas yang ditulis pada halaman [Penambahan Subdomain](/hari-3/praktik-11-deploy/subdomain) nanti langsung terbaca tanpa mengubah `nginx.conf` lagi.
 
 
-## Tahap 3. Buat .env.example
+## Tahap 3. Periksa .env.example
 
-Buat berkas baru bernama `.env.example` di root folder proyek. Berkas ini adalah contoh yang di-commit ke GitHub, sedangkan `.env` yang berisi nilai asli hanya dibuat di VM.
+Buka berkas `.env.example` di root folder proyek. Berkas itu sudah ada di repositori Anda.
 
-Isi lengkapnya bisa diunduh di sini: [env-contoh.txt](/unduhan/env-contoh.txt). Simpan berkas itu di root folder proyek dengan nama `.env.example`. Nama berkasnya berbeda saat diunduh karena VitePress tidak menyalin berkas yang namanya diawali titik.
+Berkas ini adalah contoh yang di-commit ke GitHub, sedangkan `.env` yang berisi nilai asli hanya dibuat di VM dan tidak pernah di-commit.
+
+Berkas itu tersusun dalam tiga bagian, dan pembagiannya penting:
+
+| Bagian | Isi | Perlu diisi? |
+|---|---|---|
+| **WAJIB** | `DATABASE_URL`, `JWT_SECRET`, `NEXTAUTH_SECRET`, `NEXTAUTH_URL`, `ADMIN_CONTACT_EMAIL` | Ya, tanpa ini login tidak bekerja |
+| **NILAI BAWAAN** | `JWT_EXPIRES_IN`, `NEXTJS_IMAGE`, dan alamat aplikasi lainnya | Biasanya tidak, sudah terisi |
+| **DATA SPASIAL** | `POSTGIS_*` dan `GEOSERVER_*` | Hanya bila Anda mengunggah layer 2D |
+
+Bagian **WAJIB** sudah dijelaskan pada [Prasyarat halaman Google Cloud Platform](/hari-3/praktik-11-deploy/google-cloud-platform#_3-berkas-env-sudah-terisi).
+
+Satu hal yang perlu diperhatikan pada bagian DATA SPASIAL. Alamat GeoServer harus memakai nama service, bukan localhost:
 
 ```bash
-# Salin berkas ini menjadi .env di VM, lalu isi nilai aslinya di sana.
-# Jangan pernah commit berkas .env yang sudah terisi.
+# Benar. "geoserver" adalah nama service pada docker-compose.yml, dan Docker
+# menerjemahkannya ke container yang tepat.
+GEOSERVER_URL=http://geoserver:8080/geoserver
 
-# Diisi otomatis oleh Cloud Build pada deploy pertama.
-NEXTJS_IMAGE=nginx:1.27-alpine
-
-# Boleh dikosongkan untuk menguji build, Nginx, dan halaman publik.
-# Login, Prisma, dan fitur katalog memerlukan database yang valid.
-DATABASE_URL=
-
-# Buat dua nilai acak yang berbeda dengan: openssl rand -hex 32
-JWT_SECRET=
-JWT_EXPIRES_IN=1h
-NEXTAUTH_SECRET=
-
-# Wajib memakai alamat IP eksternal VM dan diakhiri slash, contoh:
-# NEXTAUTH_URL=http://IP_EKSTERNAL_VM/portal/
-NEXTAUTH_URL=
-
-# Kata sandi admin GeoServer. Pakai openssl rand -hex 16 supaya hanya berisi
-# huruf dan angka. Jangan memakai tanda dolar, karena compose membacanya
-# sebagai variabel dan karakter setelahnya bisa hilang tanpa peringatan.
-GEOSERVER_ADMIN_PASSWORD=
-
-AUTH_API_URL=http://localhost:3000/portal/api
-
-# Origin lengkap aplikasi, tanpa slash di akhir. Dipakai modul katalog 3D.
-BASE_URL=http://IP_EKSTERNAL_VM/portal
+# Salah. Di dalam container, localhost menunjuk ke container aplikasi sendiri,
+# sehingga unggahan layer gagal dengan connection refused.
+GEOSERVER_URL=http://localhost:8080/geoserver
 ```
 
-Nilai `NEXTJS_IMAGE=nginx:1.27-alpine` pada berkas contoh bukan nilai akhir, melainkan nilai sementara yang bisa benar-benar ditarik Docker. Cloud Build akan menimpanya dengan image milik peserta pada deploy pertama. Jangan memakai nama karangan, karena compose akan mencoba menariknya dan berhenti dengan `pull access denied`.
+## Tahap 4. Periksa .gitignore
 
-## Tahap 4. Tambahkan /geoserver-data/ ke .gitignore
-
-Buka `.gitignore` di root folder proyek, lalu tambahkan satu baris:
+Buka `.gitignore` di root folder proyek. Pastikan di dalamnya ada baris berikut:
 
 ```
 /geoserver-data/
@@ -207,9 +202,9 @@ Buka `.gitignore` di root folder proyek, lalu tambahkan satu baris:
 Direktori itu diisi GeoServer saat container pertama kali berjalan. Isinya besar dan bersifat lokal, jadi tidak perlu ikut masuk ke repositori.
 
 
-## Tahap 5. Buat folder scripts
+## Tahap 5. Periksa folder scripts
 
-Di root folder proyek, buat folder baru bernama `scripts`, sejajar dengan folder `public` dan `src`.
+Di root folder proyek, pastikan ada folder bernama `scripts`, sejajar dengan folder `public` dan `src`. Folder itu berisi dua berkas pemeriksa.
 
 ### 5a. scripts/check-config.mjs
 
@@ -345,15 +340,15 @@ Buka terminal di Visual Studio Code, pada folder proyek. Jalankan pemeriksa YAML
 node scripts/check-config.mjs
 ```
 
-Keluaran yang diharapkan:
+Keluaran yang diharapkan, persis seperti ini:
 
 ```
 OK   docker-compose.yml -> services, networks
      service: nextjs, geoserver, nginx
-GAGAL cloudbuild.yaml: ENOENT: no such file or directory, open 'cloudbuild.yaml'
+OK   cloudbuild.yaml -> substitutions, steps, images, options
 ```
 
-Baris `GAGAL` wajar pada tahap ini: `cloudbuild.yaml` belum ada di laptop, dan baru dibuat pada halaman [Google Cloud Platform](/hari-3/praktik-11-deploy/google-cloud-platform). Yang perlu dipastikan adalah tiga nama service terbaca lengkap.
+Baris pertama memastikan tiga service terbaca. Baris kedua memastikan `cloudbuild.yaml` dapat diurai.
 
 Selanjutnya jalankan pemeriksa Nginx:
 
@@ -365,31 +360,26 @@ Keluaran yang diharapkan:
 
 ```
 Berkas       : nginx.conf
-proxy_pass   : $geoserver_upstream, $nextjs_upstream
+proxy_pass   : $nextjs_upstream/portal/robots.txt, $nextjs_upstream/portal/sitemap.xml, $geoserver_upstream, $nextjs_upstream
 resolver     : ada
 HASIL: struktur konfigurasi valid
 ```
 
-## Tahap 7. Commit dan push
+Baris `resolver : ada` yang paling penting. Tanpa directive itu, Nginx menolak start dengan `host not found in upstream` ketika container `nextjs` belum ada.
 
-Periksa daftar berkas yang akan di-commit lebih dahulu, jangan langsung memakai `git add .`:
+## Tahap 7. Pastikan tidak ada rahasia yang ikut ter-commit
+
+Berkas konfigurasi Anda sudah ada di repositori, jadi pada tahap ini tidak ada yang perlu di-commit. Yang perlu diperiksa hanya satu hal: pastikan berkas `.env` tidak pernah ikut masuk ke Git.
 
 ```bash
 git status --short
+git check-ignore .env && echo "aman, .env diabaikan"
 ```
 
-Pastikan `.env` tidak muncul di daftar itu. Setelah aman, lanjutkan:
+Keluaran `git check-ignore` harus menyebut `.env`. Bila perintah itu tidak mengeluarkan apa pun, berarti `.env` **tidak** diabaikan dan isinya bisa ikut ter-push ke GitHub publik. Hentikan langkah ini dan tambahkan `.env` ke `.gitignore` lebih dahulu.
 
-```bash
-git add docker-compose.yml nginx.conf .env.example .gitignore \
-  scripts/check-config.mjs scripts/periksa-nginx.mjs
-
-git commit -m "feat: tambah GeoServer dan rute nginx"
-git push origin main
-```
-
-Bila `.env` ikut muncul pada `git status --short`, hentikan langkah ini. Tambahkan `.env` ke `.gitignore` lebih dahulu, baru ulangi commit.
+Berkas `.gitignore` di repositori sudah memuat pola `.env*`, sehingga `.env` dan seluruh berkas sejenis diabaikan, sementara `.env.example` tetap ikut karena dikecualikan khusus.
 
 ## Hasil Tahap Ini
 
-Repositori proyek sekarang memuat tiga berkas konfigurasi container dan dua berkas pemeriksa. Berkas `docker-compose.yml` dan `nginx.conf` akan dipakai lagi di VM pada halaman berikutnya, dan `cloudbuild.yaml` akan mengambil alih proses build mulai deploy pertama.
+Kelima berkas konfigurasi sudah diperiksa dan lolos uji di laptop. Berkas `docker-compose.yml` dan `nginx.conf` akan dipakai lagi di VM pada halaman berikutnya, dan `cloudbuild.yaml` mengambil alih proses build mulai deploy pertama.
