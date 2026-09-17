@@ -2,14 +2,23 @@
 
 ## **Instalasi Geoserver di VM**
 
+::: warning Halaman ini memerlukan VM dan repositori dari Hari 3
+Halaman ini mengandaikan dua hal yang sudah siap:
+
+1. **VM dari Deployment Project**, pada [Tahap 6 halaman Google Cloud Platform](/hari-3/deployment-project/google-cloud-platform).
+2. **Repositori peserta sudah di-clone ke VM**, pada folder `/opt/webgis/app`. Folder itu memuat `docker-compose.yml` dan `nginx.conf` yang diperbarui di halaman ini.
+
+Bila VM belum siap, GeoServer masih dapat dicoba di laptop dengan menjalankan container GeoServer saja. Namun langkah pada halaman ini menyebut `/opt/webgis/app`, sehingga perintahnya perlu disesuaikan.
+:::
+
 1. Koneksi VM lewat SSH lalu perbarui docker-compose.yml
     
 ![image.png](instalasi-geoserver-vm/image.png)
     
 2. Buka docker-compose.yml dengan cara
     
-    ```jsx
-    cd app
+    ```bash
+    cd /opt/webgis/app
     nano docker-compose.yml
     ```
     
@@ -19,7 +28,7 @@
     
 3. Selanjutnya perbarui juga nginx.conf menjadi seperti berikut
     
-    ```jsx
+    ```bash
     nano nginx.conf
     ```
 
@@ -29,7 +38,7 @@
     
 4. Kemudian jalankan perintah berikut ini dari dalam folder app
     
-    ```jsx
+    ```bash
     docker compose up -d
     ```
 
@@ -37,7 +46,7 @@
 
 5. Kemudian jalankan perintah berikut ini untuk melihat logs boot geoserver. Boot sudah selesai jika muncul Server startup in [44757] miliseconds
     
-    ```jsx
+    ```bash
     docker logs -f geoserver_app
     ```
 

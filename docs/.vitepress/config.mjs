@@ -95,9 +95,11 @@ export default defineConfig({
           text: 'Deployment Project',
           collapsed: true,
           items: [
-            { text: '1. Konfigurasi Project', link: '/hari-3/deployment-project/konfigurasi-project' },
-            { text: '2. Google Cloud Platform', link: '/hari-3/deployment-project/google-cloud-platform' },
-            { text: '3. Penambahan Subdomain', link: '/hari-3/deployment-project/subdomain' }
+            { text: '1. Peserta dan Project', link: '/hari-3/deployment-project/peserta-project' },
+            { text: '2. Konfigurasi Project', link: '/hari-3/deployment-project/konfigurasi-project' },
+            { text: '3. Skema Database', link: '/hari-3/deployment-project/skema-database' },
+            { text: '4. Google Cloud Platform', link: '/hari-3/deployment-project/google-cloud-platform' },
+            { text: '5. Penambahan Subdomain', link: '/hari-3/deployment-project/subdomain' }
           ]
         }
       ]),

@@ -31,7 +31,7 @@ Halaman ini memeriksa berkas yang sudah ada di repositori. Karena itu repositori
 
 1. Buka `https://github.com/dhanyyudi/personal-geoportal-peserta` pada browser.
 2. Pilih **Fork**, lalu pilih akun GitHub Anda sebagai tujuan.
-3. Biarkan nama fork apa adanya, yaitu `personal-geoportal-peserta`, supaya seluruh contoh perintah pada Praktik 11 cocok.
+3. Biarkan nama fork apa adanya, yaitu `personal-geoportal-peserta`, supaya seluruh contoh perintah pada halaman ini cocok.
 4. Pastikan branch default fork adalah `main`.
 
 ### Clone fork Anda ke laptop
@@ -102,56 +102,31 @@ Satu akun Supabase dibatasi dua project aktif. Jadi satu akun untuk satu peserta
 
 Tabel database dibuat lewat **SQL Editor**, bukan dibuat manual satu per satu. SQL Editor adalah halaman di dalam dashboard Supabase untuk menjalankan perintah SQL, dan bentuknya seperti terminal khusus database.
 
-Cara membukanya:
-
-1. Buka project Anda di [supabase.com/dashboard](https://supabase.com/dashboard).
-2. Pada menu kiri, klik **SQL Editor**.
-3. Halaman itu punya kotak besar untuk menulis atau menempel perintah, tombol **Run** di kanan bawah, dan daftar riwayat perintah di sisi kiri.
-
-Untuk tiap berkas di bawah, lakukan hal yang sama: buka berkasnya di editor kode, salin **seluruh** isinya, tempel ke SQL Editor, lalu klik **Run**.
+Tiga berkas perlu dijalankan, berurutan:
 
 | # | Berkas | Yang dilakukan |
 |---|---|---|
-| 1 | `sql/01-schema.sql` | Membuat tiga tabel: `users`, `katalog_data_2d`, dan `katalog_data_3d` |
-| 2 | `sql/02-seed-super-admin.sql` | Membuat satu akun super admin untuk login pertama |
-| 3 | `sql/03-periksa.sql` | Memeriksa hasilnya, hanya membaca |
+| 1 | `01-schema.sql` | Membuat tiga tabel: `users`, `katalog_data_2d`, dan `katalog_data_3d` |
+| 2 | `02-seed-super-admin.sql` | Membuat satu akun super admin untuk login pertama |
+| 3 | `03-periksa.sql` | Memeriksa hasilnya, hanya membaca |
 
-Jangan menyalin sebagian, karena beberapa berkas memakai `BEGIN` dan `COMMIT` yang harus berpasangan.
+**Isi ketiga berkas itu ditampilkan lengkap pada halaman [Skema Database](/hari-3/deployment-project/skema-database)**, supaya dapat disalin langsung tanpa membuka berkas di laptop.
+
+Halaman itu juga memuat cara membuka SQL Editor, urutan pengerjaan, dan langkah membuat akun super admin.
 
 ### Buat akun super admin
 
-`sql/02-seed-super-admin.sql` tidak bisa langsung dijalankan. Berkas itu memuat dua penanda yang harus Anda isi lebih dahulu, supaya kata sandi tidak pernah ditulis dalam bentuk asli.
+Akun super admin dibuat oleh `02-seed-super-admin.sql`. Berkas itu berupa template, jadi dua nilai di dalamnya harus diganti lebih dahulu.
 
-**Langkah 1.** Di root folder proyek, jalankan:
+Ringkasnya: jalankan `node scripts/hash-password.mjs` untuk membuat hash kata sandi, isi hash itu beserta email Anda ke dalam berkas, lalu jalankan lewat SQL Editor.
 
-```bash
-node scripts/hash-password.mjs
-```
-
-Skrip itu meminta kata sandi lewat prompt tersembunyi, jadi kata sandinya tidak muncul di layar dan tidak masuk riwayat terminal. Hasilnya satu baris berawalan `$2b$12$`. Salin baris itu.
-
-**Langkah 2.** Buka `sql/02-seed-super-admin.sql`, lalu ganti dua penanda:
-
-```sql
-email_admin text := '<ISI_EMAIL_DI_SINI>';
-hash_admin  text := '<ISI_HASH_DI_SINI>';
-```
-
-**Langkah 3.** Salin seluruh isi berkas ke SQL Editor, lalu Run. Hasilnya:
-
-```
-NOTICE: Akun super admin nama@email.com siap dipakai.
-```
-
-Email dan kata sandi itulah yang dipakai untuk masuk ke portal.
+Langkah lengkapnya ada pada halaman [Skema Database](/hari-3/deployment-project/skema-database).
 
 ::: warning Peserta yang mendaftar sendiri tidak menjadi super admin
 Halaman `/register` pada aplikasi selalu menghasilkan peran `editor` dan status belum aktif. Itu memang disengaja, supaya tidak ada yang bisa menaikkan perannya sendiri.
 
-Akun super admin hanya bisa lahir dari `sql/02-seed-super-admin.sql`. Jadi berkas itu wajib dijalankan, bukan pilihan.
+Akun super admin hanya bisa lahir dari `02-seed-super-admin.sql`. Jadi berkas itu wajib dijalankan, bukan pilihan.
 :::
-
-Penjelasan lebih rinci tiap berkas ada di `sql/README.md` pada repositori Anda.
 
 ## Berkas yang Diperiksa
 

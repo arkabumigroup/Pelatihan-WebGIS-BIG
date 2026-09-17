@@ -3,6 +3,10 @@
 ## **Koneksi PostgreSQL ke Geoserver sebagai Data Store dan Publish Layer**
 
 1. Jalankan Geoserver, setelah dijalankan buka browser dan jalankan [http://localhost:8080/geoserver/web/?0](http://localhost:8080/geoserver/web/?0)
+
+    ```text
+    http://localhost:8080/geoserver/web
+    ```
     
 ![image.png](koneksi-postgis/image.png)
     
@@ -15,6 +19,11 @@
 ![](koneksi-postgis/image9.png)
     
 3. Berikan nama workspace kemudian untuk Namespace URI ketik domain Geoserver saat ini diikuti dengan nama workspace.
+
+    ```text
+    Nama workspace : geoportal
+    Namespace URI  : http://localhost:8080/geoserver/geoportal
+    ```
     
 ![](koneksi-postgis/image5.png)
     
@@ -29,6 +38,15 @@
 ![](koneksi-postgis/image3.png)
     
 5. Pilih workspace yang sudah dibuat kemudian masukan koneksi sesuai dengan koneksi PostgreSQL anda
+
+    ```text
+    host     : localhost
+    port     : 5432
+    database : geoportal
+    schema   : gis
+    user     : postgres
+    password : kata sandi PostgreSQL Anda
+    ```
     
 ![image.png](koneksi-postgis/image%204.png)
     
@@ -55,6 +73,10 @@
 ![](koneksi-postgis/image7.png)
     
 10. Buka menu Layers Preview, kemudian pilih layer yang sudah dipublish lalu buka format GeoJSON, maka akan terbuka tab baru di browser menunjukan data GeoJSON
+
+    ```text
+    http://localhost:8080/geoserver/geoportal/ows?service=WMS&version=1.1.0&request=GetMap&layers=geoportal:nama_layer&bbox=-180,-90,180,90&width=768&height=330&srs=EPSG:4326&format=application/openlayers
+    ```
     
 ![image.png](koneksi-postgis/image%208.png)
     
