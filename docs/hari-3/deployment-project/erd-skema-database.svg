@@ -1,0 +1,140 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 1132" role="img"
+     aria-labelledby="t d"
+     font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif">
+  <title id="t">Diagram relasi tabel database Geoportal</title>
+  <desc id="d">Tiga tabel. users menyimpan akun pengguna dengan kunci utama user_id. katalog_data_2d menyimpan metadata layer peta dua dimensi, dan katalog_data_3d menyimpan metadata model tiga dimensi. Keduanya menunjuk ke users lewat kolom author pada relasi satu ke banyak. Ujung garis memakai notasi kaki gagak: tiga garis mengembang berarti banyak baris, satu garis tegak berarti satu baris.</desc>
+  <style>
+    .latar{fill:#ffffff}
+    .kepala{fill:#003060}
+    .namaTabel{fill:#ffffff;font-size:15px;font-weight:700}
+    .baris{fill:#ffffff}
+    .bingkai{fill:none;stroke:#c9d2dd;stroke-width:1.4}
+    .pisah{stroke:#dde3ea;stroke-width:1}
+    .kolom{fill:#1f2d3d;font-size:12.5px}
+    .tipe{fill:#6b7c93;font-size:11.5px}
+    .kunci{fill:#b45309;font-size:10.5px;font-weight:700}
+    .catatan{fill:#6b7c93;font-size:11px}
+    .relasi{stroke:#46566b;stroke-width:1.8;fill:none}
+    .kaki{stroke:#46566b;stroke-width:1.8;fill:none}
+    .labelRel{fill:#46566b;font-size:10.5px;font-weight:700}
+    .judulKet{fill:#1f2d3d;font-size:12px;font-weight:700}
+  </style>
+  <rect class="latar" x="0" y="0" width="780" height="1132" rx="10"/>
+  <g>
+    <rect class="baris" x="200" y="40" width="600" height="272" rx="8"/>
+    <rect class="bingkai" x="200" y="40" width="600" height="272" rx="8"/>
+    <path class="kepala" d="M200 48 a8 8 0 0 1 8-8 h584 a8 8 0 0 1 8 8 v26 h-600 z"/>
+    <text class="namaTabel" x="220" y="63">users</text>
+    <text class="kunci" x="220" y="96">PK</text>
+    <text class="kolom" x="254" y="96">user_id</text>
+    <text class="tipe" x="780" y="96" text-anchor="end">uuid</text>
+    <line class="pisah" x1="208" y1="108" x2="792" y2="108"/>
+    <text class="kolom" x="220" y="130">nama</text>
+    <text class="tipe" x="780" y="130" text-anchor="end">varchar(100)</text>
+    <line class="pisah" x1="208" y1="142" x2="792" y2="142"/>
+    <text class="kunci" x="220" y="164">U</text>
+    <text class="kolom" x="254" y="164">email</text>
+    <text class="tipe" x="780" y="164" text-anchor="end">varchar(150)</text>
+    <line class="pisah" x1="208" y1="176" x2="792" y2="176"/>
+    <text class="kolom" x="220" y="198">password</text>
+    <text class="tipe" x="780" y="198" text-anchor="end">varchar(255)</text>
+    <text class="catatan" x="220" y="212">disimpan sebagai hash bcrypt</text>
+    <line class="pisah" x1="208" y1="210" x2="792" y2="210"/>
+    <text class="kolom" x="220" y="232">role</text>
+    <text class="tipe" x="780" y="232" text-anchor="end">varchar(20)</text>
+    <text class="catatan" x="220" y="246">viewer, editor, admin, super_admin</text>
+    <line class="pisah" x1="208" y1="244" x2="792" y2="244"/>
+    <text class="kolom" x="220" y="266">is_active</text>
+    <text class="tipe" x="780" y="266" text-anchor="end">boolean</text>
+    <text class="catatan" x="220" y="280">akun baru bernilai false sampai diaktifkan</text>
+    <line class="pisah" x1="208" y1="278" x2="792" y2="278"/>
+    <text class="kolom" x="220" y="300">created_at</text>
+    <text class="tipe" x="780" y="300" text-anchor="end">timestamptz</text>
+    <text class="catatan" x="220" y="314">terisi otomatis saat akun dibuat</text>
+  </g>
+  <g>
+    <rect class="baris" x="40" y="378" width="600" height="238" rx="8"/>
+    <rect class="bingkai" x="40" y="378" width="600" height="238" rx="8"/>
+    <path class="kepala" d="M40 386 a8 8 0 0 1 8-8 h584 a8 8 0 0 1 8 8 v26 h-600 z"/>
+    <text class="namaTabel" x="60" y="401">katalog_data_2d</text>
+    <text class="kunci" x="60" y="434">PK</text>
+    <text class="kolom" x="94" y="434">data_2d_id</text>
+    <text class="tipe" x="620" y="434" text-anchor="end">uuid</text>
+    <line class="pisah" x1="48" y1="446" x2="632" y2="446"/>
+    <text class="kunci" x="60" y="468">U</text>
+    <text class="kolom" x="94" y="468">layer_name</text>
+    <text class="tipe" x="620" y="468" text-anchor="end">varchar(255)</text>
+    <text class="catatan" x="94" y="482">nama layer harus berbeda satu sama lain</text>
+    <line class="pisah" x1="48" y1="480" x2="632" y2="480"/>
+    <text class="kunci" x="60" y="502">FK</text>
+    <text class="kolom" x="94" y="502">author</text>
+    <text class="tipe" x="620" y="502" text-anchor="end">uuid</text>
+    <text class="catatan" x="94" y="516">menunjuk ke users.user_id</text>
+    <line class="pisah" x1="48" y1="514" x2="632" y2="514"/>
+    <text class="kolom" x="60" y="536">akses</text>
+    <text class="tipe" x="620" y="536" text-anchor="end">varchar(20)</text>
+    <text class="catatan" x="60" y="550">public atau private</text>
+    <line class="pisah" x1="48" y1="548" x2="632" y2="548"/>
+    <text class="kolom" x="60" y="570">is_editable</text>
+    <text class="tipe" x="620" y="570" text-anchor="end">boolean</text>
+    <line class="pisah" x1="48" y1="582" x2="632" y2="582"/>
+    <text class="kolom" x="60" y="604">wms_url, wfs_url</text>
+    <text class="tipe" x="620" y="604" text-anchor="end">text</text>
+    <text class="catatan" x="60" y="618">alamat layanan peta</text>
+  </g>
+  <g>
+    <rect class="baris" x="40" y="682" width="600" height="340" rx="8"/>
+    <rect class="bingkai" x="40" y="682" width="600" height="340" rx="8"/>
+    <path class="kepala" d="M40 690 a8 8 0 0 1 8-8 h584 a8 8 0 0 1 8 8 v26 h-600 z"/>
+    <text class="namaTabel" x="60" y="705">katalog_data_3d</text>
+    <text class="kunci" x="60" y="738">PK</text>
+    <text class="kolom" x="94" y="738">data_3d_id</text>
+    <text class="tipe" x="620" y="738" text-anchor="end">uuid</text>
+    <line class="pisah" x1="48" y1="750" x2="632" y2="750"/>
+    <text class="kunci" x="60" y="772">FK</text>
+    <text class="kolom" x="94" y="772">author</text>
+    <text class="tipe" x="620" y="772" text-anchor="end">uuid</text>
+    <text class="catatan" x="94" y="786">menunjuk ke users.user_id</text>
+    <line class="pisah" x1="48" y1="784" x2="632" y2="784"/>
+    <text class="kolom" x="60" y="806">nama</text>
+    <text class="tipe" x="620" y="806" text-anchor="end">varchar(150)</text>
+    <line class="pisah" x1="48" y1="818" x2="632" y2="818"/>
+    <text class="kolom" x="60" y="840">akses</text>
+    <text class="tipe" x="620" y="840" text-anchor="end">varchar(20)</text>
+    <text class="catatan" x="60" y="854">public atau private</text>
+    <line class="pisah" x1="48" y1="852" x2="632" y2="852"/>
+    <text class="kolom" x="60" y="874">url</text>
+    <text class="tipe" x="620" y="874" text-anchor="end">text</text>
+    <text class="catatan" x="60" y="888">alamat berkas model</text>
+    <line class="pisah" x1="48" y1="886" x2="632" y2="886"/>
+    <text class="kolom" x="60" y="908">latitude, longitude</text>
+    <text class="tipe" x="620" y="908" text-anchor="end">double precision</text>
+    <text class="catatan" x="60" y="922">dibatasi -90 sampai 90 dan -180 sampai 180</text>
+    <line class="pisah" x1="48" y1="920" x2="632" y2="920"/>
+    <text class="kolom" x="60" y="942">heading, pitch, roll</text>
+    <text class="tipe" x="620" y="942" text-anchor="end">double precision</text>
+    <text class="catatan" x="60" y="956">arah dan kemiringan model</text>
+    <line class="pisah" x1="48" y1="954" x2="632" y2="954"/>
+    <text class="kolom" x="60" y="976">scale</text>
+    <text class="tipe" x="620" y="976" text-anchor="end">double precision</text>
+    <line class="pisah" x1="48" y1="988" x2="632" y2="988"/>
+    <text class="kolom" x="60" y="1010">tipe_file</text>
+    <text class="tipe" x="620" y="1010" text-anchor="end">varchar(10)</text>
+    <text class="catatan" x="60" y="1024">glb, ply, gltf</text>
+  </g>
+  <path class="relasi" d="M800 266 H 700 V 378 H 640"/>
+  <line class="kaki" x1="818" y1="256" x2="818" y2="276"/>
+  <path class="kaki" d="M640 378 L 616 366 M640 378 L 616 378 M640 378 L 616 390"/>
+  <text class="labelRel" x="634" y="370">menulis</text>
+  <path class="relasi" d="M800 294 H 660 V 682 H 640"/>
+  <line class="kaki" x1="818" y1="284" x2="818" y2="304"/>
+  <path class="kaki" d="M640 682 L 616 670 M640 682 L 616 682 M640 682 L 616 694"/>
+  <text class="labelRel" x="594" y="674">menulis</text>
+  <text class="judulKet" x="40" y="1062">Cara membaca ujung garis</text>
+  <line class="kaki" x1="40" y1="1084" x2="76" y2="1084"/>
+  <line class="kaki" x1="52" y1="1074" x2="52" y2="1094"/>
+  <text class="catatan" x="88" y="1088">satu baris users</text>
+  <path class="kaki" d="M76 1114 L 52 1102 M76 1114 L 52 1114 M76 1114 L 52 1126"/>
+  <text class="catatan" x="88" y="1118">banyak baris katalog</text>
+  <text class="catatan" x="40" y="1154">Satu pengguna dapat menulis banyak katalog, baik 2D maupun 3D. Satu katalog hanya punya satu penulis.</text>
+</svg>
