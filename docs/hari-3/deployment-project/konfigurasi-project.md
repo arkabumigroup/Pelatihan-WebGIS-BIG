@@ -8,7 +8,7 @@ Menulis berkas YAML sepanjang ini dari nol adalah sumber kesalahan paling sering
 
 ## Alur Deployment Project
 
-Sebelum mulai, penting diketahui bahwa Deployment Project bukan satu pekerjaan, melainkan rangkaian yang berujung pada satu hasil: Geoportal yang berjalan di alamat HTTPS dengan subdomain sendiri.
+Deployment Project bukan satu pekerjaan, melainkan rangkaian yang berujung pada satu hasil: Geoportal yang berjalan di alamat HTTPS dengan subdomain sendiri.
 
 Diagram berikut menunjukkan titik mulai Anda, pekerjaan yang Anda kerjakan sendiri, bagian yang berjalan otomatis, dan hasil akhirnya.
 
@@ -25,7 +25,7 @@ Jadi seluruh pekerjaan manual ada di laptop dan di VM, dan berhenti pada satu pe
 
 ## Tahap 1. Fork dan clone repositori
 
-Halaman ini memeriksa berkas yang sudah ada di repositori. Karena itu repositori itu harus ada di laptop Anda lebih dahulu.
+Halaman ini memeriksa berkas yang sudah ada di repositori, jadi repositori itu harus ada di laptop Anda lebih dahulu.
 
 ### Fork repositori
 
@@ -60,9 +60,9 @@ ls docker-compose.yml nginx.conf .env.example Dockerfile cloudbuild.yaml
 ls scripts/check-config.mjs scripts/periksa-nginx.mjs
 ```
 
-### Yang TIDAK perlu Anda ubah
+### Yang tidak perlu Anda ubah
 
-Ini sering ditanyakan, jadi perlu ditegaskan di awal.
+Empat berkas ini tidak perlu diubah. Alasan tiap baris ada di kolom terakhir, supaya tidak perlu ditanyakan lagi.
 
 | Berkas | Perlu diedit? | Alasan |
 |---|---|---|
@@ -71,13 +71,11 @@ Ini sering ditanyakan, jadi perlu ditegaskan di awal.
 | `cloudbuild.yaml` | Tidak | Seluruh nilai yang berbeda antar peserta diisi sebagai substitution variable pada trigger Cloud Build, bukan di berkas ini |
 | `.env.example` | Tidak | Berkas contoh. Yang diisi adalah `.env`, dan itu dibuat di VM |
 
-Nilai yang memang harus berbeda antar peserta, yaitu nama VM, nama image, dan subdomain, seluruhnya diatur pada trigger Cloud Build. Caranya ada di halaman [Google Cloud Platform](/hari-3/deployment-project/google-cloud-platform).
-
-Jadi pekerjaan Anda di halaman ini adalah **memeriksa**, bukan mengubah.
+Yang memang harus berbeda antar peserta, yaitu nama VM, nama image, dan subdomain, diatur pada trigger Cloud Build. Caranya ada di halaman [Google Cloud Platform](/hari-3/deployment-project/google-cloud-platform).
 
 ## Tahap 2. Siapkan database Supabase
 
-Portal memerlukan database. Tanpa ini, aplikasi berjalan tetapi halaman login selalu gagal. Tahap ini dikerjakan sebelum berkas konfigurasi, karena `DATABASE_URL` dari sini dipakai pada Tahap 5.
+Portal memerlukan database. Tanpanya aplikasi tetap berjalan, tetapi halaman login selalu gagal. Tahap ini dikerjakan sebelum berkas konfigurasi, karena `DATABASE_URL` dari sini dipakai pada Tahap 5.
 
 Database yang dipakai adalah **Supabase**, layanan PostgreSQL yang berjalan di cloud. Peserta memakai project Supabase masing-masing.
 
@@ -572,7 +570,7 @@ resolver     : ada
 HASIL: struktur konfigurasi valid
 ```
 
-Baris `resolver : ada` yang paling penting. Tanpa directive itu, Nginx menolak start dengan `host not found in upstream` ketika container `nextjs` belum ada.
+Baris `resolver : ada` yang menentukan. Tanpa directive itu, Nginx menolak start dengan `host not found in upstream` ketika container `nextjs` belum ada.
 
 ### Uji database
 
