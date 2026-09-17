@@ -25,8 +25,6 @@ gcloud compute addresses describe "$STATIC_IP_NAME" \
 
 Status harus `RESERVED`, dan alamat yang tampil harus sama dengan IP eksternal VM. Record A yang menunjuk ke IP dinamis akan rusak begitu VM dimatikan dan dinyalakan kembali.
 
-![Alamat IP eksternal VM pada halaman VM instances](google-cloud-platform/cb-image-5.png)
-
 ### Tahap 2. Tentukan nama subdomain
 
 Dijalankan di: Cloud Shell
@@ -49,7 +47,7 @@ Tambahkan satu record baru.
 | TTL | `300` |
 | Isi | Alamat IP statis VM dari Tahap 1 |
 
-![Penambahan record A pada pengelola DNS](google-cloud-platform/cb-image4.png)
+![Form Create record set pada Cloud DNS](google-cloud-platform/cb-image4.png)
 
 ### Tahap 4. Periksa resolusi DNS
 
@@ -110,8 +108,6 @@ curl -sS -o /dev/null -w "acme %{http_code}\n" "http://${SUBDOMAIN}/.well-known/
 
 Balasan `404` adalah hasil yang diharapkan, karena berkas `uji` memang belum ada. Yang sedang diuji adalah apakah permintaan itu sampai ke direktori `certbot-webroot`, bukan diteruskan ke aplikasi Next.js.
 
-![Pemeriksaan jalur ACME dari Cloud Shell](google-cloud-platform/cb-image-3.png)
-
 Bila balasan yang muncul `502` atau `200`, hentikan tahap ini. Periksa kembali `nginx.conf`: blok `location ^~ /.well-known/acme-challenge/` harus ada di atas blok `location /`, dan volume `./certbot-webroot:/var/www/certbot:ro` harus ada pada service `nginx`.
 
 ### Tahap 9. Terbitkan sertifikat Let's Encrypt
@@ -130,10 +126,6 @@ gcloud compute ssh "$VM_NAME" \
 ```
 
 Sertifikat tersimpan di `/etc/letsencrypt/live/$SUBDOMAIN/`.
-
-![Proses penerbitan sertifikat dari Let Encrypt](google-cloud-platform/cb-image-19.png)
-
-![Keterangan lanjutan pada proses penerbitan](google-cloud-platform/cb-image-18.png)
 
 ### Tahap 10. Aktifkan HTTPS pada Nginx
 
@@ -217,8 +209,6 @@ sudo docker compose exec -T nginx nginx -t
 
 Bila hasilnya `syntax is ok` dan `test is successful`, muat ulang:
 
-![Nginx dimuat ulang setelah konfigurasi diuji](google-cloud-platform/cb-image-17.png)
-
 ```bash
 sudo docker compose exec -T nginx nginx -s reload
 ```
@@ -283,7 +273,7 @@ Dijalankan di: Browser
 
 Buka `https://SUBDOMAIN/portal`, lalu periksa satu per satu:
 
-![Geoportal terbuka melalui alamat HTTPS](google-cloud-platform/cb-image-7.png)
+![Geoportal terbuka melalui alamat HTTPS](google-cloud-platform/cb-image-19.png)
 
 - Halaman Geoportal tampil tanpa peringatan sertifikat.
 - Login berhasil memakai akun dari materi autentikasi.

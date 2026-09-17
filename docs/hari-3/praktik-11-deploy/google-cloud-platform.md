@@ -8,8 +8,36 @@ Seluruh tahapan memakai satu project kelompok yang dipakai bersama **empat peser
 
 - Akses ke Google Cloud project dari koordinator. Project ID berbentuk `geoportal-kelompok-a-xxxxx`.
 - Email peserta yang sudah terdaftar di project tersebut. Email ini dipakai menurunkan identitas peserta.
-- Fork repositori proyek di akun GitHub sendiri.
+- Fork `https://github.com/matiurari/personal-geoportal` di akun GitHub sendiri. Rinciannya pada [Repositori yang Dipakai](#repositori-yang-dipakai).
 - Berkas dari halaman [Konfigurasi Project](/hari-3/praktik-11-deploy/konfigurasi-project) sudah di-push ke fork tersebut.
+
+## Repositori yang Dipakai
+
+Modul ini bekerja pada satu repositori GitHub: fork repositori instruktur di akun Anda sendiri.
+
+| | Repositori |
+|---|---|
+| Sumber, yang di-fork | `https://github.com/matiurari/personal-geoportal` |
+| Fork Anda | `https://github.com/<username-anda>/personal-geoportal-peserta` |
+
+Cara membuat fork:
+
+1. Buka `https://github.com/matiurari/personal-geoportal` pada browser.
+2. Pilih **Fork**, lalu pilih akun GitHub Anda sebagai tujuan.
+
+   ![Dashboard Google Cloud dengan tombol Create a VM](google-cloud-platform/vm-image.png)
+3. Beri nama fork `personal-geoportal-peserta` supaya seluruh contoh perintah pada halaman ini cocok. Bila nama itu sudah dipakai repositori lain di akun Anda, biarkan nama bawaan `personal-geoportal`, lalu sesuaikan URL pada Tahap 17.
+4. Pastikan branch default fork adalah `main`.
+
+Repositori instruktur bersifat publik, jadi fork dapat dibuat tanpa izin khusus dan clone di VM cukup memakai HTTPS.
+
+::: tip Repositori pembanding
+Bila ada bagian yang meragukan, bandingkan dengan repositori acuan berikut. Repositori itu sudah memuat `docker-compose.yml`, `nginx.conf`, `.env.example`, `cloudbuild.yaml`, dan `Dockerfile` dalam keadaan bekerja.
+
+`https://github.com/dhanypedia/personal-geoportal-testing`
+
+Jangan menyalin mentah. Nama image, nama VM, dan kata sandi harus tetap berbeda untuk setiap peserta.
+:::
 
 ## Pembagian Resource
 
@@ -230,19 +258,24 @@ done
 
 ### Tahap 5. Periksa Artifact Registry
 
+![Pencarian Artifact Registry pada kolom pencarian Google Cloud Console](google-cloud-platform/image%2010.png)
+
+![Halaman Artifact Registry beserta tombol Create repository](google-cloud-platform/image%2011.png)
+
+![Form pembuatan repository: nama, format Docker, dan region asia-southeast2](google-cloud-platform/image%2012.png)
+
+
 Dijalankan di: Cloud Shell menuju Google Cloud Console
 
 Buka halaman Artifact Registry dan pastikan repository `katalog-images` sudah ada pada region `asia-southeast2`.
 
-![Repository katalog-images pada Artifact Registry](google-cloud-platform/cb-image-1.png)
 
-![Halaman Artifact Registry di Google Cloud Console](google-cloud-platform/image%2010.png)
 
 Repository ini dibuat koordinator dan dipakai seluruh peserta. Peserta hanya memeriksa, bukan membuat. Bila hasilnya kosong atau `NOT_FOUND`, lapor ke koordinator dan jangan membuat repository sendiri.
 
-![Halaman Cloud Build di Google Cloud Console](google-cloud-platform/cb-image-1.png)
 
 ### Tahap 6. Siapkan identitas VM
+![Detail Service Account VM pada halaman VM details](google-cloud-platform/image45.png)
 
 Dijalankan di: Cloud Shell
 
@@ -269,15 +302,17 @@ Rantai izinnya: Service Account Cloud Build peserta mendapat `roles/iam.serviceA
 
 ### Tahap 7. Buat VM
 
+![Form Create an instance, bagian Machine configuration](google-cloud-platform/vm-image-2.png)
+
+![Form Create an instance, bagian Networking dan network tag](google-cloud-platform/vm-image-4.png)
+
+
 Dijalankan di: Cloud Shell menuju Google Cloud Console
 
 VM dibuat dari Cloud Shell dengan spesifikasi berikut. Pastikan Compute Engine API sudah aktif sebelum perintah ini dijalankan.
 
-![Mengaktifkan Compute Engine API](google-cloud-platform/vm-image-2.png)
 
-![Konfigurasi OS dan storage VM](google-cloud-platform/vm-image-3.png)
 
-![Halaman Compute Engine dengan tombol Create instance](google-cloud-platform/vm-image.png)
 
 ```bash
 gcloud compute instances create "$VM_NAME" \
@@ -294,6 +329,10 @@ gcloud compute instances create "$VM_NAME" \
 ```
 
 ### Tahap 8. Periksa VM dan firewall
+![Daftar VM instances dengan tombol Create instance dan Connect](google-cloud-platform/cb-image-17.png)
+
+![Daftar VM instances beserta alamat IP eksternalnya](google-cloud-platform/image%2034.png)
+
 
 Dijalankan di: Cloud Shell
 
@@ -306,7 +345,6 @@ gcloud compute instances describe "$VM_NAME" \
   --format="table(name,status,machineType.basename(),networkInterfaces[0].accessConfigs[0].natIP)"
 ```
 
-![Hasil pemeriksaan status VM dan alamat IP eksternalnya](google-cloud-platform/vm-image-4.png)
 
 Kedua firewall rule dibuat koordinator dan hasil perintah di atas seharusnya menampilkan keduanya.
 
@@ -340,6 +378,11 @@ Setiap project hanya mendapat empat alamat IP publik eksternal per region. Angka
 
 ### Tahap 10. Masuk ke VM
 
+![Sesi SSH ke VM di dalam browser](google-cloud-platform/image%202.png)
+
+![Halaman VM instances, tombol SSH pada kolom Connect](google-cloud-platform/image%2022.png)
+
+
 Dijalankan di: Cloud Shell menuju VM
 
 ```bash
@@ -348,11 +391,21 @@ gcloud compute ssh "$VM_NAME" \
   --tunnel-through-iap
 ```
 
-![Jendela SSH yang sudah terhubung ke VM](google-cloud-platform/image%202.png)
 
 Setelah perintah ini berhasil, terminal yang Anda gunakan adalah terminal VM, bukan Cloud Shell. Semua perintah pada Bagian B dijalankan di sana.
 
 ### Tahap 11. Pasang Docker, Git, dan Google Cloud CLI
+
+![Perintah sudo apt update di terminal VM](google-cloud-platform/image%203.png)
+
+![Pemasangan paket dasar: ca-certificates, curl, dan gnupg](google-cloud-platform/image%204.png)
+
+![Penambahan kunci GPG dan repositori Docker](google-cloud-platform/image%205.png)
+
+![sudo apt update setelah repositori Docker ditambahkan](google-cloud-platform/image%206.png)
+
+![Pemasangan Docker Engine beserta pluginnya](google-cloud-platform/image%207.png)
+
 
 Dijalankan di: Terminal VM
 
@@ -389,9 +442,11 @@ sudo apt-get update
 sudo apt-get install -y google-cloud-cli
 ```
 
-![Proses pemasangan paket Docker di terminal VM](google-cloud-platform/image%204.png)
 
 ### Tahap 12. Uji Docker dan gcloud
+
+![Pemeriksaan versi Docker dan Docker Compose](google-cloud-platform/image%209.png)
+
 
 Dijalankan di: Terminal VM
 
@@ -401,7 +456,6 @@ sudo docker run --rm hello-world
 gcloud --version
 ```
 
-![Hasil pemeriksaan versi Docker Compose dan gcloud](google-cloud-platform/image%209.png)
 
 ### Tahap 13. Tambahkan user ke grup docker
 
@@ -426,6 +480,13 @@ gcloud compute ssh "$VM_NAME" \
 
 ### Tahap 15. Siapkan folder aplikasi
 
+![Tombol UPLOAD FILE pada jendela SSH](google-cloud-platform/image%2023.png)
+
+![Dialog unggah berkas: dua berkas siap dikirim](google-cloud-platform/image28.png)
+
+![Konfirmasi dua berkas berhasil diunggah](google-cloud-platform/image29.png)
+
+
 Dijalankan di: Terminal VM
 
 ```bash
@@ -434,9 +495,13 @@ sudo chown "$USER:$USER" /opt/webgis
 ls -ld /opt/webgis
 ```
 
-![Membuat folder aplikasi di dalam VM](google-cloud-platform/image%2022.png)
 
 ### Tahap 16. Pindahkan berkas konfigurasi ke VM
+
+![Hasil perintah ls: dua berkas ada di home directory VM](google-cloud-platform/image%2024.png)
+
+![Dua berkas dipindahkan ke folder app](google-cloud-platform/image%2025.png)
+
 
 Dijalankan di: Terminal Laptop, lalu Terminal VM
 
@@ -451,11 +516,8 @@ gcloud compute scp docker-compose.yml nginx.conf .env.example \
 
 Selanjutnya di terminal VM, pindahkan ketiganya ke folder aplikasi:
 
-![ Tombol UPLOAD FILE pada jendela SSH](google-cloud-platform/image%2023.png)
 
-![Memilih berkas yang akan diunggah](google-cloud-platform/image28.png)
 
-![Konfirmasi unggahan](google-cloud-platform/image29.png)
 
 ```bash
 sudo mkdir -p /opt/webgis/app
@@ -466,6 +528,7 @@ ls -la /opt/webgis/app
 
 
 ### Tahap 17. Clone repositori
+![Selesaian git clone: objek diterima dan delta diselesaikan](google-cloud-platform/image%2030.png)
 
 Dijalankan di: Terminal VM
 
@@ -473,7 +536,7 @@ Ganti `USERNAME_GITHUB_PESERTA` dengan username GitHub Anda.
 
 ```bash
 GITHUB_USERNAME="USERNAME_GITHUB_PESERTA"
-GITHUB_REPOSITORY="https://github.com/${GITHUB_USERNAME}/personal-geoportal.git"
+GITHUB_REPOSITORY="https://github.com/${GITHUB_USERNAME}/personal-geoportal-peserta.git"
 
 git clone "$GITHUB_REPOSITORY" /opt/webgis/app
 cd /opt/webgis/app
@@ -484,11 +547,11 @@ git remote -v
 git log --oneline -1
 ```
 
-![Proses clone repositori dari GitHub di terminal VM](google-cloud-platform/image%2026.png)
+
+Bila fork Anda memakai nama bawaan `personal-geoportal`, ganti nilai `GITHUB_REPOSITORY` menjadi `https://github.com/${GITHUB_USERNAME}/personal-geoportal.git`.
 
 Bila GitHub meminta kata sandi, isi dengan Personal Access Token, bukan kata sandi akun.
 
-![Isi folder app setelah clone](google-cloud-platform/image%2025.png)
 
 ### Tahap 18. Isi berkas .env
 
@@ -520,7 +583,6 @@ nano /opt/webgis/app/.env
 | `GEOSERVER_ADMIN_PASSWORD` | Hasil `openssl rand -hex 16` |
 | `BASE_URL` | `http://IP_EKSTERNAL_VM/portal` |
 
-![Isi berkas .env yang sudah terisi](google-cloud-platform/image%2030.png)
 
 Dua hal tentang nilai di atas:
 
@@ -531,6 +593,9 @@ Saat login ke GeoServer nanti, gunakan username `admin` dan kata sandi hasil `GE
 
 ### Tahap 19. Bangun image aplikasi
 
+![Proses docker build selesai dengan status FINISHED](google-cloud-platform/image%2033.png)
+
+
 Dijalankan di: Terminal VM
 
 Sebelum Cloud Build dipakai, image dibangun sekali secara manual supaya masalah pada `Dockerfile` ketahuan lebih awal di terminal yang bisa dibaca langsung.
@@ -540,9 +605,15 @@ cd /opt/webgis/app
 sudo docker build -t "asia-southeast2-docker.pkg.dev/${PROJECT_ID}/${REPOSITORY}/${IMAGE_NAME}:latest" .
 ```
 
-![Proses build image Next.js dengan Docker](google-cloud-platform/image%2033.png)
 
 ### Tahap 20. Beri izin Artifact Registry pada Service Account VM
+
+![Menu IAM & Admin pada navigasi Google Cloud Console](google-cloud-platform/image%2035.png)
+
+![Dialog Grant access dengan Service Account VM pada kolom New principals](google-cloud-platform/image%2036.png)
+
+![Pemilihan role Artifact Registry Administrator](google-cloud-platform/image%2037.png)
+
 
 Dijalankan di: Google Cloud Console
 
@@ -555,17 +626,15 @@ VM perlu izin menulis image ke Artifact Registry. Buka IAM & Admin, lalu IAM, la
 
 Gunakan alamat `VM_SA` yang tercetak pada Tahap 6.
 
-![Detail Service Account VM pada halaman VM instances](google-cloud-platform/image%2034.png)
 
-![Menyalin alamat Service Account VM](google-cloud-platform/image45.png)
 
-![Halaman IAM & Admin di Google Cloud Console](google-cloud-platform/image%2035.png)
 
-![Form Grant Access dengan Service Account VM sebagai principal](google-cloud-platform/image%2036.png)
 
-![Tambahkan role yang dibutuhkan](google-cloud-platform/image%2037.png)
 
 ### Tahap 21. Dorong image ke Artifact Registry
+
+![docker push berhasil, seluruh layer terdorong](google-cloud-platform/image49.png)
+
 
 Dijalankan di: Terminal VM
 
@@ -574,9 +643,11 @@ gcloud auth configure-docker asia-southeast2-docker.pkg.dev --quiet
 sudo docker push "asia-southeast2-docker.pkg.dev/${PROJECT_ID}/${REPOSITORY}/${IMAGE_NAME}:latest"
 ```
 
-![Image berhasil didorong ke Artifact Registry](google-cloud-platform/image49.png)
 
 ### Tahap 22. Jalankan GeoServer dan Nginx
+
+![docker compose ps menampilkan container yang berjalan](google-cloud-platform/image%2038.png)
+
 
 Dijalankan di: Terminal VM
 
@@ -588,9 +659,7 @@ sudo docker compose up -d --no-deps geoserver nginx
 sudo docker compose ps
 ```
 
-![Status dua container yang berjalan](google-cloud-platform/image%2038.png)
 
-![Status container setelah compose dijalankan](google-cloud-platform/image%2024.png)
 
 ### Tahap 23. Keluar dari VM
 
@@ -604,17 +673,36 @@ exit
 
 ### Tahap 24. Tambahkan Dockerfile dan cloudbuild.yaml
 
+![Folder proyek Next.js di Visual Studio Code](google-cloud-platform/image%2014.png)
+
+![Dockerfile tiga tahap di Visual Studio Code](google-cloud-platform/image%2016.png)
+
+![Isi next.config.mjs pada repositori acuan](google-cloud-platform/image%2017.png)
+
+
 Dijalankan di: Terminal Laptop
 
-Ambil `Dockerfile` dan `.dockerignore` dari folder berkas pelatihan, lalu letakkan keduanya di root folder proyek. Pada `next.config.mjs`, tambahkan `output: "standalone"` supaya hasil build dapat dijalankan sebagai image ringan.
+Berkas `Dockerfile` dan `.dockerignore` ada di fork Anda, di root repositori, karena keduanya ikut ketika Anda mem-fork repositori instruktur. Bila ternyata belum ada, salin keduanya dari repositori pembanding pada bagian [Repositori yang Dipakai](#repositori-yang-dipakai).
 
-![Penyesuaian pada next.config.mjs](google-cloud-platform/image%2017.png)
+Selanjutnya periksa `next.config.mjs`. Dua baris berikut wajib ada, dan keduanya bukan tambahan yang opsional:
 
-![Dockerfile dan .dockerignore pada folder berkas pelatihan](google-cloud-platform/image%2014.png)
+```javascript
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  output: "standalone",
+  basePath: "/portal",
+  reactStrictMode: false
+};
 
-![Berkas Dockerfile tiga tahap](google-cloud-platform/image%2015.png)
+export default nextConfig;
+```
 
-![Berkas .dockerignore](google-cloud-platform/image%2016.png)
+- `output: "standalone"` diperlukan karena `Dockerfile` menyalin folder `.next/standalone`. Tanpa itu, build image gagal pada tahap penyalinan.
+- `basePath: "/portal"` diperlukan karena `nginx.conf` mengalihkan `/` ke `/portal`, dan seluruh alamat pada modul ini memakai bentuk `http://IP_VM/portal`. Tanpa `basePath`, Nginx tetap mengalihkan ke `/portal` tetapi Next.js tidak menyajikan halaman di sana, sehingga yang muncul adalah 404.
+
+
+
+
 
 Selanjutnya buat berkas `cloudbuild.yaml`. Berkas ini menjalankan tiga hal setiap kali ada push ke branch `main`: membangun image dari `Dockerfile`, mendorongnya ke Artifact Registry, lalu masuk ke VM untuk menarik image terbaru dan menyalakan container.
 
@@ -680,37 +768,47 @@ git commit -m "feat: tambah Cloud Build dan Dockerfile"
 git push origin main
 ```
 
-![Perubahan yang di-push ke GitHub](google-cloud-platform/image%2018.png)
 
-![Dockerfile sudah ada di repositori GitHub](google-cloud-platform/image%2019.png)
 
 ### Tahap 26. Hubungkan repositori GitHub
+
+![Pencarian Cloud Build pada kolom pencarian](google-cloud-platform/cb-image.png)
+
+![Halaman Cloud Build sebelum ada build](google-cloud-platform/cb-image-1.png)
+
+![Dialog Connect repository, langkah pemilihan penyedia](google-cloud-platform/cb-image-3.png)
+
+![Halaman otorisasi GitHub untuk Google Cloud Build](google-cloud-platform/cb-image-4.png)
+
+![Peringatan bahwa GitHub App belum terpasang](google-cloud-platform/cb-image-5.png)
+
+![Pemasangan Google Cloud Build pada akun GitHub](google-cloud-platform/cb-image-6.png)
+
+![Verifikasi identitas pemilik akun GitHub](google-cloud-platform/cb-image-7.png)
+
+![Pemilihan repositori yang akan dihubungkan](google-cloud-platform/cb-image-8.png)
+
 
 Dijalankan di: Google Cloud Console
 
 Buka Cloud Build, lalu Repositories, lalu Connect repository. Buat connection dengan nama sesuai `CONNECTION_NAME` yang tercetak pada Tahap 2, pilih GitHub, masuk memakai akun pemilik fork, pilih repositori peserta, isi linked repository sesuai `LINKED_REPO_NAME`, lalu pastikan status connection berubah menjadi COMPLETE.
 
-![Halaman Cloud Build dengan tombol Create Trigger](google-cloud-platform/cb-image.png)
 
-![Membuat connection ke repositori GitHub](google-cloud-platform/cb-image-4.png)
 
-![Memilih repositori peserta dari daftar](google-cloud-platform/cb-image-8.png)
 
-![Form Connect repository dengan pilihan GitHub](google-cloud-platform/cb-image-2.png)
 
-![Mengizinkan Cloud Build mengakses akun GitHub](google-cloud-platform/image49.png)
 
-![Proses otorisasi GitHub](google-cloud-platform/image%203.png)
 
-![Konfirmasi izin akses](google-cloud-platform/image%204.png)
 
-![Peringatan pemasangan Cloud Build di GitHub](google-cloud-platform/image%205.png)
 
-![Pemasangan aplikasi Cloud Build](google-cloud-platform/image%206.png)
 
-![Verifikasi email pemilik akun](google-cloud-platform/image%207.png)
 
 ### Tahap 27. Buat trigger Cloud Build
+
+![Form Create trigger, bagian nama dan event](google-cloud-platform/cb-image-2.png)
+
+![Bagian Configuration: Cloud Build configuration file](google-cloud-platform/cb-image-9.png)
+
 
 Dijalankan di: Google Cloud Console
 
@@ -726,13 +824,9 @@ Buat trigger dengan pengaturan berikut.
 | Name | Sesuai `TRIGGER_NAME` |
 | Service account | Sesuai `BUILD_SA` |
 
-![Form pembuatan trigger](google-cloud-platform/cb-image-4.png)
 
-![Bagian Advanced berisi pilihan Service Account](google-cloud-platform/cb-image-11.png)
 
-![Bagian Configuration memilih Cloud Build configuration file](google-cloud-platform/cb-image-6.png)
 
-![Bagian Advanced untuk memilih Service Account](google-cloud-platform/cb-image-9.png)
 
 ### Tahap 28. Isi substitution variable
 
@@ -747,29 +841,26 @@ Tambahkan empat variabel berikut pada trigger. Ganti `PARTICIPANT_ID` dengan ide
 | `_VM_APP_DIR` | `/opt/webgis/app` |
 | `_IMAGE_NAME` | `nextjs-PARTICIPANT_ID` |
 
-![Berkas cloudbuild.yaml di repositori GitHub](google-cloud-platform/image%2010.png)
 
-![Bagian Advanced berisi Service Account dan variabel](google-cloud-platform/image%2011.png)
 
-![Pengisian nilai substitution variable](google-cloud-platform/image%2012.png)
 
 Bagian `PARTICIPANT_ID` pada dua nilai pertama dan terakhir itulah yang membuat trigger peserta A tidak pernah menyentuh VM peserta B.
 
-![Pengisian substitution variable pada trigger](google-cloud-platform/cb-image-11.png)
 
 ### Tahap 29. Jalankan trigger dan pantau hasilnya
+
+![Halaman History berisi daftar build](google-cloud-platform/cb-image-13.png)
+
+![Rincian satu build: langkah, status, dan log](google-cloud-platform/cb-image-15.png)
+
 
 Dijalankan di: Google Cloud Console
 
 Buka halaman History, lalu jalankan trigger dan pantau build yang sedang berjalan.
 
-![Riwayat build yang sedang berjalan](google-cloud-platform/cb-image-13.png)
 
-![Rincian langkah pada satu build](google-cloud-platform/cb-image-15.png)
 
-![Proses build yang sedang berjalan](google-cloud-platform/cb-image-3.png)
 
-![Rincian setiap langkah pada build](google-cloud-platform/cb-image-4.png)
 
 ## Bagian D. Verifikasi
 
@@ -845,40 +936,40 @@ Halaman ini mengasumsikan Anda memakai project kelompok yang disiapkan koordinat
 
 1. Buka [https://cloud.google.com/gcp](https://cloud.google.com/gcp).
 
-   ![Halaman utama Google Cloud](google-cloud-platform/project-image.png)
+   ![Hasil pencarian Google Cloud di Google](google-cloud-platform/project-image.png)
 
 2. Pilih **Get started for free**.
 
-   ![Tombol Get started for free](google-cloud-platform/project-image-1.png)
+   ![Tombol Get started for free pada halaman Google Cloud](google-cloud-platform/project-image-1.png)
 
 3. Pilih akun dan negara yang digunakan, lalu klik **Agree & continue**.
 
-   ![Pemilihan akun dan negara](google-cloud-platform/project-image-2.png)
+   ![Langkah 1: pemilihan akun dan negara](google-cloud-platform/project-image-2.png)
 
 4. Isi **Contact Information**, lalu simpan.
 
-   ![Pengisian contact information](google-cloud-platform/project-image-3.png)
+   ![Langkah 2: bagian contact information](google-cloud-platform/project-image-3.png)
 
-   ![Konfirmasi data kontak](google-cloud-platform/project-image1.png)
+   ![Pengisian contact information](google-cloud-platform/project-image1.png)
 
 5. Setelah organization dibuat, isi **Tax Information**. Pilih **Head Office**, masukkan NIK pada kolom NPWP, lalu simpan.
 
-   ![Pengisian tax information](google-cloud-platform/project-image-4.png)
+   ![Dialog Indonesia tax info dengan pilihan Head Office](google-cloud-platform/project-image-4.png)
 
 6. Isi **Add Payment Method** dengan detail kartu kredit.
 
-   ![Pengisian metode pembayaran](google-cloud-platform/project-image-5.png)
+   ![Form penambahan kartu kredit atau debit](google-cloud-platform/project-image-5.png)
 
 7. Konfirmasi metode pembayaran, lalu klik **Start free**.
 
-   ![Konfirmasi metode pembayaran](google-cloud-platform/project-image-6.png)
+   ![Konfirmasi data kontak, pajak, dan metode pembayaran](google-cloud-platform/project-image-6.png)
 
-   ![Tampilan awal Google Cloud setelah pendaftaran](google-cloud-platform/project-image-7.png)
+   ![Dashboard project setelah pendaftaran selesai](google-cloud-platform/project-image-7.png)
 
 8. Buka kembali [https://cloud.google.com/gcp](https://cloud.google.com/gcp). Karena akun sudah terdaftar, tombol **Go to my console** akan muncul. Klik tombol itu untuk masuk ke dashboard project.
 
-   ![Tombol Go to my console](google-cloud-platform/project-image-8.png)
+   ![Tombol Go to my console pada halaman Google Cloud](google-cloud-platform/project-image-8.png)
 
-   ![Dashboard project default](google-cloud-platform/project-image10.png)
+   ![Dashboard project dengan kartu Free Trial](google-cloud-platform/project-image10.png)
 
 Setelah project tersedia, kembali ke Tahap 2 dan isi `PROJECT_ID` dengan Project ID milik Anda sendiri.
