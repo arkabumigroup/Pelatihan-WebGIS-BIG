@@ -42,7 +42,7 @@
     <line class="pisah" x1="208" y1="210" x2="792" y2="210"/>
     <text class="kolom" x="220" y="232">role</text>
     <text class="tipe" x="780" y="232" text-anchor="end">varchar(20)</text>
-    <text class="catatan" x="220" y="246">viewer, editor, admin, super_admin</text>
+    <text class="catatan" x="220" y="246">viewer, admin, super_admin</text>
     <line class="pisah" x1="208" y1="244" x2="792" y2="244"/>
     <text class="kolom" x="220" y="266">is_active</text>
     <text class="tipe" x="780" y="266" text-anchor="end">boolean</text>
