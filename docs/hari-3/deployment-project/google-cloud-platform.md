@@ -189,12 +189,14 @@ Masuk memakai email yang diberikan koordinator, lalu pilih project kelompok yang
 Dijalankan di: Cloud Shell
 
 ::: tip Ambil dua nilai ini dari tabel peserta
-Sebelum menempel blok di bawah, cari nama atau email Anda pada halaman [Peserta dan Project](/hari-3/deployment-project/peserta-project). Halaman itu memuat **Project ID** dan **email** yang terdaftar untuk Anda, beserta kelompok Anda.
+Sebelum menempel blok di bawah, cari nama atau email Anda pada halaman [Peserta dan Project](/hari-3/deployment-project/peserta-project). Halaman itu memuat **Nama Peserta**, **Project ID**, dan kelompok Anda.
 
-Isi `PROJECT_ID` dengan nilai dari kolom Project ID, dan `EMAIL_PESERTA` dengan email Anda. Keduanya harus sama persis dengan yang terdaftar, karena identitas peserta diturunkan dari sana.
+Isi `PROJECT_ID` dan `NAMA_PESERTA` dengan nilai dari tabel itu. Keduanya harus sama persis.
 :::
 
-Identitas peserta **diturunkan dari email**, bukan diketik manual. Empat peserta menerima empat email berbeda dari koordinator, sehingga empat identitas yang dihasilkan pasti berbeda. Tabrakan tidak dicegah dengan peringatan, melainkan dengan menghilangkan nilai yang bisa salah diisi.
+**Gunakan Nama Peserta dari tabel, jangan mengarang sendiri.** Nama itu sudah disusun pendek, 3 sampai 8 karakter, satu kata, dan dipastikan tidak sama dengan peserta lain.
+
+Nama Peserta menjadi dasar penamaan seluruh resource Anda: nama VM, nama Service Account, nama trigger, dan subdomain. Karena itu nama yang sudah dipakai peserta lain akan menggagalkan pekerjaan Anda di tengah jalan, dan pada saat itu sebagian resource mungkin sudah terlanjur dibuat.
 
 Tempel seluruh blok berikut di Cloud Shell. Ubah hanya dua baris pertama.
 
@@ -203,7 +205,7 @@ Tempel seluruh blok berikut di Cloud Shell. Ubah hanya dua baris pertama.
 # ISI INI. Hanya dua baris ini yang diubah.
 # ---------------------------------------------------------------------
 PROJECT_ID="geoportal-kelompok-a-xxxxx"     # dari koordinator
-EMAIL_PESERTA="nama01@example.com"          # email peserta yang terdaftar
+NAMA_PESERTA="nama01"                       # dari kolom Nama Peserta pada tabel
 # ---------------------------------------------------------------------
 
 set -euo pipefail
@@ -225,43 +227,38 @@ if [ "$PROJECT_ID" = "geoportal-kelompok-a-xxxxx" ]; then
   exit 1
 fi
 
-# Turunkan identitas dari email:
-#   nama01@example.com          -> nama01
-#   asisten.nama-01@contoh.com  -> asisten-nama-01
-#
-# Setiap karakter selain huruf kecil dan angka diubah menjadi SATU tanda
-# hubung, bukan dihapus. Menghapus akan membuat dua email berbeda
-# menghasilkan identitas yang sama.
-PARTICIPANT_ID="$(
-  printf '%s' "${EMAIL_PESERTA%%@*}" \
-    | tr '[:upper:]' '[:lower:]' \
-    | sed -e 's/[^a-z0-9]\{1,\}/-/g' -e 's/^-\{1,\}//' -e 's/-\{1,\}$//'
-)"
+# Identitas peserta memakai NAMA_PESERTA apa adanya, tanpa diturunkan.
+# Nilainya sudah pendek dan satu kata, diambil dari kolom Nama Peserta pada
+# tabel peserta.
+PARTICIPANT_ID="$NAMA_PESERTA"
 
 if [ -z "$PARTICIPANT_ID" ]; then
-  merah "Tidak bisa menurunkan identitas dari email '$EMAIL_PESERTA'."
-  echo "  Minta koordinator memberikan identitas secara eksplisit."
+  merah "NAMA_PESERTA masih kosong."
+  echo "  Ambil nilainya dari kolom Nama Peserta pada halaman Peserta dan Project."
   exit 1
 fi
 
-# Nama VM, Service Account, dan trigger GCP menolak huruf besar, spasi, dan
-# garis bawah. Pesan errornya menyebut nama resource, bukan nama variabel,
-# sehingga sulit dilacak bila lolos sampai ke perintah gcloud.
-if printf '%s' "$PARTICIPANT_ID" | grep -qE '[^a-z0-9-]'; then
-  merah "Identitas '$PARTICIPANT_ID' mengandung karakter yang tidak sah."
-  echo "  Hanya huruf kecil, angka, dan tanda hubung."
+# Huruf kecil dan angka saja, tanpa spasi, tanpa tanda hubung, tanpa titik.
+# Nama VM, Service Account, dan subdomain menolak karakter di luar itu, dan
+# pesan errornya menyebut nama resource, bukan nama variabel, sehingga sulit
+# dilacak bila lolos sampai ke perintah gcloud.
+if printf '%s' "$PARTICIPANT_ID" | grep -qE '[^a-z0-9]'; then
+  merah "Nama Peserta '$PARTICIPANT_ID' mengandung karakter yang tidak sah."
+  echo "  Hanya huruf kecil dan angka, tanpa spasi dan tanpa tanda hubung."
+  echo "  Contoh yang benar: amelliak, dhany, d21utomo"
   exit 1
 fi
 
-# Batas 27 berasal dari Service Account, bukan dari nama VM.
-#
-# Nama Service Account di Google Cloud paling panjang 30 karakter, dan
-# cb-<identitas> memakai 3 di antaranya. Nama VM justru jauh lebih longgar,
-# yaitu 63 karakter, sehingga bukan itu yang menentukan.
-if [ "${#PARTICIPANT_ID}" -gt 27 ]; then
-  merah "Identitas '$PARTICIPANT_ID' ${#PARTICIPANT_ID} karakter, melebihi batas 27."
-  echo "  Identitas dipakai membentuk cb-<identitas> dan webgis-<identitas>."
-  echo "  Batasnya dari Service Account, yang paling panjang 30 karakter."
+if [ "${#PARTICIPANT_ID}" -lt 3 ]; then
+  merah "Nama Peserta '$PARTICIPANT_ID' hanya ${#PARTICIPANT_ID} karakter, minimal 3."
+  exit 1
+fi
+
+# Batas 8 karakter menjaga nama VM, Service Account, dan subdomain tetap
+# pendek. Ketiganya sebenarnya masih longgar pada batas ini, jadi angka 8
+# dipilih untuk keterbacaan, bukan karena batas teknis.
+if [ "${#PARTICIPANT_ID}" -gt 8 ]; then
+  merah "Nama Peserta '$PARTICIPANT_ID' ${#PARTICIPANT_ID} karakter, melebihi batas 8."
   exit 1
 fi
 
@@ -307,9 +304,13 @@ if gcloud iam service-accounts describe "$BUILD_SA" --project="$PROJECT_ID" >/de
   echo "  JANGAN melanjutkan. Kalau Anda memakai Service Account milik orang lain,"
   echo "  Cloud Build Anda akan men-deploy ke VM orang itu, dan sebaliknya."
   echo ""
+  echo "  Pastikan NAMA_PESERTA diisi dengan nilai dari kolom Nama Peserta pada"
+  echo "  halaman Peserta dan Project, bukan nama pilihan sendiri."
+  echo ""
   echo "  Langkah yang benar:"
-  echo "    1. Laporkan ke koordinator bahwa identitas '$PARTICIPANT_ID' bentrok."
-  echo "    2. Minta identitas pengganti, lalu jalankan blok ini lagi dengan nilai itu."
+  echo "    1. Periksa kembali tabel peserta, mungkin nilai Anda salah ketik."
+  echo "    2. Bila memang bentrok, laporkan ke koordinator."
+  echo "    3. Minta identitas pengganti, lalu jalankan blok ini lagi."
   exit 1
 fi
 
@@ -322,8 +323,7 @@ fi
 hijau "Lolos. Tidak ada resource dengan nama ini di project $PROJECT_ID."
 echo ""
 echo "PROJECT_ID     = $PROJECT_ID"
-echo "EMAIL_PESERTA  = $EMAIL_PESERTA"
-echo "PARTICIPANT_ID = $PARTICIPANT_ID   <- diturunkan dari email, bukan diketik"
+echo "NAMA_PESERTA   = $NAMA_PESERTA"
 echo ""
 echo "Nama resource Anda:"
 printf '  %-18s %s\n' \
