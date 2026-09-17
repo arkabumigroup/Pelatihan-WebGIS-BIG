@@ -59,6 +59,89 @@ Deployment Project bekerja pada fork repositori peserta di akun GitHub Anda send
 
 Fork dan clone repositori itu dikerjakan pada halaman [Konfigurasi Project](/hari-3/deployment-project/konfigurasi-project), Tahap 1 sampai 8. Pastikan tahap itu sudah selesai sebelum melanjutkan, karena halaman ini mengandaikan proyek sudah ada di laptop dan seluruh berkasnya sudah diperiksa.
 
+### Mengirim perubahan ke fork Anda
+
+Cloud Build mengambil kode dari fork Anda, bukan dari laptop. Jadi setiap perubahan harus di-push lebih dahulu:
+
+```bash
+git add -A
+git commit -m "pesan perubahan"
+git push origin main
+```
+
+Bila push ditolak, penyebabnya hampir selalu akun yang salah. Bagian berikut menjelaskannya.
+
+### Bila Anda punya lebih dari satu akun GitHub
+
+SSH memilih kunci berdasarkan alamat host. Bila laptop Anda memakai lebih dari satu akun GitHub, akun yang dipakai adalah akun yang kuncinya terpasang pada host `github.com`, dan itu belum tentu akun pemilik fork Anda.
+
+Gejalanya, push ditolak dengan pesan:
+
+```text
+! [remote rejected] main -> main (permission denied)
+```
+
+Periksa kunci Anda sedang menjadi akun siapa:
+
+```bash
+ssh -T git@github.com
+```
+
+Bila jawabannya bukan nama pemilik fork, buat alias pada `~/.ssh/config`:
+
+```text
+Host github.com-namaakun
+    HostName github.com
+    User git
+    IdentityFile ~/.ssh/id_github_namaakun
+    IdentitiesOnly yes
+```
+
+Lalu arahkan remote fork Anda ke alias itu:
+
+```bash
+git remote set-url origin git@github.com-namaakun:namaakun/personal-geoportal-peserta.git
+```
+
+Uji dengan `ssh -T git@github.com-namaakun`. Bila menyapa nama akun yang benar, push akan berhasil.
+
+Anda dapat memeriksa akses tanpa mengubah apa pun:
+
+```bash
+git ls-remote origin
+```
+
+Perintah itu menampilkan daftar branch pada remote. Bila kosong atau gagal, akun Anda belum punya izin ke repositori itu.
+
+### Bila repositori sumber diperbarui
+
+Sumber dapat diperbarui selama pelatihan, misalnya karena ada perbaikan. Fork Anda tidak ikut berubah dengan sendirinya.
+
+Tambahkan sumber sebagai remote, lalu tarik perubahannya:
+
+```bash
+git remote add upstream https://github.com/dhanyyudi/personal-geoportal-peserta.git
+git fetch upstream
+git merge upstream/main
+git push origin main
+```
+
+`git remote add` hanya perlu sekali. Untuk pembaruan berikutnya, cukup `git fetch upstream` dan seterusnya.
+
+Bila muncul konflik, artinya Anda mengubah berkas yang sama dengan yang diubah di sumber. Selesaikan konfliknya, lalu `git add` dan `git commit`.
+
+::: tip Bila ragu, fork ulang saja
+Cara paling sederhana dan paling kecil risikonya: hapus folder di laptop, lalu fork dan clone ulang dari awal. Selama Anda belum membuat perubahan sendiri yang perlu disimpan, cara ini lebih cepat daripada menyelesaikan konflik.
+
+Yang **tidak** boleh hilang adalah berkas `.env`, karena berisi kredensial Anda. Salin berkas itu lebih dahulu, baru hapus foldernya:
+
+```bash
+cp .env ~/env-simpanan
+# hapus folder, fork dan clone ulang
+cp ~/env-simpanan .env
+```
+:::
+
 ## Nilai yang Harus Unik per Peserta
 
 Empat peserta memakai satu project Google Cloud bersama. Karena itu sebagian nilai harus berbeda antar peserta, dan sebagian justru harus sama.
