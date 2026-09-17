@@ -39,6 +39,8 @@ Jangan menyalin sebagian, karena `01-schema.sql` dan `02-seed-super-admin.sql` m
 | 1 | `01-schema.sql` | Membuat tiga tabel: `users`, `katalog_data_2d`, dan `katalog_data_3d` | Ya | Tidak, hanya membuat tabel |
 | 2 | `02-seed-super-admin.sql` | Membuat satu akun super admin untuk login pertama | Ya | Ya, menambah satu akun |
 | 3 | `03-periksa.sql` | Memeriksa hasilnya, hanya membaca | Boleh dilewati | Tidak |
+| 4 | `06-migrasi-peran-viewer.sql` | Memindahkan akun berperan `editor` menjadi `viewer` | Hanya bila database Anda dibuat sebelum peran itu dihapus | Ya, mengubah peran |
+| 5 | `07-aktifkan-rls.sql` | Mengaktifkan Row Level Security | Hanya bila database Anda dibuat sebelum perintah RLS ada di `01-schema.sql` | Ya, mengaktifkan RLS |
 
 ## Tiga Tabel yang Dibuat
 
@@ -605,6 +607,19 @@ ORDER BY c.relname;
 
 Harapannya: ketiga tabel bernilai `rls = true`, dan view memuat `security_invoker=true` pada kolom `opsi`.
 
+## Berkas SQL Lainnya
+
+Selain berkas di atas, folder `sql/` pada repositori Anda memuat tiga berkas yang dipakai pada keperluan tertentu. Ketiganya tidak diperlukan untuk menyiapkan database dan menjalankan portal, tetapi berguna saat Anda menemui masalah.
+
+| Berkas | Untuk apa | Kapan dipakai |
+|---|---|---|
+| `04-postgis-supabase.sql` | Memasang PostGIS di Supabase, termasuk mengatasi `search_path` yang tidak dapat diubah lewat `ALTER DATABASE` | Saat mengerjakan data spasial di Hari 2 |
+| `05-diagnosa-constraint.sql` | Memeriksa sepuluh hal sekaligus, lalu menyimpulkan gejala mana menunjuk ke perbaikan mana | Saat ada kegagalan constraint yang sulit dilacak |
+| `06-migrasi-peran-viewer.sql` | Memindahkan akun berperan `editor` menjadi `viewer`, dan menyesuaikan nilai bawaan serta `CHECK` | Hanya bila database Anda dibuat sebelum peran `editor` dihapus |
+| `07-aktifkan-rls.sql` | Mengaktifkan Row Level Security pada tabel dan view | Hanya bila tabel Anda dibuat sebelum perintah itu ada di `01-schema.sql` |
+
+Penjelasan lengkap tiap berkas ada di `sql/README.md` pada repositori Anda.
+
 ## Bila Login Gagal
 
 Periksa berurutan:
@@ -625,3 +640,4 @@ Periksa berurutan:
     ```
 
 5. **Pesan menyebut tabel tidak ditemukan.** Prisma membaca schema `public`. Pastikan ketiga tabel dibuat di sana.
+6. **Kegagalan constraint yang sulit dilacak.** Jalankan `05-diagnosa-constraint.sql`. Berkas itu memeriksa sepuluh hal sekaligus dan diakhiri tabel keputusan: gejala mana menunjuk ke perbaikan mana.
