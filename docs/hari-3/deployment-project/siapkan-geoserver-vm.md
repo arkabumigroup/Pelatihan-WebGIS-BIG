@@ -135,6 +135,70 @@ Buka `https://SUBDOMAIN/geoserver/web`, lalu masuk dengan:
 | Username | `admin` |
 | Password | Isi `GEOSERVER_ADMIN_PASSWORD` pada `.env` |
 
+## Tahap 3b. Izinkan formulir dari subdomain Anda
+
+Dijalankan di: Terminal VM
+
+GeoServer memakai filter CSRF yang menolak formulir yang `Origin`-nya tidak dikenal. Karena permintaan melewati nginx, GeoServer melihat alamat publik Anda, bukan `localhost`, dan alamat itu belum ada pada daftar izin bawaannya.
+
+Gejalanya muncul saat membuat workspace atau datastore:
+
+```text
+HTTP Status 400 - Bad Request
+Message: Origin does not correspond to request
+```
+
+Perbaikannya adalah menambahkan satu variabel pada service `geoserver` di `docker-compose.yml`:
+
+```yaml
+- GEOSERVER_CSRF_WHITELIST=webgisbig.com
+```
+
+Nilai itu mencakup seluruh subdomain `webgisbig.com`, sehingga satu baris berlaku untuk semua peserta. Diuji pada GeoServer 2.24.1:
+
+| `Origin` pengirim | Hasil |
+|---|---|
+| `https://dhanypedia.webgisbig.com` | diterima |
+| `https://andi.webgisbig.com` | diterima |
+| `https://webgisbig.com` | diterima |
+| `https://jahat.com` | ditolak, `400` |
+
+Menerapkannya:
+
+```bash
+cd /opt/webgis/app
+cp docker-compose.yml docker-compose.yml.bak
+python3 - <<'PY2'
+p = 'docker-compose.yml'
+baris = open(p).read().split('\n')
+baris = [b for b in baris if 'GEOSERVER_CSRF_WHITELIST' not in b]
+i = next(k for k, b in enumerate(baris) if 'GEOSERVER_CORS_ALLOWED_ORIGINS' in b)
+indent = ' ' * (len(baris[i]) - len(baris[i].lstrip()))
+baris.insert(i + 1, f'{indent}- GEOSERVER_CSRF_WHITELIST=webgisbig.com')
+open(p, 'w').write('\n'.join(baris))
+PY2
+
+sudo docker compose up -d --force-recreate geoserver
+```
+
+::: warning Perhatikan posisi barisnya
+Di YAML, arti sebuah baris ditentukan oleh induknya. Baris `- sesuatu` di bawah `environment:` adalah variabel lingkungan, sedangkan di bawah `volumes:` adalah folder yang di-mount. Bentuknya sama, hanya beda induk.
+
+Bila baris itu masuk ke bagian `volumes:`, pembuatan ulang container gagal dengan:
+
+```text
+invalid mount path: 'GEOSERVER_CSRF_WHITELIST=webgisbig.com' mount path must be absolute
+```
+
+Periksa dengan `sed -n '/^  geoserver:/,/^  nginx:/p' docker-compose.yml`, dan pastikan barisnya berada di bawah `environment:`.
+:::
+
+::: tip Alamat IP tidak termasuk daftar izin
+Whitelist itu memuat `webgisbig.com` beserta subdomainnya, **tetapi tidak memuat alamat IP VM**.
+
+Mencoba membuat workspace lewat `https://IP_VM/geoserver/web` akan gagal dengan `400` yang sama. Itu tidak menghalangi, karena tahap ini dikerjakan setelah HTTPS aktif sehingga browsernya memakai alamat domain. Namun bila Anda memakai alamat IP, gejalanya akan membingungkan tanpa keterangan ini.
+:::
+
 ## Tahap 4. Buat workspace
 
 Dijalankan di: Antarmuka GeoServer
