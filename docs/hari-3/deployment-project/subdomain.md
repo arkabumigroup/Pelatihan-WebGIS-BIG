@@ -431,25 +431,79 @@ Opsi `--dry-run` menguji seluruh proses perpanjangan tanpa memakai kuota penerbi
 
 Dijalankan di: Terminal VM
 
-Setelah HTTPS aktif, alamat aplikasi pada `.env` harus ikut berubah. Tanpa perubahan ini, login dan callback NextAuth akan mengarah ke alamat HTTP.
+Setelah HTTPS aktif, **empat** variabel pada `.env` harus ikut berubah. Perhatikan: Tahap 18 pada halaman [Google Cloud Platform](/hari-3/deployment-project/google-cloud-platform) menyetel keempatnya ke alamat IP. Tahap ini menggantinya ke alamat HTTPS.
+
+Masuk ke VM:
 
 ```bash
-gcloud compute ssh "$VM_NAME" --zone="$ZONE" --tunnel-through-iap
-nano /opt/webgis/app/.env
+gcloud compute ssh "$VM_NAME" \
+  --zone="$ZONE" \
+  --tunnel-through-iap
 ```
 
-Ubah dua baris berikut:
+Jalankan. Ganti `nama01.webgisbig.com` dengan subdomain Anda:
 
 ```bash
-NEXTAUTH_URL=https://nama01.webgisbig.com/portal/
-BASE_URL=https://nama01.webgisbig.com/portal
+cd /opt/webgis/app
+SUBDOMAIN="nama01.webgisbig.com"
+
+sudo sed -i \
+  -e "s|^NEXTAUTH_URL=.*|NEXTAUTH_URL=https://${SUBDOMAIN}/portal|" \
+  -e "s|^BASE_URL=.*|BASE_URL=https://${SUBDOMAIN}/portal|" \
+  -e "s|^NEXT_PUBLIC_URL_BASE_PATH=.*|NEXT_PUBLIC_URL_BASE_PATH=https://${SUBDOMAIN}/portal|" \
+  -e "s|^GEOSERVER_PUBLIC_URL=.*|GEOSERVER_PUBLIC_URL=https://${SUBDOMAIN}/geoserver|" \
+  .env
+
+grep -E '^(NEXTAUTH_URL|BASE_URL|NEXT_PUBLIC_URL_BASE_PATH|GEOSERVER_PUBLIC_URL)=' .env
 ```
 
-Setelah tersimpan, nyalakan ulang container aplikasi supaya nilai barunya terbaca:
+Keempatnya harus menampilkan alamat `https://`, tanpa garis miring di akhir.
+
+#### Mengapa keempatnya, bukan hanya dua
+
+| Variabel | Dipakai untuk | Bila dibiarkan HTTP |
+|---|---|---|
+| `NEXTAUTH_URL` | Alamat callback login | Login gagal setelah HTTPS aktif |
+| `BASE_URL` | Alamat yang dipakai server | Sama, login dan pengalihan gagal |
+| `NEXT_PUBLIC_URL_BASE_PATH` | Alamat berkas model 3D | Berkas model diminta lewat HTTP, diblokir browser sebagai mixed content, sehingga model tidak muncul di pratinjau |
+| `GEOSERVER_PUBLIC_URL` | Alamat WMS dan WFS yang **disimpan ke database** | Kolom `wms_url` dan `wfs_url` berisi alamat IP, sehingga layer tidak dapat dibuka dari katalog maupun dari QGIS |
+
+Dua variabel terakhir mudah terlewat, karena keduanya tidak menggagalkan login. Gejalanya baru muncul saat model 3D dibuka atau layer 2D dipanggil.
+
+Nyalakan ulang container supaya nilai barunya terbaca:
 
 ```bash
-cd /opt/webgis/app && sudo docker compose up -d nextjs
+cd /opt/webgis/app && sudo docker compose up -d
 ```
+
+::: warning Layer yang sudah dibuat tetap memakai alamat lama
+`GEOSERVER_PUBLIC_URL` dan `NEXT_PUBLIC_URL_BASE_PATH` disalin ke database **saat layer dibuat**, bukan dibaca ulang setiap kali dibuka.
+
+Artinya layer yang dibuat sebelum Tahap 13 masih menyimpan alamat IP, walaupun `.env` sudah diperbaiki. Perbaiki barisnya di SQL Editor Supabase. Ganti `IP_EKSTERNAL_VM` dengan alamat dari Tahap 9, dan `nama01.webgisbig.com` dengan subdomain Anda:
+
+```sql
+UPDATE katalog_data_2d
+SET wms_url = replace(wms_url, 'http://IP_EKSTERNAL_VM/geoserver',
+                               'https://nama01.webgisbig.com/geoserver'),
+    wfs_url = replace(wfs_url, 'http://IP_EKSTERNAL_VM/geoserver',
+                               'https://nama01.webgisbig.com/geoserver');
+
+UPDATE katalog_data_3d
+SET url = replace(url, 'http://IP_EKSTERNAL_VM/portal',
+                        'https://nama01.webgisbig.com/portal');
+```
+
+Periksa hasilnya. Perhatikan nama kolomnya berbeda antara kedua tabel: tabel 2D memakai `layer_name`, tabel 3D memakai `nama`.
+
+```sql
+SELECT layer_name, wms_url FROM katalog_data_2d;
+SELECT nama, url           FROM katalog_data_3d;
+```
+
+Tidak boleh ada lagi alamat IP pada hasilnya.
+
+Bila tidak ada baris yang perlu diperbaiki, kedua `UPDATE` menjawab `Success. No rows returned`. Itu bukan galat.
+:::
 
 ### Tahap 14. Verifikasi akhir
 
