@@ -243,6 +243,7 @@ sleep 300
 Bila masih gagal setelah dua percobaan, periksa prasyaratnya lebih dahulu.
 Balasan `404` pada Tahap 8 dan resolusi DNS yang benar sudah cukup untuk
 melanjutkan. Bila keduanya sudah benar, lanjutkan ke Tahap 9b tanpa `--dry-run`.
+:::
 
 ::: danger Bila memilih melewati uji coba
 Uji coba itu jaring pengaman. Melewatinya berarti risiko kuota bersama ditanggung
@@ -256,7 +257,6 @@ Sebelum melewatinya, pastikan **kedua** hal ini sudah benar:
 Bila salah satu belum benar, **jangan lanjutkan.** Perbaiki dulu, karena
 kegagalan pada penerbitan sungguhan memakai satu jatah kuota yang tidak dapat
 dikembalikan.
-:::
 :::
 
 #### 9b. Terbitkan sertifikat
