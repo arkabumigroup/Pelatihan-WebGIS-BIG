@@ -263,6 +263,44 @@ Seluruhnya sudah diperbaiki pada panduan. Bagian ini dicatat karena dua alasan: 
 | 18 | `sudo docker push` setelah kredensial ditulis sebagai pengguna | `Unauthenticated request`, bukan `Permission denied` |
 | 19 | Blok `server` ditulis ke berkas yang dimuat di dalam blok `server` | `"server" directive is not allowed here` |
 | 20 | Pengalihan HTTP ke HTTPS diperiksa Tahap 14, tetapi tidak pernah disiapkan | Kata sandi login dapat terkirim tanpa enkripsi |
+| 21 | `proxyBaseUrl` GeoServer tidak pernah disetel | Setelah HTTPS aktif, formulir login GeoServer mengirim ke HTTP, isinya dibuang browser, dan kata sandi yang benar ditolak |
+| 22 | `GEOSERVER_CSRF_WHITELIST` tidak ada pada `docker-compose.yml` | Seluruh formulir GeoServer ditolak `HTTP 400 Origin does not correspond to request`, sehingga workspace dan datastore tidak dapat dibuat |
+| 23 | Service `nextjs` tidak memakai volume untuk `data/models` | Model 3D ditulis ke dalam container dan **hilang pada setiap deploy**, sedangkan barisnya tetap ada di database |
+| 24 | Token Cesium Ion ditulis di dalam kode pada lima komponen | Token ikut ter-commit, dan peserta tidak dapat menggantinya dengan token sendiri |
+| 25 | Level tile OpenStreetMap tidak dibatasi pada provider Cesium | Cesium meminta level 20 sampai 26, OSM menjawab `400`, dan seluruh peta gagal terbentuk |
+| 26 | Kolom pitch dan roll tertinggal dari formulir tambah layer 3D | Keduanya selalu tersimpan `0`, padahal database dan pratinjau sudah mendukung |
+| 27 | Tahap 13 mengubah dua dari empat variabel alamat | `wms_url` dan alamat berkas model tetap memakai alamat IP, sehingga layer tidak dapat dibuka |
+
+### Temuan dari pengujian alur 3D
+
+Temuan 21 sampai 25 muncul berurutan saat peserta menguji unggah dan pratinjau model 3D. Keempatnya saling menutupi, sehingga gejalanya terlihat sebagai satu masalah yang sama.
+
+Gejala pertama adalah **halaman admin GeoServer tidak dapat dibuka** setelah HTTPS aktif. Penyebabnya `proxyBaseUrl` yang belum disetel, sehingga formulir login mengirim ke HTTP dan isinya dibuang browser. Setelah itu diperbaiki, muncul gejala berikutnya: **pembuatan workspace ditolak** dengan `400`, karena `GEOSERVER_CSRF_WHITELIST` belum ada.
+
+Setelah keduanya beres dan layer 2D berhasil diunggah, muncul gejala ketiga: **model 3D hilang setelah deploy**. Penyebabnya service `nextjs` tidak memakai volume, sehingga berkas ditulis ke dalam container.
+
+Gejala keempat terlihat sebagai viewer rusak: **globe tampil kosong berwarna beige**. Console browser memuat ratusan galat yang menunjuk ke CORS, padahal yang sebenarnya terjadi adalah `HTTP 400` dari OpenStreetMap karena Cesium meminta tile di luar batas level 19. Balasan `400` tidak memuat header CORS, sehingga browser melaporkannya sebagai galat CORS.
+
+Gejala kelima muncul saat formulir diperiksa: **kolom pitch dan roll tidak ada**. Dibandingkan dengan repositori sumber `matiurari/personal-geoportal` yang dibuat delapan belas hari lebih awal, repositori itu memuat `DEFAULT_FORM` dengan sembilan kunci termasuk `pitch` dan `roll`, sedangkan versi yang dipakai pelatihan menyusut menjadi tiga kunci. Jadi keduanya kolom yang tertinggal, bukan fitur yang belum pernah ada.
+
+### Satu dugaan yang tidak terbukti
+
+Endpoint penyaji berkas model, `/api/katalog-data-3d/models/<id>`, sempat dicurigai tidak memeriksa token. Dugaan itu muncul karena permintaan tanpa token dijawab `200 model/gltf-binary`.
+
+Setelah diperiksa, endpoint itu **sudah benar**. Berkas route memuat pemeriksaan:
+
+```javascript
+if (item.akses?.toLowerCase() === "private") {
+    const { payload, error, status } = requireAuth(request, "viewer");
+    if (error) return NextResponse.json({ message: error }, { status });
+}
+```
+
+Yang diuji saat itu adalah model berstatus **public**, sehingga `200` tanpa token memang jawaban yang benar. Model berstatus private tetap memerlukan token, dan komponen pratinjau mengirimnya lewat `?access_token=`.
+
+Catatan ini disimpan sebagai peringatan: **menguji perlindungan dengan data berstatus public menghasilkan positif palsu.** Untuk mengujinya perlu model berstatus private.
+
+Pelajaran yang berulang dari kelima temuan itu: **satu tangkapan layar Console lebih menentukan daripada dugaan.** Empat perbaikan pertama dikerjakan dengan menebak lapisan penyebabnya, dan setiap kali muncul lapisan berikutnya. Yang menyelesaikan gejala keempat hanya Console browser, yang seharusnya diminta sejak awal.
 
 Tiga di antaranya berasal dari berkas di repositori peserta, bukan dari teks panduan:
 
@@ -313,6 +351,13 @@ Menyusul pengujian Hari 3 ujung ke ujung, ditambahkan pula:
 - `created_at` dihapus dari model Prisma, supaya repositori bekerja pada dua variasi skema
 - Skema SQL dibuat sadar-versi untuk jumlah constraint PostgreSQL
 - Isian Skala dan Arah dibatasi bilangan bulat, karena sebagian database memakai kolom `integer`
+- `proxyBaseUrl` GeoServer disetel ke alamat HTTPS, dan langkahnya masuk Tahap 2 halaman Menyiapkan GeoServer di VM
+- `GEOSERVER_CSRF_WHITELIST` ditambahkan pada service geoserver
+- Volume `./data:/app/data` ditambahkan pada service nextjs, beserta Tahap 8 untuk pemilik foldernya
+- Token Cesium Ion dipindahkan dari kode ke `.env` dan build argument `_CESIUM_ION_TOKEN`
+- Level tile OpenStreetMap dibatasi 19 pada tujuh provider Cesium
+- Kolom pitch dan roll dikembalikan ke formulir, beserta `DEFAULT_FORM` yang lengkap
+- Tahap 13 diubah menjadi keempat variabel, disertai langkah SQL untuk baris database yang sudah ada
 
 Yang **belum** dikerjakan, karena menunggu jawaban: keempat endpoint tanpa kode pada temuan 6.
 
