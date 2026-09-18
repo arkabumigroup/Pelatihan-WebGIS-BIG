@@ -134,8 +134,37 @@ Kedua direktori ini dibuat sekarang karena keduanya di-mount oleh container Ngin
 gcloud compute ssh "$VM_NAME" \
   --zone="$ZONE" \
   --tunnel-through-iap \
-  --command='sudo apt-get update && sudo apt-get install -y certbot && cd /opt/webgis/app && mkdir -p certbot-webroot tls'
+  --command='sudo apt-get update && sudo apt-get install -y certbot && cd /opt/webgis/app && sudo mkdir -p certbot-webroot tls && sudo chown -R "$USER:$USER" certbot-webroot tls && ls -ld certbot-webroot tls'
 ```
+
+::: warning Kedua folder harus menjadi milik Anda, bukan root
+Saat container dijalankan pada tahap sebelumnya, folder `certbot-webroot` dan
+`tls` kemungkinan besar **belum ada**. Docker membuatnya sendiri untuk keperluan
+bind-mount pada `docker-compose.yml`, dan Docker membuatnya **sebagai root**.
+
+Akibatnya Tahap 10 akan gagal saat menulis berkas konfigurasi:
+
+```text
+-bash: tls/aktifkan.conf: Permission denied
+```
+
+Perintah di atas menambahkan `chown` supaya kedua folder menjadi milik Anda,
+baik folder itu baru dibuat maupun sudah terlanjur dibuat Docker.
+
+Periksa hasilnya. Keduanya harus menampilkan nama pengguna Anda, bukan `root`:
+
+```text
+drwxr-xr-x 2 dhanypedia_gmail_com dhanypedia_gmail_com 4096 ... certbot-webroot
+drwxr-xr-x 2 dhanypedia_gmail_com dhanypedia_gmail_com 4096 ... tls
+```
+
+Bila masih tertulis `root`, jalankan:
+
+```bash
+cd /opt/webgis/app
+sudo chown -R "$USER:$USER" certbot-webroot tls
+```
+:::
 
 ### Tahap 7. Sinkronkan konfigurasi dan nyalakan container
 
