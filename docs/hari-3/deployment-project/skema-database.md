@@ -648,6 +648,64 @@ Yang perlu Anda pastikan bukan angkanya, melainkan:
 - Ketiga tabel muncul pada hasilnya.
 - Kolom `check_` tidak bernilai nol, karena `CHECK` itulah yang mencegah peran dan nilai tidak sah masuk ke database.
 
+## Lupa Kata Sandi Super Admin
+
+Kata sandi tidak disimpan dalam bentuk aslinya, melainkan sebagai hash bcrypt. Karena itu kata sandi yang terlupa **tidak dapat dibaca kembali**, tetapi dapat diganti.
+
+Seluruh langkah di bawah dikerjakan di laptop dan di SQL Editor Supabase. Tidak ada yang perlu dijalankan di VM.
+
+### 1. Buat hash baru
+
+Di folder repositori Anda:
+
+```bash
+node scripts/hash-password.mjs
+```
+
+Skrip itu meminta kata sandi **tanpa menampilkannya di layar**, dan tanpa menyimpannya ke riwayat terminal. Salin hash yang tercetak, yang dimulai dengan `$2b$12$`.
+
+### 2. Cari akun super admin
+
+Di SQL Editor Supabase:
+
+```sql
+SELECT email, role, is_active
+FROM users
+WHERE role = 'super_admin';
+```
+
+### 3. Ganti kata sandinya
+
+```sql
+UPDATE users
+SET password = 'HASH_DARI_LANGKAH_1'
+WHERE email = 'EMAIL_DARI_LANGKAH_2';
+```
+
+Ganti `HASH_DARI_LANGKAH_1` dengan hash yang tadi tersalin, dan `EMAIL_DARI_LANGKAH_2` dengan email hasil langkah 2. Hasilnya harus `UPDATE 1`.
+
+### 4. Login
+
+Buka kembali halaman login, dan masuk memakai kata sandi yang baru.
+
+### Bila akun super admin tidak ada
+
+Berarti `02-seed-super-admin.sql` belum pernah dijalankan. Buka berkas itu, ganti kedua penandanya, lalu jalankan seluruh isinya di SQL Editor. Langkahnya ada pada bagian [Membuat Akun Super Admin](#membuat-akun-super-admin) di halaman ini.
+
+### Bila muncul "Akun anda belum di aktivasi"
+
+Kata sandinya sudah benar. Yang belum benar hanya statusnya:
+
+```sql
+UPDATE users SET is_active = true WHERE email = 'EMAIL_ANDA';
+```
+
+::: tip Ini bukan kelemahan, melainkan cara kerja hash
+Hash bcrypt bersifat satu arah. Kata sandi asli tidak tersimpan di mana pun, sehingga tidak ada yang dapat membacanya kembali, termasuk Anda sendiri.
+
+Yang dapat dilakukan adalah menggantinya, dan itulah yang dikerjakan bagian ini. Sifat yang sama juga yang membuat kebocoran hash tidak langsung berarti kebocoran kata sandi.
+:::
+
 ## Bila Login Gagal
 
 Periksa berurutan:
