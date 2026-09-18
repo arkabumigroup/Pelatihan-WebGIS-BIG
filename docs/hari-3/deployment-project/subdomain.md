@@ -256,6 +256,20 @@ ssl_certificate     /etc/letsencrypt/live/nama01.webgisbig.com/fullchain.pem;
 ssl_certificate_key /etc/letsencrypt/live/nama01.webgisbig.com/privkey.pem;
 ssl_protocols       TLSv1.2 TLSv1.3;
 ssl_prefer_server_ciphers off;
+
+# Alihkan seluruh permintaan HTTP ke HTTPS, KECUALI jalur verifikasi
+# Let's Encrypt. Jalur itu harus tetap dapat diakses lewat HTTP, karena
+# pemeriksaan perpanjangan sertifikat selalu memakai HTTP.
+set $alihkan "0";
+if ($scheme = http) {
+    set $alihkan "1";
+}
+if ($request_uri ~ ^/\.well-known/acme-challenge/) {
+    set $alihkan "0";
+}
+if ($alihkan = "1") {
+    return 301 https://$host$request_uri;
+}
 NGINXEOF
 ```
 
@@ -266,6 +280,37 @@ sudo docker compose exec -T nginx nginx -s reload
 ```
 
 Yang diharapkan, tidak ada keluaran sama sekali. Bila muncul galat, Nginx menolak konfigurasi barunya dan tetap memakai konfigurasi lama, sehingga situs Anda tidak ikut mati.
+
+#### Mengapa ada bagian pengalihan
+
+Tanpa bagian itu, `http://SUBDOMAIN/portal` tetap dapat dibuka. Artinya kata sandi login dapat terkirim tanpa enkripsi bila ada yang mengetik alamatnya tanpa `https://`. Tahap 14 memeriksa hal ini, dan bagian itulah yang memenuhinya.
+
+Bagian pengalihan itu **tidak boleh ditulis sederhana.** Bentuk yang paling mudah:
+
+```nginx
+if ($scheme = http) {
+    return 301 https://$host$request_uri;
+}
+```
+
+Bentuk itu **merusak perpanjangan sertifikat.** Let's Encrypt selalu memeriksa kepemilikan domain lewat HTTP, sehingga pengalihan tanpa pengecualian membuat jalur verifikasinya ikut dialihkan dan tidak pernah sampai ke direktori `certbot-webroot`.
+
+Diuji pada Nginx 1.27:
+
+| Bentuk | `/portal` lewat HTTP | Jalur ACME lewat HTTP |
+|---|---|---|
+| Tanpa pengecualian | `301` | `301`, salah, verifikasi akan gagal |
+| Dengan pengecualian | `301` | `404`, benar, berkas ujinya memang tidak ada |
+
+Karena itu berkas di atas menetapkan variabel `$alihkan` lebih dahulu, lalu mengosongkannya kembali khusus untuk jalur ACME.
+
+::: warning Kesalahan ini baru ketahuan setelah 60 hari
+Bentuk yang salah tidak terlihat saat dipasang. Sertifikat baru terbit, dan situs berjalan normal.
+
+Yang gagal adalah perpanjangan pada hari ke-60. Pada saat itu situs Anda mati dengan sertifikat kedaluwarsa, dan penyebabnya sudah sulit dilacak karena pemasangannya terjadi dua bulan sebelumnya.
+
+Tahap 12 menguji perpanjangan memakai `--dry-run`. Uji itulah yang menangkap kesalahan ini, jadi **jangan dilewati.**
+:::
 
 ::: danger Jangan menulis blok `server` di berkas ini
 Panduan versi lama menyuruh menulis blok `server { ... }` lengkap ke dalam `tls/aktifkan.conf`. Cara itu **selalu gagal**, dengan pesan:
