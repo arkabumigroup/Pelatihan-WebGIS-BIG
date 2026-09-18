@@ -193,6 +193,43 @@ Harus berakhir dengan kalimat yang menyatakan simulasi berhasil. Bila gagal, per
 
 Opsi `--dry-run` memakai server uji Let's Encrypt, sehingga **tidak memakai kuota penerbitan yang sebenarnya.**
 
+::: warning Bila muncul "Service busy; retry later"
+Server uji Let's Encrypt kadang menolak permintaan saat sedang sibuk, dan
+balasannya:
+
+```text
+An unexpected error occurred:
+There were too many requests of a given type :: Service busy; retry later.
+```
+
+Pesan itu **bukan tanda konfigurasi Anda salah.** Server ujinya yang sedang
+penuh. Ini masalah yang dikenal, dan bersifat sementara.
+
+Tunggu sekitar lima menit, lalu jalankan perintah yang sama sekali lagi:
+
+```bash
+sleep 300
+```
+
+Bila masih gagal setelah dua percobaan, periksa prasyaratnya lebih dahulu.
+Balasan `404` pada Tahap 8 dan resolusi DNS yang benar sudah cukup untuk
+melanjutkan. Bila keduanya sudah benar, lanjutkan ke Tahap 9b tanpa `--dry-run`.
+
+::: danger Bila memilih melewati uji coba
+Uji coba itu jaring pengaman. Melewatinya berarti risiko kuota bersama ditanggung
+seluruh angkatan.
+
+Sebelum melewatinya, pastikan **kedua** hal ini sudah benar:
+
+- `dig +short "$SUBDOMAIN"` menjawab alamat IP statis VM Anda
+- Tahap 8 menjawab `404`, bukan `502` atau `200`
+
+Bila salah satu belum benar, **jangan lanjutkan.** Perbaiki dulu, karena
+kegagalan pada penerbitan sungguhan memakai satu jatah kuota yang tidak dapat
+dikembalikan.
+:::
+:::
+
 #### 9b. Terbitkan sertifikat
 
 Setelah uji coba berhasil, jalankan perintah yang sama **tanpa** `--dry-run`:
