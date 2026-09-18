@@ -895,10 +895,42 @@ Slash di akhir membuat alamat tidak cocok dengan `basePath` pada `next.config.mj
 
 Buat kata sandi GeoServer di sini, karena GeoServer baru berjalan di VM.
 
+::: tip Bila .env disalin dari laptop, langkah ini boleh dilewati
+Berkas `.env` di laptop sudah memuat `GEOSERVER_ADMIN_PASSWORD` dan
+`GEOSERVER_PASSWORD`, dan keduanya sudah bernilai sama. Periksa lebih dahulu:
+
 ```bash
-GEOSERVER_PASSWORD="$(node -e "console.log(require('crypto').randomBytes(16).toString('hex'))")"
+grep -E '^(GEOSERVER_ADMIN_PASSWORD|GEOSERVER_PASSWORD)=' .env
+```
+
+Bila keduanya muncul dengan nilai yang sama persis, lewati bagian ini dan
+lanjutkan ke Tahap 19.
+:::
+
+Bila nilainya masih kosong, buat kata sandi baru:
+
+```bash
+GEOSERVER_PASSWORD="$(openssl rand -hex 16)"
 echo "$GEOSERVER_PASSWORD"
 ```
+
+Hasilnya 32 karakter heksadesimal, misalnya `950fde2bdd9c36f81316a2e416117195`.
+
+::: warning Jangan memakai node untuk perintah ini
+Versi sebelumnya memakai `node -e "require('crypto')..."`. Perintah itu **gagal
+di VM**, karena Node.js tidak dipasang di sana. Tahap 11 hanya memasang Docker,
+Git, dan Google Cloud CLI.
+
+Gejalanya:
+
+```text
+Command 'node' not found, but can be installed with:
+apt install nodejs
+```
+
+`openssl` sudah tersedia di Ubuntu, dan keluarannya sama bentuknya: 32 karakter
+heksadesimal.
+:::
 
 Simpan hasilnya, lalu isi dua baris berikut dengan nilai yang sama:
 
@@ -909,7 +941,7 @@ Simpan hasilnya, lalu isi dua baris berikut dengan nilai yang sama:
 
 Keduanya harus sama, karena satu dipakai container GeoServer untuk membuat akun admin, dan satu lagi dipakai aplikasi untuk login ke REST API GeoServer. Bila berbeda, unggahan layer gagal dengan pesan kosong.
 
-Perintah di atas memakai Node.js, bukan openssl, supaya dapat dijalankan di Windows juga. Hasilnya hanya berisi huruf dan angka, sehingga aman dari masalah tanda dolar yang dibaca compose sebagai awal nama variabel.
+Hasilnya hanya berisi huruf dan angka, sehingga aman dari masalah tanda dolar yang dibaca compose sebagai awal nama variabel. Perintah ini dijalankan di VM yang berbasis Linux, sehingga `openssl` selalu tersedia.
 
 #### Nilai yang dibiarkan apa adanya
 
