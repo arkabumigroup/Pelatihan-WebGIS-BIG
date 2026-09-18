@@ -951,18 +951,42 @@ Saat login ke antarmuka GeoServer nanti, gunakan username `admin` dan kata sandi
 
 ### Tahap 19. Bangun image aplikasi
 
-![Proses docker build selesai dengan status FINISHED](google-cloud-platform/image%2033.png)
-
-
 Dijalankan di: Terminal VM
 
 Sebelum Cloud Build dipakai, image dibangun sekali secara manual supaya masalah pada `Dockerfile` ketahuan lebih awal di terminal yang bisa dibaca langsung.
+
+#### Setel tiga variabel lebih dahulu
+
+Blok Tahap 2 dijalankan di **Cloud Shell**, sehingga `PROJECT_ID`, `REPOSITORY`, dan `IMAGE_NAME` tidak ikut terbawa ke VM. Di sini ketiganya masih kosong, dan perintah `docker build` akan menghasilkan nama image yang rusak:
+
+```text
+asia-southeast2-docker.pkg.dev////:latest
+```
+
+Isi ketiganya dengan nilai Anda:
+
+```bash
+PROJECT_ID="geoportal-kelompok-a-xxxxx"     # dari Tahap 2
+REPOSITORY="katalog-images"                 # sama untuk semua peserta
+IMAGE_NAME="nextjs-nama01"                  # "nextjs-" diikuti Nama Peserta Anda
+```
+
+Periksa ketiganya sudah terisi sebelum melanjutkan:
+
+```bash
+for v in PROJECT_ID REPOSITORY IMAGE_NAME; do printf '%-12s %s\n' "$v" "${!v}"; done
+```
+
+Harus menampilkan tiga nilai, bukan baris kosong.
+
+#### Bangun image
 
 ```bash
 cd /opt/webgis/app
 sudo docker build -t "asia-southeast2-docker.pkg.dev/${PROJECT_ID}/${REPOSITORY}/${IMAGE_NAME}:latest" .
 ```
 
+Prosesnya lama, karena mengunduh image dasar Node dan memasang dependensi. Bagian akhir keluarannya menyebut nama image yang baru dibuat.
 
 ### Tahap 20. Beri izin Artifact Registry pada Service Account VM
 
@@ -991,16 +1015,24 @@ Gunakan alamat `VM_SA` yang tercetak pada Tahap 6.
 
 ### Tahap 21. Dorong image ke Artifact Registry
 
-![docker push berhasil, seluruh layer terdorong](google-cloud-platform/image49.png)
-
-
 Dijalankan di: Terminal VM
+
+Bila Anda membuka sesi SSH baru sejak Tahap 19, setel ulang ketiga variabel itu. Variabel shell tidak bertahan antar sesi:
+
+```bash
+PROJECT_ID="geoportal-kelompok-a-xxxxx"
+REPOSITORY="katalog-images"
+IMAGE_NAME="nextjs-nama01"
+```
+
+Lalu dorong image-nya:
 
 ```bash
 gcloud auth configure-docker asia-southeast2-docker.pkg.dev --quiet
 sudo docker push "asia-southeast2-docker.pkg.dev/${PROJECT_ID}/${REPOSITORY}/${IMAGE_NAME}:latest"
 ```
 
+Setelah selesai, image itu muncul pada halaman Artifact Registry. Halaman `katalog-images` yang sebelumnya kosong sekarang memuat satu baris.
 
 ### Tahap 22. Jalankan GeoServer dan Nginx
 
