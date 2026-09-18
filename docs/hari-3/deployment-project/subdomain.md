@@ -336,6 +336,18 @@ if ($request_uri ~ ^/\.well-known/acme-challenge/) {
 if ($alihkan = "1") {
     return 301 https://$host$request_uri;
 }
+
+# GeoServer membangun alamat pengalihannya dari skema permintaan yang diterimanya.
+# Nginx meneruskan permintaan ke GeoServer lewat HTTP di dalam jaringan Docker,
+# sehingga GeoServer selalu menulis http:// walaupun permintaan aslinya https.
+# Tanpa baris ini, kedua pengalihan berputar tanpa henti dan halaman admin
+# GeoServer tidak dapat dibuka.
+#
+# Baris ini diletakkan di berkas ini, bukan di nginx.conf, supaya hanya berlaku
+# setelah HTTPS dipasang. Bila diletakkan di nginx.conf, pengalihan GeoServer
+# ikut diubah menjadi https pada fase sebelum HTTPS, ketika port 443 belum ada
+# yang mendengarkan, sehingga GeoServer tidak dapat dibuka sama sekali.
+proxy_redirect ~^http://([^/]+)/(.*)$ https://$1/$2;
 NGINXEOF
 ```
 
