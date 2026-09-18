@@ -388,6 +388,53 @@ Jika blok itu berhenti dengan pesan bahwa Service Account sudah ada, **jangan me
 Variabel pada blok di atas hanya bertahan selama sesi Cloud Shell terbuka. Bila sesi berakhir atau Cloud Shell berpindah, jalankan kembali seluruh blok Tahap 2 sebelum melanjutkan.
 :::
 
+#### Muat ulang variabel di tengah jalan
+
+Cloud Shell menutup sesinya sendiri setelah menganggur sekitar dua puluh menit. Pelatihan ini berlangsung berjam-jam, sehingga hampir pasti Anda mengalami sesi yang berganti di tengah pengerjaan.
+
+Gejalanya mudah dikenali. Perintah berhenti dengan pesan yang memuat **tanda kurung siku kosong**, atau alamat yang kehilangan salah satu bagiannya:
+
+```text
+ERROR: (gcloud.compute.instances.describe) could not parse resource []
+http:///geoserver/web
+```
+
+Tanda seperti itu hampir selalu berarti variabel shell kosong, bukan VM atau project Anda yang bermasalah. Periksa dengan:
+
+```bash
+echo "PROJECT_ID=$PROJECT_ID  VM_NAME=$VM_NAME  ZONE=$ZONE"
+```
+
+Bila ada yang kosong, jalankan blok ringkas berikut. Ganti kedua nilai di baris atas dengan nilai Anda dari Tahap 2:
+
+```bash
+PROJECT_ID="geoportal-kelompok-a-xxxxx"
+NAMA_PESERTA="nama01"
+
+PARTICIPANT_ID="$NAMA_PESERTA"
+ZONE="asia-southeast2-b"
+REGION="asia-southeast2"
+REPOSITORY="katalog-images"
+APP_DIR="/opt/webgis/app"
+VM_NAME="webgis-${PARTICIPANT_ID}"
+STATIC_IP_NAME="webgis-ip-${PARTICIPANT_ID}"
+BUILD_SA_NAME="cb-${PARTICIPANT_ID}"
+BUILD_SA="${BUILD_SA_NAME}@${PROJECT_ID}.iam.gserviceaccount.com"
+CONNECTION_NAME="github-${PARTICIPANT_ID}"
+LINKED_REPO_NAME="repo-${PARTICIPANT_ID}"
+TRIGGER_NAME="deploy-${PARTICIPANT_ID}"
+IMAGE_NAME="nextjs-${PARTICIPANT_ID}"
+SUBDOMAIN="${PARTICIPANT_ID}.webgisbig.com"
+VM_REGION="${ZONE%-*}"
+VM_SA="$(gcloud projects describe "$PROJECT_ID" --format='value(projectNumber)')-compute@developer.gserviceaccount.com"
+PROJECT_NUMBER="${VM_SA%%-compute@*}"
+
+gcloud config set project "$PROJECT_ID" >/dev/null
+echo "Siap. VM_NAME=$VM_NAME  SUBDOMAIN=$SUBDOMAIN"
+```
+
+Blok ini tidak membuat atau mengubah apa pun. Isinya hanya menetapkan variabel, sama seperti blok Tahap 2, sehingga aman dijalankan berkali-kali.
+
 ### Tahap 3. Periksa API yang dibutuhkan
 
 Dijalankan di: Cloud Shell
