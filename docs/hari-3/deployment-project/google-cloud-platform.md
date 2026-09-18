@@ -130,6 +130,55 @@ git push origin main
 
 Bila muncul konflik, artinya Anda mengubah berkas yang sama dengan yang diubah di sumber. Selesaikan konfliknya, lalu `git add` dan `git commit`.
 
+#### Perubahan itu belum sampai ke VM
+
+Fork yang sudah diperbarui **belum mengubah apa pun di VM Anda.** VM memakai salinannya sendiri di `/opt/webgis/app`, yang di-clone dari fork pada Tahap 16. Salinan itu tidak ikut berubah dengan sendirinya.
+
+Alurnya tiga tahap, dan ketiganya perlu:
+
+```text
+upstream  ->  fork Anda  ->  salinan di VM
+  merge        push            git pull
+```
+
+Setelah fork diperbarui, masuk ke VM lalu tarik perubahannya:
+
+```bash
+gcloud compute ssh "$VM_NAME" \
+  --zone="$ZONE" \
+  --tunnel-through-iap
+```
+
+```bash
+cd /opt/webgis/app
+git pull
+```
+
+**Bila Anda pernah mengubah berkas konfigurasi di VM secara manual**, kembalikan dulu berkas itu sebelum menarik, supaya tidak bentrok:
+
+```bash
+git checkout -- docker-compose.yml nginx.conf
+git pull
+```
+
+#### Cloud Build tidak menarik perubahan untuk Anda
+
+Perlu diketahui, karena mudah disangka sebaliknya: `cloudbuild.yaml` **tidak menjalankan `git pull`** pada VM. Yang dikerjakannya hanya tiga hal:
+
+1. Mengganti nilai `NEXTJS_IMAGE` pada `.env` VM
+2. Menarik image baru dari Artifact Registry
+3. Menjalankan `docker compose up -d`, lalu memuat ulang nginx
+
+Artinya image aplikasi diperbarui, tetapi **berkas konfigurasi di VM tidak.** Bila `docker-compose.yml` atau `nginx.conf` berubah di repositori, perubahan itu **harus** ditarik sendiri dengan `git pull` seperti di atas.
+
+::: tip Bila `git merge upstream/main` menjawab "Already up to date"
+Itu berarti Git menganggap fork Anda sudah memuat seluruh isi sumber. Penyebab tersering: sumbernya belum benar-benar bertambah sejak penarikan terakhir.
+
+Periksa dengan `git log --oneline -1 upstream/main` lalu bandingkan dengan `git log --oneline -1 origin/main`. Bila berbeda, jalankan `git fetch upstream` lebih dahulu.
+
+Bila muncul `fatal: You have not concluded your merge (MERGE_HEAD exists)`, artinya ada penarikan sebelumnya yang belum diselesaikan. Periksa dengan `git status`, lalu selesaikan dengan `git commit` bila tidak ada konflik, atau `git merge --abort` untuk membatalkannya.
+:::
+
 ::: tip Bila ragu, fork ulang saja
 Cara paling sederhana dan paling kecil risikonya: hapus folder di laptop, lalu fork dan clone ulang dari awal. Selama Anda belum membuat perubahan sendiri yang perlu disimpan, cara ini lebih cepat daripada menyelesaikan konflik.
 
