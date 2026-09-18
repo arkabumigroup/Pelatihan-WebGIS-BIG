@@ -218,11 +218,25 @@ Satu hal lagi yang perlu diketahui: batas 5 kegagalan verifikasi per alamat per 
 
 ### Tahap 10. Aktifkan HTTPS pada Nginx
 
-Dijalankan di: Cloud Shell
+Dijalankan di: Terminal VM
 
-Tulis berkas `tls/aktifkan.conf`. Isinya adalah server block lengkap untuk port 443, bukan sekadar dua baris `listen` dan `ssl_certificate`. Berkas inilah yang dimuat oleh baris `include /etc/nginx/tls/*.conf;` pada `nginx.conf`.
+Nginx pada proyek ini memakai **satu blok `server`** yang memuat seluruh `location`, dan blok itu mendengarkan port 80. Berkas `nginx.conf` memuat berkas tambahan di dalam blok tersebut:
 
-Masuk ke VM lebih dahulu, karena berkas ini lebih mudah ditulis lewat editor daripada lewat perintah satu baris.
+```nginx
+server {
+    listen 80;
+    server_name _;
+
+    include /etc/nginx/tls/*.conf;
+    ...
+}
+```
+
+Karena `include` itu berada **di dalam** blok `server`, berkas `tls/aktifkan.conf` hanya boleh memuat direktif yang sah pada konteks `server`. Yang perlu ditambahkan hanyalah port 443 beserta sertifikatnya.
+
+Seluruh `location` pada `nginx.conf` otomatis berlaku untuk port 443 juga, karena berada pada blok `server` yang sama. Tidak ada yang perlu ditulis ulang.
+
+Masuk ke VM:
 
 ```bash
 gcloud compute ssh "$VM_NAME" \
@@ -230,82 +244,40 @@ gcloud compute ssh "$VM_NAME" \
   --tunnel-through-iap
 ```
 
-Buat berkasnya:
+Buat berkasnya. Ganti `nama01.webgisbig.com` dengan subdomain Anda pada kedua baris sertifikat:
 
 ```bash
 cd /opt/webgis/app
-nano tls/aktifkan.conf
+cat > tls/aktifkan.conf << 'NGINXEOF'
+listen 443 ssl;
+http2 on;
+
+ssl_certificate     /etc/letsencrypt/live/nama01.webgisbig.com/fullchain.pem;
+ssl_certificate_key /etc/letsencrypt/live/nama01.webgisbig.com/privkey.pem;
+ssl_protocols       TLSv1.2 TLSv1.3;
+ssl_prefer_server_ciphers off;
+NGINXEOF
 ```
 
-Isi dengan konfigurasi berikut. Ganti `nama01.webgisbig.com` dengan subdomain Anda.
-
-```nginx
-server {
-    listen 443 ssl;
-    http2 on;
-    server_name nama01.webgisbig.com;
-
-    ssl_certificate     /etc/letsencrypt/live/nama01.webgisbig.com/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/nama01.webgisbig.com/privkey.pem;
-    ssl_protocols       TLSv1.2 TLSv1.3;
-    ssl_prefer_server_ciphers off;
-
-    location ^~ /.well-known/acme-challenge/ {
-        root /var/www/certbot;
-    }
-
-    location = / {
-        return 302 /portal;
-    }
-
-    location = /geoserver {
-        return 302 /geoserver/web;
-    }
-
-    location /geoserver/ {
-        resolver 127.0.0.11 valid=10s ipv6=off;
-
-        set $geoserver_upstream http://geoserver:8080;
-        rewrite ^/geoserver/(.*)$ /geoserver/$1 break;
-        proxy_pass $geoserver_upstream;
-
-        proxy_set_header Host $http_host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto https;
-    }
-
-    location / {
-        resolver 127.0.0.11 valid=10s ipv6=off;
-
-        set $nextjs_upstream http://nextjs:3000;
-        proxy_pass $nextjs_upstream;
-
-        proxy_http_version 1.1;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto https;
-    }
-}
-```
-
-Uji konfigurasi sebelum memuat ulang. Bila ada yang salah, Nginx menolak dan layanan yang sedang berjalan tidak terganggu.
-
-```bash
-sudo docker compose exec -T nginx nginx -t
-```
-
-Bila hasilnya `syntax is ok` dan `test is successful`, muat ulang:
+Muat ulang Nginx:
 
 ```bash
 sudo docker compose exec -T nginx nginx -s reload
 ```
 
-Dua hal yang paling sering terlewat pada tahap ini:
+Yang diharapkan, tidak ada keluaran sama sekali. Bila muncul galat, Nginx menolak konfigurasi barunya dan tetap memakai konfigurasi lama, sehingga situs Anda tidak ikut mati.
 
-- Berkas ini adalah **server block terpisah**, bukan tambahan baris di dalam blok port 80. Menulis `listen 443 ssl;` di dalam blok yang sama akan membuat Nginx melayani port 443 dengan konfigurasi yang sama tetapi tanpa parameter SSL yang benar.
-- Header `X-Forwarded-Proto https` pada jalur HTTPS berbeda dari `$scheme` pada jalur HTTP. Nilainya memang ditulis tetap, karena berkas ini hanya dipakai oleh port 443.
+::: danger Jangan menulis blok `server` di berkas ini
+Panduan versi lama menyuruh menulis blok `server { ... }` lengkap ke dalam `tls/aktifkan.conf`. Cara itu **selalu gagal**, dengan pesan:
+
+```text
+[emerg] "server" directive is not allowed here in /etc/nginx/tls/aktifkan.conf:1
+```
+
+Blok `server` hanya sah di dalam konteks `http`, sedangkan `include` pada `nginx.conf` berada di dalam konteks `server`.
+
+Diuji pada Nginx 1.27: berkas berisi blok `server` gagal, sedangkan berkas berisi direktif `listen` dan `ssl_certificate` berhasil, dan port 443 benar-benar terbuka.
+:::
 
 ### Tahap 11. Verifikasi HTTPS
 
