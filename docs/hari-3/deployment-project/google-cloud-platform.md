@@ -990,14 +990,30 @@ Prosesnya lama, karena mengunduh image dasar Node dan memasang dependensi. Bagia
 
 ### Tahap 20. Beri izin Artifact Registry pada Service Account VM
 
-![Menu IAM & Admin pada navigasi Google Cloud Console](google-cloud-platform/image%2035.png)
-
-![Dialog Grant access dengan Service Account VM pada kolom New principals](google-cloud-platform/image%2036.png)
-
-![Pemilihan role Artifact Registry Administrator](google-cloud-platform/image%2037.png)
-
-
 Dijalankan di: Google Cloud Console
+
+::: tip Pada sebagian besar project, tahap ini tidak diperlukan
+Service Account default Compute Engine biasanya sudah memegang `roles/editor`,
+dan peran itu sudah memuat seluruh izin yang dibutuhkan tahap berikutnya.
+
+Diperiksa pada `roles/editor`:
+
+| Izin yang dibutuhkan | Ada di `roles/editor`? |
+|---|---|
+| `artifactregistry.repositories.uploadArtifacts` | ya |
+| `artifactregistry.dockerimages.get` | ya |
+| `artifactregistry.dockerimages.list` | ya |
+| `artifactregistry.repositories.downloadArtifacts` | ya |
+| Seluruh isi `roles/logging.logWriter` | ya |
+
+`roles/artifactregistry.admin` hanya menambah tiga izin yang tidak dipakai untuk
+mendorong image: `createTagBinding`, `deleteTagBinding`, dan `setIamPolicy`.
+
+**Cara mengetahui apakah tahap ini perlu:** lanjutkan saja ke Tahap 21. Bila
+image berhasil didorong, tahap ini boleh dilewati. Bila gagal dengan pesan
+`Permission "artifactregistry.repositories.uploadArtifacts" denied`, kembali ke
+sini dan kerjakan.
+:::
 
 VM perlu izin menulis image ke Artifact Registry. Buka IAM & Admin, lalu IAM, lalu Grant Access, dan tambahkan Service Account VM sebagai principal dengan dua role berikut.
 
@@ -1008,10 +1024,37 @@ VM perlu izin menulis image ke Artifact Registry. Buka IAM & Admin, lalu IAM, la
 
 Gunakan alamat `VM_SA` yang tercetak pada Tahap 6.
 
+#### Lewat Cloud Shell
 
+Cara yang sama dapat dikerjakan lewat perintah, dan lebih cepat daripada
+menelusuri Console:
 
+```bash
+gcloud projects add-iam-policy-binding "$PROJECT_ID" \
+  --member="serviceAccount:$VM_SA" \
+  --role="roles/artifactregistry.admin" \
+  --condition=None
 
+gcloud projects add-iam-policy-binding "$PROJECT_ID" \
+  --member="serviceAccount:$VM_SA" \
+  --role="roles/logging.logWriter" \
+  --condition=None
+```
 
+::: warning Perintah ini JANGAN dijalankan di terminal VM
+Di dalam VM, `gcloud` terautentikasi sebagai Service Account VM, dan akun itu
+tidak berwenang mengubah kebijakan IAM. Perintahnya akan gagal dengan:
+
+```text
+does not have permission to access projects instance [...:setIamPolicy]
+Policy update access denied.
+This command is authenticated as <nomor-project>-compute@developer.gserviceaccount.com
+```
+
+Perhatikan bagian terakhir pesan itu. Isinya menyebut akun yang sedang dipakai,
+dan itu cara tercepat mengenali kesalahan ini. Perintah IAM selalu dijalankan
+di Cloud Shell, sebagai Anda.
+:::
 
 ### Tahap 21. Dorong image ke Artifact Registry
 
