@@ -244,6 +244,48 @@ Akibatnya di server, `wms_url` tersimpan sebagai `http://geoserver:8080/geoserve
 
 ---
 
+## Temuan pada Panduan Deployment
+
+Bagian ini berbeda sifatnya dari sembilan temuan di atas. Kesembilan temuan itu ada pada materi instruktur, sedangkan bagian ini berasal dari **menjalankan panduan Hari 3 ujung ke ujung** pada satu peserta sungguhan, dari membuat VM sampai HTTPS aktif.
+
+Seluruhnya sudah diperbaiki pada panduan. Bagian ini dicatat karena dua alasan: sebagian temuan berakar pada berkas di repositori peserta, dan sebagian lagi menunjukkan pola yang perlu dihindari saat menulis panduan berikutnya.
+
+| # | Temuan | Akibat bila dibiarkan |
+|---|---|---|
+| 10 | Perintah pemeriksa `.gitignore` selalu mengeluarkan kosong | Peserta mengira `.gitignore`-nya salah, lalu berhenti tanpa sebab |
+| 11 | Panduan menyebut `12 lulus`, kenyataannya 13 | Peserta mengira ada uji yang gagal |
+| 12 | Jumlah constraint berbeda antara PostgreSQL 17 dan 18 | Peserta mengira skemanya salah |
+| 13 | Nama datastore GeoServer tidak disebutkan | Peserta tidak tahu nilai yang harus diisi |
+| 14 | Dua komentar alamat GeoServer saling bertentangan | Unggahan layer gagal tanpa pesan yang menjelaskan |
+| 15 | `created_at` di Prisma tidak ada di sebagian database | Seluruh query gagal, bukan hanya satu kolom |
+| 16 | Tahap 16 mengisi folder yang dibutuhkan Tahap 17 | `git clone` menolak folder yang tidak kosong |
+| 17 | Variabel Cloud Shell dipakai pada tahap yang dijalankan di VM | Nama image menjadi `////:latest` |
+| 18 | `sudo docker push` setelah kredensial ditulis sebagai pengguna | `Unauthenticated request`, bukan `Permission denied` |
+| 19 | Blok `server` ditulis ke berkas yang dimuat di dalam blok `server` | `"server" directive is not allowed here` |
+| 20 | Pengalihan HTTP ke HTTPS diperiksa Tahap 14, tetapi tidak pernah disiapkan | Kata sandi login dapat terkirim tanpa enkripsi |
+
+Tiga di antaranya berasal dari berkas di repositori peserta, bukan dari teks panduan:
+
+- **Temuan 15** muncul dari `prisma/schema.prisma` yang memuat kolom di luar database
+- **Temuan 18** muncul dari `docker-compose.yml` yang memasang `./tls`, sehingga Docker membuat folder itu sebagai root sebelum peserta membuatnya sendiri
+- **Temuan 19** muncul dari `nginx.conf` yang menaruh `include /etc/nginx/tls/*.conf;` di dalam blok `server`
+
+### Pola yang berulang
+
+Kesebelas temuan itu punya satu sifat yang sama: **semuanya lolos dari pembacaan, dan hanya muncul saat dijalankan.**
+
+Penyebabnya seragam, yaitu panduan ditulis dengan mengandaikan keadaan yang tidak diperiksa. Tiga bentuk pengandaian yang paling sering muncul:
+
+**Mengandaikan perintah berjalan di satu tempat, padahal di tempat lain.** Tahap 16, 19, dan 21 memakai variabel yang hanya ada di Cloud Shell, sedangkan perintahnya dijalankan di VM.
+
+**Mengandaikan berkas sudah ada, atau belum ada.** Folder `tls` ternyata sudah dibuat Docker. Berkas `cloudbuild.yaml` ternyata sudah ada di repositori dengan isi berbeda.
+
+**Mengandaikan satu versi perkakas.** Batas panjang Service Account, jumlah constraint pada `pg_constraint`, dan ketersediaan `node` semuanya berbeda menurut versi atau menurut apa yang sudah dipasang.
+
+### Yang belum dikerjakan
+
+Empat endpoint tanpa kode pada temuan 6 masih menunggu jawaban. Selain itu, `docs/.vitepress/dist` masih ter-commit ke repositori meskipun seluruh isinya dihasilkan oleh proses build. Membersihkannya memerlukan `git rm -r --cached` pada 768 berkas.
+
 ## Catatan Pengerjaan
 
 ### Cara temuan ini dikumpulkan
@@ -262,6 +304,15 @@ Beberapa temuan sudah diperbaiki pada repositori peserta `dhanyyudi/personal-geo
 - Hash kata sandi tidak lagi dikembalikan
 - `GEOSERVER_PUBLIC_URL` dipisahkan dari `GEOSERVER_URL`
 - Skema Prisma dilengkapi tiga kolom yang tertinggal
+
+Menyusul pengujian Hari 3 ujung ke ujung, ditambahkan pula:
+
+- Row Level Security diaktifkan pada ketiga tabel, dan `security_invoker` pada view yang melewatinya
+- Tombol Tambah dan Hapus Akun dihidupkan, dan pilihan peran diselaraskan dengan API
+- `PaperProps` diganti `slotProps.paper`, karena pada MUI v9 gaya dialog tidak pernah terpasang
+- `created_at` dihapus dari model Prisma, supaya repositori bekerja pada dua variasi skema
+- Skema SQL dibuat sadar-versi untuk jumlah constraint PostgreSQL
+- Isian Skala dan Arah dibatasi bilangan bulat, karena sebagian database memakai kolom `integer`
 
 Yang **belum** dikerjakan, karena menunggu jawaban: keempat endpoint tanpa kode pada temuan 6.
 
