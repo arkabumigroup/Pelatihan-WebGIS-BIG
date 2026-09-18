@@ -28,7 +28,7 @@
     
 7. Di bagian env local ada variabel bernama `DATABASE_URL`. Variabel itu berisi informasi koneksi ke database. Simpan nama user dan host yang terlihat di sana.
     
-    ::: warning Tiga bentuk connection string, dan syaratnya
+::: warning Tiga bentuk connection string, dan syaratnya
 Supabase menampilkan tiga bentuk alamat koneksi. Ketiganya dapat dipakai, dengan satu syarat pada bentuk kedua.
 
 | Bentuk | Port | Syarat |
@@ -52,25 +52,27 @@ DATABASE_URL="postgresql://postgres.aefvxqjmwtbeysjyfzgo:[YOUR-PASSWORD]@aws-0-a
 Halaman connection string Supabase juga menampilkan `DIRECT_URL`. Untuk aplikasi ini, **hanya `DATABASE_URL` yang dipakai**, karena tabel dibuat lewat skrip di folder `sql/`, bukan lewat `prisma migrate`.
 
 Ganti `[YOUR-PASSWORD]` dengan kata sandi database yang Anda buat pada langkah 4. Kalau kata sandinya memuat karakter khusus seperti `@` atau `#`, tulis dalam bentuk persen: `%40` dan `%23`.
+:::
+
 ::: warning Pilih Session pooler, bukan Transaction pooler
-    Supabase menampilkan beberapa bentuk connection string. Yang bekerja dengan Prisma adalah **Session pooler pada port 5432**.
-    
-    | Bentuk | Port | Hasil |
-    |---|---|---|
-    | `db.<ref>.supabase.co` | 5432 | Gagal. Pada project baru host ini hanya punya alamat IPv6 |
-    | `aws-0-<region>.pooler.supabase.com` | 6543 | Gagal. Transaction pooler tidak mendukung prepared statement yang dipakai Prisma, sehingga muncul `prepared statement already exists` |
-    | `aws-0-<region>.pooler.supabase.com` | **5432** | Bekerja. Ini yang dipakai |
-    
-    Perhatikan juga nama penggunanya, yaitu `postgres.<ref>`, bukan `postgres` saja.
-    
-    Contoh bentuk yang benar:
-    
-    ```bash
-    DATABASE_URL="postgresql://postgres.aefvxqjmwtbeysjyfzgo:[YOUR-PASSWORD]@aws-0-ap-southeast-1.pooler.supabase.com:5432/postgres"
-    ```
-    
-    Ganti `[YOUR-PASSWORD]` dengan kata sandi database yang Anda buat pada langkah 4. Kalau kata sandinya memuat karakter khusus seperti `@` atau `#`, tulis dalam bentuk persen: `%40` dan `%23`.
-    :::
+Supabase menampilkan beberapa bentuk connection string. Yang bekerja dengan Prisma adalah **Session pooler pada port 5432**.
+
+| Bentuk | Port | Hasil |
+|---|---|---|
+| `db.<ref>.supabase.co` | 5432 | Gagal. Pada project baru host ini hanya punya alamat IPv6 |
+| `aws-0-<region>.pooler.supabase.com` | 6543 | Gagal. Transaction pooler tidak mendukung prepared statement yang dipakai Prisma, sehingga muncul `prepared statement already exists` |
+| `aws-0-<region>.pooler.supabase.com` | **5432** | Bekerja. Ini yang dipakai |
+
+Perhatikan juga nama penggunanya, yaitu `postgres.<ref>`, bukan `postgres` saja.
+
+Contoh bentuk yang benar:
+
+```bash
+DATABASE_URL="postgresql://postgres.aefvxqjmwtbeysjyfzgo:[YOUR-PASSWORD]@aws-0-ap-southeast-1.pooler.supabase.com:5432/postgres"
+```
+
+Ganti `[YOUR-PASSWORD]` dengan kata sandi database yang Anda buat pada langkah 4. Kalau kata sandinya memuat karakter khusus seperti `@` atau `#`, tulis dalam bentuk persen: `%40` dan `%23`.
+:::
     
 8. Buka Dbeaver kemudian buat New Database Connection ke database yang sudah dibuat dengan connection detail yang ada di project supabase
     
@@ -98,7 +100,32 @@ Ganti `[YOUR-PASSWORD]` dengan kata sandi database yang Anda buat pada langkah 4
     
 ![image.png](cloud-postgresql/image%2011.png)
     
-14. Setelah klik enable akan ada pilihan untuk memilik schema, ganti pilihan tersebut dengan Create New Schema, kemudian buat Nama Schema nya menjadi gis
+14. Setelah klik enable akan ada pilihan untuk memilih schema. **Pilih `public`, jangan membuat schema baru.**
+
+    PostGIS harus berada di schema `public`. Schema itulah yang diperiksa GeoServer untuk menemukan fungsi `postgis_lib_version()`, dan schema itu juga ada pada `search_path` yang dipakai aplikasi.
+
+    ```sql
+    CREATE EXTENSION IF NOT EXISTS postgis WITH SCHEMA public;
+    ```
+
+    Selanjutnya buat schema `gis` secara terpisah. Schema ini menampung tabel spasial yang dibuat aplikasi, bukan extension-nya:
+
+    ```sql
+    CREATE SCHEMA IF NOT EXISTS gis;
+    ```
+
+    ::: warning PostGIS di public, tabel spasial di gis
+    Keduanya berbeda keperluan dan keduanya wajib ada.
+
+    | Schema | Isinya |
+    |---|---|
+    | `public` | Extension PostGIS, tempat tipe `geometry` berada |
+    | `gis` | Tabel spasial yang dibuat aplikasi saat layer diunggah |
+
+    Bila PostGIS dipasang di `gis`, aplikasi masih bekerja karena `gis` ada pada `search_path`-nya, tetapi GeoServer dapat gagal menemukan fungsinya. Susunan yang dipakai sepanjang pelatihan ini adalah PostGIS di `public` dan tabel di `gis`, dan itulah yang diuji.
+
+    Bila PostGIS belum ada di salah satu schema itu, unggahan layer gagal dengan pesan `type "geometry" does not exist`.
+    :::
     
 ![image.png](cloud-postgresql/image%2012.png)
     
