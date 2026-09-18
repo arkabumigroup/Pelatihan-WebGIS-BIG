@@ -1,8 +1,8 @@
 # Menyiapkan GeoServer di VM
 
-Halaman ini melanjutkan [Penambahan Subdomain](/hari-3/deployment-project/subdomain). Setelah HTTPS aktif, GeoServer di VM perlu disiapkan sebelum layer 2D dapat diunggah dari Geoportal.
+Halaman ini melanjutkan [Penambahan Subdomain](/hari-3/deployment-project/subdomain). Setelah HTTPS aktif, GeoServer di VM perlu disiapkan sebelum layer 2D dapat diunggah, dan satu folder perlu disiapkan sebelum model 3D dapat disimpan.
 
-Tanpa halaman ini, unggahan layer gagal dengan pesan yang tidak menunjuk penyebabnya.
+Tanpa halaman ini, unggahan layer gagal dengan pesan yang tidak menunjuk penyebabnya, dan model 3D hilang pada deploy berikutnya.
 
 ## Prasyarat
 
@@ -278,6 +278,77 @@ Periksa hasilnya:
 | Layer terbit | GeoServer: `Data > Layers` |
 | Layer tampil di Geoportal | Halaman Katalog Data 2D |
 
+## Tahap 8. Siapkan folder penyimpanan model 3D
+
+Dijalankan di: Terminal VM
+
+Model 3D disimpan sebagai berkas di VM, bukan di database. Baris katalognya ada di Supabase, tetapi berkasnya ada di folder `data/models` pada VM.
+
+Pada `docker-compose.yml`, folder itu dipasang sebagai volume:
+
+```yaml
+  nextjs:
+    volumes:
+      - ./data:/app/data
+```
+
+Volume itu perlu satu langkah tambahan, dan tanpa langkah ini unggahan model 3D gagal walaupun volumenya sudah ada.
+
+### Mengapa perlu langkah tambahan
+
+Aplikasi berjalan sebagai pengguna `nextjs` di dalam container, dengan uid **1001**. Itu ditetapkan pada `Dockerfile`:
+
+```dockerfile
+RUN adduser --system --uid 1001 nextjs
+...
+USER nextjs
+```
+
+Bila folder `data` belum ada, Docker membuatnya sendiri sebagai `root:root` dengan mode `755`, sama seperti yang terjadi pada folder `tls` di halaman Subdomain. Pada mode itu, uid 1001 bukan pemiliknya dan hanya memperoleh hak baca, sehingga penulisan berkas ditolak.
+
+### Membuat dan menyesuaikan pemiliknya
+
+```bash
+cd /opt/webgis/app
+mkdir -p data
+sudo chown -R 1001:1001 data
+ls -ld data
+```
+
+Yang diharapkan, pemiliknya bukan `root`:
+
+```text
+drwxr-xr-x 2 1001 1001 4096 ... data
+```
+
+::: warning Jangan memakai chown "$USER":"$USER" di sini
+Halaman Subdomain memakai `chown -R "$USER:$USER"` untuk folder `tls` dan `certbot-webroot`, dan itu benar karena kedua folder itu dibaca oleh proses nginx yang berjalan sebagai root.
+
+Folder `data` berbeda: yang menulis ke sana adalah proses aplikasi sebagai uid **1001**, sedangkan akun VM Anda biasanya uid **1000**. Memakai `"$USER":"$USER"` di sini menghasilkan folder yang tetap tidak dapat ditulisi container.
+:::
+
+Setelah itu buat ulang container supaya volume barunya terpasang:
+
+```bash
+sudo docker compose up -d
+```
+
+### Memeriksa hasilnya
+
+Unggah satu model 3D dari Geoportal, lalu periksa berkasnya di VM:
+
+```bash
+ls -la /opt/webgis/app/data/models/
+```
+
+Berkasnya harus muncul, dengan pemilik `1001`.
+
+::: danger Tanpa folder ini, model 3D hilang pada setiap deploy
+Berkas yang ditulis ke dalam container, bukan ke volume, akan hilang setiap kali container dibuat ulang. Cloud Build menjalankan `docker compose up -d` pada setiap push ke branch `main`, sehingga setiap deploy menghapus seluruh model yang pernah diunggah.
+
+Gejalanya menyesatkan: katalog tetap menampilkan modelnya, karena barisnya masih ada di Supabase, tetapi berkasnya sudah tidak ada sehingga modelnya gagal dibuka.
+:::
+
 ## Bila Ada yang Gagal
 
 | Gejala | Penyebab yang paling sering |
@@ -289,6 +360,8 @@ Periksa hasilnya:
 | `Test Connection` gagal | Nilai `POSTGIS_*` pada datastore berbeda dari `.env`, atau datastore dibuat sebelum PostGIS aktif |
 | Unggahan berhasil tetapi layer tidak muncul | Layer belum diterbitkan. Periksa `Data > Layers` pada GeoServer |
 | Halaman `https://SUBDOMAIN/geoserver/web` berputar tanpa henti | `proxy_redirect` belum ada pada `nginx.conf`. Periksa halaman [Penambahan Subdomain](/hari-3/deployment-project/subdomain) |
+| Unggah model 3D gagal, atau berkasnya tidak muncul di `data/models` | Pemilik folder `data` bukan uid 1001. Kerjakan Tahap 8 |
+| Model 3D yang dulu ada kini tidak dapat dibuka | Berkasnya hilang karena ditulis ke dalam container, bukan ke volume. Kerjakan Tahap 8 |
 
 ## Hasil Akhir
 
