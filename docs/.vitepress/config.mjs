@@ -99,7 +99,8 @@ export default defineConfig({
             { text: '2. Konfigurasi Project', link: '/hari-3/deployment-project/konfigurasi-project' },
             { text: '3. Skema Database', link: '/hari-3/deployment-project/skema-database' },
             { text: '4. Google Cloud Platform', link: '/hari-3/deployment-project/google-cloud-platform' },
-            { text: '5. Penambahan Subdomain', link: '/hari-3/deployment-project/subdomain' }
+            { text: '5. Penambahan Subdomain', link: '/hari-3/deployment-project/subdomain' },
+            { text: '6. Menyiapkan GeoServer di VM', link: '/hari-3/deployment-project/siapkan-geoserver-vm' }
           ]
         }
       ]),
