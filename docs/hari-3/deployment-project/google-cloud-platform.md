@@ -152,8 +152,9 @@ Nilai unik itu **tidak ada di berkas repositori Anda**. Seluruhnya diatur pada t
 |---|---|---|
 | `_VM_NAME` | Ya | Substitution variable pada trigger, Tahap 28 |
 | `_IMAGE_NAME` | Ya | Substitution variable pada trigger, Tahap 28 |
-| `_VM_ZONE` | Tidak, sama untuk semua | Sudah punya nilai bawaan pada `cloudbuild.yaml` |
-| `_VM_APP_DIR` | Tidak, sama untuk semua | Substitution variable pada trigger |
+| `_VM_ZONE` | Tidak, sama untuk semua | Substitution variable pada trigger, Tahap 28 |
+| `_VM_APP_DIR` | Tidak, sama untuk semua | Substitution variable pada trigger, Tahap 28 |
+| `_CESIUM_ION_TOKEN` | Ya, token Anda sendiri | Substitution variable pada trigger, Tahap 28 |
 | Nama Project ID | Tidak, milik kelompok | Dari koordinator |
 | `katalog-images` | Tidak, milik kelompok | Dibuat koordinator, peserta hanya memakai |
 | `nextjs_portal`, `geoserver_app`, `nginx_proxy` | Tidak | Nama container di dalam VM Anda sendiri. Tidak bertabrakan dengan peserta lain karena VM-nya terpisah |
@@ -1246,15 +1247,20 @@ Yang paling terasa akibatnya adalah tag `$SHORT_SHA`. Dengan `:latest`, seluruh 
 substitutions:
   _REGION: asia-southeast2
   _REPOSITORY: katalog-images
-  # _IMAGE_NAME, _VM_NAME, dan _VM_ZONE sengaja tidak diberi nilai bawaan.
-  # Ketiganya wajib diisi pada substitution variable trigger. Tanpa nilai bawaan,
-  # build berhenti dengan pesan yang jelas daripada diam-diam memakai satu nama
-  # image bersama dan menimpa image milik asisten lain di Artifact Registry.
+  # _IMAGE_NAME, _VM_NAME, _VM_ZONE, _VM_APP_DIR, dan _CESIUM_ION_TOKEN sengaja
+  # tidak diberi nilai bawaan. Semuanya wajib diisi pada substitution variable
+  # trigger. Tanpa nilai bawaan, build berhenti dengan pesan yang jelas daripada
+  # diam-diam memakai satu nama image bersama dan menimpa image milik asisten
+  # lain di Artifact Registry.
 
 steps:
   - name: gcr.io/cloud-builders/docker
     args:
       - build
+      # Diteruskan ke ARG di Dockerfile, lalu ditanam ke berkas hasil build.
+      # Diperlukan karena komponen peta 3D memakai token ini di sisi klien.
+      - --build-arg
+      - NEXT_PUBLIC_CESIUM_ION_TOKEN=${_CESIUM_ION_TOKEN}
       - -t
       - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_NAME}:$SHORT_SHA
       - .
@@ -1368,7 +1374,7 @@ Buat trigger dengan pengaturan berikut.
 
 Dijalankan di: Google Cloud Console
 
-Tambahkan empat variabel berikut pada trigger. Ganti `PARTICIPANT_ID` dengan identitas Anda.
+Tambahkan lima variabel berikut pada trigger. Ganti `PARTICIPANT_ID` dengan identitas Anda.
 
 | Variabel | Nilai |
 |---|---|
@@ -1376,11 +1382,20 @@ Tambahkan empat variabel berikut pada trigger. Ganti `PARTICIPANT_ID` dengan ide
 | `_VM_ZONE` | `asia-southeast2-b` |
 | `_VM_APP_DIR` | `/opt/webgis/app` |
 | `_IMAGE_NAME` | `nextjs-PARTICIPANT_ID` |
+| `_CESIUM_ION_TOKEN` | Token Cesium Ion Anda, dari [ion.cesium.com/tokens](https://ion.cesium.com/tokens) |
 
 
 
 
 Bagian `PARTICIPANT_ID` pada dua nilai pertama dan terakhir itulah yang membuat trigger peserta A tidak pernah menyentuh VM peserta B.
+
+::: warning Mengapa `_CESIUM_ION_TOKEN` harus ada di trigger, bukan hanya di `.env`
+Token Cesium Ion dipakai komponen peta 3D, dan komponen itu berjalan di browser. NextJS **menanam** nilai `NEXT_PUBLIC_*` ke dalam berkas hasil build, bukan membacanya saat aplikasi berjalan.
+
+Karena `.dockerignore` mengecualikan berkas `.env` dari build context, nilai yang ada di `.env` VM **tidak ikut** ke dalam build. Nilainya harus dikirim sebagai build argument, dan itulah yang dilakukan `cloudbuild.yaml` dengan `${_CESIUM_ION_TOKEN}`.
+
+Akibat bila variabel ini kosong: build tetap berhasil dan situs tetap tampil, tetapi peta 3D gagal memuat aset 3D Tiles dari Cesium Ion. Peta dasar dan terrain tetap muncul, karena keduanya memakai sumber sendiri, sehingga gejalanya mudah disalahartikan sebagai model yang rusak.
+:::
 
 
 ### Tahap 29. Jalankan trigger dan pantau hasilnya
