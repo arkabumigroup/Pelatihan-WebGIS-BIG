@@ -677,6 +677,10 @@ sudo docker run --rm hello-world
 gcloud --version
 ```
 
+`sudo` masih diperlukan di sini, karena akun Anda belum menjadi anggota grup `docker`. Tahap berikutnya yang menambahkannya, dan sejak itu `sudo` tidak diperlukan lagi.
+
+Hasil yang diharapkan, ketiganya berhasil tanpa galat.
+
 
 ### Tahap 13. Tambahkan user ke grup docker
 
@@ -688,6 +692,12 @@ exit
 ```
 
 Perintah `exit` menutup sesi SSH dan mengembalikan terminal ke Cloud Shell. Ini perlu dilakukan supaya keanggotaan grup docker berlaku pada sesi berikutnya.
+
+::: tip Sejak tahap berikutnya, perintah docker TANPA sudo
+Tahap 12 sampai 13 masih memakai `sudo docker`, karena akun Anda belum masuk grup `docker`.
+
+Setelah masuk kembali pada Tahap 14, seluruh perintah docker pada tahap berikutnya **tidak lagi memakai `sudo`**. Yang paling penting, Tahap 21 akan gagal bila memakai `sudo`, karena kredensial Artifact Registry tersimpan pada konfigurasi Docker milik akun Anda, bukan milik root.
+:::
 
 ### Tahap 14. Masuk kembali ke VM
 
@@ -983,7 +993,7 @@ Harus menampilkan tiga nilai, bukan baris kosong.
 
 ```bash
 cd /opt/webgis/app
-sudo docker build -t "asia-southeast2-docker.pkg.dev/${PROJECT_ID}/${REPOSITORY}/${IMAGE_NAME}:latest" .
+docker build -t "asia-southeast2-docker.pkg.dev/${PROJECT_ID}/${REPOSITORY}/${IMAGE_NAME}:latest" .
 ```
 
 Prosesnya lama, karena mengunduh image dasar Node dan memasang dependensi. Bagian akhir keluarannya menyebut nama image yang baru dibuat.
@@ -1072,8 +1082,35 @@ Lalu dorong image-nya:
 
 ```bash
 gcloud auth configure-docker asia-southeast2-docker.pkg.dev --quiet
-sudo docker push "asia-southeast2-docker.pkg.dev/${PROJECT_ID}/${REPOSITORY}/${IMAGE_NAME}:latest"
+docker push "asia-southeast2-docker.pkg.dev/${PROJECT_ID}/${REPOSITORY}/${IMAGE_NAME}:latest"
 ```
+
+::: warning Perintah docker di sini TANPA sudo
+Sejak Tahap 13, akun Anda sudah menjadi anggota grup `docker`, sehingga `sudo`
+tidak diperlukan lagi.
+
+Memakai `sudo` justru **menggagalkan** perintah ini. `gcloud auth
+configure-docker` menulis kredensial ke konfigurasi Docker milik **akun Anda**,
+sedangkan `sudo docker push` berjalan sebagai **root** dan membaca konfigurasi
+milik root, yang kosong. Gejalanya:
+
+```text
+error from registry: Unauthenticated request. Unauthenticated requests do not
+have permission "artifactregistry.repositories.uploadArtifacts" ...
+```
+
+Kata **Unauthenticated** itu petunjuknya. Kredensialnya tidak terkirim sama
+sekali, bukan ditolak karena kurang izin. Bila masalahnya izin, pesannya akan
+berbunyi `Permission denied`.
+
+Bila ragu apakah Anda sudah masuk grup docker, periksa:
+
+```bash
+groups | grep -o docker
+```
+
+Bila tidak ada keluarannya, jalankan Tahap 13 dan 14 lebih dahulu.
+:::
 
 Setelah selesai, image itu muncul pada halaman Artifact Registry. Halaman `katalog-images` yang sebelumnya kosong sekarang memuat satu baris.
 
@@ -1088,8 +1125,8 @@ Jalankan kedua container itu lebih dahulu, tanpa `nextjs`, memakai `--no-deps`. 
 
 ```bash
 cd /opt/webgis/app
-sudo docker compose up -d --no-deps geoserver nginx
-sudo docker compose ps
+docker compose up -d --no-deps geoserver nginx
+docker compose ps
 ```
 
 
@@ -1305,7 +1342,7 @@ Dijalankan di: Cloud Shell
 gcloud compute ssh "$VM_NAME" \
   --zone="$ZONE" \
   --tunnel-through-iap \
-  --command='cd /opt/webgis/app && sudo docker compose ps'
+  --command='cd /opt/webgis/app && docker compose ps'
 ```
 
 Tiga container harus berstatus running: `nextjs_portal`, `geoserver_app`, dan `nginx_proxy`.
@@ -1345,7 +1382,7 @@ Buka alamat `http://IP_EKSTERNAL_VM/portal` di browser. Tulis `http://` secara e
 | `ALREADY_EXISTS` saat membuat Service Account | Identitas peserta sama dengan peserta lain. Jalankan kembali blok Tahap 2 dan laporkan ke koordinator. |
 | `host not found in upstream "nextjs"` | `nginx.conf` belum memakai pola `resolver` dengan `proxy_pass` variabel. Ambil berkas dari halaman Konfigurasi Project. |
 | Container `nextjs` tidak muncul | Trigger belum pernah berjalan, atau `cloudbuild.yaml` belum ada di branch `main`. |
-| Geoportal terbuka tetapi login gagal | `DATABASE_URL` masih kosong di `.env`. Isi, lalu jalankan `sudo docker compose up -d` lagi. |
+| Geoportal terbuka tetapi login gagal | `DATABASE_URL` masih kosong di `.env`. Isi, lalu jalankan `docker compose up -d` lagi. |
 | `pull access denied` untuk image nextjs | `NEXTJS_IMAGE` masih berisi nama karangan. Nilai sementara yang aman adalah `nginx:1.27-alpine`. |
 | Build gagal pada langkah SSH ke VM | Service Account trigger belum diberi `roles/iam.serviceAccountUser` pada Service Account VM. Ulangi Tahap 6. |
 
