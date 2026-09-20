@@ -366,7 +366,7 @@ Satu hal yang perlu diketahui: **instruktur masih aktif mengubah repositorinya.*
 
 Empat endpoint tanpa kode pada temuan 6 masih menunggu jawaban.
 
-Port fitur pada temuan 34 sedang dikerjakan. Berkas yang disalin dari repositori instruktur harus disesuaikan lebih dahulu pada nama kolom dan gaya komentarnya, karena repositori kita sudah menyimpang cukup jauh.
+Port fitur pada temuan 32 sampai 34 sudah dikerjakan dan menunggu penggabungan. Berkas yang disalin dari repositori instruktur disesuaikan lebih dahulu pada nama kolom dan gaya komentarnya, karena repositori kita sudah menyimpang cukup jauh. Dua perubahan pada repositori instruktur sengaja **tidak** diikuti karena merugikan: penghapusan kontrol Basemap dan Zoom dari `MapComponent`, serta pemindahan dialog kelola akun ke tiga komponen yang memakai metode HTTP berbeda dari route yang ada.
 
 `docs/.vitepress/dist` sudah tidak lagi terlacak, dan `docs/.gitignore` mengabaikannya bersama `.vitepress/cache`, sehingga hasil build tidak ikut ter-commit lagi.
 
