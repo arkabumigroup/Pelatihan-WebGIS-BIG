@@ -30,8 +30,12 @@ Halaman-halaman berikut adalah satu rangkaian. Berkas yang dibuat pada tahap per
 
 1. [Konfigurasi Project](/hari-3/deployment-project/konfigurasi-project) - menyiapkan `docker-compose.yml`, `nginx.conf`, `.env.example`, dan pemeriksa konfigurasi di repositori proyek.
 2. [Skema Database](/hari-3/deployment-project/skema-database) - berkas SQL yang membuat tabel, lengkap dengan isinya
-3. [Google Cloud Platform](/hari-3/deployment-project/google-cloud-platform) - menyiapkan Cloud Shell, service account, VM, IP statis, Docker, lalu menjalankan GeoServer dan Nginx.
-4. [Penambahan Subdomain](/hari-3/deployment-project/subdomain) - mengarahkan subdomain ke IP statis VM dan menerbitkan sertifikat Let's Encrypt.
+3. [Persiapan Repositori](/hari-3/deployment-project/persiapan-repositori) - mengirim perubahan ke fork, menyelaraskan fork yang tertinggal, dan menetapkan identitas peserta yang menurunkan nama seluruh resource.
+4. [Menyiapkan Project dan VM](/hari-3/deployment-project/google-cloud-platform) - memeriksa API, membuat service account, VM, dan IP statis di Cloud Shell.
+5. [Menyiapkan Aplikasi di VM](/hari-3/deployment-project/aplikasi-di-vm) - memasang Docker dan gcloud, meng-clone repositori, mengisi `.env`, lalu membangun dan mendorong image aplikasi.
+6. [Otomatisasi Cloud Build](/hari-3/deployment-project/cloud-build) - menghubungkan repositori GitHub ke Cloud Build, membuat trigger, lalu memverifikasi hasilnya.
+7. [Penambahan Subdomain](/hari-3/deployment-project/subdomain) - mengarahkan subdomain ke IP statis VM dan menerbitkan sertifikat Let's Encrypt.
+8. [Menyiapkan GeoServer di VM](/hari-3/deployment-project/siapkan-geoserver-vm) - membuat workspace, datastore, dan mengunggah layer dari Geoportal.
 
 ## Yang Perlu Disiapkan Peserta
 
