@@ -333,6 +333,7 @@ Temuan 28 sampai 31 dikerjakan sebagai satu perapian, karena keempatnya berakar 
 | `.env.example` | 246 baris, 195 komentar (79 persen), 25 baris nilai dengan satu duplikat | 108 baris, 59 komentar, 24 baris nilai tanpa duplikat |
 | Blok Cloud Shell Tahap 2 | 177 baris, 42 komentar | 30 baris, 1 komentar |
 | Tahap 18 | tiga cara untuk satu pekerjaan, 164 baris | satu cara dengan satu cara cadangan, 112 baris |
+| Tujuh berkas `sql/` | 1062 baris, 52 persen komentar | 745 baris, 29 persen komentar |
 | `tls/aktifkan.conf` | 13 komentar dari 36 baris | 7 komentar dari 30 baris |
 | `docs/public/unduhan/` | tiga berkas, tidak dirujuk, sudah menyimpang | dihapus |
 
