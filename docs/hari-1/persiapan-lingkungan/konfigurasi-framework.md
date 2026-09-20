@@ -91,15 +91,15 @@
     
 ![](konfigurasi-framework/image10.png)
     
-4. Setelah selesai pembuatan repository barunya selanjutnya untuk melakukan unggah project yang telah dirancang sebelumnya mengikuti perintah yang ada pada github.
+4. Setelah repositori baru dibuat, halaman berikutnya menampilkan beberapa perintah pengunggahan. Perintah itu **tidak perlu disalin**, karena pengunggahan dikerjakan lewat GitHub Desktop.
     
 ![](konfigurasi-framework/image7.png)
     
-5. Selanjutnya untuk mengunggah project yang kita miliki berdasarkan perintah yang sudah ada pada github dilakukan dengan cara **klik kanan** pada folder project, klik **show more option** lalu klik **gitbash**.
-    
+5. Buka GitHub Desktop, lalu pilih **File > Add local repository**. Arahkan ke folder proyek Anda, kemudian klik **Add repository**.
+
 ![](konfigurasi-framework/image4.png)
     
-6. Pada tampilan gitbash, input perintah-perintah yang telah ada sebelumnya pada poin nomor 4 dengan menyalinnya dari github.
+6. GitHub Desktop akan menawarkan **create a repository** bila foldernya belum terlacak. Ikuti tawaran itu, lalu klik **Publish repository** pada bilah atas. Hilangkan centang **Keep this code private** bila repositori ingin dibuka untuk umum.
 7. Hasil dari project yang telah diunggah pada github maka hasilnya akan menjadi seperti berikut.
     
 ![](konfigurasi-framework/image13.png)
@@ -107,16 +107,15 @@
 
 ## **Cloning Project Github**
 
-1. Untuk melakukan cloning / menyalin project web yang ada pada github kedalam perangkat peserta, dapat dilakukan dengan mengklik **tombol code** kemudian salin url github project tersebut.
-    
+Cloning dikerjakan lewat GitHub Desktop.
+
+1. Buka GitHub Desktop, lalu pilih **File > Clone repository**.
+
 ![](konfigurasi-framework/image2.png)
     
-2. Kemudian buka folder yang akan dijadikan tempat penyimpanan, klik kanan, pilih **gitbash**, kemudian pada tampilan gitbash ketik **git clone** lalu **klik kanan** p**aste url project**, lalu **klik enter**.
+2. Pilih tab **GitHub.com**, lalu pilih repositori yang ingin disalin. Tentukan folder tujuan, kemudian klik **Clone**.
 
-    ```bash
-    git clone https://github.com/USERNAME_GITHUB/NAMA_REPOSITORY.git
-    ```
-3. Ketika pertama kali membuka project baru hasil salinan dari github, peserta dapat menjalankan perintah **npm install** pada menu terminal untuk menginstall library yang ada pada project tersebut. Setelah itu peserta dapat menjalankan project tersebut dengan menginput perintah **npm run dev.**
+3. Setelah selesai, buka terminal pada folder proyek lewat **Repository > Open in Terminal**. Jalankan perintah berikut untuk memasang library dan menjalankan proyeknya.
 
     ```bash
     npm install
@@ -125,32 +124,22 @@
 
 ![](konfigurasi-framework/image12.png)
 
-## **Mengirim Perubahan dan Mengambil Hasil Perubahan Web dengan Git**
+## **Mengirim Perubahan dan Mengambil Hasil Perubahan Web**
 
-1. Pertama jika project dikerjakan oleh beberapa orang, peserta dapat mengambil perubahan tersebut dengan menginput perintah git pull pada menu terminal serta tunggu hingga selesai.
+Seluruh pekerjaan repositori dikerjakan lewat **GitHub Desktop**. Perintah `git` tidak perlu diketik.
 
-    ```bash
-    git pull
-    ```
-2. Kedua jika peserta ingin mengirim perubahan hasil web yang telah dibuat peserta dapat menginput perintah pada github pertama **git add .** kemudian klik enter, lanjutkan perintah kedua yaitu input git commit -m “ isi komentar ” dan tambahkan komentar sebagai informasi perubahan yang telah dibuat lalu klik enter, kemudian tahap terakhir input perintah git push maka hasil perubahan yang telah dibuat oleh peserta akan masuk kedalam project github.
+1. **Mengambil perubahan.** Klik **Fetch origin**. Bila muncul tombol **Pull origin** dengan angka, klik tombol itu. Angka tersebut jumlah perubahan yang belum masuk ke salinan Anda.
 
-    ```bash
-    git add .
-    git commit -m "menambah halaman peta"
-    git push
-    ```
+2. **Mengirim perubahan.** Buka proyek Anda di GitHub Desktop. Berkas yang berubah muncul di daftar **Changes** pada kolom kiri. Tulis ringkasan perubahan di kotak kiri bawah, klik **Commit to main**, lalu klik **Push origin**.
 
-## **Penjelasan Perintah Dasar Next.js, NPM, Git, dan GitHub**
+Perubahan yang sudah di-push akan terlihat di halaman GitHub proyek Anda.
 
-| npx create-next-app@latest | Membuat kerangka awal project menggunakan Next.js. |
+## **Penjelasan Perintah Dasar Next.js dan NPM**
+
+| Perintah | Kegunaan |
 | --- | --- |
+| npx create-next-app@latest | Membuat kerangka awal project menggunakan Next.js. |
 | npm install | Menginstall library atau package yang dibutuhkan project. |
 | npm run dev | Menjalankan project untuk proses pengembangan. |
 | npm run build | Build project |
 | npm run start | Menjalankan hasil build project. |
-| git init | Menginisialisasi Git pada project. |
-| git add .
-git commit -m "isi komentar" | Menyimpan perubahan project ke dalam Git. |
-| git remote add origin https://github.com/username/project.git | Menghubungkan project lokal dengan repository GitHub. |
-| git push | Mengirim project/commit dari komputer lokal ke GitHub. |
-| git pull | Mengambil hasil perubahan pengembangan web yang telah dibuat. |

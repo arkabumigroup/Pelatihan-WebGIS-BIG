@@ -15,7 +15,7 @@ Halaman terakhir Deployment Project. Setelah selesai, setiap push ke branch `mai
 
 Dijalankan di: Terminal Laptop
 
-Berkas `Dockerfile` dan `.dockerignore` ada di fork Anda, di root repositori, karena keduanya ikut ketika Anda mem-fork repositori instruktur. Bila ternyata belum ada, salin keduanya dari repositori pembanding pada bagian [Repositori yang Dipakai](#repositori-yang-dipakai).
+Berkas `Dockerfile` dan `.dockerignore` ada di fork Anda, di root repositori, karena keduanya ikut ketika Anda mem-fork repositori instruktur. Bila ternyata belum ada, salin keduanya dari repositori sumber pada halaman [Persiapan Repositori](/hari-3/deployment-project/persiapan-repositori#repositori-yang-dipakai).
 
 Selanjutnya periksa `next.config.mjs`. Dua baris berikut wajib ada, dan keduanya bukan tambahan yang opsional:
 
@@ -114,16 +114,19 @@ OK   cloudbuild.yaml -> substitutions, steps, images, options
 
 ### Tahap 25. Commit dan push
 
-Dijalankan di: Terminal Laptop
+Dijalankan di: GitHub Desktop
 
-Periksa `git status --short` lebih dahulu, dan pastikan `.env` tidak ada di daftar itu.
+Buka GitHub Desktop. Keempat berkas yang baru ditambahkan akan muncul di daftar **Changes** pada kolom kiri.
 
-```bash
-git status --short
-git add cloudbuild.yaml Dockerfile .dockerignore next.config.mjs
-git commit -m "feat: tambah Cloud Build dan Dockerfile"
-git push origin main
-```
+**Periksa lebih dahulu bahwa `.env` tidak ada di daftar itu.** Berkas tersebut berisi kredensial Anda dan tidak boleh ikut terkirim. Bila `.env` muncul di sana, hentikan pekerjaan dan periksa kembali halaman [Konfigurasi Project](/hari-3/deployment-project/konfigurasi-project) Tahap 6.
+
+Bila daftarnya sudah benar:
+
+1. Tulis ringkasan perubahan di kotak kiri bawah, misalnya `Tambah Cloud Build dan Dockerfile`
+2. Klik **Commit to main**
+3. Klik **Push origin**
+
+Setelah terkirim, Cloud Build akan mulai bekerja sendiri. Tahap berikutnya menyiapkan sisi GitHub-nya.
 
 
 

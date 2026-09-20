@@ -55,91 +55,34 @@ Deployment Project bekerja pada fork repositori peserta di akun GitHub Anda send
 | Sumber, yang di-fork | `https://github.com/dhanyyudi/personal-geoportal-peserta` |
 | Fork Anda | `https://github.com/<username-anda>/personal-geoportal-peserta` |
 
-Fork dan clone repositori itu dikerjakan pada halaman [Konfigurasi Project](/hari-3/deployment-project/konfigurasi-project), Tahap 1 sampai 8. Pastikan tahap itu sudah selesai sebelum melanjutkan, karena halaman ini mengandaikan proyek sudah ada di laptop dan seluruh berkasnya sudah diperiksa.
+Fork dan clone repositori itu dikerjakan pada halaman [Konfigurasi Project](/hari-3/deployment-project/konfigurasi-project), Tahap 1. Pastikan tahap itu sudah selesai sebelum melanjutkan.
 
-### Mengirim perubahan ke fork Anda
+### Mengirim perubahan
 
-Cloud Build mengambil kode dari fork Anda, bukan dari laptop. Jadi setiap perubahan harus di-push lebih dahulu:
+Cloud Build membangun dari **fork Anda di GitHub**, bukan dari laptop. Jadi setiap perubahan harus dikirim lebih dahulu.
 
-```bash
-git add -A
-git commit -m "pesan perubahan"
-git push origin main
-```
+Di GitHub Desktop: tulis ringkasan perubahan di kotak kiri bawah, klik **Commit to main**, lalu klik **Push origin**.
 
-Bila push ditolak, penyebabnya hampir selalu akun yang salah. Bagian berikut menjelaskannya.
+### Menyelaraskan fork bila sumber diperbarui
 
-### Bila Anda punya lebih dari satu akun GitHub
+Repositori sumber dapat diperbarui selama pelatihan, misalnya karena ada perbaikan. Fork Anda **tidak ikut berubah dengan sendirinya.**
 
-SSH memilih kunci berdasarkan alamat host. Bila laptop Anda memakai lebih dari satu akun GitHub, akun yang dipakai adalah akun yang kuncinya terpasang pada host `github.com`, dan itu belum tentu akun pemilik fork Anda.
+Di GitHub Desktop: klik **Fetch origin**. Bila muncul tombol **Pull origin** dengan angka, klik tombol itu. Angka itu jumlah perubahan yang belum masuk ke fork Anda.
 
-Gejalanya, push ditolak dengan pesan:
+Bila muncul konflik, artinya Anda dan sumber mengubah berkas yang sama. Cara tercepat ada di bagian bawah halaman ini.
 
-```text
-! [remote rejected] main -> main (permission denied)
-```
+### Perubahan belum sampai ke VM
 
-Periksa kunci Anda sedang menjadi akun siapa:
-
-```bash
-ssh -T git@github.com
-```
-
-Bila jawabannya bukan nama pemilik fork, buat alias pada `~/.ssh/config`:
-
-```text
-Host github.com-namaakun
-    HostName github.com
-    User git
-    IdentityFile ~/.ssh/id_github_namaakun
-    IdentitiesOnly yes
-```
-
-Lalu arahkan remote fork Anda ke alias itu:
-
-```bash
-git remote set-url origin git@github.com-namaakun:namaakun/personal-geoportal-peserta.git
-```
-
-Uji dengan `ssh -T git@github.com-namaakun`. Bila menyapa nama akun yang benar, push akan berhasil.
-
-Anda dapat memeriksa akses tanpa mengubah apa pun:
-
-```bash
-git ls-remote origin
-```
-
-Perintah itu menampilkan daftar branch pada remote. Bila kosong atau gagal, akun Anda belum punya izin ke repositori itu.
-
-### Bila repositori sumber diperbarui
-
-Sumber dapat diperbarui selama pelatihan, misalnya karena ada perbaikan. Fork Anda tidak ikut berubah dengan sendirinya.
-
-Tambahkan sumber sebagai remote, lalu tarik perubahannya:
-
-```bash
-git remote add upstream https://github.com/dhanyyudi/personal-geoportal-peserta.git
-git fetch upstream
-git merge upstream/main
-git push origin main
-```
-
-`git remote add` hanya perlu sekali. Untuk pembaruan berikutnya, cukup `git fetch upstream` dan seterusnya.
-
-Bila muncul konflik, artinya Anda mengubah berkas yang sama dengan yang diubah di sumber. Selesaikan konfliknya, lalu `git add` dan `git commit`.
-
-#### Perubahan itu belum sampai ke VM
-
-Fork yang sudah diperbarui **belum mengubah apa pun di VM Anda.** VM memakai salinannya sendiri di `/opt/webgis/app`, yang di-clone dari fork pada Tahap 16. Salinan itu tidak ikut berubah dengan sendirinya.
+Fork yang sudah diperbarui **belum mengubah apa pun di VM Anda.** VM memakai salinannya sendiri di `/opt/webgis/app`, yang di-clone dari fork pada Tahap 16, dan salinan itu tidak ikut berubah sendiri.
 
 Alurnya tiga tahap, dan ketiganya perlu:
 
 ```text
-upstream  ->  fork Anda  ->  salinan di VM
-  merge        push            git pull
+repositori sumber  ->  fork Anda  ->  salinan di VM
+      GitHub            GitHub Desktop      git pull
 ```
 
-Setelah fork diperbarui, masuk ke VM lalu tarik perubahannya:
+Masuk ke VM:
 
 ```bash
 gcloud compute ssh "$VM_NAME" \
@@ -147,48 +90,38 @@ gcloud compute ssh "$VM_NAME" \
   --tunnel-through-iap
 ```
 
+Lalu tarik perubahannya:
+
 ```bash
 cd /opt/webgis/app
 git pull
 ```
 
-**Bila Anda pernah mengubah berkas konfigurasi di VM secara manual**, kembalikan dulu berkas itu sebelum menarik, supaya tidak bentrok:
-
-```bash
-git checkout -- docker-compose.yml nginx.conf
-git pull
-```
-
-#### Cloud Build tidak menarik perubahan untuk Anda
-
-Perlu diketahui, karena mudah disangka sebaliknya: `cloudbuild.yaml` **tidak menjalankan `git pull`** pada VM. Yang dikerjakannya hanya tiga hal:
+::: warning Cloud Build tidak menarik perubahan untuk Anda
+`cloudbuild.yaml` **tidak menjalankan `git pull`** pada VM. Yang dikerjakannya hanya tiga hal:
 
 1. Mengganti nilai `NEXTJS_IMAGE` pada `.env` VM
 2. Menarik image baru dari Artifact Registry
 3. Menjalankan `docker compose up -d`, lalu memuat ulang nginx
 
-Artinya image aplikasi diperbarui, tetapi **berkas konfigurasi di VM tidak.** Bila `docker-compose.yml` atau `nginx.conf` berubah di repositori, perubahan itu **harus** ditarik sendiri dengan `git pull` seperti di atas.
-
-::: tip Bila `git merge upstream/main` menjawab "Already up to date"
-Itu berarti Git menganggap fork Anda sudah memuat seluruh isi sumber. Penyebab tersering: sumbernya belum benar-benar bertambah sejak penarikan terakhir.
-
-Periksa dengan `git log --oneline -1 upstream/main` lalu bandingkan dengan `git log --oneline -1 origin/main`. Bila berbeda, jalankan `git fetch upstream` lebih dahulu.
-
-Bila muncul `fatal: You have not concluded your merge (MERGE_HEAD exists)`, artinya ada penarikan sebelumnya yang belum diselesaikan. Periksa dengan `git status`, lalu selesaikan dengan `git commit` bila tidak ada konflik, atau `git merge --abort` untuk membatalkannya.
+Artinya image aplikasi diperbarui, tetapi **berkas konfigurasi di VM tidak.** Bila `docker-compose.yml` atau `nginx.conf` berubah di repositori, perubahan itu harus ditarik sendiri dengan `git pull` di atas.
 :::
 
 ::: tip Bila ragu, fork ulang saja
-Cara paling sederhana dan paling kecil risikonya: hapus folder di laptop, lalu fork dan clone ulang dari awal. Selama Anda belum membuat perubahan sendiri yang perlu disimpan, cara ini lebih cepat daripada menyelesaikan konflik.
-
-Yang **tidak** boleh hilang adalah berkas `.env`, karena berisi kredensial Anda. Salin berkas itu lebih dahulu, baru hapus foldernya:
+Cara paling sederhana dan paling kecil risikonya. Salin `.env` ke luar folder lebih dahulu, karena berkas itu berisi kredensial Anda dan tidak boleh hilang:
 
 ```bash
 cp .env ~/env-simpanan
-# hapus folder, fork dan clone ulang
+```
+
+Hapus foldernya, fork dan clone ulang lewat GitHub Desktop, lalu kembalikan:
+
+```bash
 cp ~/env-simpanan .env
 ```
-:::
 
+Selama Anda belum punya perubahan sendiri yang perlu disimpan, cara ini lebih cepat daripada menyelesaikan konflik.
+:::
 ## Nilai yang Harus Unik per Peserta
 
 Empat peserta memakai satu project Google Cloud bersama. Karena itu sebagian nilai harus berbeda antar peserta, dan sebagian justru harus sama.
