@@ -1,51 +1,58 @@
-import vitepressConfig from './config.mjs'
+import { readdirSync } from 'node:fs'
+import { dirname, join, relative, sep } from 'node:path'
+import { fileURLToPath } from 'node:url'
+import { BASE, sorter, pdfOptions, puppeteerLaunchOptions } from './pdf-bersama.mjs'
 
-// Urutan halaman pada PDF mengikuti urutan sidebar, bukan urutan abjad.
-// Tautan sidebar ditulis tanpa akhiran .html, sedangkan rute yang dilihat
-// pengekspor memakai akhiran itu.
-function kumpulkanTautan(items, hasil = []) {
-  for (const item of items ?? []) {
-    if (item.link) hasil.push(item.link)
-    if (item.items) kumpulkanTautan(item.items, hasil)
+// Konfigurasi bawaan: hanya bagian Deployment Project, yaitu enam halaman
+// pada sidebar Hari 3. Dipakai oleh `npm run export-pdf`.
+//
+// Urutannya mengikuti nomor pada sidebar: Peserta dan Project, Konfigurasi
+// Project, Skema Database, Google Cloud Platform, Penambahan Subdomain, lalu
+// Menyiapkan GeoServer di VM.
+
+const AKAR_DOCS = join(dirname(fileURLToPath(import.meta.url)), '..')
+const BAGIAN = 'hari-3/deployment-project'
+
+// Pengekspor selalu menyisipkan "/**" di depan daftar pola, sehingga pola
+// positif apa pun tidak pernah menyaring. Penyaringan hanya bisa dilakukan
+// lewat pola negatif.
+//
+// Rute yang dibandingkan memuat base, jadi pengecualiannya pun harus memuat
+// base. Daftarnya dibaca dari berkas di disk, bukan ditulis manual, supaya
+// halaman yang ditambahkan kemudian ikut terkeccuali dengan sendirinya.
+function daftarHalaman(dir, akar, hasil = []) {
+  for (const entri of readdirSync(dir, { withFileTypes: true })) {
+    if (entri.name === '.vitepress' || entri.name === 'public') continue
+    const jalur = join(dir, entri.name)
+    if (entri.isDirectory()) {
+      daftarHalaman(jalur, akar, hasil)
+    } else if (entri.name.endsWith('.md')) {
+      const rute = relative(akar, jalur).split(sep).join('/')
+      hasil.push(rute.replace(/index\.md$/, 'index.html').replace(/\.md$/, '.html'))
+    }
   }
   return hasil
 }
 
-const urutan = ['/index.html', '/materi-pelatihan.html'].concat(
-  kumpulkanTautan(vitepressConfig.themeConfig.sidebar).map((tautan) =>
-    tautan.endsWith('/') ? `${tautan}index.html` : `${tautan}.html`
-  )
-)
+const semuaHalaman = daftarHalaman(AKAR_DOCS, AKAR_DOCS)
+const halamanBagian = semuaHalaman.filter((rute) => rute.startsWith(`${BAGIAN}/`))
+
+if (halamanBagian.length === 0) {
+  throw new Error(`Tidak ada halaman di bawah ${BAGIAN}/. Periksa nama foldernya.`)
+}
 
 /**
  * @type {import('vitepress-export-pdf').UserConfig}
  */
 const config = {
-  outFile: 'Pelatihan-WebGIS-BIG.pdf',
+  outFile: 'Panduan-Deployment-WebGIS-BIG.pdf',
   outDir: 'pdf',
-
-  // Halaman 404 tidak ikut. Halaman beranda ikut, karena memuat daftar isi.
-  routePatterns: ['/**', '!/404.html'],
-
-  // Halaman yang tidak ada di sidebar ditaruh di belakang, tetap urut abjad.
-  sorter: (a, b) => {
-    const ia = urutan.indexOf(a.path)
-    const ib = urutan.indexOf(b.path)
-    if (ia === -1 && ib === -1) return a.path.localeCompare(b.path)
-    if (ia === -1) return 1
-    if (ib === -1) return -1
-    return ia - ib
-  },
-
-  pdfOptions: {
-    format: 'A4',
-    printBackground: true,
-    margin: { top: '16mm', bottom: '16mm', left: '14mm', right: '14mm' },
-  },
-
-  puppeteerLaunchOptions: {
-    args: ['--no-sandbox', '--disable-dev-shm-usage'],
-  },
+  routePatterns: semuaHalaman
+    .filter((rute) => !rute.startsWith(`${BAGIAN}/`))
+    .map((rute) => `!${BASE}${rute}`),
+  sorter,
+  pdfOptions,
+  puppeteerLaunchOptions,
 }
 
 export default config
