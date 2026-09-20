@@ -4,21 +4,12 @@ import { onMounted, watch, nextTick, h } from 'vue'
 import { useRoute } from 'vitepress'
 import TabelPeserta from './components/TabelPeserta.vue'
 import './custom.css'
+import './print.css'
 
-// =====================================================================
-// Ikon pada tombol aksi beranda.
-//
-// VitePress tidak menyediakan cara menambahkan ikon pada tombol hero, jadi
-// ikonnya disisipkan lewat DOM. Cara ini dipilih daripada mengganti seluruh
-// komponen VPHero, karena menggantinya berarti menyalin ulang komponen
-// bawaan dan harus diperbarui setiap kali VitePress naik versi.
-//
-// Ikonnya digambar sendiri, bukan diambil dari pustaka ikon. Alasannya,
-// ikon pustaka membawa gaya khas pustakanya, sehingga situs ini akan
-// terlihat seperti situs lain yang memakai pustaka yang sama. Bentuk di
-// bawah mengikuti bahasa visual logo Arkabumi: tebal, bersudut, dan
-// geometris.
-// =====================================================================
+// Ikon tombol hero disisipkan lewat DOM, karena VitePress tidak menyediakannya
+// dan mengganti komponen VPHero berarti menyalin ulang komponen bawaan.
+// Ikonnya digambar sendiri mengikuti bentuk logo Arkabumi, bukan diambil dari
+// pustaka ikon yang akan membuat situs ini tampak seperti situs lain.
 
 const IKON_UNDUH = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
   fill="none" stroke="currentColor" stroke-width="2.2"

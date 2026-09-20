@@ -81,27 +81,10 @@ Nilai `author` boleh kosong. Katalog tanpa penulis tetap dapat disimpan, dan itu
 Aman dijalankan lebih dari sekali, karena memakai `CREATE TABLE IF NOT EXISTS`.
 
 ```sql
--- =====================================================================
--- Skema database non spasial
--- Membuat tiga tabel: users, katalog_data_2d, dan katalog_data_3d.
---
--- Cara pakai: buka SQL Editor di dashboard Supabase, salin SELURUH isi
--- berkas ini, tempel, lalu klik Run. Penjelasan SQL Editor ada di
--- sql/README.md.
---
--- Berkas ini idempoten: CREATE TABLE IF NOT EXISTS tidak menghapus data
--- yang sudah ada, jadi aman dijalankan lebih dari sekali.
--- Untuk mulai dari nol, hapus dulu ketiga tabelnya. Perintahnya ada pada
--- bagian "Mengosongkan Tabel" di sql/README.md.
--- =====================================================================
+-- Jalankan seluruh berkas di SQL Editor Supabase. Aman diulang.
 
 BEGIN;
 
--- ---------------------------------------------------------------------
--- users
--- Sumber kebenaran untuk autentikasi. Kolom mengikuti pemakaian di
--- Dipakai oleh lib/auth dan konfigurasi NextAuth.
--- ---------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS users (
     user_id     uuid         PRIMARY KEY,
     nama        varchar(100) NOT NULL,
@@ -111,9 +94,8 @@ CREATE TABLE IF NOT EXISTS users (
     is_active   boolean      NOT NULL DEFAULT false,
     created_at  timestamptz  NOT NULL DEFAULT now(),
 
-    -- Baseline nilai. Validasi hanya ada di kode aplikasi,
-    -- sehingga batasan berikut ditambahkan di database supaya data tidak
-    -- bisa masuk lewat jalur lain, misalnya import CSV atau klien database.
+    -- Validasi hanya ada di kode aplikasi, jadi batasan ini ditambahkan di
+    -- database supaya data tidak bisa masuk lewat jalur lain (import CSV, klien DB).
     CONSTRAINT users_email_key UNIQUE (email),
     CONSTRAINT users_role_valid
         CHECK (role IN ('viewer', 'admin', 'super_admin'))
@@ -122,10 +104,6 @@ CREATE TABLE IF NOT EXISTS users (
 COMMENT ON COLUMN users.password IS
     'Hash bcrypt ($2a$/$2b$), BUKAN password asli. Seed manual lewat 02-seed-super-admin.sql.';
 
--- ---------------------------------------------------------------------
--- katalog_data_2d
--- Kolom mengikuti berkas contoh katalog_data_2d.csv.
--- ---------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS katalog_data_2d (
     data_2d_id  uuid         PRIMARY KEY,
     layer_name  varchar(255) NOT NULL,
@@ -143,10 +121,6 @@ CREATE TABLE IF NOT EXISTS katalog_data_2d (
         ON DELETE RESTRICT
 );
 
--- ---------------------------------------------------------------------
--- katalog_data_3d
--- Kolom mengikuti berkas contoh katalog_data_3d.csv.
--- ---------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS katalog_data_3d (
     data_3d_id uuid         PRIMARY KEY,
     author     uuid,
@@ -159,10 +133,9 @@ CREATE TABLE IF NOT EXISTS katalog_data_3d (
     pitch      double precision,
     roll       double precision,
     scale      double precision,
-    -- Aplikasi tidak pernah mengirim kolom ini saat menyimpan data 3D
-    -- (lihat src/app/api/katalog-data-3d/create/route.js). Tanpa nilai
-    -- bawaan, setiap penyimpanan gagal dengan
-    -- "null value in column tipe_file violates not-null constraint".
+    -- Aplikasi tidak pernah mengirim kolom ini saat menyimpan data 3D, jadi
+    -- tanpa nilai bawaan setiap penyimpanan gagal dengan "null value in
+    -- column tipe_file violates not-null constraint".
     tipe_file  varchar(10)  NOT NULL DEFAULT 'glb',
 
     CONSTRAINT katalog_data_3d_akses_valid
@@ -182,19 +155,9 @@ CREATE INDEX IF NOT EXISTS katalog_data_2d_author_idx ON katalog_data_2d (author
 CREATE INDEX IF NOT EXISTS katalog_data_2d_akses_idx  ON katalog_data_2d (akses);
 CREATE INDEX IF NOT EXISTS katalog_data_3d_author_idx ON katalog_data_3d (author);
 
--- View baca-saja: join yang sama dengan yang dilakukan kode API, supaya
--- query ad-hoc tidak perlu menuliskan join berulang.
--- security_invoker = true WAJIB ada di sini.
---
--- Bawaannya, view berjalan dengan hak PEMILIKNYA, bukan hak pemanggilnya.
--- Karena pemilik tabel melewati Row Level Security, view tanpa opsi ini
--- membuat RLS pada katalog_data_2d dan users tidak berlaku ketika view itu
--- yang dibaca. Diuji: dengan RLS aktif, peran anon tidak melihat satu baris
--- pun dari tabel katalog_data_2d, tetapi MASIH melihat baris berakses
--- 'private' beserta email penulisnya melalui view ini.
---
--- Dengan security_invoker = true, view berjalan dengan hak pemanggilnya,
--- sehingga RLS ikut berlaku.
+-- security_invoker = true WAJIB: tanpa itu view berjalan dengan hak pemiliknya,
+-- dan karena pemilik tabel melewati RLS, peran anon tetap bisa membaca baris
+-- berakses 'private' beserta email penulisnya lewat view ini.
 CREATE OR REPLACE VIEW v_katalog_2d_lengkap
 WITH (security_invoker = true) AS
 SELECT k.data_2d_id,
@@ -211,50 +174,17 @@ LEFT JOIN users u ON u.user_id = k.author;
 
 COMMIT;
 
--- ---------------------------------------------------------------------
--- Verifikasi (jalankan terpisah setelah COMMIT)
--- ---------------------------------------------------------------------
--- Harapan: tiga tabel, masing-masing punya primary key, dan
--- katalog_data_2d punya satu foreign key (contype 'f') ke users.
---
---   SELECT c.relname AS tabel, con.contype AS jenis, con.conname AS nama
---   FROM pg_constraint con
---   JOIN pg_class c     ON c.oid = con.conrelid
---   JOIN pg_namespace n ON n.oid = c.relnamespace
---   WHERE n.nspname = current_schema()
---     AND c.relname IN ('users', 'katalog_data_2d', 'katalog_data_3d')
---   ORDER BY c.relname, con.contype;
---
---   -- Harus kosong. Kalau ada isinya, CSV belum selesai dibersihkan.
---   SELECT k.data_2d_id, k.author
---   FROM katalog_data_2d k
---   LEFT JOIN users u ON u.user_id = k.author
---   WHERE k.author IS NOT NULL AND u.user_id IS NULL;
+-- Periksa setelah COMMIT: ketiga tabel harus punya primary key, dan katalog_data_2d
+-- harus punya foreign key (contype 'f') ke users.
 
--- =====================================================================
--- Keamanan: aktifkan Row Level Security pada ketiga tabel
---
--- Tanpa ini, tabel di schema public dapat dibaca dan diubah lewat REST API
--- Supabase memakai kunci anon, tanpa perlu login ke aplikasi. Kunci anon
--- memang dirancang untuk dipakai di sisi peramban, jadi nilainya tidak
--- dianggap rahasia. Yang mencegah penyalahgunaan adalah RLS, bukan
--- kerahasiaan kunci itu.
---
--- Diuji pada project Supabase sungguhan:
---
---   SEBELUM RLS   peran anon dapat membaca kolom password, dan memiliki
---                 izin SELECT, INSERT, UPDATE, DELETE, dan TRUNCATE
---                 pada tabel users.
---
---   SESUDAH RLS   peran anon dan authenticated tidak melihat satu baris pun.
---                 Aplikasi tetap berjalan normal, karena koneksi Prisma
---                 memakai peran postgres yang merupakan PEMILIK tabel,
---                 dan pemilik tabel melewati RLS secara bawaan.
---
--- RLS tanpa policy berarti menutup akses untuk semua peran selain pemilik.
--- Itu memang yang diinginkan di sini: seluruh akses data dilakukan lewat
--- API aplikasi sendiri, yang sudah memeriksa token dan peran pengguna.
--- =====================================================================
+-- Keamanan: RLS pada ketiga tabel. Tanpa ini tabel di schema public bisa dibaca
+-- dan diubah lewat REST API Supabase dengan kunci anon, tanpa login. Kunci anon
+-- memang dipakai di sisi peramban, jadi yang melindungi bukan kerahasiaannya,
+-- melainkan RLS. Diuji: sebelum RLS, peran anon bisa membaca kolom password di
+-- tabel users; sesudah RLS, anon dan authenticated tidak melihat satu baris pun.
+-- Aplikasi tetap jalan karena Prisma memakai peran postgres, pemilik tabel, dan
+-- pemilik tabel melewati RLS. RLS tanpa policy memang itu yang diinginkan: semua
+-- akses lewat API aplikasi sendiri.
 BEGIN;
 
 ALTER TABLE users           ENABLE ROW LEVEL SECURITY;
@@ -263,17 +193,7 @@ ALTER TABLE katalog_data_3d ENABLE ROW LEVEL SECURITY;
 
 COMMIT;
 
--- ---------------------------------------------------------------------
--- Periksa hasilnya. Harus menampilkan rls = true untuk ketiga tabel.
---
---   SELECT relname AS tabel, relrowsecurity AS rls
---   FROM pg_class c
---   JOIN pg_namespace n ON n.oid = c.relnamespace
---   WHERE n.nspname = 'public'
---     AND c.relkind = 'r'
---     AND c.relname IN ('users', 'katalog_data_2d', 'katalog_data_3d')
---   ORDER BY relname;
--- ---------------------------------------------------------------------
+-- Periksa hasilnya. relrowsecurity harus true untuk ketiga tabel.
 ```
 
 ## 02-seed-super-admin.sql
@@ -292,52 +212,22 @@ Cara mengisinya ada pada bagian **Membuat Akun Super Admin** di bawah.
 :::
 
 ```sql
--- =====================================================================
--- Seed akun super admin
---
--- Menggantikan langkah manual berikut: jalankan potongan JS
--- di REPL node, salin hash-nya, lalu tempel ke kolom password lewat SQL Editor.
--- Cara itu gampang salah ketik dan tidak bisa diulang orang lain.
---
--- Berkas ini memakai SQL biasa tanpa meta-command, sehingga bisa
--- ditempel apa adanya ke SQL Editor Supabase.
---
--- =====================================================================
--- LANGKAH 1. Buat hash kata sandi
--- =====================================================================
---
--- bcrypt hanya ada di Node, bukan di PostgreSQL, jadi hash dibuat lebih
--- dahulu. Jalankan dari terminal:
---
+-- Seed akun super admin. Ganti dua penanda di blok DO di bawah, lalu jalankan.
+-- SQL biasa tanpa meta-command, jadi bisa ditempel apa adanya ke SQL Editor Supabase.
+
+-- Buat hash dulu di terminal, karena bcrypt tidak ada di PostgreSQL:
 --   node scripts/hash-password.mjs
---
--- Skrip itu meminta kata sandi lewat prompt tersembunyi, sehingga kata
--- sandi aslinya tidak masuk riwayat terminal. Hasilnya satu baris yang
--- diawali $2b$12$.
---
--- =====================================================================
--- LANGKAH 2. Ganti dua nilai di Langkah 3, lalu jalankan berkas ini
--- =====================================================================
---
--- Di SQL Editor Supabase: tempel seluruh isi berkas ini, ganti kedua
--- nilai pada blok DO di bawah lebih dahulu, lalu klik Run.
---
--- Nilai yang salah ditolak penjagaan di dalam blok, sehingga kata sandi
--- polos tidak mungkin masuk ke kolom password.
---
--- =====================================================================
--- LANGKAH 3. Ganti, lalu jalankan
--- =====================================================================
+-- Hasilnya satu baris berawalan $2b$12$, dan kata sandi aslinya tidak masuk
+-- riwayat terminal.
 
 DO $$
 DECLARE
     email_admin text := '<ISI_EMAIL_DI_SINI>';
     hash_admin  text := '<ISI_HASH_DI_SINI>';
 BEGIN
-    -- Penjagaan diperiksa dari SISA PENANDA, bukan dengan membandingkan
-    -- nilai terhadap penandanya sendiri. Cara itu penting: penggantian teks
-    -- sederhana ikut mengubah string pembandingnya, sehingga perbandingan
-    -- apa adanya justru menolak nilai yang sudah benar.
+    -- Diperiksa dari SISA PENANDA, bukan dengan membandingkan nilai terhadap
+    -- penandanya sendiri: penggantian teks sederhana ikut mengubah string
+    -- pembandingnya, sehingga perbandingan apa adanya menolak nilai yang benar.
     IF email_admin LIKE '%<ISI_EMAIL%' THEN
         RAISE EXCEPTION 'Email belum diisi. Ganti nilai <ISI_EMAIL_DI_SINI> pada berkas ini.';
     END IF;
@@ -346,9 +236,8 @@ BEGIN
         RAISE EXCEPTION 'Hash belum diisi. Buat dulu dengan: node scripts/hash-password.mjs';
     END IF;
 
-    -- Menolak nilai yang bukan hash bcrypt. Tanpa ini, salah paste kata
-    -- sandi asli akan membuat akun tidak bisa login sekaligus menyimpan
-    -- kata sandi polos di database.
+    -- Menolak nilai yang bukan hash bcrypt. Tanpa ini, salah paste kata sandi
+    -- asli membuat akun tidak bisa login sekaligus menyimpan kata sandi polos.
     IF hash_admin !~ '^\$2[aby]\$[0-9]{2}\$' THEN
         RAISE EXCEPTION
             'Nilai hash bukan hash bcrypt. Yang benar diawali $2a$, $2b$, atau $2y$. Diterima: %',
@@ -372,16 +261,13 @@ END $$;
 
 -- Bila tabel users belum ada, jalankan sql/01-schema.sql lebih dahulu.
 
--- =====================================================================
--- VERIFIKASI
--- =====================================================================
+-- Verifikasi. Harapan: tepat satu baris, is_active true, dan awalan_hash berisi
+-- hash bcrypt ($2a$ atau $2b$), bukan kata sandi asli.
 
 SELECT 'Akun super admin' AS bagian;
 SELECT user_id, nama, email, role, is_active, left(password, 7) AS awalan_hash
 FROM users
 WHERE role = 'super_admin';
-
--- Harapan: tepat satu baris, is_active true, awalan_hash diawali $2a$ atau $2b$.
 ```
 
 ### Membuat Akun Super Admin
@@ -422,40 +308,18 @@ Akun super admin hanya bisa lahir dari `02-seed-super-admin.sql`. Jadi berkas it
 Berkas ini hanya berisi perintah `SELECT`. Tidak mengubah apa pun, jadi aman dijalankan kapan saja, termasuk berkali-kali.
 
 ```sql
--- =====================================================================
--- Periksa constraint yang benar-benar terpasang
---
--- Tempel seluruh isi berkas ini ke SQL Editor Supabase, lalu klik Run.
--- Semua di sini hanya SELECT. Tidak mengubah apa pun.
---
--- Jangan mengandalkan tampilan tabel di dashboard untuk memeriksa ini.
--- Tab itu tidak menampilkan semua jenis constraint dengan cara yang sama,
--- dan pada PostgreSQL 18 definisi NOT NULL tersimpan di pg_constraint
--- sehingga penamaannya berbeda dari dugaan. Query di bawah membaca
--- katalog sistem langsung, jadi hasilnya pasti.
--- =====================================================================
+-- Tempel seluruh berkas ke SQL Editor Supabase lalu Run. Semua di sini hanya SELECT.
+-- Jangan mengandalkan tab tabel di dashboard, karena tidak semua jenis constraint
+-- ditampilkan dengan cara yang sama.
 
--- ---------------------------------------------------------------------
--- 1. Semua constraint di tiga tabel, apa adanya
---
--- Harapan setelah sql/01-schema.sql dijalankan. Jumlahnya BERBEDA menurut
--- versi PostgreSQL, jadi perhatikan versi yang Anda pakai.
---
--- PostgreSQL 17 dan lebih lama, termasuk Supabase:
---   users             3 baris  (1 primary key, 1 unique, 1 check)
---   katalog_data_2d   4 baris  (1 primary key, 1 unique, 1 foreign key, 1 check)
---   katalog_data_3d   6 baris  (1 primary key, 1 foreign key, 4 check)
---
--- PostgreSQL 18 dan lebih baru, termasuk PostgreSQL yang dipasang di laptop:
---   jumlahnya lebih banyak, karena sejak versi 18 batasan NOT NULL ikut
---   tercatat di pg_constraint dengan kode 'n'. Di versi sebelumnya, NOT NULL
---   disimpan di pg_attribute dan tidak muncul pada query ini.
---
--- Jadi angka yang lebih kecil di Supabase BUKAN tanda ada yang salah. Yang
--- penting, ketiga tabel muncul dan kolom check_ tidak bernilai nol.
---
+-- 1. Semua constraint di tiga tabel, apa adanya.
+-- Harapan setelah 01-schema.sql pada PostgreSQL 17 ke bawah (termasuk Supabase):
+--   users 3 baris, katalog_data_2d 4 baris, katalog_data_3d 6 baris.
+-- PostgreSQL 18 ke atas menambah baris, karena sejak versi 18 batasan NOT NULL ikut
+-- tercatat di pg_constraint dengan kode 'n'; di versi lama NOT NULL disimpan di
+-- pg_attribute dan tidak muncul di query ini. Jadi angka yang lebih kecil di Supabase
+-- BUKAN tanda ada yang salah, asal ketiga tabel muncul dan kolom check_ tidak nol.
 -- Kode jenis: p primary key, u unique, f foreign key, c check, n not null
--- ---------------------------------------------------------------------
 SELECT '1. Constraint yang terpasang' AS bagian;
 SELECT c.relname AS tabel,
        con.conname AS nama_constraint,
@@ -475,9 +339,7 @@ WHERE n.nspname = 'public'
   AND c.relname IN ('users', 'katalog_data_2d', 'katalog_data_3d')
 ORDER BY c.relname, con.contype, con.conname;
 
--- ---------------------------------------------------------------------
--- 2. Ringkasan: berapa constraint per tabel
--- ---------------------------------------------------------------------
+-- 2. Ringkasan: berapa constraint per tabel.
 SELECT '2. Jumlah constraint per tabel' AS bagian;
 SELECT c.relname AS tabel, count(*) AS jumlah,
        count(*) FILTER (WHERE con.contype = 'u') AS unique_,
@@ -490,25 +352,12 @@ WHERE n.nspname = 'public'
   AND c.relname IN ('users', 'katalog_data_2d', 'katalog_data_3d')
 GROUP BY c.relname ORDER BY c.relname;
 
--- ---------------------------------------------------------------------
--- 3. Kolom wajib yang belum NOT NULL
---
--- Harapan: hasilnya kosong.
---
--- PENTING: tidak semua kolom harus NOT NULL. Sebagian memang sengaja dibiarkan
--- boleh kosong, karena nilainya baru terisi setelah proses berjalan:
---
---   katalog_data_2d.wms_url, wfs_url   diisi setelah layer terbit ke GeoServer
---   katalog_data_2d.author             boleh kosong untuk data hasil impor
---   katalog_data_3d.url                diisi setelah berkas model tersimpan
---   katalog_data_3d.latitude, longitude, heading, pitch, roll, scale
---                                      diisi saat model ditempatkan di peta
---   katalog_data_3d.author             boleh kosong untuk data hasil impor
---
--- Karena itu pemeriksaan di bawah hanya menyebut kolom yang MEMANG wajib.
--- Query yang menyaring seluruh kolom is_nullable = 'YES' akan selalu berisi,
--- walaupun skemanya sudah benar.
--- ---------------------------------------------------------------------
+-- 3. Kolom wajib yang belum NOT NULL. Harapan: hasilnya kosong.
+-- Sebagian kolom sengaja boleh kosong karena nilainya baru terisi setelah proses
+-- berjalan: wms_url/wfs_url (setelah layer terbit ke GeoServer), author di 2D dan 3D
+-- (data hasil impor), url 3D (setelah berkas model tersimpan), serta latitude, longitude,
+-- heading, pitch, roll, scale (saat model ditempatkan di peta). Karena itu query ini
+-- hanya menyebut kolom yang MEMANG wajib: identitas, nama, dan status.
 SELECT '3. Kolom wajib yang belum NOT NULL (harus kosong)' AS bagian;
 SELECT table_name, column_name
 FROM information_schema.columns
@@ -524,13 +373,8 @@ WHERE table_schema = 'public'
   )
 ORDER BY table_name, column_name;
 
--- ---------------------------------------------------------------------
--- 4. Constraint yang seharusnya ada tetapi belum terpasang
---
--- Inilah yang paling berguna: daftar periksa yang langsung menyebut nama
--- constraint yang hilang, sehingga Anda tahu pernyataan mana yang perlu
--- dijalankan.
--- ---------------------------------------------------------------------
+-- 4. Constraint yang seharusnya ada tetapi belum terpasang. Bagian ini yang paling
+-- berguna: langsung menyebut nama constraint yang hilang.
 SELECT '4. Constraint yang hilang' AS bagian;
 WITH seharusnya(tabel, nama) AS (
     VALUES
@@ -554,8 +398,8 @@ WHERE NOT EXISTS (
 )
 ORDER BY s.tabel, s.nama;
 
--- Bila bagian 4 berisi baris, jalankan sql/01-schema.sql. Berkas
--- itu aman dijalankan berulang dan hanya menambahkan yang belum ada.
+-- Bila bagian 4 berisi baris, jalankan sql/01-schema.sql: berkas itu aman
+-- dijalankan berulang dan hanya menambahkan yang belum ada.
 ```
 
 ## Kolom yang sengaja boleh kosong
@@ -572,7 +416,7 @@ Sebagian kolom **memang dibiarkan boleh kosong**, karena nilainya baru terisi se
 | `katalog_data_3d.latitude`, `longitude`, `heading`, `pitch`, `roll`, `scale` | Saat model ditempatkan di peta |
 | `katalog_data_3d.author` | Boleh kosong untuk data hasil impor |
 
-Query yang menyaring seluruh kolom `is_nullable = 'YES'` akan **selalu berisi** walaupun skemanya sudah benar. Diuji pada Supabase dengan skema yang benar, query semacam itu mengembalikan **sebelas baris** — dan itu bukan tanda ada yang salah.
+Query yang menyaring seluruh kolom `is_nullable = 'YES'` akan **selalu berisi** walaupun skemanya sudah benar. Diuji pada Supabase dengan skema yang benar, query semacam itu mengembalikan **sebelas baris**, dan itu bukan tanda ada yang salah.
 
 ## Row Level Security
 
