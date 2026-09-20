@@ -2,6 +2,8 @@
 
 Dijalankan di Cloud Shell. Identitas peserta dari halaman sebelumnya sudah dipakai di sini, jadi halaman ini mengandaikan blok Tahap 2 sudah pernah dijalankan pada sesi Cloud Shell yang sama.
 
+## Membuat Service Account, VM, dan IP Statis
+
 ### Tahap 3. Periksa API yang dibutuhkan
 
 Dijalankan di: Cloud Shell
