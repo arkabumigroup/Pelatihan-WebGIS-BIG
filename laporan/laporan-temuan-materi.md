@@ -274,6 +274,11 @@ Seluruhnya sudah diperbaiki pada panduan. Bagian ini dicatat karena dua alasan: 
 | 29 | Panduan meminta `wc -l .env` menghasilkan 195, sedangkan berkasnya 246 baris | Angka 195 itu jumlah komentar, bukan jumlah baris. Peserta mengira tempelannya terpotong lalu mengulang dari awal |
 | 30 | `docs/public/unduhan/` memuat tiga berkas yang tidak dirujuk dari mana pun | Isinya sudah menyimpang dari repositori, dan ketiganya tetap ikut terbit ke situs |
 | 31 | Komentar pada `.env.example` mencapai 79 persen, dan blok perintah Cloud Shell 177 baris | Peserta menggulir jauh untuk menemukan baris yang perlu diisi, dan versi ringkasnya baru muncul di bawah |
+| 32 | Formulir tambah data 3D hanya menerima `.glb` dan `.zip` | Berkas `.ply` tidak dapat dipilih sama sekali, padahal halaman splatting pada aplikasi yang sama menghasilkan `.ply`. Inilah sebab unggah Gaussian Splat selalu gagal |
+| 33 | Kolom `tipe_file` tidak pernah diisi saat unggah | Berkas `.glb` dan `.ply` tidak dapat dibedakan, sehingga penampil yang tepat tidak dapat dipilih |
+| 34 | Repositori peserta kehilangan 22 berkas dibanding repositori instruktur | Fitur ubah data, kelola akun lengkap, profil, ganti kata sandi, proxy GeoServer, dan katalog publik tidak ada, sehingga peserta tidak dapat mengerjakannya |
+| 35 | Repositori peserta memakai nama kolom berbeda dari repositori instruktur | Instruktur memakai `model_name` dan `name`, repositori kita memakai `nama`. Menyalin berkas instruktur tanpa penyesuaian akan gagal dengan `Unknown field` |
+| 36 | Instruktur menambahkan `URL_BASE_PATH` dan `CESIUM_ION_TOKEN` pada `.env` lokalnya | Namanya berbeda dari repositori kita, yang memakai awalan `NEXT_PUBLIC_`. Dua berkas ini tidak boleh saling ditukar |
 
 ### Temuan dari pengujian alur 3D
 
@@ -339,9 +344,29 @@ Temuan 28 sampai 31 dikerjakan sebagai satu perapian, karena keempatnya berakar 
 
 Yang **tidak** dipangkas adalah komentar yang mencegah kegagalan senyap: bentuk nama pengguna `postgres.<ref>`, syarat `?pgbouncer=true` pada port 6543, larangan tanda dolar pada `GEOSERVER_ADMIN_PASSWORD`, dan perbedaan `GEOSERVER_URL` dengan `GEOSERVER_PUBLIC_URL`. Semuanya tetap ada, hanya dipendekkan dari belasan baris menjadi dua sampai tiga baris.
 
+### Perbandingan dengan repositori instruktur
+
+Temuan 32 sampai 36 berasal dari membandingkan repositori peserta dengan `matiurari/personal-geoportal` dan dengan `app.zip` yang dipakai instruktur di kelas.
+
+Perbandingan itu juga menjawab pertanyaan yang lebih penting: **apakah berkas deployment kita aman.** Jawabannya ya, dan pada beberapa titik repositori kita justru lebih benar.
+
+| Berkas | Repositori instruktur | Repositori kita | Mana yang dipakai |
+|---|---|---|---|
+| `.dockerignore` | `.env` tidak diabaikan, sehingga berkas rahasia ikut ke build context | `.env*` diabaikan, token dikirim sebagai build argument | Kita |
+| `cloudbuild.yaml` | nilai region dan nama image ditulis tetap | seluruh nilai berbeda antar peserta menjadi substitution variable | Kita |
+| `next.config.mjs` | memuat blok `env:` yang menyalin variabel ke nama yang sama | tidak memuatnya, karena awalan `NEXT_PUBLIC_` sudah ditanam Next.js sendiri | Kita |
+| `Dockerfile` | `node:20-alpine` | `node:22-alpine` | Kita |
+| `docker-compose.yml`, `nginx.conf`, `sql/`, `scripts/` | tidak ada di repositori | ada | Kita |
+
+Seluruh variabel lingkungan yang dipakai kode instruktur juga sudah ada di `.env.example` kita, jadi tidak ada nama yang hilang. Yang berbeda hanya penamaan lokal pada berkas `.env` milik instruktur, yaitu `URL_BASE_PATH` dan `CESIUM_ION_TOKEN`, sedangkan kode dan repositori kita memakai awalan `NEXT_PUBLIC_`. Keduanya tidak boleh saling ditukar.
+
+Satu hal yang perlu diketahui: **instruktur masih aktif mengubah repositorinya.** Pada hari perbandingan ini dibuat, ia membuat sebelas commit, termasuk penggantian nama kolom `nama` menjadi `nama_model` dan penambahan API proxy GeoServer. Karena itu repositori instruktur adalah sasaran yang bergerak, dan menyalin berkasnya bulat-bulat akan merusak perbaikan yang sudah ada di repositori kita.
+
 ### Yang belum dikerjakan
 
 Empat endpoint tanpa kode pada temuan 6 masih menunggu jawaban.
+
+Port fitur pada temuan 34 sedang dikerjakan. Berkas yang disalin dari repositori instruktur harus disesuaikan lebih dahulu pada nama kolom dan gaya komentarnya, karena repositori kita sudah menyimpang cukup jauh.
 
 `docs/.vitepress/dist` sudah tidak lagi terlacak, dan `docs/.gitignore` mengabaikannya bersama `.vitepress/cache`, sehingga hasil build tidak ikut ter-commit lagi.
 
