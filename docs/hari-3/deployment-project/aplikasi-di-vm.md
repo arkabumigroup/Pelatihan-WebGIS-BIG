@@ -2,6 +2,8 @@
 
 Seluruh tahap di halaman ini dijalankan di dalam VM, bukan di Cloud Shell.
 
+## Memasang Perkakas dan Menyiapkan Aplikasi
+
 ### Tahap 10. Masuk ke VM
 
 ![Sesi SSH ke VM di dalam browser](google-cloud-platform/image%202.png)
@@ -18,7 +20,7 @@ gcloud compute ssh "$VM_NAME" \
 ```
 
 
-Setelah perintah ini berhasil, terminal yang Anda gunakan adalah terminal VM, bukan Cloud Shell. Semua perintah pada Bagian B dijalankan di sana.
+Setelah perintah ini berhasil, terminal yang Anda gunakan adalah terminal VM, bukan Cloud Shell. Seluruh tahap berikutnya di halaman ini dijalankan di sana.
 
 #### Periksa ukuran partisi disk
 

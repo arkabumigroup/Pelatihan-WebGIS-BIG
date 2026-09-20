@@ -2,6 +2,8 @@
 
 Halaman terakhir Deployment Project. Setelah selesai, setiap push ke branch `main` akan membangun dan men-deploy aplikasi tanpa masuk ke VM.
 
+## Menyiapkan Trigger Cloud Build
+
 ### Tahap 24. Tambahkan Dockerfile dan cloudbuild.yaml
 
 ![Folder proyek Next.js di Visual Studio Code](google-cloud-platform/image%2014.png)
@@ -226,7 +228,7 @@ Buka halaman History, lalu jalankan trigger dan pantau build yang sedang berjala
 
 
 
-## Bagian D. Verifikasi
+## Verifikasi
 
 ### Tahap 30. Periksa container
 

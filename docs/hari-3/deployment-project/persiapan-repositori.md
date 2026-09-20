@@ -224,6 +224,7 @@ Tabel ini perlu dibaca sebelum Tahap 2. Salah menebak pemilik resource adalah pe
 
 Nama pada baris terakhir diturunkan seluruhnya dari satu nilai, yaitu identitas peserta. Nilai itulah yang ditetapkan pada Tahap 2.
 
+## Menetapkan Project dan Identitas Peserta
 
 ### Tahap 1. Buka project
 
