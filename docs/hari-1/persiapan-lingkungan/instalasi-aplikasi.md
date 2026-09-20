@@ -2,7 +2,7 @@
 
 **Modul 1 - Dasar-Dasar GIS, Konsep WebGIS, Dasar Pemrograman, dan Github**
 
-## **Instalasi Visual Studio Code, Git dan Node.js**
+## **Instalasi Visual Studio Code, GitHub Desktop, dan Node.js**
 
 1. Buka tautan [https://code.visualstudio.com/download](https://code.visualstudio.com/download), kemudian pilih opsi unduh berdasarkan sistem operasi yang digunakan.
     
@@ -12,18 +12,19 @@
     
 ![](instalasi-aplikasi/image7.png)
     
-3. Selanjutnya unduh git melalui tautan berikut ini [https://git-scm.com/](https://git-scm.com/) untuk mengelola repository project , kemudian lakukan proses instalasi git tersebut.
-    
+3. Selanjutnya unduh **GitHub Desktop** melalui tautan [https://desktop.github.com/download/](https://desktop.github.com/download/), kemudian lakukan proses instalasinya.
+
+    Seluruh pekerjaan repositori pada pelatihan ini dikerjakan lewat GitHub Desktop, mulai dari clone, menyimpan perubahan, sampai mengirimnya ke GitHub. Perintah `git` tidak perlu Anda ketik.
+
 ![](instalasi-aplikasi/image4.png)
     
 4. Tahapan berikutnya instal Node.js yang akan digunakan sebagai package manager untuk melakuan pemrograman menggunakan Javascript, Next.js, Angular serta bahasa pemrograman javascript lainnya. Node.js dapat diunduh pada link berikut ini [https://nodejs.org/en/download](https://nodejs.org/en/download).
-    
+
 ![](instalasi-aplikasi/image2.png)
     
-5. Setelah proses instalasi Git dan Node.js telah selesai, untuk melihat apakah proses instalasi telah selesai dan terpasang pada perangkat yang digunakan, pengguna dapat melakukan pengecekan pada Windows Powershell kemudian melakukan pengetikan perintah git version untuk melihat versi git yang telah di install serta node --version untuk melihat versi node yang telah di install.
+5. Setelah proses instalasi selesai, untuk melihat apakah Node.js telah terpasang pada perangkat yang digunakan, pengguna dapat melakukan pengecekan pada Windows Powershell kemudian melakukan pengetikan perintah `node --version` untuk melihat versi node yang telah di install.
 
     ```bash
-    git --version
     node --version
     npm --version
     ```

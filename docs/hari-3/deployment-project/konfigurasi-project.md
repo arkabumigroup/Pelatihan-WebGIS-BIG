@@ -18,14 +18,16 @@ Ada dua batas yang perlu diperhatikan pada diagram itu:
 
 | Batas | Artinya |
 |---|---|
-| Sampai `git push origin main` | Anda yang mengerjakan |
-| Setelah `git push origin main` | Cloud Build mengerjakan sendiri, tanpa Anda masuk ke VM |
+| Sampai **Push origin** di GitHub Desktop | Anda yang mengerjakan |
+| Setelah **Push origin** | Cloud Build mengerjakan sendiri, tanpa Anda masuk ke VM |
 
-Jadi seluruh pekerjaan manual ada di laptop dan di VM, dan berhenti pada satu perintah push. Setelah itu, setiap perubahan yang Anda push akan otomatis sampai ke server.
+Diagram itu menuliskan langkah terakhirnya sebagai `git push origin main`. Pada pelatihan ini perintah tersebut **tidak perlu Anda ketik**, karena seluruh pekerjaan repositori dikerjakan lewat GitHub Desktop. Padanannya adalah tombol **Push origin** pada aplikasi itu.
+
+Jadi seluruh pekerjaan manual ada di laptop dan di VM, dan berhenti pada satu kali push. Setelah itu, setiap perubahan yang Anda push akan otomatis sampai ke server.
 
 ## Tahap 1. Fork dan clone repositori
 
-Halaman ini memeriksa berkas yang sudah ada di repositori, jadi repositori itu harus ada di laptop Anda lebih dahulu.
+Halaman ini memeriksa berkas yang sudah ada di repositori, jadi repositori itu harus ada di laptop Anda lebih dahulu. Seluruh pekerjaan repositori pada pelatihan ini memakai **GitHub Desktop**.
 
 ### Fork repositori
 
@@ -36,12 +38,13 @@ Halaman ini memeriksa berkas yang sudah ada di repositori, jadi repositori itu h
 
 ### Clone fork Anda ke laptop
 
-Ganti `USERNAME_GITHUB` dengan username GitHub Anda.
+1. Buka GitHub Desktop, lalu pilih **File > Clone repository**.
+2. Pilih tab **GitHub.com**, lalu pilih `personal-geoportal-peserta` milik akun Anda. **Pastikan yang dipilih adalah fork Anda**, bukan repositori sumbernya.
+3. Tentukan folder tujuan, lalu klik **Clone**.
 
-```bash
-git clone https://github.com/USERNAME_GITHUB/personal-geoportal-peserta.git
-cd personal-geoportal-peserta
-```
+### Buka terminal pada folder proyek
+
+Beberapa perintah di halaman ini dijalankan di terminal. Buka lewat **Repository > Open in Terminal** pada GitHub Desktop, supaya terminalnya langsung berada di folder proyek yang benar.
 
 ### Pasang dependensi
 
@@ -416,6 +419,10 @@ Jadi di laptop, **kedua baris harus berisi alamat yang sama**, yaitu `http://loc
 
 ### Pastikan .env tidak ikut ter-commit
 
+Cara termudah: buka GitHub Desktop dan pastikan `.env` **tidak muncul** di daftar **Changes**. Berkas yang diabaikan memang tidak pernah muncul di sana.
+
+Bila ingin memastikan lewat terminal:
+
 ```bash
 git check-ignore -v .env
 ```
@@ -729,8 +736,11 @@ Setelah berhasil login, hentikan server dengan `Ctrl+C`. Aplikasi siap dipindahk
 
 Berkas konfigurasi Anda sudah ada di repositori, jadi pada tahap ini tidak ada yang perlu di-commit. Yang perlu diperiksa hanya satu hal: pastikan berkas `.env` tidak pernah ikut masuk ke Git.
 
+Buka GitHub Desktop dan pastikan `.env` tidak muncul di daftar **Changes**. Berkas yang diabaikan memang tidak pernah muncul di sana.
+
+Bila ingin memastikan lewat terminal:
+
 ```bash
-git status --short
 git check-ignore .env && echo "aman, .env diabaikan"
 ```
 
