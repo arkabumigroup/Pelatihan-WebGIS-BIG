@@ -362,11 +362,47 @@ Seluruh variabel lingkungan yang dipakai kode instruktur juga sudah ada di `.env
 
 Satu hal yang perlu diketahui: **instruktur masih aktif mengubah repositorinya.** Pada hari perbandingan ini dibuat, ia membuat sebelas commit, termasuk penggantian nama kolom `nama` menjadi `nama_model` dan penambahan API proxy GeoServer. Karena itu repositori instruktur adalah sasaran yang bergerak, dan menyalin berkasnya bulat-bulat akan merusak perbaikan yang sudah ada di repositori kita.
 
+### Pengujian runtime
+
+Fitur hasil port tidak cukup diperiksa dengan build. Kompilasi hanya membuktikan berkasnya saling terhubung, bukan bahwa alurnya bekerja. Pengujian karena itu dijalankan di atas lingkungan yang menyerupai keadaan sebenarnya:
+
+| Bagian | Yang dipakai |
+|---|---|
+| Database | PostgreSQL 18 dan PostGIS 3.6 di klaster sekali pakai, skema dari `sql/01-schema.sql` |
+| GeoServer | `kartoza/geoserver:2.24.1`, versi yang sama dengan `docker-compose.yml` |
+| Akun | Dibuat lewat `sql/02-seed-super-admin.sql`, bukan disisipkan manual |
+
+Seluruh klaster, container, dan berkas uji dihapus setelah selesai, dan `.env` pengembang dikembalikan seperti semula. Database pelatihan tidak disentuh sama sekali.
+
+Hasilnya:
+
+| Alur | Hasil |
+|---|---|
+| Skema `01-schema.sql` | Diterapkan tanpa galat di PostgreSQL 18 |
+| Seed super admin | Akun dibuat, termasuk penjagaan penandanya |
+| Login | Berhasil, token terbit |
+| Unggah `.ply` | Berhasil, `tipe_file` tersimpan bernilai `ply`, berkas fisik ditulis, dan disajikan kembali `HTTP 200` |
+| Format di luar `.glb` dan `.ply` | Ditolak dengan pesan yang menyebut format yang didukung |
+| Ubah data 3D | Berhasil, sudut dan skala tersimpan, dan `akses` private langsung menyembunyikannya dari daftar publik |
+| Unggah layer 2D | Berhasil sampai GeoServer. Tabel spasial dibuat berisi dua baris, layer terbit, WMS menjawab `200` |
+| WFS lewat proxy | Berhasil, mengembalikan GeoJSON yang sah |
+| Ubah data 2D | Berhasil. Database dan ACL GeoServer berubah bersamaan |
+| Ganti kata sandi | Berhasil, dan login dengan sandi baru terbukti jalan |
+| Statistik dan detail pengguna | Berhasil |
+| Daftar publik `glb` dan `ply` | Terpisah dengan benar menurut `tipe_file` |
+| Panel katalog di peta publik | Muncul di HTML sisi server |
+
+Dua catatan dari pengujian ini.
+
+**Urutan operasi pada ubah data 2D sudah benar.** Rute itu memperbarui GeoServer lebih dahulu, baru baris katalog. Ketika GeoServer dimatikan, permintaannya gagal dan database **tidak** ikut berubah. Itu perilaku yang diinginkan, karena baris katalog yang menyimpang dari keadaan GeoServer lebih berbahaya daripada permintaan yang gagal.
+
+**Tiga kali pengujian awal melaporkan kegagalan palsu.** Rute ubah 3D mengekspor `POST` dan membaca `FormData`, sedangkan pengujian pertama memakai `PATCH` lalu JSON. Rute ganti kata sandi memakai nama field `password_lama` dan `password_baru`, bukan `old_password`. Rute ubah 2D mensyaratkan `layer_name` berformat `workspace:tabel`. Ketiganya kesalahan pengujian, bukan kesalahan kode, dan sudah diperiksa ulang dengan bentuk permintaan yang benar.
+
 ### Yang belum dikerjakan
 
 Empat endpoint tanpa kode pada temuan 6 masih menunggu jawaban.
 
-Port fitur pada temuan 32 sampai 34 sudah dikerjakan dan menunggu penggabungan. Berkas yang disalin dari repositori instruktur disesuaikan lebih dahulu pada nama kolom dan gaya komentarnya, karena repositori kita sudah menyimpang cukup jauh. Dua perubahan pada repositori instruktur sengaja **tidak** diikuti karena merugikan: penghapusan kontrol Basemap dan Zoom dari `MapComponent`, serta pemindahan dialog kelola akun ke tiga komponen yang memakai metode HTTP berbeda dari route yang ada.
+Port fitur pada temuan 32 sampai 34 sudah dikerjakan dan sudah tergabung. Berkas yang disalin dari repositori instruktur disesuaikan lebih dahulu pada nama kolom dan gaya komentarnya, karena repositori kita sudah menyimpang cukup jauh. Dua perubahan pada repositori instruktur sengaja **tidak** diikuti karena merugikan: penghapusan kontrol Basemap dan Zoom dari `MapComponent`, serta pemindahan dialog kelola akun ke tiga komponen yang memakai metode HTTP berbeda dari route yang ada.
 
 `docs/.vitepress/dist` sudah tidak lagi terlacak, dan `docs/.gitignore` mengabaikannya bersama `.vitepress/cache`, sehingga hasil build tidak ikut ter-commit lagi.
 
