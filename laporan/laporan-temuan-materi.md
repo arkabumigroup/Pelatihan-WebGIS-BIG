@@ -156,6 +156,21 @@ Kolom `tipe_file` pada tabel `katalog_data_3d` sudah disiapkan untuk memisahkan 
 
 **Pertanyaan:** apakah keempat endpoint itu untuk dikerjakan peserta, atau sisa dari versi sebelumnya?
 
+### Keadaan setelah fitur dilengkapi
+
+Keempat endpoint itu sekarang **sudah ada berkasnya** di repositori peserta, karena ikut masuk saat fitur yang hilang dilengkapi. Hasil pemeriksaan terhadap koleksi Postman:
+
+| Endpoint | Koleksi Postman | Repositori peserta | Hasil |
+|---|---|---|---|
+| `/api/katalog-data-2d/update` | `PATCH`, body JSON `{data_2d_id, akses, editable}` | `PATCH`, membaca tiga field yang sama | Cocok |
+| `/api/katalog-data-3d/list-public-glb` | `GET` | `GET` | Cocok |
+| `/api/katalog-data-3d/list-public-ply` | `GET` | `GET` | Cocok |
+| `/api/katalog-data-3d/update` | **`PATCH`**, formdata delapan field | **`POST`**, membaca delapan field yang sama | **Metode berbeda** |
+
+Tiga endpoint cocok sepenuhnya. Satu berbeda pada metode saja, sedangkan isi permintaannya identik: kedelapan field `data_3d_id`, `akses`, `latitude`, `longitude`, `heading`, `pitch`, `roll`, dan `scale` sama persis.
+
+Perbedaan itu perlu diputuskan. Memanggil `PATCH` ke rute itu sekarang dijawab `405 Method Not Allowed`. Pilihannya ada dua: mengubah rute menjadi `PATCH` agar sesuai kontrak yang terdokumentasi, atau memperbarui koleksi Postman menjadi `POST` agar sesuai kode yang berjalan. Kode yang berjalan saat ini mengikuti repositori instruktur, yang juga memakai `POST`.
+
 ---
 
 ## 7. `create` mengembalikan hash kata sandi
@@ -400,7 +415,7 @@ Dua catatan dari pengujian ini.
 
 ### Yang belum dikerjakan
 
-Empat endpoint tanpa kode pada temuan 6 masih menunggu jawaban.
+Empat endpoint tanpa kode pada temuan 6 sudah lengkap berkasnya, seluruhnya ikut masuk saat fitur yang hilang dikerjakan. Yang tersisa hanya satu keputusan: metode `PATCH` atau `POST` untuk update data 3D. Rinciannya ada pada bagian **Keadaan setelah fitur dilengkapi** di temuan 6.
 
 Port fitur pada temuan 32 sampai 34 sudah dikerjakan dan sudah tergabung. Berkas yang disalin dari repositori instruktur disesuaikan lebih dahulu pada nama kolom dan gaya komentarnya, karena repositori kita sudah menyimpang cukup jauh. Dua perubahan pada repositori instruktur sengaja **tidak** diikuti karena merugikan: penghapusan kontrol Basemap dan Zoom dari `MapComponent`, serta pemindahan dialog kelola akun ke tiga komponen yang memakai metode HTTP berbeda dari route yang ada.
 
