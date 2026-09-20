@@ -270,6 +270,10 @@ Seluruhnya sudah diperbaiki pada panduan. Bagian ini dicatat karena dua alasan: 
 | 25 | Level tile OpenStreetMap tidak dibatasi pada provider Cesium | Cesium meminta level 20 sampai 26, OSM menjawab `400`, dan seluruh peta gagal terbentuk |
 | 26 | Kolom pitch dan roll tertinggal dari formulir tambah layer 3D | Keduanya selalu tersimpan `0`, padahal database dan pratinjau sudah mendukung |
 | 27 | Tahap 13 mengubah dua dari empat variabel alamat | `wms_url` dan alamat berkas model tetap memakai alamat IP, sehingga layer tidak dapat dibuka |
+| 28 | `.env.example` memuat dua baris `DATABASE_URL`, dan baris terakhir kosong | Berkas contoh itu menghasilkan `DATABASE_URL` kosong. Peserta yang mengisi baris pertama tetap gagal login tanpa pesan yang menjelaskan |
+| 29 | Panduan meminta `wc -l .env` menghasilkan 195, sedangkan berkasnya 246 baris | Angka 195 itu jumlah komentar, bukan jumlah baris. Peserta mengira tempelannya terpotong lalu mengulang dari awal |
+| 30 | `docs/public/unduhan/` memuat tiga berkas yang tidak dirujuk dari mana pun | Isinya sudah menyimpang dari repositori, dan ketiganya tetap ikut terbit ke situs |
+| 31 | Komentar pada `.env.example` mencapai 79 persen, dan blok perintah Cloud Shell 177 baris | Peserta menggulir jauh untuk menemukan baris yang perlu diisi, dan versi ringkasnya baru muncul di bawah |
 
 ### Temuan dari pengujian alur 3D
 
@@ -320,9 +324,26 @@ Penyebabnya seragam, yaitu panduan ditulis dengan mengandaikan keadaan yang tida
 
 **Mengandaikan satu versi perkakas.** Batas panjang Service Account, jumlah constraint pada `pg_constraint`, dan ketersediaan `node` semuanya berbeda menurut versi atau menurut apa yang sudah dipasang.
 
+### Perapian bahasa dan komentar
+
+Temuan 28 sampai 31 dikerjakan sebagai satu perapian, karena keempatnya berakar pada sebab yang sama: materi ditulis dengan menambahkan penjelasan di tempat yang paling dekat, bukan di tempat yang paling tepat.
+
+| Berkas | Sebelum | Sesudah |
+|---|---|---|
+| `.env.example` | 246 baris, 195 komentar (79 persen), 25 baris nilai dengan satu duplikat | 108 baris, 59 komentar, 24 baris nilai tanpa duplikat |
+| Blok Cloud Shell Tahap 2 | 177 baris, 42 komentar | 30 baris, 1 komentar |
+| Tahap 18 | tiga cara untuk satu pekerjaan, 164 baris | satu cara dengan satu cara cadangan, 112 baris |
+| Tujuh berkas `sql/` | 1062 baris, 52 persen komentar | 745 baris, 29 persen komentar |
+| `tls/aktifkan.conf` | 13 komentar dari 36 baris | 7 komentar dari 30 baris |
+| `docs/public/unduhan/` | tiga berkas, tidak dirujuk, sudah menyimpang | dihapus |
+
+Yang **tidak** dipangkas adalah komentar yang mencegah kegagalan senyap: bentuk nama pengguna `postgres.<ref>`, syarat `?pgbouncer=true` pada port 6543, larangan tanda dolar pada `GEOSERVER_ADMIN_PASSWORD`, dan perbedaan `GEOSERVER_URL` dengan `GEOSERVER_PUBLIC_URL`. Semuanya tetap ada, hanya dipendekkan dari belasan baris menjadi dua sampai tiga baris.
+
 ### Yang belum dikerjakan
 
-Empat endpoint tanpa kode pada temuan 6 masih menunggu jawaban. Selain itu, `docs/.vitepress/dist` masih ter-commit ke repositori meskipun seluruh isinya dihasilkan oleh proses build. Membersihkannya memerlukan `git rm -r --cached` pada 768 berkas.
+Empat endpoint tanpa kode pada temuan 6 masih menunggu jawaban.
+
+`docs/.vitepress/dist` sudah tidak lagi terlacak, dan `docs/.gitignore` mengabaikannya bersama `.vitepress/cache`, sehingga hasil build tidak ikut ter-commit lagi.
 
 ## Catatan Pengerjaan
 

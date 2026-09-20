@@ -6,11 +6,14 @@
   "scripts": {
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
-    "docs:preview": "vitepress preview docs"
+    "docs:preview": "vitepress preview docs",
+    "export-pdf": "press-export-pdf export docs",
+    "export-pdf:semua": "press-export-pdf export docs -c docs/.vitepress/vitepress-pdf-semua.config.mjs"
   },
   "devDependencies": {
     "vite-plugin-vitepress-auto-sidebar": "^1.7.1",
     "vitepress": "^1.0.0",
+    "vitepress-export-pdf": "^1.0.0",
     "vue": "^3.3.4"
   },
   "dependencies": {

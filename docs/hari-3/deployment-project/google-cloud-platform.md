@@ -250,216 +250,13 @@ Bila Anda tidak tercantum di tabel dan memilih nama sendiri, panjangnya boleh sa
 
 Nama Peserta menjadi dasar penamaan seluruh resource Anda: nama VM, nama Service Account, nama trigger, dan subdomain. Karena itu nama yang sudah dipakai peserta lain akan menggagalkan pekerjaan Anda di tengah jalan, dan pada saat itu sebagian resource mungkin sudah terlanjur dibuat.
 
-Tempel seluruh blok berikut di Cloud Shell. Ubah hanya dua baris pertama.
+Tempel blok berikut di Cloud Shell. Ubah hanya dua baris pertama.
 
 ```bash
-# ---------------------------------------------------------------------
-# ISI INI. Hanya dua baris ini yang diubah.
-# ---------------------------------------------------------------------
-PROJECT_ID="geoportal-kelompok-a-xxxxx"     # dari koordinator
-NAMA_PESERTA="nama01"                       # dari kolom Nama Peserta pada tabel
-# ---------------------------------------------------------------------
+PROJECT_ID="geoportal-kelompok-a-xxxxx"     # dari tabel peserta
+NAMA_PESERTA="nama01"                       # dari kolom Nama Peserta
 
 set -euo pipefail
-
-# Nilai bersama. Sama untuk semua peserta dalam satu project, jangan diubah.
-REGION="asia-southeast2"
-ZONE="asia-southeast2-b"
-REPOSITORY="katalog-images"                 # milik koordinator, jangan dibuat ulang
-APP_DIR="/opt/webgis/app"
-
-merah()  { printf '\033[31m%s\033[0m\n' "$1"; }
-hijau()  { printf '\033[32m%s\033[0m\n' "$1"; }
-kuning() { printf '\033[33m%s\033[0m\n' "$1"; }
-
-if [ "$PROJECT_ID" = "geoportal-kelompok-a-xxxxx" ]; then
-  merah "PROJECT_ID masih bernilai contoh."
-  echo "  Ambil Project ID yang benar dari koordinator."
-  echo "  Untuk melihat project yang boleh diakses: gcloud projects list"
-  exit 1
-fi
-
-# Tetapkan project aktif. Ini WAJIB, dan sebelumnya terlewat.
-#
-# Banyak perintah pada tahap berikutnya tidak menyebut --project, misalnya
-# gcloud compute instances create dan gcloud iam service-accounts create.
-# Tanpa baris ini, perintah tersebut memakai project yang sedang aktif di
-# Cloud Shell, yang belum tentu project Anda.
-#
-# Akibatnya resource dibuat di project KELOMPOK LAIN, dan karena perintahnya
-# berhasil, tidak ada pesan galat yang memberitahu. VM baru ditemukan pada
-# tahap berikutnya ketika alamatnya tidak muncul di project yang benar.
-gcloud config set project "$PROJECT_ID" >/dev/null
-
-AKTIF="$(gcloud config get-value project 2>/dev/null)"
-if [ "$AKTIF" != "$PROJECT_ID" ]; then
-  merah "Project aktif '$AKTIF' tidak sama dengan PROJECT_ID '$PROJECT_ID'."
-  echo "  Jalankan: gcloud config set project $PROJECT_ID"
-  exit 1
-fi
-hijau "Project aktif: $AKTIF"
-
-# Identitas peserta memakai NAMA_PESERTA apa adanya, tanpa diturunkan.
-# Nilainya sudah pendek dan satu kata, diambil dari kolom Nama Peserta pada
-# tabel peserta.
-PARTICIPANT_ID="$NAMA_PESERTA"
-
-if [ -z "$PARTICIPANT_ID" ]; then
-  merah "NAMA_PESERTA masih kosong."
-  echo "  Ambil nilainya dari kolom Nama Peserta pada halaman Peserta dan Project."
-  exit 1
-fi
-
-# Huruf kecil dan angka saja, tanpa spasi, tanpa tanda hubung, tanpa titik.
-# Nama VM, Service Account, dan subdomain menolak karakter di luar itu, dan
-# pesan errornya menyebut nama resource, bukan nama variabel, sehingga sulit
-# dilacak bila lolos sampai ke perintah gcloud.
-if printf '%s' "$PARTICIPANT_ID" | grep -qE '[^a-z0-9]'; then
-  merah "Nama Peserta '$PARTICIPANT_ID' mengandung karakter yang tidak sah."
-  echo "  Hanya huruf kecil dan angka, tanpa spasi dan tanpa tanda hubung."
-  echo "  Contoh yang benar: amelliak, dhanypedia, d21utomo"
-  exit 1
-fi
-
-if [ "${#PARTICIPANT_ID}" -lt 3 ]; then
-  merah "Nama Peserta '$PARTICIPANT_ID' hanya ${#PARTICIPANT_ID} karakter, minimal 3."
-  exit 1
-fi
-
-# Batas 12 karakter adalah pilihan, bukan batas teknis.
-#
-# Batas teknis berasal dari Service Account, yang paling ketat:
-#
-#   cb-<nama>              30 karakter, sehingga nama masih muat sampai 27
-#   webgis-<nama>          63 karakter, sehingga nama masih muat sampai 56
-#   <nama>.webgisbig.com   63 karakter, sehingga nama masih muat sampai 45
-#
-# Diuji langsung pada Google Cloud: nama Service Account 30 karakter diterima,
-# 31 karakter ditolak dengan pesan "between 6 and 30".
-#
-# Angka 12 diambil jauh di bawah 27 supaya nama tetap pendek dan mudah dibaca
-# pada daftar resource, sementara nama seperti dhanypedia atau arkabumihd1
-# tetap dapat dipakai.
-if [ "${#PARTICIPANT_ID}" -gt 12 ]; then
-  merah "Nama Peserta '$PARTICIPANT_ID' ${#PARTICIPANT_ID} karakter, melebihi batas 12."
-  echo "  Batas 12 dipilih supaya nama resource tetap pendek dan mudah dibaca."
-  echo "  Batas teknisnya sendiri 27, berasal dari Service Account."
-  exit 1
-fi
-
-VM_NAME="webgis-${PARTICIPANT_ID}"
-STATIC_IP_NAME="webgis-ip-${PARTICIPANT_ID}"
-BUILD_SA_NAME="cb-${PARTICIPANT_ID}"
-CONNECTION_NAME="github-${PARTICIPANT_ID}"
-LINKED_REPO_NAME="repo-${PARTICIPANT_ID}"
-TRIGGER_NAME="deploy-${PARTICIPANT_ID}"
-IMAGE_NAME="nextjs-${PARTICIPANT_ID}"
-SUBDOMAIN="${PARTICIPANT_ID}.webgisbig.com"
-BUILD_SA="${BUILD_SA_NAME}@${PROJECT_ID}.iam.gserviceaccount.com"
-VM_REGION="${ZONE%-*}"
-
-# ---------------------------------------------------------------------
-# Penjagaan tabrakan. Peserta pertama tidak menemukan apa pun dan lolos.
-# Peserta kedua menemukan Service Account milik peserta pertama, dan
-# dihentikan SEBELUM membuat apa pun.
-# ---------------------------------------------------------------------
-echo "Memeriksa project $PROJECT_ID ..."
-
-if ! gcloud projects describe "$PROJECT_ID" >/dev/null 2>&1; then
-  merah "Project '$PROJECT_ID' tidak bisa diakses."
-  echo "  Periksa: gcloud projects list"
-  echo "  Kalau project tidak muncul, hubungi koordinator. Akses IAM belum terpasang."
-  exit 1
-fi
-
-PEMILIK=""
-if gcloud compute instances describe "$VM_NAME" --zone="$ZONE" --project="$PROJECT_ID" >/dev/null 2>&1; then
-  PEMILIK="$(
-    gcloud compute instances describe "$VM_NAME" --zone="$ZONE" --project="$PROJECT_ID" \
-      --format='value(metadata.items[?key==`created-by`].value)' 2>/dev/null | head -1 || true
-  )"
-fi
-
-if gcloud iam service-accounts describe "$BUILD_SA" --project="$PROJECT_ID" >/dev/null 2>&1; then
-  merah "Service Account '$BUILD_SA_NAME' sudah ada di project ini."
-  echo ""
-  echo "  Artinya identitas '$PARTICIPANT_ID' sudah dipakai peserta lain di project yang sama."
-  [ -n "$PEMILIK" ] && echo "  VM '$VM_NAME' dibuat oleh: $PEMILIK"
-  echo ""
-  echo "  JANGAN melanjutkan. Kalau Anda memakai Service Account milik orang lain,"
-  echo "  Cloud Build Anda akan men-deploy ke VM orang itu, dan sebaliknya."
-  echo ""
-  echo "  Pastikan NAMA_PESERTA diisi dengan nilai dari kolom Nama Peserta pada"
-  echo "  halaman Peserta dan Project, bukan nama pilihan sendiri."
-  echo ""
-  echo "  Langkah yang benar:"
-  echo "    1. Periksa kembali tabel peserta, mungkin nilai Anda salah ketik."
-  echo "    2. Bila memang bentrok, laporkan ke koordinator."
-  echo "    3. Minta identitas pengganti, lalu jalankan blok ini lagi."
-  exit 1
-fi
-
-if gcloud compute instances describe "$VM_NAME" --zone="$ZONE" --project="$PROJECT_ID" >/dev/null 2>&1; then
-  merah "VM '$VM_NAME' sudah ada di project ini."
-  echo "  Identitas '$PARTICIPANT_ID' sudah dipakai. Lapor ke koordinator."
-  exit 1
-fi
-
-hijau "Lolos. Tidak ada resource dengan nama ini di project $PROJECT_ID."
-echo ""
-echo "PROJECT_ID     = $PROJECT_ID"
-echo "NAMA_PESERTA   = $NAMA_PESERTA"
-echo ""
-echo "Nama resource Anda:"
-printf '  %-18s %s\n' \
-  VM_NAME "$VM_NAME" \
-  STATIC_IP_NAME "$STATIC_IP_NAME" \
-  BUILD_SA_NAME "$BUILD_SA_NAME" \
-  CONNECTION_NAME "$CONNECTION_NAME" \
-  LINKED_REPO_NAME "$LINKED_REPO_NAME" \
-  TRIGGER_NAME "$TRIGGER_NAME" \
-  IMAGE_NAME "$IMAGE_NAME" \
-  SUBDOMAIN "$SUBDOMAIN"
-echo ""
-kuning "Resource yang JUSTRU TIDAK boleh Anda buat (milik koordinator):"
-echo "  katalog-images          Artifact Registry bersama"
-echo "  allow-webgis-http       Firewall rule port 80 dan 443"
-echo "  allow-webgis-iap-ssh    Firewall rule port 22 lewat IAP"
-echo ""
-echo "Kalau resource di atas ternyata BELUM ada, lapor ke koordinator."
-echo "Jangan dibuat sendiri, karena nama yang sama dipakai seluruh peserta project ini."
-echo ""
-hijau "Lanjutkan ke Tahap 3."
-```
-
-Jika blok itu berhenti dengan pesan bahwa Service Account sudah ada, **jangan mencari jalan lain**. Laporkan ke koordinator dan minta identitas pengganti. Melanjutkan dengan Service Account milik peserta lain membuat Cloud Build Anda men-deploy ke VM orang lain.
-
-::: tip Bila Cloud Shell tertutup
-Variabel pada blok di atas hanya bertahan selama sesi Cloud Shell terbuka. Bila sesi berakhir atau Cloud Shell berpindah, jalankan kembali seluruh blok Tahap 2 sebelum melanjutkan.
-:::
-
-#### Muat ulang variabel di tengah jalan
-
-Cloud Shell menutup sesinya sendiri setelah menganggur sekitar dua puluh menit. Pelatihan ini berlangsung berjam-jam, sehingga hampir pasti Anda mengalami sesi yang berganti di tengah pengerjaan.
-
-Gejalanya mudah dikenali. Perintah berhenti dengan pesan yang memuat **tanda kurung siku kosong**, atau alamat yang kehilangan salah satu bagiannya:
-
-```text
-ERROR: (gcloud.compute.instances.describe) could not parse resource []
-http:///geoserver/web
-```
-
-Tanda seperti itu hampir selalu berarti variabel shell kosong, bukan VM atau project Anda yang bermasalah. Periksa dengan:
-
-```bash
-echo "PROJECT_ID=$PROJECT_ID  VM_NAME=$VM_NAME  ZONE=$ZONE"
-```
-
-Bila ada yang kosong, jalankan blok ringkas berikut. Ganti kedua nilai di baris atas dengan nilai Anda dari Tahap 2:
-
-```bash
-PROJECT_ID="geoportal-kelompok-a-xxxxx"
-NAMA_PESERTA="nama01"
 
 PARTICIPANT_ID="$NAMA_PESERTA"
 ZONE="asia-southeast2-b"
@@ -476,14 +273,51 @@ TRIGGER_NAME="deploy-${PARTICIPANT_ID}"
 IMAGE_NAME="nextjs-${PARTICIPANT_ID}"
 SUBDOMAIN="${PARTICIPANT_ID}.webgisbig.com"
 VM_REGION="${ZONE%-*}"
-VM_SA="$(gcloud projects describe "$PROJECT_ID" --format='value(projectNumber)')-compute@developer.gserviceaccount.com"
-PROJECT_NUMBER="${VM_SA%%-compute@*}"
+
+printf '%s' "$PARTICIPANT_ID" | grep -qE '^[a-z0-9]{3,12}$' \
+  || { echo "NAMA_PESERTA harus 3 sampai 12 karakter, huruf kecil dan angka saja."; exit 1; }
 
 gcloud config set project "$PROJECT_ID" >/dev/null
 echo "Siap. VM_NAME=$VM_NAME  SUBDOMAIN=$SUBDOMAIN"
 ```
 
-Blok ini tidak membuat atau mengubah apa pun. Isinya hanya menetapkan variabel, sama seperti blok Tahap 2, sehingga aman dijalankan berkali-kali.
+`NAMA_PESERTA` hanya boleh huruf kecil dan angka, 3 sampai 12 karakter. Nama VM, Service Account, dan subdomain menolak karakter di luar itu, dan pesan galatnya menyebut nama resource, bukan nama variabel, sehingga sulit dilacak bila lolos sampai ke perintah `gcloud`.
+
+Batas teknisnya sebenarnya 27 karakter, berasal dari nama Service Account `cb-<nama>` yang dibatasi 30 karakter. Angka 12 diambil jauh di bawah itu supaya nama resource tetap pendek dan mudah dibaca pada daftar, sementara nama seperti `dhanypedia` atau `arkabumihd1` tetap muat.
+
+Baris `gcloud config set project` wajib ada. Banyak perintah pada tahap berikutnya tidak menyebut `--project`, misalnya `gcloud compute instances create` dan `gcloud iam service-accounts create`. Tanpa baris itu, perintah tersebut memakai project yang aktif di Cloud Shell, yang belum tentu project Anda. Resource pun dibuat di project kelompok lain, dan karena perintahnya berhasil, tidak ada pesan galat yang memberitahu. VM baru ditemukan pada tahap berikutnya ketika alamatnya tidak muncul di project yang benar.
+
+Blok ini hanya menetapkan variabel. Aman dijalankan berkali-kali.
+
+#### Periksa nama Anda belum dipakai
+
+```bash
+gcloud iam service-accounts describe "$BUILD_SA" --project="$PROJECT_ID" >/dev/null 2>&1 \
+  && { echo "BENTROK: '$BUILD_SA_NAME' sudah ada di project $PROJECT_ID."; \
+       echo "Lapor ke koordinator dan minta identitas pengganti."; } \
+  || echo "Aman. Lanjutkan ke Tahap 3."
+```
+
+Bila hasilnya BENTROK, jangan mencari jalan lain. Memakai Service Account milik peserta lain membuat Cloud Build Anda men-deploy ke VM orang itu, dan sebaliknya.
+
+#### Bila Cloud Shell tertutup di tengah jalan
+
+Variabel di atas hanya bertahan selama sesi Cloud Shell terbuka. Cloud Shell menutup sesinya sendiri setelah menganggur sekitar dua puluh menit, sedangkan pelatihan ini berlangsung berjam-jam.
+
+Gejalanya, perintah berhenti dengan **tanda kurung siku kosong**, atau alamat yang kehilangan salah satu bagiannya:
+
+```text
+ERROR: (gcloud.compute.instances.describe) could not parse resource []
+http:///geoserver/web
+```
+
+Itu hampir selalu berarti variabel shell kosong, bukan VM atau project Anda yang bermasalah. Periksa dengan:
+
+```bash
+echo "PROJECT_ID=$PROJECT_ID  VM_NAME=$VM_NAME  ZONE=$ZONE"
+```
+
+Bila ada yang kosong, jalankan ulang blok Tahap 2.
 
 ### Tahap 3. Periksa API yang dibutuhkan
 
@@ -895,32 +729,28 @@ git log --oneline -1
 
 Dijalankan di: Terminal VM
 
-#### Cara cepat: salin isi `.env` dari laptop
+Berkas `.env` di laptop sudah terisi lengkap. Mengisinya ulang dari nol di VM hanya membuang waktu, karena hanya **lima baris** yang berbeda. Cara ini tidak memerlukan gcloud CLI di laptop.
 
-Berkas `.env` di laptop Anda sudah terisi lengkap, 195 baris. Mengisinya ulang dari nol di VM hanya membuang waktu, karena hanya **lima baris** yang berbeda.
-
-Cara ini **tidak memerlukan gcloud CLI di laptop**. Anda hanya menyalin isi berkas.
-
-**Langkah 1.** Di terminal VM, siapkan penerimanya:
+**1.** Di terminal VM, siapkan penerimanya:
 
 ```bash
 cd /opt/webgis/app
 cat > .env << 'ENVEOF'
 ```
 
-Perintah itu menunggu masukan. Kursor akan turun ke baris baru tanpa menampilkan apa pun.
+Perintah itu menunggu masukan. Kursor turun ke baris baru tanpa menampilkan apa pun.
 
-**Langkah 2.** Buka `.env` di laptop, pilih seluruh isinya, lalu tempel ke terminal VM.
+**2.** Buka `.env` di laptop, pilih seluruh isinya, lalu tempel ke terminal VM.
 
-**Langkah 3.** Setelah semua baris tertempel, ketik penutupnya pada baris tersendiri, lalu tekan Enter:
+**3.** Ketik penutupnya pada baris tersendiri, lalu tekan Enter:
 
 ```text
 ENVEOF
 ```
 
-Tanda kutip pada `'ENVEOF'` wajib. Tanpa kutip, shell akan mencoba menerjemahkan isi berkas, sehingga karakter seperti `$` berubah sebelum tersimpan.
+Tanda kutip pada `'ENVEOF'` wajib. Tanpa kutip, shell menerjemahkan isi berkas, sehingga karakter seperti `$` berubah sebelum tersimpan.
 
-**Langkah 4.** Ubah kelima baris yang berbeda. Ganti `IP_EKSTERNAL_VM` dengan alamat dari Tahap 9:
+**4.** Ubah kelima baris yang berbeda. Ganti `IP_EKSTERNAL_VM` dengan alamat dari Tahap 9:
 
 ```bash
 IP="IP_EKSTERNAL_VM"
@@ -938,50 +768,31 @@ grep -E '^(NEXTAUTH_URL|BASE_URL|NEXT_PUBLIC_URL_BASE_PATH|GEOSERVER_PUBLIC_URL|
 
 Kelima baris terakhir harus menampilkan alamat IP VM, bukan `localhost`.
 
-**Langkah 5.** Periksa jumlah barisnya. Harus 195, sama seperti di laptop:
+**5.** Periksa tidak ada nilai yang kosong:
 
 ```bash
-wc -l .env
+for v in DATABASE_URL JWT_SECRET NEXTAUTH_SECRET ADMIN_CONTACT_EMAIL \
+         GEOSERVER_ADMIN_PASSWORD GEOSERVER_PASSWORD POSTGIS_HOST \
+         POSTGIS_USER POSTGIS_PASSWORD GEOSERVER_PUBLIC_URL GEOSERVER_POSTGIS_DATASTORE; do
+  grep -qE "^$v=." .env || echo "MASIH KOSONG: $v"
+done
 ```
 
-Bila jumlahnya jauh lebih sedikit, penempelannya terputus. Ulangi dari Langkah 1.
+Tidak ada keluaran berarti semuanya sudah terisi. Bila ada nama yang muncul, isi dulu sebelum lanjut.
 
-::: tip Cara lain bila penempelan terlalu panjang
-Unggah berkas `.env` ke Cloud Shell lewat tombol **Upload** pada menu di kanan atas, lalu kirim ke VM dari sana:
+::: tip Bila penempelan terlalu panjang
+Unggah berkas `.env` ke Cloud Shell lewat tombol **Upload** di kanan atas, lalu kirim ke VM:
 
 ```bash
-gcloud compute scp .env "$VM_NAME:/opt/webgis/app/.env" \
-  --zone="$ZONE" \
-  --tunnel-through-iap
+gcloud compute scp .env "$VM_NAME:/opt/webgis/app/.env" --zone="$ZONE" --tunnel-through-iap
 ```
 
-Cara ini memakai Cloud Shell, tempat `VM_NAME` dan `ZONE` sudah tersedia, sehingga tidak perlu memasang gcloud di laptop.
+Untuk memeriksa nilai satu per satu setelahnya, buka `nano /opt/webgis/app/.env`.
 :::
 
-Bila memakai salah satu cara di atas, **lewati** tabel "Nilai yang sudah Anda siapkan di laptop", karena semuanya sudah ikut tersalin.
+#### Alamat yang berubah di VM
 
-#### Cara manual: sunting dengan nano
-
-Bila Anda ingin memeriksa setiap nilai satu per satu, buka berkasnya:
-
-```bash
-nano /opt/webgis/app/.env
-```
-
-#### Nilai yang sudah Anda siapkan di laptop
-
-Empat nilai berikut sudah Anda buat pada [Prasyarat bagian 3](#_3-berkas-env-sudah-terisi). Pakai nilai yang sama, jangan membuat yang baru.
-
-| Variabel | Nilai |
-|---|---|
-| `DATABASE_URL` | Connection string Supabase, Session pooler port 5432. **Jangan dikosongkan.** |
-| `JWT_SECRET` | Hasil perintah acak yang pertama |
-| `NEXTAUTH_SECRET` | Hasil perintah acak yang kedua |
-| `ADMIN_CONTACT_EMAIL` | Email Anda sendiri |
-
-#### Nilai yang berubah karena sekarang di VM
-
-Empat nilai berikut berbeda dari yang di laptop, karena alamat aplikasinya dan alamat GeoServer sudah berganti.
+Empat nilai berikut berbeda dari yang di laptop, karena alamat aplikasi dan alamat GeoServer sudah berganti.
 
 | Variabel | Nilai |
 |---|---|
@@ -990,65 +801,36 @@ Empat nilai berikut berbeda dari yang di laptop, karena alamat aplikasinya dan a
 | `NEXT_PUBLIC_URL_BASE_PATH` | `http://IP_EKSTERNAL_VM/portal` |
 | `GEOSERVER_PUBLIC_URL` | `http://IP_EKSTERNAL_VM/geoserver`, tanpa slash di akhir |
 
+Slash di akhir membuat alamat tidak cocok dengan `basePath` pada `next.config.mjs`, dan gejalanya login berhasil di API tetapi gagal di browser.
+
 `GEOSERVER_PUBLIC_URL` adalah alamat GeoServer yang dapat dijangkau dari browser Anda. Nilai itu disimpan ke kolom `wms_url` dan `wfs_url` pada katalog, dan dipakai Anda untuk membuka layer di QGIS atau aplikasi lain. Nginx sudah mem-proxy `/geoserver/`, sehingga port 8080 tidak perlu dibuka.
 
 `GEOSERVER_URL` **tidak diubah**, tetap `http://geoserver:8080/geoserver`, karena variabel itu dipakai aplikasi untuk memanggil GeoServer dari dalam jaringan Docker.
 
-Ketiganya memakai bentuk yang sama, yaitu alamat IP eksternal VM diikuti `/portal`, tanpa slash di akhir. Ganti `IP_EKSTERNAL_VM` dengan alamat dari Tahap 9.
-
-Slash di akhir membuat alamat tidak cocok dengan `basePath` pada `next.config.mjs`, dan gejalanya adalah login yang berhasil di API tetapi gagal di browser.
+Empat nilai yang sudah Anda siapkan di laptop dipakai apa adanya: `DATABASE_URL`, `JWT_SECRET`, `NEXTAUTH_SECRET`, dan `ADMIN_CONTACT_EMAIL`.
 
 #### Kata sandi untuk GeoServer
 
-Buat kata sandi GeoServer di sini, karena GeoServer baru berjalan di VM.
-
-::: tip Bila .env disalin dari laptop, langkah ini boleh dilewati
-Berkas `.env` di laptop sudah memuat `GEOSERVER_ADMIN_PASSWORD` dan
-`GEOSERVER_PASSWORD`, dan keduanya sudah bernilai sama. Periksa lebih dahulu:
+Bila `.env` disalin dari laptop, `GEOSERVER_ADMIN_PASSWORD` dan `GEOSERVER_PASSWORD` sudah terisi dan sudah sama. Periksa lebih dahulu:
 
 ```bash
 grep -E '^(GEOSERVER_ADMIN_PASSWORD|GEOSERVER_PASSWORD)=' .env
 ```
 
-Bila keduanya muncul dengan nilai yang sama persis, lewati bagian ini dan
-lanjutkan ke Tahap 19.
-:::
-
-Bila nilainya masih kosong, buat kata sandi baru:
+Bila keduanya masih kosong, buat kata sandi baru:
 
 ```bash
 GEOSERVER_PASSWORD="$(openssl rand -hex 16)"
 echo "$GEOSERVER_PASSWORD"
 ```
 
-Hasilnya 32 karakter heksadesimal, misalnya `950fde2bdd9c36f81316a2e416117195`.
-
-::: warning Jangan memakai node untuk perintah ini
-Versi sebelumnya memakai `node -e "require('crypto')..."`. Perintah itu **gagal
-di VM**, karena Node.js tidak dipasang di sana. Tahap 11 hanya memasang Docker,
-Git, dan Google Cloud CLI.
-
-Gejalanya:
-
-```text
-Command 'node' not found, but can be installed with:
-apt install nodejs
-```
-
-`openssl` sudah tersedia di Ubuntu, dan keluarannya sama bentuknya: 32 karakter
-heksadesimal.
-:::
-
-Simpan hasilnya, lalu isi dua baris berikut dengan nilai yang sama:
-
-| Variabel | Nilai |
-|---|---|
-| `GEOSERVER_ADMIN_PASSWORD` | Hasil perintah di atas |
-| `GEOSERVER_PASSWORD` | Nilai yang sama persis |
+Hasilnya 32 karakter heksadesimal, misalnya `950fde2bdd9c36f81316a2e416117195`. Isi kedua baris dengan nilai yang sama.
 
 Keduanya harus sama, karena satu dipakai container GeoServer untuk membuat akun admin, dan satu lagi dipakai aplikasi untuk login ke REST API GeoServer. Bila berbeda, unggahan layer gagal dengan pesan kosong.
 
-Hasilnya hanya berisi huruf dan angka, sehingga aman dari masalah tanda dolar yang dibaca compose sebagai awal nama variabel. Perintah ini dijalankan di VM yang berbasis Linux, sehingga `openssl` selalu tersedia.
+::: warning Jangan memakai node untuk perintah ini
+`node` tidak dipasang di VM. Tahap 11 hanya memasang Docker, Git, dan Google Cloud CLI, sehingga perintah itu berhenti dengan `Command 'node' not found`. `openssl` sudah tersedia di Ubuntu dan keluarannya sama bentuknya.
+:::
 
 #### Nilai yang dibiarkan apa adanya
 

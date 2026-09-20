@@ -4,14 +4,9 @@ const hari = (text, link, items) => ({ text, link, collapsed: true, items })
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  ignoreDeadLinks: [
-    /^https?:\/\/localhost/,
-    // Berkas pendukung yang bisa diunduh (docker-compose.yml, nginx.conf,
-    // env.example) berada di folder gambar halaman. VitePress menyajikannya
-    // sebagai aset statis, bukan sebagai halaman, sehingga pemeriksa tautan
-    // mati perlu dikecualikan untuk berkas jenis ini.
-    /\/(docker-compose\.yml|nginx\.conf|env\.example)$/
-  ],
+  // Tautan ke localhost hanya muncul sebagai contoh di dalam blok kode, yang
+  // tetap diperiksa pemeriksa tautan VitePress.
+  ignoreDeadLinks: [/^https?:\/\/localhost/],
   base: '/Pelatihan-WebGIS-BIG/',
   title: "Pelatihan WebGIS Tingkat Dasar Hingga Lanjutan - BIG & Arkabumi",
   head: [

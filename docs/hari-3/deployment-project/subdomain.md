@@ -323,9 +323,8 @@ ssl_certificate_key /etc/letsencrypt/live/nama01.webgisbig.com/privkey.pem;
 ssl_protocols       TLSv1.2 TLSv1.3;
 ssl_prefer_server_ciphers off;
 
-# Alihkan seluruh permintaan HTTP ke HTTPS, KECUALI jalur verifikasi
-# Let's Encrypt. Jalur itu harus tetap dapat diakses lewat HTTP, karena
-# pemeriksaan perpanjangan sertifikat selalu memakai HTTP.
+# Alihkan HTTP ke HTTPS, kecuali jalur verifikasi Let's Encrypt yang selalu
+# diperiksa lewat HTTP saat perpanjangan sertifikat.
 set $alihkan "0";
 if ($scheme = http) {
     set $alihkan "1";
@@ -337,16 +336,11 @@ if ($alihkan = "1") {
     return 301 https://$host$request_uri;
 }
 
-# GeoServer membangun alamat pengalihannya dari skema permintaan yang diterimanya.
-# Nginx meneruskan permintaan ke GeoServer lewat HTTP di dalam jaringan Docker,
-# sehingga GeoServer selalu menulis http:// walaupun permintaan aslinya https.
-# Tanpa baris ini, kedua pengalihan berputar tanpa henti dan halaman admin
-# GeoServer tidak dapat dibuka.
-#
-# Baris ini diletakkan di berkas ini, bukan di nginx.conf, supaya hanya berlaku
-# setelah HTTPS dipasang. Bila diletakkan di nginx.conf, pengalihan GeoServer
-# ikut diubah menjadi https pada fase sebelum HTTPS, ketika port 443 belum ada
-# yang mendengarkan, sehingga GeoServer tidak dapat dibuka sama sekali.
+# GeoServer menulis alamat pengalihannya dari skema yang diterimanya, sedangkan
+# Nginx meneruskan permintaan lewat HTTP di dalam jaringan Docker. Tanpa baris
+# ini kedua pengalihan berputar tanpa henti dan halaman admin GeoServer tidak
+# dapat dibuka. Ditaruh di berkas ini, bukan di nginx.conf, supaya hanya berlaku
+# setelah port 443 ada yang mendengarkan.
 proxy_redirect ~^http://([^/]+)/(.*)$ https://$1/$2;
 NGINXEOF
 ```
