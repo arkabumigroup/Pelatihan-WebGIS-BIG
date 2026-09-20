@@ -15,7 +15,7 @@ Halaman terakhir Deployment Project. Setelah selesai, setiap push ke branch `mai
 
 Dijalankan di: Terminal Laptop
 
-Berkas `Dockerfile` dan `.dockerignore` ada di fork Anda, di root repositori, karena keduanya ikut ketika Anda mem-fork repositori instruktur. Bila ternyata belum ada, salin keduanya dari repositori pembanding pada bagian [Repositori yang Dipakai](#repositori-yang-dipakai).
+Berkas `Dockerfile` dan `.dockerignore` ada di fork Anda, di root repositori, karena keduanya ikut ketika Anda mem-fork repositori instruktur. Bila ternyata belum ada, salin keduanya dari repositori sumber pada halaman [Persiapan Repositori](/hari-3/deployment-project/persiapan-repositori#repositori-yang-dipakai).
 
 Selanjutnya periksa `next.config.mjs`. Dua baris berikut wajib ada, dan keduanya bukan tambahan yang opsional:
 

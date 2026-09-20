@@ -91,15 +91,15 @@
     
 ![](konfigurasi-framework/image10.png)
     
-4. Setelah selesai pembuatan repository barunya selanjutnya untuk melakukan unggah project yang telah dirancang sebelumnya mengikuti perintah yang ada pada github.
+4. Setelah repositori baru dibuat, halaman berikutnya menampilkan beberapa perintah pengunggahan. Perintah itu **tidak perlu disalin**, karena pengunggahan dikerjakan lewat GitHub Desktop.
     
 ![](konfigurasi-framework/image7.png)
     
-5. Selanjutnya untuk mengunggah project yang kita miliki berdasarkan perintah yang sudah ada pada github dilakukan dengan cara **klik kanan** pada folder project, klik **show more option** lalu klik **gitbash**.
-    
+5. Buka GitHub Desktop, lalu pilih **File > Add local repository**. Arahkan ke folder proyek Anda, kemudian klik **Add repository**.
+
 ![](konfigurasi-framework/image4.png)
     
-6. Pada tampilan gitbash, input perintah-perintah yang telah ada sebelumnya pada poin nomor 4 dengan menyalinnya dari github.
+6. GitHub Desktop akan menawarkan **create a repository** bila foldernya belum terlacak. Ikuti tawaran itu, lalu klik **Publish repository** pada bilah atas. Hilangkan centang **Keep this code private** bila repositori ingin dibuka untuk umum.
 7. Hasil dari project yang telah diunggah pada github maka hasilnya akan menjadi seperti berikut.
     
 ![](konfigurasi-framework/image13.png)
