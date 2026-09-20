@@ -491,17 +491,37 @@ WHERE n.nspname = 'public'
 GROUP BY c.relname ORDER BY c.relname;
 
 -- ---------------------------------------------------------------------
--- 3. Kolom mana yang belum NOT NULL
+-- 3. Kolom wajib yang belum NOT NULL
 --
--- Harapan: hasilnya kosong. Kolom yang muncul di sini belum dikunci,
--- sehingga NULL bisa masuk.
+-- Harapan: hasilnya kosong.
+--
+-- PENTING: tidak semua kolom harus NOT NULL. Sebagian memang sengaja dibiarkan
+-- boleh kosong, karena nilainya baru terisi setelah proses berjalan:
+--
+--   katalog_data_2d.wms_url, wfs_url   diisi setelah layer terbit ke GeoServer
+--   katalog_data_2d.author             boleh kosong untuk data hasil impor
+--   katalog_data_3d.url                diisi setelah berkas model tersimpan
+--   katalog_data_3d.latitude, longitude, heading, pitch, roll, scale
+--                                      diisi saat model ditempatkan di peta
+--   katalog_data_3d.author             boleh kosong untuk data hasil impor
+--
+-- Karena itu pemeriksaan di bawah hanya menyebut kolom yang MEMANG wajib.
+-- Query yang menyaring seluruh kolom is_nullable = 'YES' akan selalu berisi,
+-- walaupun skemanya sudah benar.
 -- ---------------------------------------------------------------------
-SELECT '3. Kolom yang belum NOT NULL (harus kosong)' AS bagian;
-SELECT table_name, column_name, is_nullable
+SELECT '3. Kolom wajib yang belum NOT NULL (harus kosong)' AS bagian;
+SELECT table_name, column_name
 FROM information_schema.columns
 WHERE table_schema = 'public'
-  AND table_name IN ('users', 'katalog_data_2d', 'katalog_data_3d')
   AND is_nullable = 'YES'
+  AND (table_name, column_name) IN (
+      ('users', 'nama'), ('users', 'email'), ('users', 'password'),
+      ('users', 'role'), ('users', 'is_active'), ('users', 'created_at'),
+      ('katalog_data_2d', 'layer_name'), ('katalog_data_2d', 'akses'),
+      ('katalog_data_2d', 'is_editable'),
+      ('katalog_data_3d', 'nama'), ('katalog_data_3d', 'akses'),
+      ('katalog_data_3d', 'tipe_file')
+  )
 ORDER BY table_name, column_name;
 
 -- ---------------------------------------------------------------------
@@ -537,6 +557,22 @@ ORDER BY s.tabel, s.nama;
 -- Bila bagian 4 berisi baris, jalankan sql/01-schema.sql. Berkas
 -- itu aman dijalankan berulang dan hanya menambahkan yang belum ada.
 ```
+
+## Kolom yang sengaja boleh kosong
+
+Bagian 3 pada berkas di atas memeriksa kolom wajib saja. Itu disengaja.
+
+Sebagian kolom **memang dibiarkan boleh kosong**, karena nilainya baru terisi setelah proses berjalan:
+
+| Kolom | Kapan terisi |
+|---|---|
+| `katalog_data_2d.wms_url`, `wfs_url` | Setelah layer terbit ke GeoServer |
+| `katalog_data_2d.author` | Boleh kosong untuk data hasil impor |
+| `katalog_data_3d.url` | Setelah berkas model tersimpan |
+| `katalog_data_3d.latitude`, `longitude`, `heading`, `pitch`, `roll`, `scale` | Saat model ditempatkan di peta |
+| `katalog_data_3d.author` | Boleh kosong untuk data hasil impor |
+
+Query yang menyaring seluruh kolom `is_nullable = 'YES'` akan **selalu berisi** walaupun skemanya sudah benar. Diuji pada Supabase dengan skema yang benar, query semacam itu mengembalikan **sebelas baris** — dan itu bukan tanda ada yang salah.
 
 ## Row Level Security
 
