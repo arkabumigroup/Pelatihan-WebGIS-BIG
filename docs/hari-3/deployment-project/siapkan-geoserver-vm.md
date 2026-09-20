@@ -11,7 +11,7 @@ Tanpa halaman ini, unggahan layer gagal dengan pesan yang tidak menunjuk penyeba
 - Schema `gis` sudah dibuat pada database yang sama
 - Variabel `PROJECT_ID`, `VM_NAME`, `ZONE`, dan `SUBDOMAIN` masih tersedia di Cloud Shell
 
-Bila Cloud Shell sudah berganti, jalankan ulang blok **Tahap 2** pada halaman [Google Cloud Platform](/hari-3/deployment-project/google-cloud-platform) lebih dahulu.
+Bila Cloud Shell sudah berganti, jalankan ulang blok **Tahap 2** pada halaman [Persiapan Repositori dan Identitas](/hari-3/deployment-project/persiapan-repositori) lebih dahulu.
 
 ## Tahap 1. Pastikan PostGIS dan schema gis ada
 

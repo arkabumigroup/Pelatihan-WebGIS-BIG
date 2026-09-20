@@ -1,12 +1,12 @@
 # Penambahan Subdomain
 
-Halaman ini melanjutkan [Google Cloud Platform](/hari-3/deployment-project/google-cloud-platform). Setelah tahap ini selesai, Geoportal dapat dibuka melalui `https://nama01.webgisbig.com/portal` dengan sertifikat yang dipercaya browser, bukan lagi melalui alamat IP.
+Halaman ini melanjutkan [Otomatisasi Cloud Build](/hari-3/deployment-project/cloud-build). Setelah tahap ini selesai, Geoportal dapat dibuka melalui `https://nama01.webgisbig.com/portal` dengan sertifikat yang dipercaya browser, bukan lagi melalui alamat IP.
 
 Urutannya penting: record DNS harus sudah mengarah ke VM sebelum Certbot dijalankan. Let's Encrypt memverifikasi kepemilikan domain dengan mengakses alamat tersebut dari internet, sehingga sertifikat tidak akan terbit selama alamatnya belum bisa dijangkau.
 
 ## Prasyarat
 
-- Bagian A sampai D pada halaman [Google Cloud Platform](/hari-3/deployment-project/google-cloud-platform) sudah selesai, dan variabel `PROJECT_ID`, `ZONE`, `VM_NAME`, serta `SUBDOMAIN` masih tersedia di Cloud Shell.
+- Seluruh tahap pada halaman [Persiapan Repositori dan Identitas](/hari-3/deployment-project/persiapan-repositori), [Menyiapkan Project dan VM](/hari-3/deployment-project/google-cloud-platform), [Menyiapkan Aplikasi di VM](/hari-3/deployment-project/aplikasi-di-vm), dan [Otomatisasi Cloud Build](/hari-3/deployment-project/cloud-build) sudah selesai, dan variabel `PROJECT_ID`, `ZONE`, `VM_NAME`, serta `SUBDOMAIN` masih tersedia di Cloud Shell.
 - Bila sesi Cloud Shell sudah berganti, jalankan kembali blok Tahap 2 halaman sebelumnya lebih dahulu.
 - Subdomain sudah ditetapkan penyelenggara. Pola yang dipakai adalah `<nama-peserta>.webgisbig.com`, memakai nilai dari kolom Nama Peserta pada tabel peserta.
 - Record DNS ditambahkan penyelenggara. Siapkan subdomain dan alamat IP statis VM untuk dilaporkan pada Tahap 3.
@@ -425,7 +425,7 @@ Opsi `--dry-run` menguji seluruh proses perpanjangan tanpa memakai kuota penerbi
 
 Dijalankan di: Terminal VM
 
-Setelah HTTPS aktif, **empat** variabel pada `.env` harus ikut berubah. Perhatikan: Tahap 18 pada halaman [Google Cloud Platform](/hari-3/deployment-project/google-cloud-platform) menyetel keempatnya ke alamat IP. Tahap ini menggantinya ke alamat HTTPS.
+Setelah HTTPS aktif, **empat** variabel pada `.env` harus ikut berubah. Perhatikan: Tahap 18 pada halaman [Menyiapkan Aplikasi di VM](/hari-3/deployment-project/aplikasi-di-vm) menyetel keempatnya ke alamat IP. Tahap ini menggantinya ke alamat HTTPS.
 
 Masuk ke VM:
 

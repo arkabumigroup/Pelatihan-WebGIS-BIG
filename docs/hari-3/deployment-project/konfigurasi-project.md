@@ -71,7 +71,7 @@ Empat berkas ini tidak perlu diubah. Alasan tiap baris ada di kolom terakhir, su
 | `cloudbuild.yaml` | Tidak | Seluruh nilai yang berbeda antar peserta diisi sebagai substitution variable pada trigger Cloud Build, bukan di berkas ini |
 | `.env.example` | Tidak | Berkas contoh. Yang diisi adalah `.env`, dan itu dibuat di VM |
 
-Yang memang harus berbeda antar peserta, yaitu nama VM, nama image, dan subdomain, diatur pada trigger Cloud Build. Caranya ada di halaman [Google Cloud Platform](/hari-3/deployment-project/google-cloud-platform).
+Yang memang harus berbeda antar peserta, yaitu nama VM, nama image, dan subdomain, diatur pada trigger Cloud Build. Caranya ada di halaman [Otomatisasi Cloud Build](/hari-3/deployment-project/cloud-build).
 
 ## Tahap 2. Siapkan database Supabase
 
@@ -320,7 +320,7 @@ openssl rand -hex 32
 node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 ```
 
-`NEXTAUTH_URL` diisi `localhost` untuk sekarang, dan diubah menjadi alamat VM nanti pada [Tahap 18 halaman Google Cloud Platform](/hari-3/deployment-project/google-cloud-platform#tahap-18-isi-berkas-env).
+`NEXTAUTH_URL` diisi `localhost` untuk sekarang, dan diubah menjadi alamat VM nanti pada [Tahap 18 halaman Menyiapkan Aplikasi di VM](/hari-3/deployment-project/aplikasi-di-vm#tahap-18-isi-berkas-env).
 
 ### Catatan tentang DATABASE_URL
 
@@ -346,7 +346,7 @@ Halaman connection string Supabase juga menampilkan `DIRECT_URL`. Untuk aplikasi
 
 ### Bagian DATA SPASIAL
 
-**Di laptop, biarkan bagian ini kosong.** Seluruh variabel `POSTGIS_*` dan `GEOSERVER_*` diisi nanti di VM, pada [Tahap 18 halaman Google Cloud Platform](/hari-3/deployment-project/google-cloud-platform#tahap-18-isi-berkas-env).
+**Di laptop, biarkan bagian ini kosong.** Seluruh variabel `POSTGIS_*` dan `GEOSERVER_*` diisi nanti di VM, pada [Tahap 18 halaman Menyiapkan Aplikasi di VM](/hari-3/deployment-project/aplikasi-di-vm#tahap-18-isi-berkas-env).
 
 Alasannya, GeoServer berjalan di dalam VM lewat `docker-compose.yml`, bukan di laptop Anda. Mengisi alamat `localhost:8080` sekarang berarti menunjuk ke sesuatu yang belum ada.
 
