@@ -296,6 +296,8 @@ Seluruhnya sudah diperbaiki pada panduan. Bagian ini dicatat karena dua alasan: 
 | 36 | Instruktur menambahkan `URL_BASE_PATH` dan `CESIUM_ION_TOKEN` pada `.env` lokalnya | Namanya berbeda dari repositori kita, yang memakai awalan `NEXT_PUBLIC_`. Dua berkas ini tidak boleh saling ditukar |
 | 37 | Skrip cadangan Tahap 3b menambat pada baris `GEOSERVER_CORS_ALLOWED_ORIGINS`, yang sudah dihapus saat temuan 22 diperbaiki | Skrip berhenti dengan `StopIteration`, sehingga peserta yang membutuhkannya tidak punya jalan keluar. Blok itu juga mengubah `docker-compose.yml` langsung di VM, dan salinan git yang kotor membuat `git pull --ff-only` pada halaman Penambahan Subdomain menolak berjalan |
 | 38 | `nginx.conf` tidak menyetel `client_max_body_size`, sehingga batas unggahannya 1 MB bawaan Nginx | Setiap unggahan model 3D di atas 1 MB ditolak dengan halaman HTML `413`, dan aplikasi melaporkannya sebagai `Unexpected token '<' ... is not valid JSON`. Pesannya tidak menyebut ukuran berkas sama sekali. Katalog 2D terkena hal yang sama, karena berkas GeoJSON melewati jalur yang sama |
+| 39 | Pratinjau Gaussian Splat tidak membingkai kamera, sedangkan nilai `scale` bawaannya 100 | Seluruh model jatuh di luar bidang jauh kamera, sehingga pratinjau tampil kosong tanpa pesan galat. Model yang berhasil diunggah tampak gagal. Diukur pada berkas 58 MB berisi 245.407 splat: 0 dari 480.000 piksel tergambar pada scale 100 |
+| 40 | Unggahan model 3D dan pemuatan pratinjaunya tidak memberi tanda kemajuan apa pun | Model berukuran puluhan megabita butuh menit untuk diunggah, dan selama itu tombolnya tampak tidak bekerja. Peserta mengkliknya berulang kali. Pustaka penampilnya sudah menyediakan `onProgress`, tetapi tidak dipakai, dan UI bawaannya justru dimatikan |
 
 
 ### Temuan dari pengujian alur 3D
@@ -421,6 +423,8 @@ Dua catatan dari pengujian ini.
 **Satu keberhasilan pada tabel di atas ternyata menyesatkan.** Baris unggah `.ply` ditulis berhasil, dan memang berhasil, tetapi pengujiannya dijalankan langsung ke aplikasi tanpa Nginx di depannya. Batas unggahan 1 MB itu milik Nginx, jadi pengujian itu tidak pernah menyentuhnya. Akibatnya temuan 38 baru muncul dari peserta yang melaporkannya di situs yang sudah jalan, pada berkas pertama yang ukurannya wajar.
 
 Bedanya gampang diperiksa: pengujian memakai port aplikasi, sedangkan peserta memakai `https://SUBDOMAIN/portal` yang melewati Nginx. Untuk pekerjaan berikutnya, setiap pengujian unggah harus lewat Nginx.
+
+**Pratinjau `.ply` tidak pernah dibuka sama sekali.** Pengujian mencatat unggah `.ply` berhasil dan daftar publiknya terpisah dengan benar, tetapi penampilnya tidak pernah dijalankan. Padahal di situlah temuan 39 dan 40 berada. Unggahan yang berhasil bukan bukti bahwa hasilnya dapat dilihat.
 
 ### Pengujian alur deployment ujung ke ujung
 
