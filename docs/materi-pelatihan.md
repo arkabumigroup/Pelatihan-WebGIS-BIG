@@ -1,3 +1,5 @@
+<div class="latar-peta" aria-hidden="true"></div>
+
 # Materi Pelatihan WebGIS
 
 Materi ini disusun sebagai panduan belajar WebGIS (Web Geographic Information System) secara bertahap, dari tingkat dasar sampai lanjutan. Penyampaiannya menekankan praktik langsung, sehingga peserta dapat mengulang setiap tahap secara mandiri.

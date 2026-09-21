@@ -190,18 +190,36 @@ melalui `prefers-reduced-motion`.
 
 ---
 
-## Latar: kerangka bola di ruang gelap
+## Latar: tiga lapisan yang turun dari langit ke peta ke teks
 
 Halaman baca berdiri sebagai lembar kertas pekat di atas latar yang lebih
-gelap, sehingga terlihat melayang. Latarnya memuat tiga hal, dan ketiganya
-mempunyai alasan yang berasal dari isi pelatihan, bukan dari selera antariksa
-umum:
+gelap, sehingga terlihat melayang. Latarnya tidak sama di semua halaman,
+melainkan dibedakan menurut jenis halaman, dan pembedaannya mengikuti satu
+gerak: dari langit, ke peta, lalu ke teks.
 
-| Unsur | Alasan |
-|---|---|
-| Titik bintang | Pelatihan ini bekerja dengan citra satelit dan penginderaan jauh. Bintang mewakili sisi data yang datang dari atas |
-| Kerangka bola, berupa lingkaran dengan meridian dan paralel | Praktik 1 mengajarkan sistem koordinat dan bola bumi. Bentuknya sengaja bulat, bukan kisi persegi, karena kisi persegi hanya terbaca sebagai kertas grafik |
-| Cahaya nebula | Memberi kedalaman pada latar, supaya halaman bacanya terbaca berada di depan, bukan menempel pada satu bidang datar |
+| Halaman | Lapisan | Alasan |
+|---|---|---|
+| Beranda | Titik bintang, kerangka bola, dan cahaya nebula | Tempat pelatihan ini berdiri: citra satelit yang datang dari atas, dan bola bumi yang koordinatnya diajarkan pada Praktik 1 |
+| Daftar materi | Garis batas administrasi Jakarta | Halaman ini memang peta isi pelatihan, jadi latarnya adalah peta |
+| Halaman praktik | Paling tenang: bintangnya diredupkan, tanpa bola dan tanpa peta | Yang dibaca di sini adalah perintah. Latar tidak boleh berlomba dengan teks |
+
+Pembedaan ini menjawab dua hal sekaligus. Beranda menjadi terasa tersendiri
+karena lapisan penuhnya hanya ada di sana, dan halaman praktik menjadi yang
+paling tenang justru di tempat yang paling perlu tenang.
+
+**Bentuk batas administrasinya bukan gambar tangan.** Berkasnya adalah
+`batas_admin.geojson` dari folder latihan peserta sendiri, yaitu data yang
+mereka pakai pada Praktik 1 dan Praktik 3. Berisi empat wilayah DKI Jakarta
+dengan 578 titik, disederhanakan menjadi 359 titik. Memakai geometri yang
+nyata membuat situs ini tidak mungkin tertukar dengan templat umum, dan
+asalnya dapat ditelusuri.
+
+Garis kontur sempat dipertimbangkan karena lebih khas peta topografi, lalu
+tidak dipakai: kontur yang digambar sendiri adalah bentuk terrain karangan,
+sedangkan batas administrasi ini nyata dan berasal dari kelas itu sendiri.
+
+Kerangka bola sengaja berbentuk bulat, bukan kisi persegi, karena kisi persegi
+hanya terbaca sebagai kertas grafik.
 
 Warnanya tetap tiga warna logo: navy dan biru langit untuk cahayanya, oranye
 dipakai sangat sedikit pada satu sudut.
