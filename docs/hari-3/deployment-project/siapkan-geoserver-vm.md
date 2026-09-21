@@ -148,11 +148,13 @@ HTTP Status 400 - Bad Request
 Message: Origin does not correspond to request
 ```
 
-Perbaikannya adalah menambahkan satu variabel pada service `geoserver` di `docker-compose.yml`:
+Perbaikannya adalah satu variabel pada service `geoserver` di `docker-compose.yml`:
 
 ```yaml
 - GEOSERVER_CSRF_WHITELIST=webgisbig.com
 ```
+
+**Baris itu sudah ada di berkas yang Anda clone**, karena ikut ketika Anda mem-fork repositori peserta. Jadi yang perlu Anda lakukan hanya memastikan barisnya ada, bukan menambahkannya.
 
 Nilai itu mencakup seluruh subdomain `webgisbig.com`, sehingga satu baris berlaku untuk semua peserta. Diuji pada GeoServer 2.24.1:
 
@@ -163,11 +165,23 @@ Nilai itu mencakup seluruh subdomain `webgisbig.com`, sehingga satu baris berlak
 | `https://webgisbig.com` | diterima |
 | `https://jahat.com` | ditolak, `400` |
 
-Menerapkannya:
+Periksa dengan perintah ini:
 
 ```bash
 cd /opt/webgis/app
-cp docker-compose.yml docker-compose.yml.bak
+grep -n 'GEOSERVER_CSRF_WHITELIST' docker-compose.yml
+```
+
+Keluarannya harus menunjukkan baris itu berada di dalam blok `environment:` milik service `geoserver`, seperti ini:
+
+```yaml
+      - GEOSERVER_CSRF_WHITELIST=webgisbig.com
+```
+
+Bila baris itu **tidak muncul**, tambahkan dengan blok berikut. Blok ini menyisipkannya tepat di bawah `GEOSERVER_CORS_ALLOWED_ORIGINS`, sehingga induknya dipastikan benar:
+
+```bash
+cd /opt/webgis/app
 python3 - <<'PY2'
 p = 'docker-compose.yml'
 baris = open(p).read().split('\n')
@@ -320,6 +334,8 @@ Yang diharapkan, pemiliknya bukan `root`:
 ```text
 drwxr-xr-x 2 1001 1001 4096 ... data
 ```
+
+Nama pemiliknya boleh tampil sebagai angka `1001`, atau sebagai nama grup yang kebetulan memakai angka itu di VM Anda. Yang penting **bukan `root`**, karena hanya pemiliknya yang dapat menulis ke folder itu.
 
 ::: warning Jangan memakai chown "$USER":"$USER" di sini
 Halaman Subdomain memakai `chown -R "$USER:$USER"` untuk folder `tls` dan `certbot-webroot`, dan itu benar karena kedua folder itu dibaca oleh proses nginx yang berjalan sebagai root.

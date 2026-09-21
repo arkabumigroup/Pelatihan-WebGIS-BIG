@@ -19,6 +19,15 @@ gcloud compute ssh "$VM_NAME" \
   --tunnel-through-iap
 ```
 
+::: tip Bila langsung gagal dengan "Failed to lookup instance"
+VM yang baru dibuat butuh sekitar satu menit sebelum dapat dijangkau IAP. Bila perintah di atas gagal dengan pesan berikut, tunggu sebentar lalu jalankan lagi. Tidak ada yang perlu diperbaiki.
+
+```text
+ConnectionCreationError: Error while connecting [4047: 'Failed to lookup instance'].
+```
+
+Perintah itu juga menawarkan `--troubleshoot`. Opsi itu tidak diperlukan untuk sebab ini.
+:::
 
 Setelah perintah ini berhasil, terminal yang Anda gunakan adalah terminal VM, bukan Cloud Shell. Seluruh tahap berikutnya di halaman ini dijalankan di sana.
 
@@ -518,7 +527,7 @@ docker compose up -d --no-deps geoserver nginx
 docker compose ps
 ```
 
-
+Kedua barisnya harus berstatus `Up`. GeoServer tetap menampilkan `Up` sejak awal, tetapi **layanannya baru siap sekitar satu menit kemudian**, karena proses Java di dalamnya masih memuat. Pada menit pertama, alamat `/geoserver/web` belum menjawab. Itu wajar dan bukan tanda gagal.
 
 ### Tahap 23. Keluar dari VM
 
