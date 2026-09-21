@@ -34,19 +34,13 @@ Material UI (MUI) adalah library komponen React siap pakai yang mengimplementasi
 
 ### Komponen Siap Pakai
 
-![Ikon komponen siap pakai](halaman-profil/image2.png)
-
 Ratusan komponen UI (Button, Card, Dialog, dan lainnya) tinggal diimpor.
 
 ### Desain Konsisten
 
-![Ikon desain yang konsisten](halaman-profil/image3.png)
-
 Komponen mengikuti standar Material Design.
 
 ### Dapat Dikustomisasi
-
-![Ikon kustomisasi lewat theme dan prop sx](halaman-profil/image4.png)
 
 Tampilan dapat diubah lewat theme maupun prop `sx`.
 
@@ -65,8 +59,6 @@ MUI dipasang sebagai package npm, lalu komponennya diimpor langsung ke dalam ber
 
 ### Memasang Package
 
-![Ikon instalasi package](halaman-profil/image5.png)
-
 Jalankan perintah berikut pada terminal di dalam folder proyek:
 
 ```bash
@@ -81,8 +73,6 @@ npm install @mui/material @emotion/react @emotion/styled @mui/icons-material
 
 ### Mengimpor Komponen
 
-![Ikon impor komponen](halaman-profil/image6.png)
-
 Komponen diimpor dari paketnya masing-masing:
 
 ```js
@@ -90,8 +80,6 @@ import Button from '@mui/material/Button';
 ```
 
 ### Memakai di JSX
-
-![Ikon pemakaian komponen di JSX](halaman-profil/image7.png)
 
 ```jsx
 <Button variant="contained">Klik</Button>
@@ -104,14 +92,14 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 
 function App() {
-  return (
-    <>
-      <TextField label="Nama" />
-      <Button variant="contained">
-        Kirim
-      </Button>
-    </>
-  );
+ return (
+ <>
+ <TextField label="Nama" />
+ <Button variant="contained">
+ Kirim
+ </Button>
+ </>
+ );
 }
 ```
 
@@ -121,18 +109,18 @@ MUI menyediakan ratusan komponen. Berikut beberapa yang paling sering digunakan.
 
 | Ikon | Komponen |
 |---|---|
-| ![Ikon komponen Button](halaman-profil/image8.png) | **Button**: tombol aksi (contained, outlined, text) |
-| ![Ikon komponen TextField](halaman-profil/image9.png) | **TextField**: input teks dengan label dan validasi |
-| ![Ikon komponen Card](halaman-profil/image10.png) | **Card**: wadah konten dengan bayangan dan padding |
-| ![Ikon komponen AppBar](halaman-profil/image11.png) | **AppBar**: bilah navigasi bagian atas halaman |
-| ![Ikon komponen Dialog](halaman-profil/image12.png) | **Dialog**: jendela modal untuk konfirmasi atau form |
-| ![Ikon komponen Grid](halaman-profil/image13.png) | **Grid**: sistem tata letak kolom responsif |
-| ![Ikon komponen Checkbox](halaman-profil/image14.png) | **Checkbox**: pilihan ya/tidak yang dapat dicentang |
-| ![Ikon komponen Switch](halaman-profil/image15.png) | **Switch**: tombol on/off bergaya geser |
-| ![Ikon komponen Avatar](halaman-profil/image16.png) | **Avatar**: menampilkan foto atau inisial pengguna |
-| ![Ikon komponen Table](halaman-profil/image17.png) | **Table**: menyajikan data dalam bentuk tabel |
-| ![Ikon komponen Snackbar](halaman-profil/image18.png) | **Snackbar**: notifikasi singkat di tepi layar |
-| ![Ikon komponen Slider](halaman-profil/image19.png) | **Slider**: memilih nilai dalam rentang tertentu |
+| | **Button**: tombol aksi (contained, outlined, text) |
+| | **TextField**: input teks dengan label dan validasi |
+| | **Card**: wadah konten dengan bayangan dan padding |
+| | **AppBar**: bilah navigasi bagian atas halaman |
+| | **Dialog**: jendela modal untuk konfirmasi atau form |
+| | **Grid**: sistem tata letak kolom responsif |
+| | **Checkbox**: pilihan ya/tidak yang dapat dicentang |
+| | **Switch**: tombol on/off bergaya geser |
+| | **Avatar**: menampilkan foto atau inisial pengguna |
+| | **Table**: menyajikan data dalam bentuk tabel |
+| | **Snackbar**: notifikasi singkat di tepi layar |
+| | **Slider**: memilih nilai dalam rentang tertentu |
 
 ## Props pada Komponen
 
@@ -140,19 +128,13 @@ Setiap komponen menerima props untuk mengatur tampilan dan perilakunya.
 
 ### variant
 
-![Ikon prop variant](halaman-profil/image20.png)
-
 Mengatur gaya visual, contoh: "contained", "outlined", "text".
 
 ### color
 
-![Ikon prop color](halaman-profil/image21.png)
-
 Mengatur warna tema, contoh: "primary", "secondary", "error".
 
 ### size & fullWidth
-
-![Ikon prop size dan fullWidth](halaman-profil/image22.png)
 
 Mengatur ukuran komponen: "small", "medium", "large".
 
@@ -160,17 +142,17 @@ Berkas `Form.jsx`:
 
 ```jsx
 <TextField
-  label="Email"
-  variant="outlined"
-  fullWidth
+ label="Email"
+ variant="outlined"
+ fullWidth
 />
 
 <Button
-  variant="contained"
-  color="primary"
-  size="large"
+ variant="contained"
+ color="primary"
+ size="large"
 >
-  Daftar Sekarang
+ Daftar Sekarang
 </Button>
 ```
 
@@ -180,19 +162,13 @@ Berkas `Form.jsx`:
 
 ### Ringkas dan Cepat
 
-![Ikon styling ringkas](halaman-profil/image23.png)
-
 Tidak perlu berkas CSS terpisah untuk styling sederhana.
 
 ### Sadar Tema (Theme-aware)
 
-![Ikon styling yang sadar tema](halaman-profil/image24.png)
-
 Dapat memakai token tema, contoh: `color: 'primary.main'`.
 
 ### Mendukung Responsive
-
-![Ikon styling responsif](halaman-profil/image25.png)
 
 Nilai dapat diatur berbeda per breakpoint layar.
 
@@ -200,15 +176,15 @@ Berkas `Box.jsx`:
 
 ```jsx
 <Box
-  sx={{
-    bgcolor: 'primary.main',
-    color: 'white',
-    p: 2,
-    borderRadius: 2,
-    boxShadow: 3,
-  }}
+ sx={{
+ bgcolor: 'primary.main',
+ color: 'white',
+ p: 2,
+ borderRadius: 2,
+ boxShadow: 3,
+ }}
 >
-  Kotak bergaya
+ Kotak bergaya
 </Box>
 ```
 
@@ -218,19 +194,13 @@ Berkas `Box.jsx`:
 
 ### p: 2, m: 1
 
-![Ikon shorthand spacing](halaman-profil/image26.png)
-
 Shorthand spacing, dikalikan 8px oleh theme (p: 2 = 16px).
 
 ### '&:hover'
 
-![Ikon pseudo-selector hover](halaman-profil/image27.png)
-
 Mengatur gaya saat elemen di-hover, seperti pseudo-class CSS.
 
 ### { xs: 12, md: 6 }
-
-![Ikon nilai per breakpoint](halaman-profil/image28.png)
 
 Nilai berbeda untuk tiap breakpoint (responsive design).
 
@@ -238,16 +208,16 @@ Berkas `Responsive.jsx`:
 
 ```jsx
 <Box
-  sx={{
-    width: { xs: '100%', md: 300 },
-    p: 2,
-    bgcolor: 'background.paper',
-    '&:hover': {
-      bgcolor: 'primary.light',
-    },
-  }}
+ sx={{
+ width: { xs: '100%', md: 300 },
+ p: 2,
+ bgcolor: 'background.paper',
+ '&:hover': {
+ bgcolor: 'primary.light',
+ },
+ }}
 >
-  Responsif & interaktif
+ Responsif & interaktif
 </Box>
 ```
 
@@ -257,19 +227,13 @@ Material Icons adalah paket ikon resmi dari MUI (`@mui/icons-material`) berisi r
 
 ### Ribuan Pilihan Ikon
 
-![Ikon pilihan ikon yang banyak](halaman-profil/image29.png)
-
 Mencakup ikon umum: home, search, cart, dan lainnya.
 
 ### Berupa Komponen React
 
-![Ikon ikon sebagai komponen React](halaman-profil/image30.png)
-
 Diimpor dan digunakan layaknya komponen biasa.
 
 ### Bisa Diberi Gaya
-
-![Ikon pengaturan gaya pada ikon](halaman-profil/image31.png)
 
 Ukuran dan warna diatur lewat props atau `sx`.
 
@@ -279,14 +243,14 @@ Berkas `Icon.jsx`:
 import HomeIcon from '@mui/icons-material/Home';
 
 <HomeIcon
-  color="primary"
-  fontSize="large"
+ color="primary"
+ fontSize="large"
 />
 
 <Button startIcon={
-  <HomeIcon />
+ <HomeIcon />
 }>
-  Beranda
+ Beranda
 </Button>
 ```
 
@@ -296,18 +260,18 @@ Sebagian kecil dari ribuan ikon yang tersedia; impor sesuai nama komponennya.
 
 | Ikon | Komponen |
 |---|---|
-| ![Ikon HomeIcon](halaman-profil/image32.png) | HomeIcon |
-| ![Ikon SearchIcon](halaman-profil/image33.png) | SearchIcon |
-| ![Ikon PersonIcon](halaman-profil/image34.png) | PersonIcon |
-| ![Ikon SettingsIcon](halaman-profil/image35.png) | SettingsIcon |
-| ![Ikon FavoriteIcon](halaman-profil/image36.png) | FavoriteIcon |
-| ![Ikon StarIcon](halaman-profil/image37.png) | StarIcon |
-| ![Ikon EmailIcon](halaman-profil/image38.png) | EmailIcon |
-| ![Ikon ShoppingCartIcon](halaman-profil/image39.png) | ShoppingCartIcon |
-| ![Ikon DownloadIcon](halaman-profil/image40.png) | DownloadIcon |
-| ![Ikon DeleteIcon](halaman-profil/image41.png) | DeleteIcon |
-| ![Ikon CheckIcon](halaman-profil/image42.png) | CheckIcon |
-| ![Ikon BoltIcon](halaman-profil/image43.png) | BoltIcon |
+| | HomeIcon |
+| | SearchIcon |
+| | PersonIcon |
+| | SettingsIcon |
+| | FavoriteIcon |
+| | StarIcon |
+| | EmailIcon |
+| | ShoppingCartIcon |
+| | DownloadIcon |
+| | DeleteIcon |
+| | CheckIcon |
+| | BoltIcon |
 
 ## Praktik: Membuat Halaman Profil
 
@@ -319,9 +283,9 @@ Praktik ini memakai berkas `Profile.jsx` yang berisi 6 step (A sampai F). Halama
 
 2. Pasang Material UI. Buka terminal, ketik perintah berikut, lalu tekan enter.
 
-    ```bash
-    npm install @mui/material @emotion/react @emotion/styled @mui/icons-material
-    ```
+ ```bash
+ npm install @mui/material @emotion/react @emotion/styled @mui/icons-material
+ ```
 
 3. Siapkan foto. Simpan satu foto dengan nama `avatar.jpg` di dalam folder `public`. Jika foto tidak ada, avatar tetap tampil dengan ikon bawaan.
 
@@ -331,17 +295,17 @@ Praktik ini memakai berkas `Profile.jsx` yang berisi 6 step (A sampai F). Halama
 2. Simpan berkas `Profile.jsx` ke dalam folder `profile` tersebut.
 3. Di folder yang sama, buat berkas `page.js` dengan isi berikut.
 
-    Berkas `src/app/profile/page.js`:
+ Berkas `src/app/profile/page.js`:
 
-    ```jsx
-    import Profile from './Profile'
+ ```jsx
+ import Profile from './Profile'
 
-    const Page = () => {
-      return <Profile />
-    }
+ const Page = () => {
+ return <Profile />
+ }
 
-    export default Page
-    ```
+ export default Page
+ ```
 
 4. Jalankan `npm run dev`, lalu buka `http://localhost:3000/profile`. Jika berhasil, halaman menampilkan tulisan Profile. Ini adalah STEP 0.
 
@@ -382,7 +346,7 @@ Empat bagian Material UI yang dipakai pada halaman ini.
 
 | Ikon | Bagian |
 |---|---|
-| ![Ikon library MUI](halaman-profil/image44.png) | **Library MUI**: komponen React siap pakai berbasis Material Design |
-| ![Ikon komponen umum](halaman-profil/image45.png) | **Komponen Umum**: Button, TextField, Card, Dialog, Grid, dan banyak lagi |
-| ![Ikon prop sx](halaman-profil/image46.png) | **sx Prop**: styling inline yang ringkas dan sadar tema (theme-aware) |
-| ![Ikon Material Icons](halaman-profil/image47.png) | **Material Icons**: ribuan ikon resmi yang siap dipakai sebagai komponen |
+| | **Library MUI**: komponen React siap pakai berbasis Material Design |
+| | **Komponen Umum**: Button, TextField, Card, Dialog, Grid, dan banyak lagi |
+| | **sx Prop**: styling inline yang ringkas dan sadar tema (theme-aware) |
+| | **Material Icons**: ribuan ikon resmi yang siap dipakai sebagai komponen |

@@ -18,8 +18,6 @@ Klien (frontend atau aplikasi) memesan makanan ke pelayan (API). Pelayan menerus
 
 ![Kartu slide analogi pelayan restoran](konsep-api-backend/image2.png)
 
-![Ikon API sebagai penghubung antar sistem](konsep-api-backend/image3.png) ![Ikon garpu dan pisau pada analogi restoran](konsep-api-backend/image4.png)
-
 ## Operasi dasar CRUD
 
 | Operasi | Arti |
@@ -37,8 +35,6 @@ Klien (frontend atau aplikasi) memesan makanan ke pelayan (API). Pelayan menerus
 
 ![Kartu slide operasi Delete](konsep-api-backend/image8.png)
 
-![Ikon Create](konsep-api-backend/image9.png) ![Ikon Read](konsep-api-backend/image10.png) ![Ikon Update](konsep-api-backend/image11.png) ![Ikon Delete](konsep-api-backend/image12.png)
-
 ## HTTP method
 
 HTTP method menentukan operasi apa yang dikerjakan sebuah endpoint. Keempat method berikut dipetakan langsung ke operasi CRUD.
@@ -49,8 +45,6 @@ HTTP method menentukan operasi apa yang dikerjakan sebuah endpoint. Keempat meth
 | POST | Create (membuat data) | `POST /api/users` | Mengirim data baru untuk disimpan ke dalam database |
 | PUT / PATCH | Update (mengubah data) | `PUT /api/users/1` | Memperbarui seluruh data (PUT) atau sebagian data (PATCH) |
 | DELETE | Delete (menghapus data) | `DELETE /api/users/1` | Menghapus sumber daya berdasarkan identifier (ID) |
-
-![Badge method GET](konsep-api-backend/image13.png) ![Badge method POST](konsep-api-backend/image14.png) ![Badge method PUT dan PATCH](konsep-api-backend/image15.png) ![Badge method DELETE](konsep-api-backend/image16.png)
 
 ## Query parameter
 
@@ -70,8 +64,6 @@ GET /api/products?category=electronics&sort=price_asc&limit=10
 
 ![Contoh URL dengan tiga query parameter](konsep-api-backend/image17.png)
 
-![Ikon filter](konsep-api-backend/image18.png)
-
 ## Request body
 
 Request body dipakai untuk mengirim data yang kompleks dan berukuran besar ke server. Method yang memakainya adalah POST, PUT, dan PATCH. Format yang paling sering dipakai adalah JSON.
@@ -80,15 +72,13 @@ Contoh payload JSON:
 
 ```json
 {
-  "name": "Budi Santoso",
-  "email": "budi@mail.com",
-  "role": "admin"
+ "name": "Budi Santoso",
+ "email": "budi@mail.com",
+ "role": "admin"
 }
 ```
 
 ![Contoh payload JSON pada slide](konsep-api-backend/image19.png)
-
-![Ikon paket data yang dikirim ke server](konsep-api-backend/image20.png)
 
 ## Header Authorization
 
@@ -104,8 +94,6 @@ Content-Type: application/json
 ```
 
 ![Contoh header Authorization dengan Bearer token](konsep-api-backend/image21.png)
-
-![Ikon keamanan](konsep-api-backend/image22.png)
 
 ## Perbedaan hashing dan enkripsi
 
@@ -129,8 +117,6 @@ Password di-hash saat pendaftaran, misalnya memakai Bcrypt, lalu nilai hash-nya 
 Saat API login sukses, server menghasilkan token (JWT) yang ditandatangani, lalu mengirimkannya ke klien. Token itu bisa dibaca ulang dan diverifikasi pada setiap request berikutnya.
 
 ![Kartu slide enkripsi token](konsep-api-backend/image24.png)
-
-![Ikon gembok](konsep-api-backend/image25.png) ![Ikon kunci](konsep-api-backend/image26.png)
 
 ## Sesi tanya jawab
 

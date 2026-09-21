@@ -36,19 +36,13 @@ Framework web adalah kerangka kerja berisi kumpulan tools, aturan, dan struktur 
 
 ### Struktur Baku
 
-![Ikon struktur baku pada framework](form-login/image2.png)
-
 Framework menyediakan pola arsitektur (folder, routing, komponen) yang konsisten.
 
 ### Fitur Siap Pakai
 
-![Ikon fitur siap pakai](form-login/image3.png)
-
 Fitur yang sudah tersedia mempercepat proses development.
 
 ### Modular dan Dapat Dipakai Ulang
-
-![Ikon kode modular yang dapat dipakai ulang](form-login/image4.png)
 
 Kode dipecah menjadi bagian kecil yang dapat digunakan ulang.
 
@@ -67,16 +61,12 @@ Membangun web tanpa framework berarti menulis ulang banyak hal dasar secara manu
 
 ### Tanpa Framework
 
-![Ikon pekerjaan tanpa framework](form-login/image5.png)
-
 - Menulis routing, state, dan struktur dari nol.
 - Rawan inkonsisten antar bagian aplikasi.
 - Waktu development jauh lebih lama.
 - Sulit dipelihara saat aplikasi membesar.
 
 ### Dengan Framework
-
-![Ikon pekerjaan dengan framework](form-login/image6.png)
 
 - Struktur dan konvensi sudah tersedia.
 - Fitur siap pakai: routing, optimasi, dan sebagainya.
@@ -89,25 +79,17 @@ Next.js adalah framework React untuk membangun aplikasi web modern secara full-s
 
 ### File-based Routing
 
-![Ikon routing berbasis berkas](form-login/image7.png)
-
 Struktur folder otomatis menjadi rute aplikasi (App Router).
 
 ### Server dan Client Rendering
-
-![Ikon rendering di server dan di client](form-login/image8.png)
 
 Mendukung SSR, SSG, ISR, dan Client-Side Rendering.
 
 ### Optimasi Otomatis
 
-![Ikon optimasi otomatis](form-login/image9.png)
-
 Optimasi gambar, font, dan kode bawaan untuk performa.
 
 ### Dibangun di Atas React
-
-![Ikon React sebagai fondasi Next.js](form-login/image10.png)
 
 Next.js memakai React sebagai fondasi UI-nya, lalu menambahkan lapisan routing, rendering, dan tooling produksi di atasnya.
 
@@ -119,25 +101,17 @@ Next.js fleksibel: setiap halaman dapat memilih strategi rendering yang paling s
 
 ### SSR (Server-Side Rendering)
 
-![Ikon SSR](form-login/image11.png)
-
 HTML dirender di server setiap ada permintaan, sehingga data selalu terbaru.
 
 ### SSG (Static Site Generation)
-
-![Ikon SSG](form-login/image12.png)
 
 HTML dibuat sekali saat build, sehingga penyajiannya cepat.
 
 ### ISR (Incremental Static Regeneration)
 
-![Ikon ISR](form-login/image13.png)
-
 Halaman statis yang diperbarui otomatis secara berkala.
 
 ### CSR (Client-Side Rendering)
-
-![Ikon CSR](form-login/image14.png)
 
 Konten dirender di browser pengguna lewat JavaScript.
 
@@ -147,19 +121,13 @@ Component adalah blok bangunan dasar UI di React: sebuah fungsi JavaScript yang 
 
 ### Reusable
 
-![Ikon komponen yang dapat dipakai ulang](form-login/image15.png)
-
 Satu komponen dapat dipakai di banyak tempat berbeda.
 
 ### Menerima Props
 
-![Ikon data dikirim dari komponen induk ke komponen anak](form-login/image16.png)
-
 Data dikirim dari komponen induk ke komponen anak.
 
 ### Dapat Disusun (Composable)
-
-![Ikon komponen kecil digabung menjadi tampilan kompleks](form-login/image17.png)
 
 Komponen kecil digabung menjadi tampilan yang kompleks.
 
@@ -167,12 +135,12 @@ Berkas `Card.jsx`:
 
 ```jsx
 function Card({ title, desc }) {
-  return (
-    <div className="card">
-      <h3>{title}</h3>
-      <p>{desc}</p>
-    </div>
-  );
+ return (
+ <div className="card">
+ <h3>{title}</h3>
+ <p>{desc}</p>
+ </div>
+ );
 }
 ```
 
@@ -180,8 +148,8 @@ Pemakaian komponen tersebut:
 
 ```jsx
 <Card
-  title="Hello"
-  desc="Komponen React"
+ title="Hello"
+ desc="Komponen React"
 />
 ```
 
@@ -191,25 +159,17 @@ Sistem routing Next.js berbasis struktur folder di dalam direktori `app/`. Setia
 
 ### page.js
 
-![Ikon berkas page.js](form-login/image18.png)
-
 Menentukan tampilan (UI) untuk suatu rute.
 
 ### layout.js
-
-![Ikon berkas layout.js](form-login/image19.png)
 
 Tampilan bersama yang membungkus beberapa halaman.
 
 ### loading.js
 
-![Ikon berkas loading.js](form-login/image20.png)
-
 UI otomatis saat konten sedang dimuat.
 
 ### route.js
-
-![Ikon berkas route.js](form-login/image21.png)
 
 Membuat API endpoint pada rute tersebut.
 
@@ -218,15 +178,15 @@ Struktur folder `app/`:
 ```text
 app/
 ├─ layout.js
-├─ page.js          → "/"
+├─ page.js → "/"
 ├─ about/
-│  └─ page.js       → "/about"
+│ └─ page.js → "/about"
 ├─ blog/
-│  ├─ page.js       → "/blog"
-│  └─ [slug]/
-│     └─ page.js    → "/blog/:slug"
+│ ├─ page.js → "/blog"
+│ └─ [slug]/
+│ └─ page.js → "/blog/:slug"
 └─ api/
-   └─ route.js      → "/api"
+ └─ route.js → "/api"
 ```
 
 ## React Hooks
@@ -235,12 +195,12 @@ Hooks adalah fungsi khusus yang memungkinkan komponen fungsi menggunakan state, 
 
 | Ikon | Hook dan kegunaan |
 |---|---|
-| ![Ikon useState](form-login/image22.png) | **useState**: menyimpan dan memperbarui data (state) dalam komponen |
-| ![Ikon useEffect](form-login/image23.png) | **useEffect**: menjalankan efek samping, seperti fetch data dan subscription |
-| ![Ikon useContext](form-login/image24.png) | **useContext**: mengakses data global tanpa meneruskan props berlapis |
-| ![Ikon useRef](form-login/image25.png) | **useRef**: menyimpan nilai atau referensi tanpa memicu render ulang |
-| ![Ikon useMemo](form-login/image26.png) | **useMemo**: menyimpan hasil kalkulasi agar tidak dihitung berulang |
-| ![Ikon custom hook](form-login/image27.png) | **Custom Hook**: hook buatan sendiri untuk logika yang dapat dipakai ulang |
+| | **useState**: menyimpan dan memperbarui data (state) dalam komponen |
+| | **useEffect**: menjalankan efek samping, seperti fetch data dan subscription |
+| | **useContext**: mengakses data global tanpa meneruskan props berlapis |
+| | **useRef**: menyimpan nilai atau referensi tanpa memicu render ulang |
+| | **useMemo**: menyimpan hasil kalkulasi agar tidak dihitung berulang |
+| | **Custom Hook**: hook buatan sendiri untuk logika yang dapat dipakai ulang |
 
 ## Package dan Library
 
@@ -248,19 +208,13 @@ Package adalah kumpulan kode (library) siap pakai yang dapat diinstal ke proyek,
 
 ### package.json
 
-![Ikon berkas package.json](form-login/image28.png)
-
 Berisi daftar dependensi dan konfigurasi proyek.
 
 ### node_modules/
 
-![Ikon folder node_modules](form-login/image29.png)
-
 Folder tempat semua package yang diinstal disimpan.
 
 ### npm install
-
-![Ikon perintah npm install](form-login/image30.png)
 
 Perintah untuk mengunduh dan memasang package.
 
@@ -286,7 +240,7 @@ Berkas `page.js` adalah isi halaman yang tampil di browser. Form login diletakka
 import LoginForm from './LoginForm'
 
 const Page = () => {
-  return <LoginForm />
+ return <LoginForm />
 }
 
 export default Page
@@ -313,11 +267,11 @@ Langkah terakhir membuat form dapat memberi tanggapan atas email dan password ya
 
 | Ikon | Bagian |
 |---|---|
-| ![Ikon framework web](form-login/image31.png) | **Framework Web**: kerangka kerja untuk membangun aplikasi secara terstruktur |
-| ![Ikon Next.js](form-login/image32.png) | **Next.js**: framework React untuk aplikasi full-stack modern |
-| ![Ikon React Components](form-login/image33.png) | **React Components**: blok UI reusable yang membentuk tampilan aplikasi |
-| ![Ikon App Router](form-login/image34.png) | **App Router**: routing otomatis berbasis struktur folder `app/` |
-| ![Ikon React Hooks](form-login/image35.png) | **React Hooks**: menghubungkan komponen dengan state dan fitur React |
-| ![Ikon package dan library](form-login/image36.png) | **Package & Library**: kode siap pakai yang dikelola lewat npm |
+| | **Framework Web**: kerangka kerja untuk membangun aplikasi secara terstruktur |
+| | **Next.js**: framework React untuk aplikasi full-stack modern |
+| | **React Components**: blok UI reusable yang membentuk tampilan aplikasi |
+| | **App Router**: routing otomatis berbasis struktur folder `app/` |
+| | **React Hooks**: menghubungkan komponen dengan state dan fitur React |
+| | **Package & Library**: kode siap pakai yang dikelola lewat npm |
 
 Langkah berikutnya ada pada halaman [Membuat Halaman Profil dengan Material UI](/hari-1/praktik-3/halaman-profil).

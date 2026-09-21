@@ -11,17 +11,10 @@ Leaflet adalah library JavaScript open-source yang ringan dan banyak dipakai unt
 
 Leaflet adalah library JavaScript open-source yang ringan untuk membangun peta interaktif di web.
 
-![Latar bagian dasar-dasar Leaflet.js](dasar-leaflet/image3.png)
-![Logo pustaka peta](dasar-leaflet/image4.png)
-
 ### Ringan dan berperforma tinggi
 
 - Ukuran library Leaflet hanya sekitar 42 KB (JS terkompresi gzip), menjadikannya salah satu pustaka pemetaan web paling ringan tanpa mengorbankan fitur inti.
 - Leaflet dirancang untuk performa tinggi pada perangkat desktop maupun mobile, dengan dukungan touch dan gesture yang alami.
-
-![Latar bagian performa Leaflet](dasar-leaflet/image5.png)
-![Ilustrasi performa Leaflet di desktop](dasar-leaflet/image6.png)
-![Ilustrasi performa Leaflet di mobile](dasar-leaflet/image7.png)
 
 ### Desain berbasis modul dan komponen
 
@@ -35,7 +28,6 @@ Ada dua modul utama yang wajib ada dalam setiap aplikasi Leaflet:
 - Modul utama pengontrol peta. Bertanggung jawab atas inisialisasi kontainer HTML, pusat koordinat, tingkat perbesaran, serta manajemen event.
 - Modul untuk memuat ubin peta gambar (raster tiles) dari penyedia basemap seperti OpenStreetMap, Stamen, atau TileServer OGC.
 
-![Latar bagian arsitektur Leaflet](dasar-leaflet/image8.png)
 ![Ilustrasi dua modul utama Leaflet](dasar-leaflet/image9.png)
 
 ### Modul utama: L.map dan L.tileLayer
@@ -43,10 +35,6 @@ Ada dua modul utama yang wajib ada dalam setiap aplikasi Leaflet:
 `L.map` menginisialisasi peta pada kontainer HTML dan mengatur pusat koordinat serta tingkat zoom. `L.tileLayer` memuat ubin peta dari penyedia basemap.
 
 ![Contoh peta dunia interaktif](dasar-leaflet/image10.png)
-![Potongan kode pada modul L.map](dasar-leaflet/image11.png)
-![Potongan kode pada modul L.map](dasar-leaflet/image12.png)
-![Potongan kode pada modul L.tileLayer](dasar-leaflet/image13.png)
-![Potongan kode pada modul L.tileLayer](dasar-leaflet/image14.png)
 
 ### L.marker dan L.popup
 
@@ -56,41 +44,28 @@ Ada dua modul utama yang wajib ada dalam setiap aplikasi Leaflet:
 ![Ilustrasi marker pada peta](dasar-leaflet/image16.png)
 ![Ilustrasi popup pada peta](dasar-leaflet/image17.png)
 ![Ilustrasi penanda koordinat](dasar-leaflet/image18.png)
-![Ikon marker Leaflet](dasar-leaflet/image19.png)
 
 ### L.geoJSON
 
 `L.geoJSON` adalah modul untuk mengurai dan merender data vektor spasial GeoJSON (Point, LineString, Polygon) beserta styling dan event interaksi.
 
-![Ikon L.geoJSON](dasar-leaflet/image20.png)
-
 ### L.control
 
 `L.control` menyediakan elemen UI di atas peta, seperti tombol zoom, kontrol pemilih layer basemap/overlay, skala peta, dan atribusi lisensi.
-
-![Ikon L.control](dasar-leaflet/image21.png)
 
 ### Komponen data dan kontrol Leaflet
 
 Kontrol pemilih layer, skala peta, dan atribusi lisensi ditambahkan lewat `L.control`, sedangkan data vektor dirender lewat `L.geoJSON`.
 
-![Ikon komponen data Leaflet](dasar-leaflet/image22.png)
-![Ikon komponen kontrol Leaflet](dasar-leaflet/image23.png)
-![Ikon komponen peta Leaflet](dasar-leaflet/image24.png)
-
 ## Layanan OGC Web Services
 
 Standar internasional untuk pertukaran data spasial dan interoperabilitas sistem GIS.
-
-![Latar bagian OGC Web Services](dasar-leaflet/image25.png)
-![Logo layanan OGC](dasar-leaflet/image26.png)
 
 ### Apa itu standar layanan OGC?
 
 - OGC (Open Geospatial Consortium) adalah konsorsium internasional yang menentukan standar terbuka untuk konten dan layanan spasial agar berbagai perangkat lunak dapat saling terhubung.
 - Standar OGC memastikan peta dan data spasial dari GeoServer, QGIS, ArcGIS, maupun Leaflet dapat saling berkomunikasi tanpa batasan format vendor.
 
-![Latar bagian pengertian standar OGC](dasar-leaflet/image27.png)
 ![Ilustrasi interoperabilitas layanan OGC](dasar-leaflet/image28.png)
 ![Ilustrasi pertukaran data spasial](dasar-leaflet/image29.png)
 
@@ -105,7 +80,6 @@ Dalam infrastruktur data spasial (SDI) berbasis web, terdapat 4 spesifikasi laya
 
 ### Matriks perbandingan layanan OGC
 
-![Latar bagian matriks perbandingan layanan OGC](dasar-leaflet/image30.png)
 ![Kerangka tabel perbandingan layanan](dasar-leaflet/image31.png)
 
 | Layanan | Tipe Data | Format Output | Fungsi Utama | Tingkat Analisis |
@@ -114,11 +88,6 @@ Dalam infrastruktur data spasial (SDI) berbasis web, terdapat 4 spesifikasi laya
 | WMTS | Tile Cached | Ubin gambar (256x256) | Basemap cepat memakai cache ubin | Rendah (hanya perbesaran) |
 | WFS | Vektor Mentah | GeoJSON, GML, KML | Akses geometri titik/garis/poligon dan edit | Sangat tinggi (query dan edit) |
 | WCS | Raster Grid Mentah | GeoTIFF, NetCDF, HDF | Akses nilai piksel data spasial | Sangat tinggi (analisis spasial) |
-
-![Label tipe data Raster Visual](dasar-leaflet/image32.png)
-![Label tipe data Tile Cached](dasar-leaflet/image33.png)
-![Label tipe data Vektor Mentah](dasar-leaflet/image34.png)
-![Label tipe data Raster Grid Mentah](dasar-leaflet/image35.png)
 
 ### Perbedaan utama rendering: WMS dan WMTS
 
@@ -130,7 +99,6 @@ Dalam infrastruktur data spasial (SDI) berbasis web, terdapat 4 spesifikasi laya
 | WMS | Dynamic render per request |
 | WMTS | Pre-rendered cached tiles |
 
-![Latar bagian perbedaan WMS dan WMTS](dasar-leaflet/image36.png)
 ![Ilustrasi render dinamis WMS](dasar-leaflet/image37.png)
 ![Ilustrasi ubin cached WMTS](dasar-leaflet/image38.png)
 
@@ -138,23 +106,16 @@ Dalam infrastruktur data spasial (SDI) berbasis web, terdapat 4 spesifikasi laya
 
 WFS (Web Feature Service) mengirimkan objek geometri nyata (koordinat latitude/longitude) beserta tabel atributnya. Layanan ini mengizinkan klien untuk melakukan query, styling mandiri, hingga transaksi edit data spasial di server melalui WFS-T (Transactional WFS).
 
-![Latar bagian WFS](dasar-leaflet/image39.png)
 ![Ilustrasi geometri vektor WFS](dasar-leaflet/image40.png)
 ![Ilustrasi tabel atribut WFS](dasar-leaflet/image41.png)
-![Ikon WFS](dasar-leaflet/image42.png)
 
 ### WCS: data raster grid mentah
 
 WCS (Web Coverage Service) mengirimkan nilai piksel aktual dari data raster, seperti DEM elevasi, suhu permukaan, indeks vegetasi NDVI, atau citra satelit multiband. Layanan ini memungkinkan analisis ilmiah dan evaluasi nilai piksel secara langsung di sisi klien.
 
-![Ikon WCS](dasar-leaflet/image43.png)
-
 ### WFS dan WCS: akses data spasial mentah
 
 WFS mengirimkan geometri vektor beserta atributnya, sedangkan WCS mengirimkan nilai piksel raster. Keduanya dipakai saat data mentah dibutuhkan untuk analisis, bukan sekadar untuk tampilan peta.
-
-![Ikon WFS](dasar-leaflet/image44.png)
-![Ikon WCS](dasar-leaflet/image45.png)
 
 ### Kelebihan dan kekurangan layanan OGC
 
@@ -167,12 +128,6 @@ Kekurangan:
 
 - Konsumsi bandwidth WFS: mengunduh dataset vektor berukuran besar lewat WFS dapat memperlambat browser jika tidak dibatasi pagination atau filter BBOX.
 - Kompleksitas konfigurasi: memerlukan server spasial seperti GeoServer atau MapServer yang terkonfigurasi dengan benar beserta skema atribut standar.
-
-![Latar bagian kelebihan dan kekurangan layanan OGC](dasar-leaflet/image46.png)
-![Ikon kelebihan layanan OGC](dasar-leaflet/image47.png)
-![Ikon kelebihan layanan OGC](dasar-leaflet/image48.png)
-![Ikon kekurangan layanan OGC](dasar-leaflet/image49.png)
-![Ikon kekurangan layanan OGC](dasar-leaflet/image50.png)
 
 ## Praktik: visualisasi peta interaktif Leaflet.js
 
@@ -218,11 +173,11 @@ Langkah praktikum:
 ```js
 const map = L.map("map").setView([0, 0], 2);
 L.tileLayer(
-  "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",
-  {
-    maxZoom: 19,
-    attribution: "Tiles &copy; Esri",
-  }
+ "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",
+ {
+ maxZoom: 19,
+ attribution: "Tiles &copy; Esri",
+ }
 ).addTo(map);
 L.control.scale().addTo(map);
 L.marker([0, 0]).addTo(map);
@@ -260,8 +215,8 @@ Langkah praktikum:
 
 ```js
 const layersControl = L.control
-  .layers(null, {}, { collapsed: true })
-  .addTo(map);
+ .layers(null, {}, { collapsed: true })
+ .addTo(map);
 ```
 
 Hasil: widget kontrol layer muncul di sudut kanan atas peta dalam kondisi melayang (collapsed).
@@ -280,26 +235,26 @@ Langkah praktikum:
 ```js
 // --- Kode Opsi A (Embedded GeoJSON) ---
 const geojsonData = {
-  type: "FeatureCollection",
-  features: [
-    {
-      type: "Feature",
-      properties: { nama: "Monas" },
-      geometry: { type: "Point", coordinates: [106.8272, -6.1754] }
-    },
-    {
-      type: "Feature",
-      properties: { nama: "Kota Tua" },
-      geometry: { type: "Point", coordinates: [106.8133, -6.1352] }
-    }
-  ]
+ type: "FeatureCollection",
+ features: [
+ {
+ type: "Feature",
+ properties: { nama: "Monas" },
+ geometry: { type: "Point", coordinates: [106.8272, -6.1754] }
+ },
+ {
+ type: "Feature",
+ properties: { nama: "Kota Tua" },
+ geometry: { type: "Point", coordinates: [106.8133, -6.1352] }
+ }
+ ]
 };
 const geojsonLayer = L.geoJSON(geojsonData, {
-  onEachFeature: function (feature, layer) {
-    if (feature.properties && feature.properties.nama) {
-      layer.bindPopup(feature.properties.nama);
-    }
-  }
+ onEachFeature: function (feature, layer) {
+ if (feature.properties && feature.properties.nama) {
+ layer.bindPopup(feature.properties.nama);
+ }
+ }
 }).addTo(map);
 layersControl.addOverlay(geojsonLayer, "Data GeoJSON (embedded)");
 ```
@@ -317,21 +272,21 @@ Langkah praktikum:
 ```js
 // 1. WMS (Web Map Service - Raster Tile)
 const wmsLayer = L.tileLayer.wms("https://matiur-geoportal.com/geoserver/wms", {
-  layers: "geoportal:batas_rw_kelurahan_pancoran_98d957db",
-  format: "image/png",
-  transparent: true,
-  version: "1.1.0"
+ layers: "geoportal:batas_rw_kelurahan_pancoran_98d957db",
+ format: "image/png",
+ transparent: true,
+ version: "1.1.0"
 }).addTo(map);
 layersControl.addOverlay(wmsLayer, "Layer WMS");
 
 // 2. WFS (Web Feature Service - Vector via Fetch)
 const wfsUrl = "https://matiur-geoportal.com/geoserver/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=geoportal:pulo_gadung_12345&outputFormat=application/json";
 fetch(wfsUrl)
-  .then(res => res.json())
-  .then(data => {
-    const wfsLayer = L.geoJSON(data).addTo(map);
-    layersControl.addOverlay(wfsLayer, "Layer WFS");
-  });
+ .then(res => res.json())
+ .then(data => {
+ const wfsLayer = L.geoJSON(data).addTo(map);
+ layersControl.addOverlay(wfsLayer, "Layer WFS");
+ });
 ```
 
 Hasil: layer WMS tampil sebagai raster overlay, sedangkan layer WFS tampil sebagai vektor hasil fetch. Layanan WMTS dan WCS (GeoTIFF raster lewat georaster) dapat diaktifkan dengan cara serupa seperti pada template HTML.
@@ -371,11 +326,6 @@ Hasil: pengguna dapat berganti-ganti tampilan peta dasar secara dinamis melalui 
 ## Penutup
 
 Terima kasih telah menyimak presentasi Leaflet.js & Layanan OGC.
-
-![Latar bagian penutup](dasar-leaflet/image51.png)
-![Logo referensi](dasar-leaflet/image52.png)
-![Latar bagian sumber gambar](dasar-leaflet/image53.png)
-![Ilustrasi peta dunia](dasar-leaflet/image54.png)
 
 Referensi: Leaflet API Reference & Standard OGC Specifications.
 
