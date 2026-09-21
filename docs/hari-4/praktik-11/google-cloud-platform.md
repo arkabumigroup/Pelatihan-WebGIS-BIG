@@ -6,7 +6,7 @@ Dijalankan di Cloud Shell. Identitas peserta dari halaman sebelumnya sudah dipak
 
 ### Tahap 3. Periksa API yang dibutuhkan
 
-Dijalankan di: Cloud Shell
+<p class="dijalankan">Dijalankan di: <strong>Cloud Shell</strong></p>
 
 ```bash
 gcloud services list --enabled --project="$PROJECT_ID" \
@@ -36,7 +36,7 @@ Bila ketiganya belum aktif, abaikan saja. Tidak ada tahap yang membutuhkannya.
 
 ### Tahap 4. Buat Service Account deployment
 
-Dijalankan di: Cloud Shell
+<p class="dijalankan">Dijalankan di: <strong>Cloud Shell</strong></p>
 
 Service Account ini milik peserta, sehingga namanya memuat identitas Anda.
 
@@ -61,26 +61,15 @@ done
 
 ### Tahap 5. Periksa Artifact Registry
 
-![Pencarian Artifact Registry pada kolom pencarian Google Cloud Console](google-cloud-platform/image%2010.png)
-
-![Halaman Artifact Registry beserta tombol Create repository](google-cloud-platform/image%2011.png)
-
-![Form pembuatan repository: nama, format Docker, dan region asia-southeast2](google-cloud-platform/image%2012.png)
-
-
-Dijalankan di: Cloud Shell menuju Google Cloud Console
+<p class="dijalankan">Dijalankan di: <strong>Cloud Shell menuju Google Cloud Console</strong></p>
 
 Buka halaman Artifact Registry dan pastikan repository `katalog-images` sudah ada pada region `asia-southeast2`.
 
-
-
 Repository ini dibuat koordinator dan dipakai seluruh peserta. Peserta hanya memeriksa, bukan membuat. Bila hasilnya kosong atau `NOT_FOUND`, lapor ke koordinator dan jangan membuat repository sendiri.
 
-
 ### Tahap 6. Siapkan identitas VM
-![Detail Service Account VM pada halaman VM details](google-cloud-platform/image45.png)
 
-Dijalankan di: Cloud Shell
+<p class="dijalankan">Dijalankan di: <strong>Cloud Shell</strong></p>
 
 VM peserta memakai Service Account default project. Alamatnya berbentuk `<nomor-project>-compute@developer.gserviceaccount.com`, dan **nilainya sama untuk semua peserta** karena hanya bergantung pada nomor project. Itu memang begitu, dan bukan tanda ada yang salah.
 
@@ -105,37 +94,9 @@ Rantai izinnya: Service Account Cloud Build peserta mendapat `roles/iam.serviceA
 
 ### Tahap 7. Buat VM
 
-![Form Create an instance, bagian Machine configuration](google-cloud-platform/vm-image-2.png)
-
-![Form Create an instance, bagian Networking dan network tag](google-cloud-platform/vm-image-4.png)
-
-
-Dijalankan di: Cloud Shell menuju Google Cloud Console
+<p class="dijalankan">Dijalankan di: <strong>Cloud Shell menuju Google Cloud Console</strong></p>
 
 VM dibuat dari Cloud Shell dengan spesifikasi berikut. Pastikan Compute Engine API sudah aktif sebelum perintah ini dijalankan.
-
-::: danger Setiap project hanya punya empat alamat IP publik
-Ini pemeriksaan paling penting sebelum menekan Enter. Setiap project mendapat **empat** alamat IP publik eksternal per region, dan angka empat peserta per project bukan pilihan bebas melainkan batas itu.
-
-Bila kuotanya sudah habis, perintah di bawah **gagal** dengan pesan:
-
-```text
-Quota 'IN_USE_ADDRESSES' exceeded. Limit: 4.0 in region asia-southeast2.
-```
-
-Yang sudah memakai kuota itu bukan hanya IP statis Anda, melainkan juga IP sementara yang menempel pada setiap VM. Karena itu kuota bisa habis justru di langkah ini, sebelum satu pun IP statis dibuat.
-
-Sebelum melanjutkan, periksa berapa yang sudah terpakai:
-
-```bash
-gcloud compute instances list --project="$PROJECT_ID" \
-  --format="table(name,zone,networkInterfaces[0].accessConfigs[0].natIP)"
-```
-
-Bila sudah ada empat VM atas nama peserta lain, jangan melanjutkan. Hubungi koordinator, karena VM kelima tidak dapat dibuat sampai ada yang dihapus atau kuota dinaikkan.
-
-Jangan pula berpindah ke project kelompok lain tanpa sepengetahuan koordinator, karena kuota di sana juga terpakai oleh peserta kelompok itu.
-:::
 
 ```bash
 gcloud compute instances create "$VM_NAME" \
@@ -160,12 +121,8 @@ WARNING: Disk size: '30 GB' is larger than image size: '10 GB'.
 Ukuran disk tetap dipakai, dan pertumbuhannya diperiksa pada [Tahap 10 halaman Menyiapkan Aplikasi di VM](/hari-4/praktik-11/aplikasi-di-vm#tahap-10-masuk-ke-vm).
 
 ### Tahap 8. Periksa VM dan firewall
-![Daftar VM instances dengan tombol Create instance dan Connect](google-cloud-platform/cb-image-17.png)
 
-![Daftar VM instances beserta alamat IP eksternalnya](google-cloud-platform/image%2034.png)
-
-
-Dijalankan di: Cloud Shell
+<p class="dijalankan">Dijalankan di: <strong>Cloud Shell</strong></p>
 
 ```bash
 gcloud compute firewall-rules list \
@@ -176,14 +133,13 @@ gcloud compute instances describe "$VM_NAME" \
   --format="table(name,status,machineType.basename(),networkInterfaces[0].accessConfigs[0].natIP)"
 ```
 
-
 Kedua firewall rule dibuat koordinator dan hasil perintah di atas seharusnya menampilkan keduanya.
 
 **Bila daftar firewall kosong, berhenti dan lapor ke koordinator.** Jangan membuat rule sendiri. Nama yang sama dipakai seluruh peserta project ini, sehingga pembuatan ulang akan gagal dengan `ALREADY_EXISTS`, atau berhasil dan menambah satu rule yang bertabrakan dengan aturan koordinator.
 
 ### Tahap 9. Buat IP statis
 
-Dijalankan di: Cloud Shell
+<p class="dijalankan">Dijalankan di: <strong>Cloud Shell</strong></p>
 
 Alamat IP perlu dikunci supaya tidak berubah saat VM dimatikan dan dinyalakan kembali. Ini penting karena record DNS pada halaman [Penambahan Subdomain](/hari-4/praktik-11/subdomain) menunjuk ke alamat tersebut.
 
@@ -203,7 +159,26 @@ gcloud compute addresses describe "$STATIC_IP_NAME" \
 
 Statusnya harus `IN_USE`, dan alamatnya harus sama dengan IP VM pada Tahap 8. Alamat itulah yang dipakai subdomain Anda nanti, sehingga tidak berubah walaupun VM dimatikan dan dinyalakan kembali.
 
+## Bila ada yang gagal di halaman ini
 
+**`Quota 'IN_USE_ADDRESSES' exceeded. Limit: 4.0 in region asia-southeast2.`**
+
+Setiap project hanya mendapat empat alamat IP publik eksternal per region, dan angka itu dipakai bersama peserta satu project. Yang menempati kuota bukan hanya IP statis Anda, melainkan juga IP sementara yang menempel pada setiap VM. Bila keempatnya sudah terpakai, VM kelima tidak dapat dibuat.
+
+Periksa berapa yang sudah terpakai, lalu lapor ke koordinator bila sudah ada empat VM atas nama peserta lain:
+
+```bash
+gcloud compute instances list --project="$PROJECT_ID" \
+  --format="table(name,zone,networkInterfaces[0].accessConfigs[0].natIP)"
+```
+
+**`ALREADY_EXISTS`**
+
+Resource yang Anda buat sudah ada, dan biasanya itu memang buatan koordinator. Lihat kembali tabel pembagian resource pada halaman [Persiapan Repositori](/hari-4/praktik-11/persiapan-repositori).
+
+**`Failed to lookup instance` saat masuk ke VM**
+
+VM baru selesai dibuat dan belum terdaftar di sistem akses. Tunggu satu menit, lalu ulangi perintahnya.
 
 ---
 

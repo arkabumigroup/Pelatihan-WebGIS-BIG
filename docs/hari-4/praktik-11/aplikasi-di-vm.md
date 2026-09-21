@@ -6,12 +6,7 @@ Seluruh tahap di halaman ini dijalankan di dalam VM, bukan di Cloud Shell.
 
 ### Tahap 10. Masuk ke VM
 
-![Sesi SSH ke VM di dalam browser](google-cloud-platform/image%202.png)
-
-![Halaman VM instances, tombol SSH pada kolom Connect](google-cloud-platform/image%2022.png)
-
-
-Dijalankan di: Cloud Shell menuju VM
+<p class="dijalankan">Dijalankan di: <strong>Cloud Shell menuju VM</strong></p>
 
 ```bash
 gcloud compute ssh "$VM_NAME" \
@@ -55,7 +50,7 @@ Filesystem      Size  Used Avail Use% Mounted on
 /dev/root        29G  1.8G   27G   7% /
 ```
 
-Bila masih menunjukkan sekitar **9.7G**, tumbuhkan partisinya:
+Bila masih menunjukkan sekitar **9.7G**, partisinya belum ikut memakai sisa disk. Perluas partisi beserta sistem berkasnya:
 
 ```bash
 sudo growpart /dev/sda 1
@@ -63,22 +58,11 @@ sudo resize2fs /dev/sda1
 df -h /
 ```
 
-Perintah pertama menambah ukuran partisi, yang kedua menambah ukuran sistem berkasnya agar memakai seluruh partisi. Keduanya hanya mengubah ukuran dan tidak menghapus data. Setelah itu `df -h /` harus menunjukkan sekitar 29G.
+Perintah pertama memperbesar partisinya, yang kedua memperbesar sistem berkasnya agar memakai seluruh partisi. Keduanya hanya mengubah ukuran dan tidak menghapus data. Setelah itu `df -h /` harus menunjukkan sekitar 29G.
 
 ### Tahap 11. Pasang Docker, Git, dan Google Cloud CLI
 
-![Perintah sudo apt update di terminal VM](google-cloud-platform/image%203.png)
-
-![Pemasangan paket dasar: ca-certificates, curl, dan gnupg](google-cloud-platform/image%204.png)
-
-![Penambahan kunci GPG dan repositori Docker](google-cloud-platform/image%205.png)
-
-![sudo apt update setelah repositori Docker ditambahkan](google-cloud-platform/image%206.png)
-
-![Pemasangan Docker Engine beserta pluginnya](google-cloud-platform/image%207.png)
-
-
-Dijalankan di: Terminal VM
+<p class="dijalankan">Dijalankan di: <strong>Terminal VM</strong></p>
 
 ```bash
 sudo apt-get update
@@ -113,13 +97,9 @@ sudo apt-get update
 sudo apt-get install -y google-cloud-cli
 ```
 
-
 ### Tahap 12. Uji Docker dan gcloud
 
-![Pemeriksaan versi Docker dan Docker Compose](google-cloud-platform/image%209.png)
-
-
-Dijalankan di: Terminal VM
+<p class="dijalankan">Dijalankan di: <strong>Terminal VM</strong></p>
 
 ```bash
 sudo docker compose version
@@ -131,10 +111,9 @@ gcloud --version
 
 Hasil yang diharapkan, ketiganya berhasil tanpa galat.
 
-
 ### Tahap 13. Tambahkan user ke grup docker
 
-Dijalankan di: Terminal VM
+<p class="dijalankan">Dijalankan di: <strong>Terminal VM</strong></p>
 
 ```bash
 sudo usermod -aG docker "$USER"
@@ -151,7 +130,7 @@ Setelah masuk kembali pada Tahap 14, seluruh perintah docker pada tahap berikutn
 
 ### Tahap 14. Masuk kembali ke VM
 
-Dijalankan di: Cloud Shell menuju VM
+<p class="dijalankan">Dijalankan di: <strong>Cloud Shell menuju VM</strong></p>
 
 ```bash
 gcloud compute ssh "$VM_NAME" \
@@ -161,14 +140,9 @@ gcloud compute ssh "$VM_NAME" \
 
 ### Tahap 15. Siapkan folder aplikasi
 
-![Tombol UPLOAD FILE pada jendela SSH](google-cloud-platform/image%2023.png)
+<p class="dijalankan">Dijalankan di: <strong>Terminal VM</strong></p>
 
-![Dialog unggah berkas: dua berkas siap dikirim](google-cloud-platform/image28.png)
-
-![Konfirmasi dua berkas berhasil diunggah](google-cloud-platform/image29.png)
-
-
-Dijalankan di: Terminal VM
+Folder ini perlu dibuat lebih dahulu karena folder induknya, `/opt`, dimiliki root. `git clone` pada tahap berikutnya menulis ke `/opt/webgis/app`, dan perintah itu tidak dapat membuat folder induknya sendiri.
 
 ```bash
 sudo mkdir -p /opt/webgis
@@ -176,10 +150,11 @@ sudo chown "$USER:$USER" /opt/webgis
 ls -ld /opt/webgis
 ```
 
+Keluaran `ls -ld` harus menampilkan nama pengguna Anda sebagai pemiliknya.
 
 ### Tahap 16. Clone repositori
 
-Dijalankan di: Terminal VM
+<p class="dijalankan">Dijalankan di: <strong>Terminal VM</strong></p>
 
 Perintah ini membawa seluruh berkas repositori, termasuk `docker-compose.yml`, `nginx.conf`, dan `.env.example`, sehingga tidak ada yang perlu disalin terpisah dari laptop.
 
@@ -218,7 +193,7 @@ rm -rf /opt/webgis/app
 
 ### Tahap 17. Periksa berkas konfigurasi
 
-Dijalankan di: Terminal VM
+<p class="dijalankan">Dijalankan di: <strong>Terminal VM</strong></p>
 
 Pastikan ketiga berkas yang dibutuhkan sudah ada. Semuanya berasal dari clone pada tahap sebelumnya, bukan dari salinan terpisah.
 
@@ -246,7 +221,7 @@ git log --oneline -1
 
 ### Tahap 18. Isi berkas .env
 
-Dijalankan di: Terminal VM
+<p class="dijalankan">Dijalankan di: <strong>Terminal VM</strong></p>
 
 Berkas `.env` di laptop sudah terisi lengkap. Mengisinya ulang dari nol di VM hanya membuang waktu, karena hanya **lima baris** yang berbeda. Cara ini tidak memerlukan gcloud CLI di laptop.
 
@@ -359,7 +334,7 @@ Saat login ke antarmuka GeoServer nanti, gunakan username `admin` dan kata sandi
 
 ### Tahap 19. Bangun image aplikasi
 
-Dijalankan di: Terminal VM
+<p class="dijalankan">Dijalankan di: <strong>Terminal VM</strong></p>
 
 Sebelum Cloud Build dipakai, image dibangun sekali secara manual supaya masalah pada `Dockerfile` ketahuan lebih awal di terminal yang bisa dibaca langsung.
 
@@ -371,12 +346,13 @@ Blok Tahap 2 dijalankan di **Cloud Shell**, sehingga `PROJECT_ID`, `REPOSITORY`,
 asia-southeast2-docker.pkg.dev////:latest
 ```
 
-Isi ketiganya dengan nilai Anda:
+Isi ketiganya dengan nilai yang sama seperti pada [blok identitas peserta](/hari-4/praktik-11/persiapan-repositori#tahap-2-tetapkan-identitas-peserta). Hanya dua baris pertama yang Anda ubah, dan `IMAGE_NAME` diturunkan dari `NAMA_PESERTA` supaya tidak bisa berbeda:
 
 ```bash
-PROJECT_ID="geoportal-kelompok-a-xxxxx"     # dari Tahap 2
+PROJECT_ID="geoportal-kelompok-a-xxxxx"     # dari tabel peserta
+NAMA_PESERTA="nama01"                       # dari kolom Nama Peserta
 REPOSITORY="katalog-images"                 # sama untuk semua peserta
-IMAGE_NAME="nextjs-nama01"                  # "nextjs-" diikuti Nama Peserta Anda
+IMAGE_NAME="nextjs-${NAMA_PESERTA}"
 ```
 
 Periksa ketiganya sudah terisi sebelum melanjutkan:
@@ -398,7 +374,7 @@ Prosesnya lama, karena mengunduh image dasar Node dan memasang dependensi. Bagia
 
 ### Tahap 20. Beri izin Artifact Registry pada Service Account VM
 
-Dijalankan di: Google Cloud Console
+<p class="dijalankan">Dijalankan di: <strong>Google Cloud Console</strong></p>
 
 ::: tip Pada sebagian besar project, tahap ini tidak diperlukan
 Service Account default Compute Engine biasanya sudah memegang `roles/editor`,
@@ -466,7 +442,7 @@ di Cloud Shell, sebagai Anda.
 
 ### Tahap 21. Dorong image ke Artifact Registry
 
-Dijalankan di: Terminal VM
+<p class="dijalankan">Dijalankan di: <strong>Terminal VM</strong></p>
 
 Bila Anda membuka sesi SSH baru sejak Tahap 19, setel ulang ketiga variabel itu. Variabel shell tidak bertahan antar sesi:
 
@@ -514,10 +490,7 @@ Setelah selesai, image itu muncul pada halaman Artifact Registry. Halaman `katal
 
 ### Tahap 22. Jalankan GeoServer dan Nginx
 
-![docker compose ps menampilkan container yang berjalan](google-cloud-platform/image%2038.png)
-
-
-Dijalankan di: Terminal VM
+<p class="dijalankan">Dijalankan di: <strong>Terminal VM</strong></p>
 
 Jalankan kedua container itu lebih dahulu, tanpa `nextjs`, memakai `--no-deps`. Image `nextjs` belum dibangun pada tahap ini, dan tanpa `--no-deps` compose akan mencoba menariknya.
 
@@ -531,12 +504,11 @@ Kedua barisnya harus berstatus `Up`. GeoServer tetap menampilkan `Up` sejak awal
 
 ### Tahap 23. Keluar dari VM
 
-Dijalankan di: Terminal VM
+<p class="dijalankan">Dijalankan di: <strong>Terminal VM</strong></p>
 
 ```bash
 exit
 ```
-
 
 ---
 

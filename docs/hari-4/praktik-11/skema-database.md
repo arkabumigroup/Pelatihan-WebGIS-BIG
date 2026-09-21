@@ -4,22 +4,11 @@ Halaman ini memuat tiga berkas SQL yang membuat dan memeriksa tabel database. Is
 
 Berkas aslinya juga ada di folder `sql/` pada repositori Anda, dan isinya sama. Bila Anda sudah menjalankan [Tahap 1 hingga 2 pada halaman Konfigurasi Project](/hari-4/praktik-11/konfigurasi-project), berkas itu sudah ada di laptop Anda.
 
-## Jangan membuat tabel secara manual
+## Cara tabel ini dibuat
 
-Tabel dibuat **hanya** dengan menjalankan ketiga berkas SQL di halaman ini. Jangan membuat tabel lewat menu Create New Table pada DBeaver, pgAdmin, atau Table Editor Supabase.
+Ketiga tabel dibuat dengan menjalankan berkas SQL di halaman ini, bukan dengan mengetik kolomnya satu per satu di antarmuka database. Seluruh peserta memakai berkas yang sama, sehingga bentuk tabelnya seragam di semua komputer.
 
-Alasannya, membuat tabel secara manual hanya menghasilkan kolom dan primary key. Yang hilang justru bagian yang menentukan aplikasi berjalan:
-
-| Yang hilang | Akibat |
-|---|---|
-| `DEFAULT 'viewer'` pada kolom `role` | Peran akun baru menjadi kosong |
-| `DEFAULT false` pada `is_active` | Status aktivasi akun baru tidak jelas |
-| `DEFAULT now()` pada `created_at` | Waktu pembuatan akun tidak tercatat |
-| `DEFAULT 'glb'` pada `tipe_file` | Data 3D tersimpan tanpa jenis berkas |
-| `CHECK (role IN (...))` | Peran tidak sah dapat masuk ke database |
-| `UNIQUE` pada `email` | Dua akun dapat memakai email yang sama |
-
-Berkas `01-schema.sql` sudah memuat semuanya, jadi menjalankannya jauh lebih cepat daripada mengisi satu per satu secara manual.
+Bentuknya mengikuti ketentuan ERD pada halaman ini: nama kolom, tipe data, nilai bawaan, aturan `CHECK`, dan kaitannya antar tabel. Aplikasi mengharapkan bentuk itu persis, jadi yang perlu Anda pastikan adalah seluruh berkas di bawah dijalankan sampai selesai.
 
 ## Menjalankan di SQL Editor
 
@@ -37,10 +26,9 @@ Jangan menyalin sebagian, karena `01-schema.sql` dan `02-seed-super-admin.sql` m
 | # | Berkas | Yang dilakukan | Wajib? | Mengubah data? |
 |---|---|---|---|---|
 | 1 | `01-schema.sql` | Membuat tiga tabel: `users`, `katalog_data_2d`, dan `katalog_data_3d` | Ya | Tidak, hanya membuat tabel |
-| 2 | `02-seed-super-admin.sql` | Membuat satu akun super admin untuk login pertama | Ya | Ya, menambah satu akun |
-| 3 | `03-periksa.sql` | Memeriksa hasilnya, hanya membaca | Boleh dilewati | Tidak |
-| 4 | `06-migrasi-peran-viewer.sql` | Memindahkan akun berperan `editor` menjadi `viewer` | Hanya bila database Anda dibuat sebelum peran itu dihapus | Ya, mengubah peran |
-| 5 | `07-aktifkan-rls.sql` | Mengaktifkan Row Level Security | Hanya bila database Anda dibuat sebelum perintah RLS ada di `01-schema.sql` | Ya, mengaktifkan RLS |
+| 2 | Perintah RLS | Mengaktifkan Row Level Security pada ketiga tabel itu | Ya, segera setelah langkah 1 | Tidak, hanya mengubah pengaturan tabel |
+| 3 | `02-seed-super-admin.sql` | Membuat satu akun super admin untuk login pertama | Ya | Ya, menambah satu akun |
+| 4 | `03-periksa.sql` | Memeriksa hasilnya, hanya membaca | Boleh dilewati | Tidak |
 
 ## Tiga Tabel yang Dibuat
 
@@ -176,25 +164,39 @@ COMMIT;
 
 -- Periksa setelah COMMIT: ketiga tabel harus punya primary key, dan katalog_data_2d
 -- harus punya foreign key (contype 'f') ke users.
+```
 
--- Keamanan: RLS pada ketiga tabel. Tanpa ini tabel di schema public bisa dibaca
--- dan diubah lewat REST API Supabase dengan kunci anon, tanpa login. Kunci anon
--- memang dipakai di sisi peramban, jadi yang melindungi bukan kerahasiaannya,
--- melainkan RLS. Diuji: sebelum RLS, peran anon bisa membaca kolom password di
--- tabel users; sesudah RLS, anon dan authenticated tidak melihat satu baris pun.
--- Aplikasi tetap jalan karena Prisma memakai peran postgres, pemilik tabel, dan
--- pemilik tabel melewati RLS. RLS tanpa policy memang itu yang diinginkan: semua
--- akses lewat API aplikasi sendiri.
-BEGIN;
+Berkas ini hanya membuat tabel. Mengaktifkan Row Level Security dikerjakan pada langkah berikutnya, sesaat setelah tabelnya ada.
 
+## Mengaktifkan Row Level Security
+
+Supabase menyediakan REST API otomatis untuk setiap tabel di schema `public`, dan kunci `anon` yang dipakai API itu memang dirancang untuk dipakai di sisi peramban. Yang mencegah penyalahgunaannya adalah Row Level Security, bukan kerahasiaan kunci tersebut.
+
+Jalankan perintah ini di SQL Editor **segera setelah** `01-schema.sql` selesai, selagi tabelnya baru dibuat:
+
+```sql
 ALTER TABLE users           ENABLE ROW LEVEL SECURITY;
 ALTER TABLE katalog_data_2d ENABLE ROW LEVEL SECURITY;
 ALTER TABLE katalog_data_3d ENABLE ROW LEVEL SECURITY;
-
-COMMIT;
-
--- Periksa hasilnya. relrowsecurity harus true untuk ketiga tabel.
 ```
+
+Bila Anda melewatkannya, Supabase menampilkan peringatan `This query creates a table without enabling Row Level Security` saat tabel dibuat, dan peringatan itu benar. Kembalilah ke sini dan jalankan ketiga perintah di atas sebelum melanjutkan.
+
+### Periksa hasilnya
+
+Ketiga tabel harus bernilai `true` pada kolom `rls`, dan view memuat `security_invoker=true` pada kolom `opsi`:
+
+```sql
+SELECT c.relname AS objek, c.relkind AS jenis,
+       c.relrowsecurity AS rls, c.reloptions AS opsi
+FROM pg_class c
+JOIN pg_namespace n ON n.oid = c.relnamespace
+WHERE n.nspname = 'public'
+  AND c.relname IN ('users', 'katalog_data_2d', 'katalog_data_3d', 'v_katalog_2d_lengkap')
+ORDER BY c.relname;
+```
+
+View `v_katalog_2d_lengkap` dibuat memakai `security_invoker = true` pada `01-schema.sql`. Tanpa opsi itu, view berjalan dengan hak pemiliknya, dan karena pemilik tabel melewati RLS, isi katalog tetap dapat dibaca lewat view itu walaupun RLS pada tabelnya sudah menyala.
 
 ## 02-seed-super-admin.sql
 
@@ -417,99 +419,6 @@ Sebagian kolom **memang dibiarkan boleh kosong**, karena nilainya baru terisi se
 | `katalog_data_3d.author` | Boleh kosong untuk data hasil impor |
 
 Query yang menyaring seluruh kolom `is_nullable = 'YES'` akan **selalu berisi** walaupun skemanya sudah benar. Diuji pada Supabase dengan skema yang benar, query semacam itu mengembalikan **sebelas baris**, dan itu bukan tanda ada yang salah.
-
-## Row Level Security
-
-Saat menjalankan `01-schema.sql`, Supabase mungkin menampilkan peringatan seperti ini:
-
-```
-This query creates a table without enabling Row Level Security.
-Clients using anon or authenticated keys may be able to access users.
-```
-
-Peringatan itu benar, dan berkas SQL di halaman ini sudah menanganinya. Tiga perintah terakhir pada `01-schema.sql` mengaktifkan Row Level Security pada ketiga tabel:
-
-```sql
-ALTER TABLE users           ENABLE ROW LEVEL SECURITY;
-ALTER TABLE katalog_data_2d ENABLE ROW LEVEL SECURITY;
-ALTER TABLE katalog_data_3d ENABLE ROW LEVEL SECURITY;
-```
-
-Jadi bila Anda menjalankan berkas itu seluruhnya, **tidak ada yang perlu Anda putuskan**. Peringatan itu muncul karena Supabase memeriksa perintah `CREATE TABLE` saja, dan tidak melihat perintah `ALTER TABLE` yang menyusul.
-
-### Mengapa ini perlu
-
-Supabase menyediakan REST API otomatis untuk setiap tabel di schema `public`. Kunci `anon` yang dipakai API itu memang dirancang untuk dipakai di sisi peramban, sehingga nilainya tidak dianggap rahasia. Yang mencegah penyalahgunaan adalah Row Level Security, bukan kerahasiaan kunci tersebut.
-
-Diuji pada project Supabase sungguhan:
-
-| Keadaan | Hasil |
-|---|---|
-| Sebelum RLS | Peran `anon` dapat membaca kolom `password`, dan memiliki izin `SELECT`, `INSERT`, `UPDATE`, `DELETE`, serta `TRUNCATE` pada tabel `users` |
-| Sesudah RLS | Peran `anon` dan `authenticated` tidak melihat satu baris pun |
-| Aplikasi | Tetap berjalan normal, karena koneksi Prisma memakai peran `postgres` yang merupakan pemilik tabel, dan pemilik tabel melewati RLS secara bawaan |
-
-Artinya tanpa RLS, siapa pun yang memegang kunci `anon` dapat membaca seluruh akun beserta hash kata sandinya, dan dapat mengubah atau menghapusnya.
-
-RLS tanpa policy berarti menutup akses bagi semua peran selain pemilik. Itu memang yang diinginkan di sini: seluruh akses data dilakukan lewat API aplikasi sendiri, yang sudah memeriksa token dan peran pengguna.
-
-### View juga perlu ditangani
-
-Mengaktifkan RLS pada tabel saja belum cukup. Berkas SQL ini juga membuat satu view, `v_katalog_2d_lengkap`, yang menggabungkan katalog 2D dengan data penulisnya.
-
-Bawaannya, view di PostgreSQL berjalan dengan hak **pemiliknya**, bukan hak pemanggilnya. Karena pemilik tabel melewati RLS, view membuat kebijakan pada tabel di bawahnya tidak berlaku. Diuji pada project Supabase sungguhan, dengan satu baris berakses `private`:
-
-| Yang dibaca | Peran `anon` melihat |
-|---|---|
-| Tabel `katalog_data_2d` | kosong, 0 baris |
-| View `v_katalog_2d_lengkap` | **1 baris, termasuk yang berakses `private`**, beserta nama dan email penulisnya |
-
-Jadi tanpa penanganan khusus, seluruh isi katalog masih dapat dibaca lewat view itu.
-
-Karena itulah view dibuat memakai `security_invoker = true`, sehingga berjalan dengan hak pemanggilnya dan RLS ikut berlaku. Opsi ini tersedia sejak PostgreSQL 15, dan Supabase memakai PostgreSQL 15 atau lebih baru.
-
-Setelah perbaikan:
-
-| Peran | Tabel | View |
-|---|---|---|
-| `anon` | 0 baris | 0 baris |
-| `authenticated` | 0 baris | 0 baris |
-| `postgres` (pemilik) | 1 baris | 1 baris |
-
-Aplikasi tidak terpengaruh, karena koneksi Prisma memakai peran `postgres`, dan view itu sendiri tidak dipanggil kode aplikasi mana pun.
-
-### Bila tabel Anda dibuat sebelum bagian ini ada
-
-Jalankan `07-aktifkan-rls.sql`. Berkas itu hanya mengaktifkan RLS, tanpa mengubah data.
-
-### Periksa hasilnya
-
-Jalankan di SQL Editor. Ketiga baris harus bernilai `true`:
-
-```sql
-SELECT c.relname AS objek, c.relkind AS jenis,
-       c.relrowsecurity AS rls, c.reloptions AS opsi
-FROM pg_class c
-JOIN pg_namespace n ON n.oid = c.relnamespace
-WHERE n.nspname = 'public'
-  AND c.relname IN ('users', 'katalog_data_2d', 'katalog_data_3d', 'v_katalog_2d_lengkap')
-ORDER BY c.relname;
-```
-
-Harapannya: ketiga tabel bernilai `rls = true`, dan view memuat `security_invoker=true` pada kolom `opsi`.
-
-## Berkas SQL Lainnya
-
-Selain berkas di atas, folder `sql/` pada repositori Anda memuat tiga berkas yang dipakai pada keperluan tertentu. Ketiganya tidak diperlukan untuk menyiapkan database dan menjalankan portal, tetapi berguna saat Anda menemui masalah.
-
-| Berkas | Untuk apa | Kapan dipakai |
-|---|---|---|
-| `04-postgis-supabase.sql` | Memasang PostGIS di Supabase, termasuk mengatasi `search_path` yang tidak dapat diubah lewat `ALTER DATABASE` | Saat mengerjakan data spasial di Hari 2 |
-| `05-diagnosa-constraint.sql` | Memeriksa sepuluh hal sekaligus, lalu menyimpulkan gejala mana menunjuk ke perbaikan mana | Saat ada kegagalan constraint yang sulit dilacak |
-| `06-migrasi-peran-viewer.sql` | Memindahkan akun berperan `editor` menjadi `viewer`, dan menyesuaikan nilai bawaan serta `CHECK` | Hanya bila database Anda dibuat sebelum peran `editor` dihapus |
-| `07-aktifkan-rls.sql` | Mengaktifkan Row Level Security pada tabel dan view | Hanya bila tabel Anda dibuat sebelum perintah itu ada di `01-schema.sql` |
-
-Penjelasan lengkap tiap berkas ada di `sql/README.md` pada repositori Anda.
 
 ## Jumlah Constraint Berbeda Menurut Versi PostgreSQL
 

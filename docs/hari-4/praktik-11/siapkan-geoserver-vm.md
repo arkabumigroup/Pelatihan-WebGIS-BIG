@@ -17,6 +17,8 @@ Bila Cloud Shell sudah berganti, jalankan ulang blok **Tahap 2** pada halaman [P
 
 Keduanya dibuat di SQL Editor Supabase, dan keduanya wajib ada.
 
+<p class="dijalankan">Dijalankan di: <strong>SQL Editor Supabase</strong></p>
+
 ```sql
 -- PostGIS harus berada di schema public
 CREATE EXTENSION IF NOT EXISTS postgis WITH SCHEMA public;
@@ -64,7 +66,7 @@ Bila PostGIS tidak ada di salah satu schema itu, unggahan layer gagal dengan pes
 
 ## Tahap 2. Atur alamat publik GeoServer
 
-Dijalankan di: Terminal VM
+<p class="dijalankan">Dijalankan di: <strong>Terminal VM</strong></p>
 
 Langkah ini **wajib**, dan tanpa itu tidak ada yang dapat masuk ke antarmuka GeoServer.
 
@@ -126,7 +128,7 @@ Workspace dan layer Anda tetap aman, karena tersimpan pada volume `./geoserver-d
 
 ## Tahap 3. Masuk ke antarmuka GeoServer
 
-Dijalankan di: Browser
+<p class="dijalankan">Dijalankan di: <strong>Browser</strong></p>
 
 Buka `https://SUBDOMAIN/geoserver/web`, lalu masuk dengan:
 
@@ -137,7 +139,7 @@ Buka `https://SUBDOMAIN/geoserver/web`, lalu masuk dengan:
 
 ## Tahap 3b. Izinkan formulir dari subdomain Anda
 
-Dijalankan di: Terminal VM
+<p class="dijalankan">Dijalankan di: <strong>Terminal VM</strong></p>
 
 GeoServer memakai filter CSRF yang menolak formulir yang `Origin`-nya tidak dikenal. Karena permintaan melewati nginx, GeoServer melihat alamat publik Anda, bukan `localhost`, dan alamat itu belum ada pada daftar izin bawaannya.
 
@@ -203,7 +205,7 @@ Mencoba membuat workspace lewat `https://IP_VM/geoserver/web` akan gagal dengan 
 
 ## Tahap 4. Buat workspace
 
-Dijalankan di: Antarmuka GeoServer
+<p class="dijalankan">Dijalankan di: <strong>Antarmuka GeoServer</strong></p>
 
 ```
 Data > Workspaces > Add new workspace
@@ -218,7 +220,7 @@ Nama `geoportal` harus sama persis dengan `GEOSERVER_WORKSPACE` pada `.env`.
 
 ## Tahap 5. Buat datastore PostGIS
 
-Dijalankan di: Antarmuka GeoServer
+<p class="dijalankan">Dijalankan di: <strong>Antarmuka GeoServer</strong></p>
 
 ```
 Stores > Add new Store > PostGIS
@@ -250,7 +252,7 @@ Nilai `Data Source Name` harus sama persis dengan `GEOSERVER_POSTGIS_DATASTORE` 
 
 ## Tahap 6. Uji koneksi datastore
 
-Dijalankan di: Antarmuka GeoServer
+<p class="dijalankan">Dijalankan di: <strong>Antarmuka GeoServer</strong></p>
 
 ```
 Stores > postgis_geoportal > Edit > Test Connection
@@ -266,7 +268,7 @@ Hapus datastore itu, lalu buat ulang dengan nilai yang sudah benar.
 
 ## Tahap 7. Unggah layer dari Geoportal
 
-Dijalankan di: Browser
+<p class="dijalankan">Dijalankan di: <strong>Browser</strong></p>
 
 Buka `https://SUBDOMAIN/portal`, masuk, lalu unggah layer 2D dari menu **Katalog Data 2D**.
 
@@ -282,7 +284,7 @@ Periksa hasilnya:
 
 ## Tahap 8. Siapkan folder penyimpanan model 3D
 
-Dijalankan di: Terminal VM
+<p class="dijalankan">Dijalankan di: <strong>Terminal VM</strong></p>
 
 Model 3D disimpan sebagai berkas di VM, bukan di database. Baris katalognya ada di Supabase, tetapi berkasnya ada di folder `data/models` pada VM.
 
