@@ -279,7 +279,7 @@ Seluruhnya sudah diperbaiki pada panduan. Bagian ini dicatat karena dua alasan: 
 | 19 | Blok `server` ditulis ke berkas yang dimuat di dalam blok `server` | `"server" directive is not allowed here` |
 | 20 | Pengalihan HTTP ke HTTPS diperiksa Tahap 14, tetapi tidak pernah disiapkan | Kata sandi login dapat terkirim tanpa enkripsi |
 | 21 | `proxyBaseUrl` GeoServer tidak pernah disetel | Setelah HTTPS aktif, formulir login GeoServer mengirim ke HTTP, isinya dibuang browser, dan kata sandi yang benar ditolak |
-| 22 | `GEOSERVER_CSRF_WHITELIST` tidak ada pada `docker-compose.yml` | Seluruh formulir GeoServer ditolak `HTTP 400 Origin does not correspond to request`, sehingga workspace dan datastore tidak dapat dibuat |
+| 22 | `CSRF_WHITELIST` tidak ada pada `docker-compose.yml`, dan namanya sempat ditulis dengan awalan `GEOSERVER_` | Seluruh formulir GeoServer ditolak `HTTP 400 Origin does not correspond to request`, sehingga workspace dan datastore tidak dapat dibuat. Awalan itu membuat nilainya kosong tanpa pesan galat apa pun |
 | 23 | Service `nextjs` tidak memakai volume untuk `data/models` | Model 3D ditulis ke dalam container dan **hilang pada setiap deploy**, sedangkan barisnya tetap ada di database |
 | 24 | Token Cesium Ion ditulis di dalam kode pada lima komponen | Token ikut ter-commit, dan peserta tidak dapat menggantinya dengan token sendiri |
 | 25 | Level tile OpenStreetMap tidak dibatasi pada provider Cesium | Cesium meminta level 20 sampai 26, OSM menjawab `400`, dan seluruh peta gagal terbentuk |
@@ -294,12 +294,15 @@ Seluruhnya sudah diperbaiki pada panduan. Bagian ini dicatat karena dua alasan: 
 | 34 | Repositori peserta kehilangan 22 berkas dibanding repositori instruktur | Fitur ubah data, kelola akun lengkap, profil, ganti kata sandi, proxy GeoServer, dan katalog publik tidak ada, sehingga peserta tidak dapat mengerjakannya |
 | 35 | Repositori peserta memakai nama kolom berbeda dari repositori instruktur | Instruktur memakai `model_name` dan `name`, repositori kita memakai `nama`. Menyalin berkas instruktur tanpa penyesuaian akan gagal dengan `Unknown field` |
 | 36 | Instruktur menambahkan `URL_BASE_PATH` dan `CESIUM_ION_TOKEN` pada `.env` lokalnya | Namanya berbeda dari repositori kita, yang memakai awalan `NEXT_PUBLIC_`. Dua berkas ini tidak boleh saling ditukar |
+| 37 | Skrip cadangan Tahap 3b menambat pada baris `GEOSERVER_CORS_ALLOWED_ORIGINS`, yang sudah dihapus saat temuan 22 diperbaiki | Skrip berhenti dengan `StopIteration`, sehingga peserta yang membutuhkannya tidak punya jalan keluar. Blok itu juga mengubah `docker-compose.yml` langsung di VM, dan salinan git yang kotor membuat `git pull --ff-only` pada halaman Penambahan Subdomain menolak berjalan |
 
 ### Temuan dari pengujian alur 3D
 
 Temuan 21 sampai 25 muncul berurutan saat peserta menguji unggah dan pratinjau model 3D. Keempatnya saling menutupi, sehingga gejalanya terlihat sebagai satu masalah yang sama.
 
-Gejala pertama adalah **halaman admin GeoServer tidak dapat dibuka** setelah HTTPS aktif. Penyebabnya `proxyBaseUrl` yang belum disetel, sehingga formulir login mengirim ke HTTP dan isinya dibuang browser. Setelah itu diperbaiki, muncul gejala berikutnya: **pembuatan workspace ditolak** dengan `400`, karena `GEOSERVER_CSRF_WHITELIST` belum ada.
+Gejala pertama adalah **halaman admin GeoServer tidak dapat dibuka** setelah HTTPS aktif. Penyebabnya `proxyBaseUrl` yang belum disetel, sehingga formulir login mengirim ke HTTP dan isinya dibuang browser. Setelah itu diperbaiki, muncul gejala berikutnya: **pembuatan workspace ditolak** dengan `400`, karena whitelist CSRF belum terpasang.
+
+Perbaikan pertamanya menuliskan variabel itu sebagai `GEOSERVER_CSRF_WHITELIST`, mengikuti nama sifat Java yang dipakai GeoServer. Container tetap menyala dan GeoServer tetap berjalan, tetapi whitelist tidak terpasang, sehingga gejalanya kembali. Penyebabnya ada pada `scripts/entrypoint.sh` baris 93 milik image kartoza: yang dibaca adalah `CSRF_WHITELIST` tanpa awalan, lalu baru diteruskan sebagai `-DGEOSERVER_CSRF_WHITELIST`. Nama yang benar sudah dipakai pada repositori peserta.
 
 Setelah keduanya beres dan layer 2D berhasil diunggah, muncul gejala ketiga: **model 3D hilang setelah deploy**. Penyebabnya service `nextjs` tidak memakai volume, sehingga berkas ditulis ke dalam container.
 
@@ -413,6 +416,35 @@ Dua catatan dari pengujian ini.
 
 **Tiga kali pengujian awal melaporkan kegagalan palsu.** Rute ubah 3D mengekspor `POST` dan membaca `FormData`, sedangkan pengujian pertama memakai `PATCH` lalu JSON. Rute ganti kata sandi memakai nama field `password_lama` dan `password_baru`, bukan `old_password`. Rute ubah 2D mensyaratkan `layer_name` berformat `workspace:tabel`. Ketiganya kesalahan pengujian, bukan kesalahan kode, dan sudah diperiksa ulang dengan bentuk permintaan yang benar.
 
+### Pengujian alur deployment ujung ke ujung
+
+Panduan Hari 3 diuji dengan menjalankannya, bukan dengan membacanya. Pengujian memakai satu peserta sungguhan pada salah satu project kelompok, dengan izin pemiliknya.
+
+| Bagian | Yang dipakai |
+|---|---|
+| Project | Salah satu project kelompok, terpisah dari project peserta lain |
+| Identitas peserta | `ujialur`, sehingga seluruh nama resource memakai akhiran itu |
+| Region | `asia-southeast1`, karena kuota alamat IP statis di region kelas sudah penuh |
+| Alamat uji | Subdomain `webgisbig.com` dibuat di Cloudflare, dan penerbitan sertifikat diuji pada alamat `nip.io` yang menunjuk ke IP VM yang sama |
+
+Hasilnya:
+
+| Tahap | Hasil |
+|---|---|
+| Pembuatan VM, IP statis, dan aturan firewall | Berhasil |
+| Pemasangan Docker, Git, dan gcloud di VM | Berhasil |
+| Clone, pengisian `.env`, dan pemeriksaannya | Berhasil |
+| Build dan push image ke Artifact Registry | Berhasil |
+| `docker compose up` untuk ketiga service | Berhasil. `/portal` menjawab `200`, `/geoserver/web` menjawab `302` |
+| Workspace dan datastore GeoServer ke Supabase | Berhasil, `HTTP 201` |
+| Penerbitan sertifikat Let's Encrypt | Berhasil, sertifikat sungguhan berlaku sampai 20 Desember 2026 |
+| Pengalihan HTTP ke HTTPS | Berhasil |
+| Perpanjangan otomatis | `certbot renew --dry-run` melaporkan seluruh perpanjangan berhasil |
+
+Seluruh VM, alamat IP, dan image uji dihapus setelah selesai. Dua belas VM peserta diperiksa dan tidak disentuh.
+
+**Satu jebakan ditemukan di sini.** Let's Encrypt menolak alamat email yang domainnya tidak terdaftar, misalnya `admin@uji.local`. Yang membuatnya berbahaya: `certbot --dry-run` **menerima** alamat itu, sehingga uji coba menyatakan berhasil dan peserta mengira semuanya beres. Penolakan baru muncul saat penerbitan sungguhan, dengan pesan `Unable to register an account with ACME server`, dan sebab sebenarnya hanya terlihat di `/var/log/letsencrypt/letsencrypt.log`. Peringatannya sekarang ada pada halaman Penambahan Subdomain.
+
 ### Yang belum dikerjakan
 
 Empat endpoint tanpa kode pada temuan 6 sudah lengkap berkasnya, seluruhnya ikut masuk saat fitur yang hilang dikerjakan. Yang tersisa hanya satu keputusan: metode `PATCH` atau `POST` untuk update data 3D. Rinciannya ada pada bagian **Keadaan setelah fitur dilengkapi** di temuan 6.
@@ -420,6 +452,18 @@ Empat endpoint tanpa kode pada temuan 6 sudah lengkap berkasnya, seluruhnya ikut
 Port fitur pada temuan 32 sampai 34 sudah dikerjakan dan sudah tergabung. Berkas yang disalin dari repositori instruktur disesuaikan lebih dahulu pada nama kolom dan gaya komentarnya, karena repositori kita sudah menyimpang cukup jauh. Dua perubahan pada repositori instruktur sengaja **tidak** diikuti karena merugikan: penghapusan kontrol Basemap dan Zoom dari `MapComponent`, serta pemindahan dialog kelola akun ke tiga komponen yang memakai metode HTTP berbeda dari route yang ada.
 
 `docs/.vitepress/dist` sudah tidak lagi terlacak, dan `docs/.gitignore` mengabaikannya bersama `.vitepress/cache`, sehingga hasil build tidak ikut ter-commit lagi.
+
+### Tahap panduan yang belum diuji
+
+Pengujian ujung ke ujung tidak menjangkau seluruh tahap. Tiga kelompok tahap berikut masih terbuka, dan sebaiknya dicoba sebelum pelatihan berikutnya.
+
+| Halaman | Tahap | Sebab belum diuji |
+|---|---|---|
+| Otomatisasi Cloud Build | Tahap 24 sampai 32 | Membutuhkan sambungan GitHub pada project, dan menjalankannya akan memicu deploy sungguhan |
+| Menyiapkan GeoServer di VM | Tahap 3 sampai 6, dan Tahap 7 | Dikerjakan lewat antarmuka peramban. Pembuatan workspace dan datastore diuji lewat API dengan `HTTP 201`, bukan dengan mengklik antarmukanya |
+| Konfigurasi Project | Tahap 2 sampai 10 | Dikerjakan di laptop dengan project Supabase masing-masing. Skema dan aplikasinya diuji pada database sekali pakai, bukan pada project Supabase yang baru dibuat |
+
+Sisanya, yaitu Tahap 3 sampai 23 pada halaman Google Cloud Platform dan Menyiapkan Aplikasi di VM, serta Tahap 1 sampai 14 pada halaman Penambahan Subdomain, sudah dijalankan seluruhnya.
 
 ## Catatan Pengerjaan
 
@@ -449,14 +493,14 @@ Menyusul pengujian Hari 3 ujung ke ujung, ditambahkan pula:
 - Skema SQL dibuat sadar-versi untuk jumlah constraint PostgreSQL
 - Isian Skala dan Arah dibatasi bilangan bulat, karena sebagian database memakai kolom `integer`
 - `proxyBaseUrl` GeoServer disetel ke alamat HTTPS, dan langkahnya masuk Tahap 2 halaman Menyiapkan GeoServer di VM
-- `GEOSERVER_CSRF_WHITELIST` ditambahkan pada service geoserver
+- `CSRF_WHITELIST=webgisbig.com` ditambahkan pada service geoserver, dengan nama tanpa awalan `GEOSERVER_` karena itulah yang dibaca image kartoza
 - Volume `./data:/app/data` ditambahkan pada service nextjs, beserta Tahap 8 untuk pemilik foldernya
 - Token Cesium Ion dipindahkan dari kode ke `.env` dan build argument `_CESIUM_ION_TOKEN`
 - Level tile OpenStreetMap dibatasi 19 pada tujuh provider Cesium
 - Kolom pitch dan roll dikembalikan ke formulir, beserta `DEFAULT_FORM` yang lengkap
 - Tahap 13 diubah menjadi keempat variabel, disertai langkah SQL untuk baris database yang sudah ada
 
-Yang **belum** dikerjakan, karena menunggu jawaban: keempat endpoint tanpa kode pada temuan 6.
+Yang **belum** dikerjakan tinggal satu keputusan, yaitu metode `PATCH` atau `POST` untuk update data 3D. Rinciannya ada pada temuan 6.
 
 ### Cara memeriksa ulang
 

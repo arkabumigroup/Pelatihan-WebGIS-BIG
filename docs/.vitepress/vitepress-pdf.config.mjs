@@ -3,12 +3,11 @@ import { dirname, join, relative, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { BASE, sorter, pdfOptions, puppeteerLaunchOptions } from './pdf-bersama.mjs'
 
-// Konfigurasi bawaan: hanya bagian Deployment Project, yaitu enam halaman
-// pada sidebar Hari 3. Dipakai oleh `npm run export-pdf`.
+// Konfigurasi bawaan: hanya bagian Deployment Project pada sidebar Hari 3,
+// yang berisi sembilan halaman. Dipakai oleh `npm run export-pdf`.
 //
-// Urutannya mengikuti nomor pada sidebar: Peserta dan Project, Konfigurasi
-// Project, Skema Database, Google Cloud Platform, Penambahan Subdomain, lalu
-// Menyiapkan GeoServer di VM.
+// Urutan halamannya tidak ditulis di sini. `sorter` pada pdf-bersama.mjs
+// mengambilnya dari urutan sidebar, sehingga tidak perlu disamakan manual.
 
 const AKAR_DOCS = join(dirname(fileURLToPath(import.meta.url)), '..')
 const BAGIAN = 'hari-3/deployment-project'
@@ -19,7 +18,7 @@ const BAGIAN = 'hari-3/deployment-project'
 //
 // Rute yang dibandingkan memuat base, jadi pengecualiannya pun harus memuat
 // base. Daftarnya dibaca dari berkas di disk, bukan ditulis manual, supaya
-// halaman yang ditambahkan kemudian ikut terkeccuali dengan sendirinya.
+// halaman yang ditambahkan kemudian ikut terkecuali dengan sendirinya.
 function daftarHalaman(dir, akar, hasil = []) {
   for (const entri of readdirSync(dir, { withFileTypes: true })) {
     if (entri.name === '.vitepress' || entri.name === 'public') continue

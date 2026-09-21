@@ -176,43 +176,24 @@ Periksa dengan perintah ini:
 
 ```bash
 cd /opt/webgis/app
-grep -n 'CSRF_WHITELIST' docker-compose.yml
+grep -nE '^[[:space:]]*-[[:space:]]*[A-Z_]*CSRF_WHITELIST=' docker-compose.yml
 ```
 
-Keluarannya harus menunjukkan baris itu berada di dalam blok `environment:` milik service `geoserver`, seperti ini:
+Keluarannya harus tepat satu baris, dan namanya tanpa awalan `GEOSERVER_`:
 
-```yaml
+```text
       - CSRF_WHITELIST=webgisbig.com
 ```
 
-Bila baris itu **tidak muncul**, tambahkan dengan blok berikut. Blok ini menyisipkannya tepat di bawah `GEOSERVER_CORS_ALLOWED_ORIGINS`, sehingga induknya dipastikan benar:
+Bila barisnya tidak ada, atau namanya masih berawalan `GEOSERVER_`, fork Anda belum memuat perbaikan itu. Selaraskan fork lewat **Fetch origin** lalu **Pull origin** di GitHub Desktop, kemudian tarik di VM:
 
 ```bash
 cd /opt/webgis/app
-python3 - <<'PY2'
-p = 'docker-compose.yml'
-baris = open(p).read().split('\n')
-baris = [b for b in baris if 'CSRF_WHITELIST' not in b]
-i = next(k for k, b in enumerate(baris) if 'GEOSERVER_CORS_ALLOWED_ORIGINS' in b)
-indent = ' ' * (len(baris[i]) - len(baris[i].lstrip()))
-baris.insert(i + 1, f'{indent}- CSRF_WHITELIST=webgisbig.com')
-open(p, 'w').write('\n'.join(baris))
-PY2
-
+git pull --ff-only
 sudo docker compose up -d --force-recreate geoserver
 ```
 
-::: warning Perhatikan posisi barisnya
-Di YAML, arti sebuah baris ditentukan oleh induknya. Baris `- sesuatu` di bawah `environment:` adalah variabel lingkungan, sedangkan di bawah `volumes:` adalah folder yang di-mount. Bentuknya sama, hanya beda induk.
-
-Bila baris itu masuk ke bagian `volumes:`, pembuatan ulang container gagal dengan:
-
-```text
-invalid mount path: 'CSRF_WHITELIST=webgisbig.com' mount path must be absolute
-```
-
-Periksa dengan `sed -n '/^  geoserver:/,/^  nginx:/p' docker-compose.yml`, dan pastikan barisnya berada di bawah `environment:`.
-:::
+Jangan membetulkannya langsung di VM. Salinan git di sana menjadi kotor, dan `git pull --ff-only` pada halaman Penambahan Subdomain akan menolak berjalan.
 
 ::: tip Alamat IP tidak termasuk daftar izin
 Whitelist itu memuat `webgisbig.com` beserta subdomainnya, **tetapi tidak memuat alamat IP VM**.
