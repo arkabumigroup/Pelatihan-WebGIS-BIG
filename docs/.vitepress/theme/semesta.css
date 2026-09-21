@@ -1,0 +1,141 @@
+/* =====================================================================
+   Lapisan semesta
+   Latar situs, dipisahkan dari custom.css karena urusannya berbeda:
+   custom.css mengatur komponen, berkas ini mengatur ruang di belakangnya.
+
+   Alasan latar ini ada, dan mengapa bentuknya bintang serta garis
+   koordinat: Praktik 1 mengajarkan sistem koordinat dan bola bumi, dan
+   seluruh pelatihan bekerja dengan citra satelit. Garis meridian dan
+   paralel adalah kerangka koordinat yang dipakai peserta, dan titik
+   bintang mewakili sisi penginderaan jauhnya. Jadi latarnya bukan hiasan
+   antariksa umum, melainkan kerangka kerja yang sama dengan isi materinya.
+
+   Halaman baca tetap menjadi kertas pekat di atas latar itu, sehingga
+   tidak ada satu kata pun yang duduk di atas bintang.
+   ===================================================================== */
+
+:root {
+  /* Ruang di belakang kertas. Lebih gelap dari kertas supaya halaman
+     bacanya terbaca melayang, bukan menempel. */
+  --semesta-latar: #e7e2d7;
+  --semesta-bintang: rgba(17, 17, 17, 0.55);
+  --semesta-nebula-a: rgba(16, 112, 176, 0.10);
+  --semesta-nebula-b: rgba(0, 48, 96, 0.08);
+  --semesta-nebula-c: rgba(224, 128, 0, 0.06);
+
+  /* Kerangka bola bumi: lingkaran, empat meridian, dan empat paralel.
+     Bentuknya sengaja bulat, bukan kisi persegi, karena yang digambarkan
+     adalah kerangka koordinat bola yang dipakai pada Praktik 1. */
+  --semesta-bola: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400'><g fill='none' stroke='%23111111' stroke-width='0.7'><circle cx='200' cy='200' r='150'/><ellipse cx='200' cy='200' rx='112' ry='150'/><ellipse cx='200' cy='200' rx='56' ry='150'/><line x1='200' y1='50' x2='200' y2='350'/><ellipse cx='200' cy='200' rx='150' ry='112'/><ellipse cx='200' cy='200' rx='150' ry='56'/><line x1='50' y1='200' x2='350' y2='200'/></g></svg>");
+}
+
+.dark {
+  --semesta-latar: #0b0d12;
+  --semesta-bintang: rgba(255, 255, 255, 0.85);
+  --semesta-nebula-a: rgba(16, 112, 176, 0.22);
+  --semesta-nebula-b: rgba(0, 48, 96, 0.38);
+  --semesta-nebula-c: rgba(224, 128, 0, 0.10);
+  --semesta-bola: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400'><g fill='none' stroke='%23e8e6e1' stroke-width='0.7'><circle cx='200' cy='200' r='150'/><ellipse cx='200' cy='200' rx='112' ry='150'/><ellipse cx='200' cy='200' rx='56' ry='150'/><line x1='200' y1='50' x2='200' y2='350'/><ellipse cx='200' cy='200' rx='150' ry='112'/><ellipse cx='200' cy='200' rx='150' ry='56'/><line x1='50' y1='200' x2='350' y2='200'/></g></svg>");
+}
+
+/* Latar tidak ikut menggulir dan tidak menangkap klik. Titik bintangnya
+   dibentuk dari beberapa lapis gradien radial dengan ukuran ubin berbeda,
+   sehingga tidak tersusun seperti kisi dan tidak perlu berkas gambar. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background-color: var(--semesta-latar);
+  background-image:
+    radial-gradient(1.6px 1.6px at 18% 24%, var(--semesta-bintang) 50%, transparent 51%),
+    radial-gradient(1.2px 1.2px at 72% 12%, var(--semesta-bintang) 50%, transparent 51%),
+    radial-gradient(1.8px 1.8px at 44% 68%, var(--semesta-bintang) 50%, transparent 51%),
+    radial-gradient(1px 1px at 88% 52%, var(--semesta-bintang) 50%, transparent 51%),
+    radial-gradient(1.4px 1.4px at 8% 82%, var(--semesta-bintang) 50%, transparent 51%),
+    radial-gradient(1px 1px at 62% 92%, var(--semesta-bintang) 50%, transparent 51%),
+    radial-gradient(1.2px 1.2px at 32% 44%, var(--semesta-bintang) 50%, transparent 51%);
+  /* Ubinnya sengaja tidak sama besar, supaya bintangnya tidak berbaris
+     rapi seperti kisi. */
+  background-size:
+    397px 397px, 523px 523px, 311px 311px, 641px 641px,
+    449px 449px, 283px 283px, 577px 577px;
+  background-repeat: repeat;
+}
+
+/* Kerangka bola dan cahaya nebula, dipisahkan dari bintangnya supaya bisa
+   diberi kepekatan sendiri. Keduanya hanya muncul di ruang kosong di sekitar
+   halaman baca, bukan di belakang teks. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    var(--semesta-bola),
+    var(--semesta-bola),
+    radial-gradient(70% 55% at 12% 8%, var(--semesta-nebula-a), transparent 70%),
+    radial-gradient(60% 50% at 92% 18%, var(--semesta-nebula-b), transparent 72%),
+    radial-gradient(45% 40% at 68% 96%, var(--semesta-nebula-c), transparent 70%);
+  background-size: 620px 620px, 340px 340px, 100% 100%, 100% 100%, 100% 100%;
+  background-position: -180px 62%, 104% -120px, 0 0, 0 0, 0 0;
+  background-repeat: no-repeat;
+  opacity: 0.16;
+}
+
+.dark body::after {
+  opacity: 0.22;
+}
+
+/* Halaman baca menjadi kertas pekat di atas latar itu. Garis dan bayangannya
+   sama dengan blok lain di situs, sehingga terbaca sebagai satu lembar yang
+   melayang, bukan sebagai kotak baru. */
+.VPDoc .content-container {
+  background-color: var(--pelatihan-kertas);
+  border: var(--pelatihan-tebal) solid var(--pelatihan-garis);
+  border-radius: var(--pelatihan-radius);
+  box-shadow: var(--pelatihan-bayangan-jauh-besar) var(--pelatihan-bayangan-jauh-besar) 0 var(--pelatihan-bayangan);
+  padding: 32px 40px;
+  margin-bottom: 48px;
+}
+
+/* Kepala halaman dan daftar isi ikut menjadi kertas, sehingga tidak ada teks
+   yang duduk langsung di atas bintang. */
+.VPDocAside .aside-curtain,
+.VPDocAside .aside-content {
+  background-color: transparent;
+}
+
+/* Di layar sempit, halaman baca memakai seluruh lebar dan bingkainya hanya
+   menyisakan ruang. Bingkainya dilepas, latarnya tetap ada di belakang. */
+@media (max-width: 767px) {
+  .VPDoc .content-container,
+  .VPHome > .vp-doc {
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 24px 20px;
+  }
+}
+
+/* Saat dicetak, latar semesta tidak ikut tercetak, dan halaman baca kembali
+   menjadi lembar biasa tanpa bingkai. */
+@media print {
+  body::before,
+  body::after {
+    display: none !important;
+  }
+
+  .VPDoc .content-container {
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    background: none !important;
+  }
+}
+
+/* Gerakan dikurangi tidak mengubah apa pun di sini, karena latarnya memang
+   tidak bergerak. Latar yang bergerak akan mengganggu peserta yang membaca
+   sambil mengetik perintah. */

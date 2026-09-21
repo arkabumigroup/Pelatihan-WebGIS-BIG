@@ -190,6 +190,55 @@ melalui `prefers-reduced-motion`.
 
 ---
 
+## Latar: kerangka bola di ruang gelap
+
+Halaman baca berdiri sebagai lembar kertas pekat di atas latar yang lebih
+gelap, sehingga terlihat melayang. Latarnya memuat tiga hal, dan ketiganya
+mempunyai alasan yang berasal dari isi pelatihan, bukan dari selera antariksa
+umum:
+
+| Unsur | Alasan |
+|---|---|
+| Titik bintang | Pelatihan ini bekerja dengan citra satelit dan penginderaan jauh. Bintang mewakili sisi data yang datang dari atas |
+| Kerangka bola, berupa lingkaran dengan meridian dan paralel | Praktik 1 mengajarkan sistem koordinat dan bola bumi. Bentuknya sengaja bulat, bukan kisi persegi, karena kisi persegi hanya terbaca sebagai kertas grafik |
+| Cahaya nebula | Memberi kedalaman pada latar, supaya halaman bacanya terbaca berada di depan, bukan menempel pada satu bidang datar |
+
+Warnanya tetap tiga warna logo: navy dan biru langit untuk cahayanya, oranye
+dipakai sangat sedikit pada satu sudut.
+
+**Latar ini tidak bergerak.** Tidak ada bintang berkelip, tidak ada parallax
+saat menggulir. Alasannya ada pada dial MOTION: peserta membaca sambil
+mengetik perintah, dan latar yang bergerak menarik mata ke tempat yang salah.
+Kesan hidup datang dari gerakan pada elemen yang disentuh, bukan dari latar.
+
+Bentuknya dibuat dari gradien dan satu berkas SVG kecil di dalam CSS, tanpa
+berkas gambar dan tanpa pustaka animasi. Alasannya sama dengan alasan font
+sistem: halaman harus tetap ringan pada koneksi pelatihan.
+
+Yang **tidak** dipakai: latar bergrid persegi, bintang berkelip, parallax,
+dan gambar nebula hasil unduhan.
+
+---
+
+## Warna penanda tempat menjalankan
+
+Setiap tahap pada materi deployment diawali penanda tempat perintahnya
+dijalankan. Penandanya memakai empat warna, bukan satu warna, karena
+menemukan "apakah ini di VM atau di Cloud Shell" harus terjadi sebelum
+perintahnya disalin.
+
+| Tempat | Warna | Alasan |
+|---|---|---|
+| Laptop dan peramban sendiri | Tinta pekat | Titik awal pekerjaan, dan yang paling dekat dengan peserta |
+| Cloud Shell dan konsol Google Cloud | Biru langit | Perkakas remote, warna dari globe pada logo |
+| Terminal VM dan antarmuka GeoServer | Navy | Lapisan paling dalam, warna paling pekat pada logo |
+| SQL Editor Supabase | Oranye | Layanan luar yang dibuka di peramban. Oranye adalah warna aksen, dan hanya dipakai di sini supaya tetap menjadi penanda |
+
+Kontras keempatnya terukur lulus WCAG AA pada kedua mode, yaitu 5,29:1 sampai
+16,74:1 pada mode terang dan 6,53:1 sampai 14,52:1 pada mode gelap.
+
+---
+
 ## Yang Tidak Dipakai, dan Alasannya
 
 | Tidak dipakai | Alasan |

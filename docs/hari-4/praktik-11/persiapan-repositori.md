@@ -161,13 +161,13 @@ Nama pada baris terakhir diturunkan seluruhnya dari satu nilai, yaitu identitas 
 
 ### Tahap 1. Buka project
 
-<p class="dijalankan">Dijalankan di: <strong>Google Cloud Console</strong></p>
+<p class="dijalankan dijalankan--cloud">Dijalankan di: <strong>Google Cloud Console</strong></p>
 
 Masuk memakai email yang diberikan koordinator, lalu pilih project kelompok yang sudah disiapkan. Pastikan Project ID yang tampil di bagian atas sudah benar sebelum melanjutkan.
 
 ### Tahap 2. Tetapkan identitas peserta
 
-<p class="dijalankan">Dijalankan di: <strong>Cloud Shell</strong></p>
+<p class="dijalankan dijalankan--cloud">Dijalankan di: <strong>Cloud Shell</strong></p>
 
 ::: tip Ambil dua nilai ini dari tabel peserta
 Sebelum menempel blok di bawah, cari nama atau email Anda pada halaman [Peserta dan Project](/hari-4/praktik-11/peserta-project). Halaman itu memuat **Nama Peserta**, **Project ID**, dan kelompok Anda.

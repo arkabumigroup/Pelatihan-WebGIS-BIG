@@ -6,7 +6,7 @@ Dijalankan di Cloud Shell. Identitas peserta dari halaman sebelumnya sudah dipak
 
 ### Tahap 3. Periksa API yang dibutuhkan
 
-<p class="dijalankan">Dijalankan di: <strong>Cloud Shell</strong></p>
+<p class="dijalankan dijalankan--cloud">Dijalankan di: <strong>Cloud Shell</strong></p>
 
 ```bash
 gcloud services list --enabled --project="$PROJECT_ID" \
@@ -36,7 +36,7 @@ Bila ketiganya belum aktif, abaikan saja. Tidak ada tahap yang membutuhkannya.
 
 ### Tahap 4. Buat Service Account deployment
 
-<p class="dijalankan">Dijalankan di: <strong>Cloud Shell</strong></p>
+<p class="dijalankan dijalankan--cloud">Dijalankan di: <strong>Cloud Shell</strong></p>
 
 Service Account ini milik peserta, sehingga namanya memuat identitas Anda.
 
@@ -61,7 +61,7 @@ done
 
 ### Tahap 5. Periksa Artifact Registry
 
-<p class="dijalankan">Dijalankan di: <strong>Cloud Shell menuju Google Cloud Console</strong></p>
+<p class="dijalankan dijalankan--cloud">Dijalankan di: <strong>Cloud Shell menuju Google Cloud Console</strong></p>
 
 Buka halaman Artifact Registry dan pastikan repository `katalog-images` sudah ada pada region `asia-southeast2`.
 
@@ -69,7 +69,7 @@ Repository ini dibuat koordinator dan dipakai seluruh peserta. Peserta hanya mem
 
 ### Tahap 6. Siapkan identitas VM
 
-<p class="dijalankan">Dijalankan di: <strong>Cloud Shell</strong></p>
+<p class="dijalankan dijalankan--cloud">Dijalankan di: <strong>Cloud Shell</strong></p>
 
 VM peserta memakai Service Account default project. Alamatnya berbentuk `<nomor-project>-compute@developer.gserviceaccount.com`, dan **nilainya sama untuk semua peserta** karena hanya bergantung pada nomor project. Itu memang begitu, dan bukan tanda ada yang salah.
 
@@ -94,7 +94,7 @@ Rantai izinnya: Service Account Cloud Build peserta mendapat `roles/iam.serviceA
 
 ### Tahap 7. Buat VM
 
-<p class="dijalankan">Dijalankan di: <strong>Cloud Shell menuju Google Cloud Console</strong></p>
+<p class="dijalankan dijalankan--cloud">Dijalankan di: <strong>Cloud Shell menuju Google Cloud Console</strong></p>
 
 VM dibuat dari Cloud Shell dengan spesifikasi berikut. Pastikan Compute Engine API sudah aktif sebelum perintah ini dijalankan.
 
@@ -122,7 +122,7 @@ Ukuran disk tetap dipakai, dan pertumbuhannya diperiksa pada [Tahap 10 halaman M
 
 ### Tahap 8. Periksa VM dan firewall
 
-<p class="dijalankan">Dijalankan di: <strong>Cloud Shell</strong></p>
+<p class="dijalankan dijalankan--cloud">Dijalankan di: <strong>Cloud Shell</strong></p>
 
 ```bash
 gcloud compute firewall-rules list \
@@ -139,7 +139,7 @@ Kedua firewall rule dibuat koordinator dan hasil perintah di atas seharusnya men
 
 ### Tahap 9. Buat IP statis
 
-<p class="dijalankan">Dijalankan di: <strong>Cloud Shell</strong></p>
+<p class="dijalankan dijalankan--cloud">Dijalankan di: <strong>Cloud Shell</strong></p>
 
 Alamat IP perlu dikunci supaya tidak berubah saat VM dimatikan dan dinyalakan kembali. Ini penting karena record DNS pada halaman [Penambahan Subdomain](/hari-4/praktik-11/subdomain) menunjuk ke alamat tersebut.
 

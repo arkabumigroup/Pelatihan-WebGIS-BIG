@@ -595,20 +595,63 @@
    Setiap tahap diawali penanda tempat perintahnya dijalankan. Peserta
    sering menjalankan perintah VM di Cloud Shell, dan sebaliknya, sehingga
    tempatnya perlu terbaca sebelum perintahnya disalin, bukan sesudahnya.
+
+   Warnanya dibedakan menurut empat kelompok tempat, bukan dijadikan satu
+   warna. Alasannya: menemukan "apakah ini di VM atau di Cloud Shell" harus
+   terjadi sebelum perintah disalin, dan warna membuatnya terbaca sekilas
+   tanpa membaca teksnya. Warna yang dipakai tetap tiga warna logo.
    --------------------------------------------------------------------- */
 .dijalankan {
   display: inline-block;
   border: var(--pelatihan-tebal) solid var(--pelatihan-garis);
   border-radius: var(--pelatihan-radius);
   box-shadow: 3px 3px 0 var(--pelatihan-bayangan);
-  background-color: var(--pelatihan-permukaan);
   padding: 3px 10px;
   margin: 10px 0 16px;
   font-size: 13px;
+  font-weight: 700;
 }
 
-.dark .dijalankan {
+/* Perangkat sendiri. Tinta pekat, karena ini tempat pekerjaan dimulai. */
+.dijalankan--lokal {
+  background-color: var(--pelatihan-tinta);
+  color: var(--pelatihan-kertas);
+}
+
+/* Perkakas Google Cloud yang dijalankan dari jauh. Biru langit dari globe
+   pada logo. */
+.dijalankan--cloud {
+  background-color: var(--pelatihan-sky);
+  color: #ffffff;
+}
+
+/* Di dalam VM. Navy, warna paling pekat pada logo, karena ini lapisan yang
+   paling dalam. */
+.dijalankan--server {
+  background-color: var(--pelatihan-navy);
+  color: #ffffff;
+}
+
+/* Layanan luar yang dibuka di peramban. Oranye, warna aksen, dan hanya
+   dipakai di sini supaya tetap menjadi penanda. */
+.dijalankan--layanan {
+  background-color: var(--pelatihan-oranye);
+  color: #111111;
+}
+
+.dark .dijalankan--lokal {
+  background-color: #e8e6e1;
+  color: #14161a;
+}
+
+.dark .dijalankan--cloud {
+  background-color: #6cb6e8;
+  color: #0d1116;
+}
+
+.dark .dijalankan--server {
   background-color: #24405e;
+  color: #f2f2f0;
 }
 
 /* ---------------------------------------------------------------------
@@ -720,4 +763,97 @@
     box-shadow: none !important;
     padding: 0 !important;
   }
+}
+
+/* ---------------------------------------------------------------------
+   Beranda
+   Beranda sebelumnya hanya memuat judul dan logo, sehingga tidak
+   menjelaskan apa yang akan dikerjakan. Bagian di bawah menambahkan indeks
+   sebelas praktik, karena itulah isi pelatihannya, dan peserta perlu tahu
+   urutannya sebelum mulai.
+   --------------------------------------------------------------------- */
+
+/* Isi beranda diberi permukaan kertas, sama seperti halaman baca, supaya
+   tidak ada teks yang duduk langsung di atas latar semesta. */
+/* Isi beranda dirender VitePress sebagai .vp-doc di dalam .VPHome, bukan di
+   dalam .VPDoc seperti halaman biasa, sehingga selectornya berbeda. */
+.VPHome > .vp-doc {
+  background-color: var(--pelatihan-kertas);
+  border: var(--pelatihan-tebal) solid var(--pelatihan-garis);
+  border-radius: var(--pelatihan-radius);
+  box-shadow: var(--pelatihan-bayangan-jauh-besar) var(--pelatihan-bayangan-jauh-besar) 0 var(--pelatihan-bayangan);
+  padding: 32px 40px;
+  margin-bottom: 48px;
+}
+
+/* Indeks praktik: satu kartu per hari. Kartunya berbaris sendiri saat layar
+   sempit, jadi tidak ada yang terpotong. */
+.hari-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 22px;
+  margin: 20px 0 44px;
+}
+
+.hari-kartu {
+  border: var(--pelatihan-tebal) solid var(--pelatihan-garis);
+  border-radius: var(--pelatihan-radius);
+  box-shadow: var(--pelatihan-bayangan-jauh) var(--pelatihan-bayangan-jauh) 0 var(--pelatihan-bayangan);
+  background-color: var(--pelatihan-permukaan);
+  padding: 18px 20px 20px;
+  transition: transform 140ms ease, box-shadow 140ms ease;
+}
+
+.hari-kartu:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: var(--pelatihan-bayangan-jauh-besar) var(--pelatihan-bayangan-jauh-besar) 0 var(--pelatihan-bayangan);
+}
+
+/* Nama hari dijadikan blok navy, sama seperti kepala tabel dan butir sidebar
+   yang sedang dibuka. Satu bentuk untuk satu arti: ini penanda bagian. */
+.hari-judul {
+  display: inline-block;
+  background-color: var(--pelatihan-navy);
+  color: #ffffff;
+  border: var(--pelatihan-tebal) solid var(--pelatihan-garis);
+  border-radius: var(--pelatihan-radius);
+  padding: 1px 10px;
+  margin: 0 0 10px;
+  font-size: 12.5px;
+  font-weight: 700;
+}
+
+/* Hari terakhir, yaitu deployment, memakai warna aksen karena di situlah
+   seluruh pekerjaan berakhir dan hasilnya terbit. */
+.hari-kartu--akhir .hari-judul {
+  background-color: var(--pelatihan-oranye);
+  color: #111111;
+}
+
+.hari-tema {
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.3;
+  margin: 0 0 12px;
+}
+
+.hari-kartu ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.hari-kartu li {
+  margin: 5px 0;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+/* Logo lembaga dibuat untuk latar terang. Di latar gelap, gambarnya diberi
+   pelat terang supaya tetap terbaca. */
+.dark .logo-row img {
+  background-color: #f4f1ea;
+  border: var(--pelatihan-tebal) solid var(--pelatihan-garis);
+  border-radius: var(--pelatihan-radius);
+  padding: 8px 12px;
+  box-sizing: content-box;
 }
