@@ -4,6 +4,7 @@ import { onMounted, watch, nextTick, h } from 'vue'
 import { useRoute } from 'vitepress'
 import TabelPeserta from './components/TabelPeserta.vue'
 import './custom.css'
+import './semesta.css'
 import './print.css'
 
 // Ikon tombol hero disisipkan lewat DOM, karena VitePress tidak menyediakannya

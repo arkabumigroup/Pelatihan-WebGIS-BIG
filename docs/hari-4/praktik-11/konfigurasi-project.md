@@ -27,7 +27,7 @@ Jadi seluruh pekerjaan manual ada di laptop dan di VM, dan berhenti pada satu ka
 
 Halaman ini memeriksa berkas yang sudah ada di repositori, jadi repositori itu harus ada di laptop Anda lebih dahulu. Seluruh pekerjaan repositori pada pelatihan ini memakai **GitHub Desktop**.
 
-<p class="dijalankan">Dijalankan di: <strong>Laptop</strong></p>
+<p class="dijalankan dijalankan--lokal">Dijalankan di: <strong>Laptop</strong></p>
 
 ### Fork repositori
 
@@ -80,7 +80,7 @@ Yang memang harus berbeda antar peserta, yaitu nama VM, nama image, dan subdomai
 
 Portal memerlukan database. Tanpanya aplikasi tetap berjalan, tetapi halaman login selalu gagal. Tahap ini dikerjakan sebelum berkas konfigurasi, karena `DATABASE_URL` dari sini dipakai pada Tahap 5.
 
-<p class="dijalankan">Dijalankan di: <strong>SQL Editor Supabase</strong></p>
+<p class="dijalankan dijalankan--layanan">Dijalankan di: <strong>SQL Editor Supabase</strong></p>
 
 Database yang dipakai adalah **Supabase**, layanan PostgreSQL yang berjalan di cloud. Peserta memakai project Supabase masing-masing.
 
@@ -150,7 +150,7 @@ Seluruh isi tiap berkas tetap ditampilkan di halaman ini supaya Anda dapat memer
 
 Buka folder proyek di Visual Studio Code, lalu buka berkas `docker-compose.yml` di root folder. Berkas itu sudah ada di repositori Anda.
 
-<p class="dijalankan">Dijalankan di: <strong>Laptop</strong></p>
+<p class="dijalankan dijalankan--lokal">Dijalankan di: <strong>Laptop</strong></p>
 
 Isi yang seharusnya terlihat:
 
@@ -218,7 +218,7 @@ Dua hal pada service `nginx` yang mudah terlewat, dan keduanya membuat HTTPS tid
 
 Buka berkas `nginx.conf` di root folder proyek. Berkas itu sudah ada di repositori Anda, jadi tidak ada yang perlu diketik.
 
-<p class="dijalankan">Dijalankan di: <strong>Laptop</strong></p>
+<p class="dijalankan dijalankan--lokal">Dijalankan di: <strong>Laptop</strong></p>
 
 Periksa isinya dengan perintah ini:
 
@@ -257,7 +257,7 @@ Pesan itu tidak menyebut ukuran berkas sama sekali, sehingga penyebabnya sulit d
 
 `DATABASE_URL` dari Tahap 2 dan `JWT_SECRET` dari perintah acak sekarang diisi ke dalam berkas `.env`. Tahap ini penting karena aplikasi tidak bisa login tanpa berkas ini.
 
-<p class="dijalankan">Dijalankan di: <strong>Laptop</strong></p>
+<p class="dijalankan dijalankan--lokal">Dijalankan di: <strong>Laptop</strong></p>
 
 ### Salin berkas contoh
 
@@ -381,7 +381,7 @@ Keluaran yang diharapkan menyebut `.env`. Bila perintah itu tidak mengeluarkan a
 
 Buka `.gitignore` di root folder proyek. Pastikan di dalamnya ada tiga baris berikut.
 
-<p class="dijalankan">Dijalankan di: <strong>Laptop</strong></p>
+<p class="dijalankan dijalankan--lokal">Dijalankan di: <strong>Laptop</strong></p>
 
 ```
 /geoserver-data/
@@ -438,7 +438,7 @@ Bila salah satu baris benar-benar tidak muncul walaupun garis miringnya sudah di
 
 Di root folder proyek, pastikan ada folder bernama `scripts`, sejajar dengan folder `public` dan `src`. Folder itu berisi dua berkas pemeriksa.
 
-<p class="dijalankan">Dijalankan di: <strong>Laptop</strong></p>
+<p class="dijalankan dijalankan--lokal">Dijalankan di: <strong>Laptop</strong></p>
 
 ### 7a. scripts/check-config.mjs
 
@@ -581,7 +581,7 @@ Menjalankan salah satunya tanpa argumen akan menampilkan cara pakainya.
 
 ## Tahap 8. Uji seluruh berkas di laptop
 
-<p class="dijalankan">Dijalankan di: <strong>Laptop</strong></p>
+<p class="dijalankan dijalankan--lokal">Dijalankan di: <strong>Laptop</strong></p>
 
 ### Uji berkas konfigurasi
 
@@ -660,7 +660,7 @@ Bila Anda membaca panduan versi lama yang menyebut `12 lulus`, angka yang benar 
 
 Ini tahap yang membuktikan seluruh persiapan berhasil, sebelum aplikasi dipindahkan ke server. Bila login gagal di sini, penyebabnya masih mudah dilacak.
 
-<p class="dijalankan">Dijalankan di: <strong>Laptop</strong></p>
+<p class="dijalankan dijalankan--lokal">Dijalankan di: <strong>Laptop</strong></p>
 
 ```bash
 npm run dev
@@ -692,7 +692,7 @@ Setelah berhasil login, hentikan server dengan `Ctrl+C`. Aplikasi siap dipindahk
 
 Berkas `.env` memuat kata sandi basis data, `JWT_SECRET`, `NEXTAUTH_SECRET`, kata sandi admin GeoServer, dan token Cesium Ion Anda. Repositori GitHub bersifat publik, jadi berkas itu tidak boleh ikut ter-push.
 
-<p class="dijalankan">Dijalankan di: <strong>Laptop</strong></p>
+<p class="dijalankan dijalankan--lokal">Dijalankan di: <strong>Laptop</strong></p>
 
 Berkas konfigurasi Anda sudah ada di repositori, jadi pada tahap ini tidak ada yang perlu di-commit. Yang perlu diperiksa hanya satu: pastikan `.env` tidak muncul di daftar **Changes** pada GitHub Desktop. Berkas yang diabaikan memang tidak pernah muncul di sana.
 

@@ -6,7 +6,7 @@ Halaman terakhir Deployment Project. Setelah selesai, setiap push ke branch `mai
 
 ### Tahap 24. Tambahkan Dockerfile dan cloudbuild.yaml
 
-<p class="dijalankan">Dijalankan di: <strong>Terminal Laptop</strong></p>
+<p class="dijalankan dijalankan--lokal">Dijalankan di: <strong>Terminal Laptop</strong></p>
 
 Berkas `Dockerfile` dan `.dockerignore` ada di fork Anda, di root repositori, karena keduanya ikut ketika Anda mem-fork repositori instruktur. Bila ternyata belum ada, salin keduanya dari repositori sumber pada halaman [Persiapan Repositori](/hari-4/praktik-11/persiapan-repositori#repositori-yang-dipakai).
 
@@ -103,7 +103,7 @@ OK   cloudbuild.yaml -> substitutions, steps, images, options
 
 ### Tahap 25. Commit dan push
 
-<p class="dijalankan">Dijalankan di: <strong>GitHub Desktop</strong></p>
+<p class="dijalankan dijalankan--lokal">Dijalankan di: <strong>GitHub Desktop</strong></p>
 
 Buka GitHub Desktop. Keempat berkas yang baru ditambahkan akan muncul di daftar **Changes** pada kolom kiri.
 
@@ -119,13 +119,13 @@ Setelah terkirim, Cloud Build akan mulai bekerja sendiri. Tahap berikutnya menyi
 
 ### Tahap 26. Hubungkan repositori GitHub
 
-<p class="dijalankan">Dijalankan di: <strong>Google Cloud Console</strong></p>
+<p class="dijalankan dijalankan--cloud">Dijalankan di: <strong>Google Cloud Console</strong></p>
 
 Buka Cloud Build, lalu Repositories, lalu Connect repository. Buat connection dengan nama sesuai `CONNECTION_NAME` yang tercetak pada Tahap 2, pilih GitHub, masuk memakai akun pemilik fork, pilih repositori peserta, isi linked repository sesuai `LINKED_REPO_NAME`, lalu pastikan status connection berubah menjadi COMPLETE.
 
 ### Tahap 27. Buat trigger Cloud Build
 
-<p class="dijalankan">Dijalankan di: <strong>Google Cloud Console</strong></p>
+<p class="dijalankan dijalankan--cloud">Dijalankan di: <strong>Google Cloud Console</strong></p>
 
 Buat trigger dengan pengaturan berikut.
 
@@ -141,7 +141,7 @@ Buat trigger dengan pengaturan berikut.
 
 ### Tahap 28. Isi substitution variable
 
-<p class="dijalankan">Dijalankan di: <strong>Google Cloud Console</strong></p>
+<p class="dijalankan dijalankan--cloud">Dijalankan di: <strong>Google Cloud Console</strong></p>
 
 Tambahkan lima variabel berikut pada trigger. Ganti `PARTICIPANT_ID` dengan identitas Anda.
 
@@ -165,7 +165,7 @@ Akibat bila variabel ini kosong: build tetap berhasil dan situs tetap tampil, te
 
 ### Tahap 29. Jalankan trigger dan pantau hasilnya
 
-<p class="dijalankan">Dijalankan di: <strong>Google Cloud Console</strong></p>
+<p class="dijalankan dijalankan--cloud">Dijalankan di: <strong>Google Cloud Console</strong></p>
 
 Buka halaman History, lalu jalankan trigger dan pantau build yang sedang berjalan.
 
@@ -173,7 +173,7 @@ Buka halaman History, lalu jalankan trigger dan pantau build yang sedang berjala
 
 ### Tahap 30. Periksa container
 
-<p class="dijalankan">Dijalankan di: <strong>Cloud Shell</strong></p>
+<p class="dijalankan dijalankan--cloud">Dijalankan di: <strong>Cloud Shell</strong></p>
 
 ```bash
 gcloud compute ssh "$VM_NAME" \
@@ -186,7 +186,7 @@ Tiga container harus berstatus running: `nextjs_portal`, `geoserver_app`, dan `n
 
 ### Tahap 31. Periksa GeoServer
 
-<p class="dijalankan">Dijalankan di: <strong>Cloud Shell</strong></p>
+<p class="dijalankan dijalankan--cloud">Dijalankan di: <strong>Cloud Shell</strong></p>
 
 ```bash
 EXTERNAL_IP="$(gcloud compute instances describe "$VM_NAME" \
@@ -199,7 +199,7 @@ curl -sSIL --max-redirs 3 "http://${EXTERNAL_IP}/geoserver/web"
 
 ### Tahap 32. Buka Geoportal
 
-<p class="dijalankan">Dijalankan di: <strong>Cloud Shell menuju browser</strong></p>
+<p class="dijalankan dijalankan--cloud">Dijalankan di: <strong>Cloud Shell menuju browser</strong></p>
 
 ```bash
 EXTERNAL_IP="$(gcloud compute instances describe "$VM_NAME" \

@@ -15,7 +15,7 @@ Urutannya penting: record DNS harus sudah mengarah ke VM sebelum Certbot dijalan
 
 ### Tahap 1. Pastikan IP statis VM sudah terkunci
 
-<p class="dijalankan">Dijalankan di: <strong>Cloud Shell</strong></p>
+<p class="dijalankan dijalankan--cloud">Dijalankan di: <strong>Cloud Shell</strong></p>
 
 ```bash
 gcloud compute addresses describe "$STATIC_IP_NAME" \
@@ -27,7 +27,7 @@ Status harus `RESERVED`, dan alamat yang tampil harus sama dengan IP eksternal V
 
 ### Tahap 2. Tentukan nama subdomain
 
-<p class="dijalankan">Dijalankan di: <strong>Cloud Shell</strong></p>
+<p class="dijalankan dijalankan--cloud">Dijalankan di: <strong>Cloud Shell</strong></p>
 
 ```bash
 SUBDOMAIN="${PARTICIPANT_ID}.webgisbig.com"
@@ -36,7 +36,7 @@ echo "$SUBDOMAIN"
 
 ### Tahap 3. Kirim IP VM dan subdomain ke penyelenggara
 
-<p class="dijalankan">Dijalankan di: <strong>Cloud Shell</strong></p>
+<p class="dijalankan dijalankan--cloud">Dijalankan di: <strong>Cloud Shell</strong></p>
 
 Record DNS **ditambahkan oleh penyelenggara**, bukan oleh peserta. Domain `webgisbig.com` dikelola satu akun Cloudflare oleh penyelenggara, dan peserta tidak diberi akses ke sana.
 
@@ -103,7 +103,7 @@ Tiga hal itu menambah kemungkinan gagal yang tidak sebanding dengan manfaatnya u
 
 ### Tahap 4. Periksa resolusi DNS
 
-<p class="dijalankan">Dijalankan di: <strong>Cloud Shell</strong></p>
+<p class="dijalankan dijalankan--cloud">Dijalankan di: <strong>Cloud Shell</strong></p>
 
 ```bash
 dig +short "$SUBDOMAIN"
@@ -114,7 +114,7 @@ Keduanya harus mengembalikan alamat IP statis VM. Bila resolver publik (`@1.1.1.
 
 ### Tahap 5. Uji akses melalui subdomain
 
-<p class="dijalankan">Dijalankan di: <strong>Cloud Shell</strong></p>
+<p class="dijalankan dijalankan--cloud">Dijalankan di: <strong>Cloud Shell</strong></p>
 
 Lakukan sebelum memasang HTTPS, supaya bila ada masalah DNS atau Nginx, penyebabnya masih mudah dipisahkan.
 
@@ -126,7 +126,7 @@ curl -sSIL --max-redirs 3 "http://${SUBDOMAIN}/portal"
 
 ### Tahap 6. Pasang Certbot dan siapkan direktori
 
-<p class="dijalankan">Dijalankan di: <strong>Cloud Shell</strong></p>
+<p class="dijalankan dijalankan--cloud">Dijalankan di: <strong>Cloud Shell</strong></p>
 
 Kedua direktori ini dibuat sekarang karena keduanya di-mount oleh container Nginx pada `docker-compose.yml`.
 
@@ -168,7 +168,7 @@ sudo chown -R "$USER:$USER" certbot-webroot tls
 
 ### Tahap 7. Sinkronkan konfigurasi dan nyalakan container
 
-<p class="dijalankan">Dijalankan di: <strong>Cloud Shell</strong></p>
+<p class="dijalankan dijalankan--cloud">Dijalankan di: <strong>Cloud Shell</strong></p>
 
 ```bash
 gcloud compute ssh "$VM_NAME" \
@@ -181,7 +181,7 @@ Pastikan `nginx_proxy` berstatus running dan port 443 sudah terpublikasikan. Pad
 
 ### Tahap 8. Periksa jalur ACME
 
-<p class="dijalankan">Dijalankan di: <strong>Cloud Shell</strong></p>
+<p class="dijalankan dijalankan--cloud">Dijalankan di: <strong>Cloud Shell</strong></p>
 
 ```bash
 curl -sS -o /dev/null -w "acme %{http_code}\n" "http://${SUBDOMAIN}/.well-known/acme-challenge/uji"
@@ -193,7 +193,7 @@ Bila balasan yang muncul `502` atau `200`, hentikan tahap ini. Periksa kembali `
 
 ### Tahap 9. Terbitkan sertifikat Let's Encrypt
 
-<p class="dijalankan">Dijalankan di: <strong>Cloud Shell</strong></p>
+<p class="dijalankan dijalankan--cloud">Dijalankan di: <strong>Cloud Shell</strong></p>
 
 Ganti `EMAIL` dengan alamat email yang aktif. Let's Encrypt mengirim pemberitahuan ke alamat itu bila sertifikat mendekati kedaluwarsa.
 
@@ -282,7 +282,7 @@ Batas 5 kegagalan verifikasi per alamat per jam juga berlaku. Mengulang perintah
 
 ### Tahap 10. Aktifkan HTTPS pada Nginx
 
-<p class="dijalankan">Dijalankan di: <strong>Terminal VM</strong></p>
+<p class="dijalankan dijalankan--server">Dijalankan di: <strong>Terminal VM</strong></p>
 
 Nginx pada proyek ini memakai **satu blok `server`** yang memuat seluruh `location`, dan blok itu mendengarkan port 80. Berkas `nginx.conf` memuat berkas tambahan di dalam blok tersebut:
 
@@ -396,7 +396,7 @@ Diuji pada Nginx 1.27: berkas berisi blok `server` gagal, sedangkan berkas beris
 
 ### Tahap 11. Verifikasi HTTPS
 
-<p class="dijalankan">Dijalankan di: <strong>Cloud Shell</strong></p>
+<p class="dijalankan dijalankan--cloud">Dijalankan di: <strong>Cloud Shell</strong></p>
 
 ```bash
 curl -sSIL --max-redirs 3 "https://${SUBDOMAIN}/portal"
@@ -406,7 +406,7 @@ Balasan yang diharapkan adalah `HTTP/2 200`. Bila muncul peringatan sertifikat, 
 
 ### Tahap 12. Atur perpanjangan sertifikat otomatis
 
-<p class="dijalankan">Dijalankan di: <strong>Cloud Shell</strong></p>
+<p class="dijalankan dijalankan--cloud">Dijalankan di: <strong>Cloud Shell</strong></p>
 
 Sertifikat Let's Encrypt berlaku 90 hari. Hook berikut memuat ulang Nginx setiap kali sertifikat diperbarui, sehingga container membaca berkas sertifikat yang baru.
 
@@ -421,7 +421,7 @@ Opsi `--dry-run` menguji seluruh proses perpanjangan tanpa memakai kuota penerbi
 
 ### Tahap 13. Ubah alamat aplikasi di .env
 
-<p class="dijalankan">Dijalankan di: <strong>Terminal VM</strong></p>
+<p class="dijalankan dijalankan--server">Dijalankan di: <strong>Terminal VM</strong></p>
 
 Setelah HTTPS aktif, **empat** variabel pada `.env` harus ikut berubah. Perhatikan: Tahap 18 pada halaman [Menyiapkan Aplikasi di VM](/hari-4/praktik-11/aplikasi-di-vm) menyetel keempatnya ke alamat IP. Tahap ini menggantinya ke alamat HTTPS.
 
@@ -499,7 +499,7 @@ Bila tidak ada baris yang perlu diperbaiki, kedua `UPDATE` menjawab `Success. No
 
 ### Tahap 14. Verifikasi akhir
 
-<p class="dijalankan">Dijalankan di: <strong>Browser</strong></p>
+<p class="dijalankan dijalankan--lokal">Dijalankan di: <strong>Browser</strong></p>
 
 Buka `https://SUBDOMAIN/portal`, lalu periksa satu per satu:
 
