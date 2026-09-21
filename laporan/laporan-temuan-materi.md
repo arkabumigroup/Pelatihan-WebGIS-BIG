@@ -295,6 +295,8 @@ Seluruhnya sudah diperbaiki pada panduan. Bagian ini dicatat karena dua alasan: 
 | 35 | Repositori peserta memakai nama kolom berbeda dari repositori instruktur | Instruktur memakai `model_name` dan `name`, repositori kita memakai `nama`. Menyalin berkas instruktur tanpa penyesuaian akan gagal dengan `Unknown field` |
 | 36 | Instruktur menambahkan `URL_BASE_PATH` dan `CESIUM_ION_TOKEN` pada `.env` lokalnya | Namanya berbeda dari repositori kita, yang memakai awalan `NEXT_PUBLIC_`. Dua berkas ini tidak boleh saling ditukar |
 | 37 | Skrip cadangan Tahap 3b menambat pada baris `GEOSERVER_CORS_ALLOWED_ORIGINS`, yang sudah dihapus saat temuan 22 diperbaiki | Skrip berhenti dengan `StopIteration`, sehingga peserta yang membutuhkannya tidak punya jalan keluar. Blok itu juga mengubah `docker-compose.yml` langsung di VM, dan salinan git yang kotor membuat `git pull --ff-only` pada halaman Penambahan Subdomain menolak berjalan |
+| 38 | `nginx.conf` tidak menyetel `client_max_body_size`, sehingga batas unggahannya 1 MB bawaan Nginx | Setiap unggahan model 3D di atas 1 MB ditolak dengan halaman HTML `413`, dan aplikasi melaporkannya sebagai `Unexpected token '<' ... is not valid JSON`. Pesannya tidak menyebut ukuran berkas sama sekali. Katalog 2D terkena hal yang sama, karena berkas GeoJSON melewati jalur yang sama |
+
 
 ### Temuan dari pengujian alur 3D
 
@@ -415,6 +417,10 @@ Dua catatan dari pengujian ini.
 **Urutan operasi pada ubah data 2D sudah benar.** Rute itu memperbarui GeoServer lebih dahulu, baru baris katalog. Ketika GeoServer dimatikan, permintaannya gagal dan database **tidak** ikut berubah. Itu perilaku yang diinginkan, karena baris katalog yang menyimpang dari keadaan GeoServer lebih berbahaya daripada permintaan yang gagal.
 
 **Tiga kali pengujian awal melaporkan kegagalan palsu.** Rute ubah 3D mengekspor `POST` dan membaca `FormData`, sedangkan pengujian pertama memakai `PATCH` lalu JSON. Rute ganti kata sandi memakai nama field `password_lama` dan `password_baru`, bukan `old_password`. Rute ubah 2D mensyaratkan `layer_name` berformat `workspace:tabel`. Ketiganya kesalahan pengujian, bukan kesalahan kode, dan sudah diperiksa ulang dengan bentuk permintaan yang benar.
+
+**Satu keberhasilan pada tabel di atas ternyata menyesatkan.** Baris unggah `.ply` ditulis berhasil, dan memang berhasil, tetapi pengujiannya dijalankan langsung ke aplikasi tanpa Nginx di depannya. Batas unggahan 1 MB itu milik Nginx, jadi pengujian itu tidak pernah menyentuhnya. Akibatnya temuan 38 baru muncul dari peserta yang melaporkannya di situs yang sudah jalan, pada berkas pertama yang ukurannya wajar.
+
+Bedanya gampang diperiksa: pengujian memakai port aplikasi, sedangkan peserta memakai `https://SUBDOMAIN/portal` yang melewati Nginx. Untuk pekerjaan berikutnya, setiap pengujian unggah harus lewat Nginx.
 
 ### Pengujian alur deployment ujung ke ujung
 
