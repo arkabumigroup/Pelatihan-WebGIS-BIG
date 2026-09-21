@@ -15,7 +15,7 @@ Urutannya penting: record DNS harus sudah mengarah ke VM sebelum Certbot dijalan
 
 ### Tahap 1. Pastikan IP statis VM sudah terkunci
 
-Dijalankan di: Cloud Shell
+<p class="dijalankan">Dijalankan di: <strong>Cloud Shell</strong></p>
 
 ```bash
 gcloud compute addresses describe "$STATIC_IP_NAME" \
@@ -27,7 +27,7 @@ Status harus `RESERVED`, dan alamat yang tampil harus sama dengan IP eksternal V
 
 ### Tahap 2. Tentukan nama subdomain
 
-Dijalankan di: Cloud Shell
+<p class="dijalankan">Dijalankan di: <strong>Cloud Shell</strong></p>
 
 ```bash
 SUBDOMAIN="${PARTICIPANT_ID}.webgisbig.com"
@@ -36,7 +36,7 @@ echo "$SUBDOMAIN"
 
 ### Tahap 3. Kirim IP VM dan subdomain ke penyelenggara
 
-Dijalankan di: Cloud Shell
+<p class="dijalankan">Dijalankan di: <strong>Cloud Shell</strong></p>
 
 Record DNS **ditambahkan oleh penyelenggara**, bukan oleh peserta. Domain `webgisbig.com` dikelola satu akun Cloudflare oleh penyelenggara, dan peserta tidak diberi akses ke sana.
 
@@ -103,7 +103,7 @@ Tiga hal itu menambah kemungkinan gagal yang tidak sebanding dengan manfaatnya u
 
 ### Tahap 4. Periksa resolusi DNS
 
-Dijalankan di: Cloud Shell
+<p class="dijalankan">Dijalankan di: <strong>Cloud Shell</strong></p>
 
 ```bash
 dig +short "$SUBDOMAIN"
@@ -114,7 +114,7 @@ Keduanya harus mengembalikan alamat IP statis VM. Bila resolver publik (`@1.1.1.
 
 ### Tahap 5. Uji akses melalui subdomain
 
-Dijalankan di: Cloud Shell
+<p class="dijalankan">Dijalankan di: <strong>Cloud Shell</strong></p>
 
 Lakukan sebelum memasang HTTPS, supaya bila ada masalah DNS atau Nginx, penyebabnya masih mudah dipisahkan.
 
@@ -126,7 +126,7 @@ curl -sSIL --max-redirs 3 "http://${SUBDOMAIN}/portal"
 
 ### Tahap 6. Pasang Certbot dan siapkan direktori
 
-Dijalankan di: Cloud Shell
+<p class="dijalankan">Dijalankan di: <strong>Cloud Shell</strong></p>
 
 Kedua direktori ini dibuat sekarang karena keduanya di-mount oleh container Nginx pada `docker-compose.yml`.
 
@@ -168,7 +168,7 @@ sudo chown -R "$USER:$USER" certbot-webroot tls
 
 ### Tahap 7. Sinkronkan konfigurasi dan nyalakan container
 
-Dijalankan di: Cloud Shell
+<p class="dijalankan">Dijalankan di: <strong>Cloud Shell</strong></p>
 
 ```bash
 gcloud compute ssh "$VM_NAME" \
@@ -181,7 +181,7 @@ Pastikan `nginx_proxy` berstatus running dan port 443 sudah terpublikasikan. Pad
 
 ### Tahap 8. Periksa jalur ACME
 
-Dijalankan di: Cloud Shell
+<p class="dijalankan">Dijalankan di: <strong>Cloud Shell</strong></p>
 
 ```bash
 curl -sS -o /dev/null -w "acme %{http_code}\n" "http://${SUBDOMAIN}/.well-known/acme-challenge/uji"
@@ -193,32 +193,12 @@ Bila balasan yang muncul `502` atau `200`, hentikan tahap ini. Periksa kembali `
 
 ### Tahap 9. Terbitkan sertifikat Let's Encrypt
 
-Dijalankan di: Cloud Shell
+<p class="dijalankan">Dijalankan di: <strong>Cloud Shell</strong></p>
 
 Ganti `EMAIL` dengan alamat email yang aktif. Let's Encrypt mengirim pemberitahuan ke alamat itu bila sertifikat mendekati kedaluwarsa.
 
-::: warning Ini bukan email peserta
-`EMAIL` di sini hanya alamat kontak untuk Let's Encrypt, dan tidak berhubungan dengan identitas Anda di Google Cloud. Alamat yang sama boleh dipakai semua peserta.
-
-Identitas Anda sudah ditetapkan pada Tahap 2 halaman sebelumnya, melalui `NAMA_PESERTA`.
-:::
-
-::: danger Domain emailnya harus benar-benar ada
-Alamatnya tidak perlu milik Anda, tetapi **domain di belakang tanda `@` harus domain yang benar-benar terdaftar.** Alamat seperti `peserta@latihan.local` atau `admin@contoh` akan ditolak.
-
-Yang membuat jebakan ini menyakitkan: **uji coba `--dry-run` tidak menolaknya.** Server uji Let's Encrypt menerima alamat apa pun, sehingga uji coba menyatakan berhasil dan Anda mengira semuanya beres. Penolakan baru muncul di Tahap 9b, saat penerbitan sungguhan:
-
-```text
-Unable to register an account with ACME server
-```
-
-Penyebab sebenarnya ada di `/var/log/letsencrypt/letsencrypt.log`:
-
-```text
-The ACME server believes peserta@latihan.local is an invalid email address.
-```
-
-Pakai alamat yang domainnya nyata, misalnya Gmail Anda sendiri. Alamat contoh seperti `nama01@example.com` juga diterima, karena `example.com` memang domain terdaftar.
+::: warning Domain di belakang tanda @ harus domain yang benar-benar terdaftar
+Alamatnya tidak perlu milik Anda, dan boleh sama untuk semua peserta. Tetapi alamat seperti `peserta@latihan.local` ditolak, dan **uji coba `--dry-run` tidak menolaknya.** Pakai alamat dengan domain nyata, misalnya Gmail Anda sendiri.
 :::
 
 ```bash
@@ -297,12 +277,12 @@ Dengan 41 peserta pada satu domain, tersisa sekitar 9 cadangan untuk seluruh ang
 
 Karena itu langkah 9a bukan formalitas. Uji coba memakai server uji, tidak memakai kuota, dan menangkap hampir semua penyebab kegagalan.
 
-Satu hal lagi yang perlu diketahui: batas 5 kegagalan verifikasi per alamat per jam juga berlaku. Mengulang perintah yang gagal lebih dari lima kali dalam satu jam akan mengunci alamat itu untuk sementara. Bila sudah gagal dua kali, **berhenti dan periksa penyebabnya**, jangan mengulang terus.
+Batas 5 kegagalan verifikasi per alamat per jam juga berlaku. Mengulang perintah yang gagal lebih dari lima kali dalam satu jam akan mengunci alamat itu untuk sementara. Bila sudah gagal dua kali, **berhenti dan periksa penyebabnya**, jangan mengulang terus.
 :::
 
 ### Tahap 10. Aktifkan HTTPS pada Nginx
 
-Dijalankan di: Terminal VM
+<p class="dijalankan">Dijalankan di: <strong>Terminal VM</strong></p>
 
 Nginx pada proyek ini memakai **satu blok `server`** yang memuat seluruh `location`, dan blok itu mendengarkan port 80. Berkas `nginx.conf` memuat berkas tambahan di dalam blok tersebut:
 
@@ -416,7 +396,7 @@ Diuji pada Nginx 1.27: berkas berisi blok `server` gagal, sedangkan berkas beris
 
 ### Tahap 11. Verifikasi HTTPS
 
-Dijalankan di: Cloud Shell
+<p class="dijalankan">Dijalankan di: <strong>Cloud Shell</strong></p>
 
 ```bash
 curl -sSIL --max-redirs 3 "https://${SUBDOMAIN}/portal"
@@ -426,7 +406,7 @@ Balasan yang diharapkan adalah `HTTP/2 200`. Bila muncul peringatan sertifikat, 
 
 ### Tahap 12. Atur perpanjangan sertifikat otomatis
 
-Dijalankan di: Cloud Shell
+<p class="dijalankan">Dijalankan di: <strong>Cloud Shell</strong></p>
 
 Sertifikat Let's Encrypt berlaku 90 hari. Hook berikut memuat ulang Nginx setiap kali sertifikat diperbarui, sehingga container membaca berkas sertifikat yang baru.
 
@@ -441,7 +421,7 @@ Opsi `--dry-run` menguji seluruh proses perpanjangan tanpa memakai kuota penerbi
 
 ### Tahap 13. Ubah alamat aplikasi di .env
 
-Dijalankan di: Terminal VM
+<p class="dijalankan">Dijalankan di: <strong>Terminal VM</strong></p>
 
 Setelah HTTPS aktif, **empat** variabel pada `.env` harus ikut berubah. Perhatikan: Tahap 18 pada halaman [Menyiapkan Aplikasi di VM](/hari-4/praktik-11/aplikasi-di-vm) menyetel keempatnya ke alamat IP. Tahap ini menggantinya ke alamat HTTPS.
 
@@ -519,11 +499,9 @@ Bila tidak ada baris yang perlu diperbaiki, kedua `UPDATE` menjawab `Success. No
 
 ### Tahap 14. Verifikasi akhir
 
-Dijalankan di: Browser
+<p class="dijalankan">Dijalankan di: <strong>Browser</strong></p>
 
 Buka `https://SUBDOMAIN/portal`, lalu periksa satu per satu:
-
-![Geoportal terbuka melalui alamat HTTPS](google-cloud-platform/cb-image-19.png)
 
 - Halaman Geoportal tampil tanpa peringatan sertifikat.
 - Login berhasil memakai akun dari materi autentikasi.
@@ -532,6 +510,17 @@ Buka `https://SUBDOMAIN/portal`, lalu periksa satu per satu:
 - `certbot renew --dry-run` pada Tahap 12 selesai tanpa galat.
 
 ## Bila Ada yang Gagal
+
+**`Unable to register an account with ACME server`**
+
+Alamat email yang dipakai pada Tahap 9 domainnya tidak terdaftar. Penyebab sebenarnya ada di `/var/log/letsencrypt/letsencrypt.log`:
+
+```text
+The ACME server believes peserta@latihan.local is an invalid email address.
+```
+
+Yang membuat jebakan ini sulit terlihat: server uji Let's Encrypt menerima alamat apa pun, sehingga `--dry-run` pada Tahap 9a menyatakan berhasil. Penolakan baru muncul saat penerbitan sungguhan. Ganti `EMAIL` dengan alamat berdomain nyata, lalu ulangi Tahap 9.
+
 
 | Gejala | Penyebab yang paling sering |
 |---|---|

@@ -6,14 +6,7 @@ Halaman terakhir Deployment Project. Setelah selesai, setiap push ke branch `mai
 
 ### Tahap 24. Tambahkan Dockerfile dan cloudbuild.yaml
 
-![Folder proyek Next.js di Visual Studio Code](google-cloud-platform/image%2014.png)
-
-![Dockerfile tiga tahap di Visual Studio Code](google-cloud-platform/image%2016.png)
-
-![Isi next.config.mjs pada repositori acuan](google-cloud-platform/image%2017.png)
-
-
-Dijalankan di: Terminal Laptop
+<p class="dijalankan">Dijalankan di: <strong>Terminal Laptop</strong></p>
 
 Berkas `Dockerfile` dan `.dockerignore` ada di fork Anda, di root repositori, karena keduanya ikut ketika Anda mem-fork repositori instruktur. Bila ternyata belum ada, salin keduanya dari repositori sumber pada halaman [Persiapan Repositori](/hari-4/praktik-11/persiapan-repositori#repositori-yang-dipakai).
 
@@ -32,10 +25,6 @@ export default nextConfig;
 
 - `output: "standalone"` diperlukan karena `Dockerfile` menyalin folder `.next/standalone`. Tanpa itu, build image gagal pada tahap penyalinan.
 - `basePath: "/portal"` diperlukan karena `nginx.conf` mengalihkan `/` ke `/portal`, dan seluruh alamat pada modul ini memakai bentuk `http://IP_VM/portal`. Tanpa `basePath`, Nginx tetap mengalihkan ke `/portal` tetapi Next.js tidak menyajikan halaman di sana, sehingga yang muncul adalah 404.
-
-
-
-
 
 #### cloudbuild.yaml
 
@@ -114,7 +103,7 @@ OK   cloudbuild.yaml -> substitutions, steps, images, options
 
 ### Tahap 25. Commit dan push
 
-Dijalankan di: GitHub Desktop
+<p class="dijalankan">Dijalankan di: <strong>GitHub Desktop</strong></p>
 
 Buka GitHub Desktop. Keempat berkas yang baru ditambahkan akan muncul di daftar **Changes** pada kolom kiri.
 
@@ -128,49 +117,15 @@ Bila daftarnya sudah benar:
 
 Setelah terkirim, Cloud Build akan mulai bekerja sendiri. Tahap berikutnya menyiapkan sisi GitHub-nya.
 
-
-
 ### Tahap 26. Hubungkan repositori GitHub
 
-![Pencarian Cloud Build pada kolom pencarian](google-cloud-platform/cb-image.png)
-
-![Halaman Cloud Build sebelum ada build](google-cloud-platform/cb-image-1.png)
-
-![Dialog Connect repository, langkah pemilihan penyedia](google-cloud-platform/cb-image-3.png)
-
-![Halaman otorisasi GitHub untuk Google Cloud Build](google-cloud-platform/cb-image-4.png)
-
-![Peringatan bahwa GitHub App belum terpasang](google-cloud-platform/cb-image-5.png)
-
-![Pemasangan Google Cloud Build pada akun GitHub](google-cloud-platform/cb-image-6.png)
-
-![Verifikasi identitas pemilik akun GitHub](google-cloud-platform/cb-image-7.png)
-
-![Pemilihan repositori yang akan dihubungkan](google-cloud-platform/cb-image-8.png)
-
-
-Dijalankan di: Google Cloud Console
+<p class="dijalankan">Dijalankan di: <strong>Google Cloud Console</strong></p>
 
 Buka Cloud Build, lalu Repositories, lalu Connect repository. Buat connection dengan nama sesuai `CONNECTION_NAME` yang tercetak pada Tahap 2, pilih GitHub, masuk memakai akun pemilik fork, pilih repositori peserta, isi linked repository sesuai `LINKED_REPO_NAME`, lalu pastikan status connection berubah menjadi COMPLETE.
 
-
-
-
-
-
-
-
-
-
-
 ### Tahap 27. Buat trigger Cloud Build
 
-![Form Create trigger, bagian nama dan event](google-cloud-platform/cb-image-2.png)
-
-![Bagian Configuration: Cloud Build configuration file](google-cloud-platform/cb-image-9.png)
-
-
-Dijalankan di: Google Cloud Console
+<p class="dijalankan">Dijalankan di: <strong>Google Cloud Console</strong></p>
 
 Buat trigger dengan pengaturan berikut.
 
@@ -184,13 +139,9 @@ Buat trigger dengan pengaturan berikut.
 | Name | Sesuai `TRIGGER_NAME` |
 | Service account | Sesuai `BUILD_SA` |
 
-
-
-
-
 ### Tahap 28. Isi substitution variable
 
-Dijalankan di: Google Cloud Console
+<p class="dijalankan">Dijalankan di: <strong>Google Cloud Console</strong></p>
 
 Tambahkan lima variabel berikut pada trigger. Ganti `PARTICIPANT_ID` dengan identitas Anda.
 
@@ -202,9 +153,6 @@ Tambahkan lima variabel berikut pada trigger. Ganti `PARTICIPANT_ID` dengan iden
 | `_IMAGE_NAME` | `nextjs-PARTICIPANT_ID` |
 | `_CESIUM_ION_TOKEN` | Token Cesium Ion Anda, dari [ion.cesium.com/tokens](https://ion.cesium.com/tokens) |
 
-
-
-
 Bagian `PARTICIPANT_ID` pada dua nilai pertama dan terakhir itulah yang membuat trigger peserta A tidak pernah menyentuh VM peserta B.
 
 ::: warning Mengapa `_CESIUM_ION_TOKEN` harus ada di trigger, bukan hanya di `.env`
@@ -215,27 +163,17 @@ Karena `.dockerignore` mengecualikan berkas `.env` dari build context, nilai yan
 Akibat bila variabel ini kosong: build tetap berhasil dan situs tetap tampil, tetapi peta 3D gagal memuat aset 3D Tiles dari Cesium Ion. Peta dasar dan terrain tetap muncul, karena keduanya memakai sumber sendiri, sehingga gejalanya mudah disalahartikan sebagai model yang rusak.
 :::
 
-
 ### Tahap 29. Jalankan trigger dan pantau hasilnya
 
-![Halaman History berisi daftar build](google-cloud-platform/cb-image-13.png)
-
-![Rincian satu build: langkah, status, dan log](google-cloud-platform/cb-image-15.png)
-
-
-Dijalankan di: Google Cloud Console
+<p class="dijalankan">Dijalankan di: <strong>Google Cloud Console</strong></p>
 
 Buka halaman History, lalu jalankan trigger dan pantau build yang sedang berjalan.
-
-
-
-
 
 ## Verifikasi
 
 ### Tahap 30. Periksa container
 
-Dijalankan di: Cloud Shell
+<p class="dijalankan">Dijalankan di: <strong>Cloud Shell</strong></p>
 
 ```bash
 gcloud compute ssh "$VM_NAME" \
@@ -248,7 +186,7 @@ Tiga container harus berstatus running: `nextjs_portal`, `geoserver_app`, dan `n
 
 ### Tahap 31. Periksa GeoServer
 
-Dijalankan di: Cloud Shell
+<p class="dijalankan">Dijalankan di: <strong>Cloud Shell</strong></p>
 
 ```bash
 EXTERNAL_IP="$(gcloud compute instances describe "$VM_NAME" \
@@ -261,7 +199,7 @@ curl -sSIL --max-redirs 3 "http://${EXTERNAL_IP}/geoserver/web"
 
 ### Tahap 32. Buka Geoportal
 
-Dijalankan di: Cloud Shell menuju browser
+<p class="dijalankan">Dijalankan di: <strong>Cloud Shell menuju browser</strong></p>
 
 ```bash
 EXTERNAL_IP="$(gcloud compute instances describe "$VM_NAME" \
@@ -305,41 +243,19 @@ Halaman ini mengasumsikan Anda memakai project kelompok yang disiapkan koordinat
 
 1. Buka [https://cloud.google.com/gcp](https://cloud.google.com/gcp).
 
-   ![Hasil pencarian Google Cloud di Google](google-cloud-platform/project-image.png)
-
 2. Pilih **Get started for free**.
-
-   ![Tombol Get started for free pada halaman Google Cloud](google-cloud-platform/project-image-1.png)
 
 3. Pilih akun dan negara yang digunakan, lalu klik **Agree & continue**.
 
-   ![Langkah 1: pemilihan akun dan negara](google-cloud-platform/project-image-2.png)
-
 4. Isi **Contact Information**, lalu simpan.
-
-   ![Langkah 2: bagian contact information](google-cloud-platform/project-image-3.png)
-
-   ![Pengisian contact information](google-cloud-platform/project-image1.png)
 
 5. Setelah organization dibuat, isi **Tax Information**. Pilih **Head Office**, masukkan NIK pada kolom NPWP, lalu simpan.
 
-   ![Dialog Indonesia tax info dengan pilihan Head Office](google-cloud-platform/project-image-4.png)
-
 6. Isi **Add Payment Method** dengan detail kartu kredit.
-
-   ![Form penambahan kartu kredit atau debit](google-cloud-platform/project-image-5.png)
 
 7. Konfirmasi metode pembayaran, lalu klik **Start free**.
 
-   ![Konfirmasi data kontak, pajak, dan metode pembayaran](google-cloud-platform/project-image-6.png)
-
-   ![Dashboard project setelah pendaftaran selesai](google-cloud-platform/project-image-7.png)
-
 8. Buka kembali [https://cloud.google.com/gcp](https://cloud.google.com/gcp). Karena akun sudah terdaftar, tombol **Go to my console** akan muncul. Klik tombol itu untuk masuk ke dashboard project.
-
-   ![Tombol Go to my console pada halaman Google Cloud](google-cloud-platform/project-image-8.png)
-
-   ![Dashboard project dengan kartu Free Trial](google-cloud-platform/project-image10.png)
 
 Setelah project tersedia, kembali ke Tahap 2 dan isi `PROJECT_ID` dengan Project ID milik Anda sendiri.
 

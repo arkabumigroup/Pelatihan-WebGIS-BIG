@@ -591,6 +591,27 @@
 }
 
 /* ---------------------------------------------------------------------
+   Penanda tempat menjalankan
+   Setiap tahap diawali penanda tempat perintahnya dijalankan. Peserta
+   sering menjalankan perintah VM di Cloud Shell, dan sebaliknya, sehingga
+   tempatnya perlu terbaca sebelum perintahnya disalin, bukan sesudahnya.
+   --------------------------------------------------------------------- */
+.dijalankan {
+  display: inline-block;
+  border: var(--pelatihan-tebal) solid var(--pelatihan-garis);
+  border-radius: var(--pelatihan-radius);
+  box-shadow: 3px 3px 0 var(--pelatihan-bayangan);
+  background-color: var(--pelatihan-permukaan);
+  padding: 3px 10px;
+  margin: 10px 0 16px;
+  font-size: 13px;
+}
+
+.dark .dijalankan {
+  background-color: #24405e;
+}
+
+/* ---------------------------------------------------------------------
    Kotak pencarian
    Pencarian lokal VitePress dibuka dengan Ctrl+K atau dengan menekan tombol
    di navbar. Gayanya disamakan dengan sisa situs supaya tidak terlihat

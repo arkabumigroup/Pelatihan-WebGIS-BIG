@@ -140,11 +140,11 @@ Nilai unik itu **tidak ada di berkas repositori Anda**. Seluruhnya diatur pada t
 | `nextjs_portal`, `geoserver_app`, `nginx_proxy` | Tidak | Nama container di dalam VM Anda sendiri. Tidak bertabrakan dengan peserta lain karena VM-nya terpisah |
 | Alamat `geoserver` dan `nextjs` pada `nginx.conf` | Tidak | Nama service di dalam jaringan Docker VM Anda sendiri |
 
-Baris terakhir sering menimbulkan kekhawatiran. Nama kontainer dan nama service memang sama untuk semua peserta, tetapi tidak bertabrakan, karena keempat peserta memakai VM yang berbeda. Yang bertabrakan hanya resource yang berada di project bersama, dan itulah yang ditangani pada tabel di bawah.
+Baris terakhir sering menimbulkan kekhawatiran. Nama container dan nama service memang sama untuk semua peserta, tetapi itu tidak menjadi masalah karena setiap peserta memakai VM sendiri. Yang perlu diperhatikan hanya resource yang berada di project bersama, dan itulah isi tabel di bawah.
 
 ## Pembagian Resource
 
-Tabel ini perlu dibaca sebelum Tahap 2. Salah menebak pemilik resource adalah penyebab kegagalan paling sering di halaman ini.
+Tabel ini perlu dibaca sebelum Tahap 2. Sebagian resource dibuat koordinator dan dipakai bersama, sebagian lagi dibuat peserta dan harus berbeda antar peserta.
 
 | Resource | Dibuat oleh | Nama | Bila Anda membuatnya sendiri |
 |---|---|---|---|
@@ -153,7 +153,7 @@ Tabel ini perlu dibaca sebelum Tahap 2. Salah menebak pemilik resource adalah pe
 | Firewall rule port 80 dan 443 | Koordinator | `allow-webgis-http` | Gagal dengan `ALREADY_EXISTS` |
 | Firewall rule SSH lewat IAP | Koordinator | `allow-webgis-iap-ssh` | Gagal dengan `ALREADY_EXISTS` |
 | Network tag | Koordinator | `webgis-http`, `webgis-iap-ssh` | Gagal dengan `ALREADY_EXISTS` |
-| VM, IP statis, Service Account Cloud Build, trigger, GitHub connection, image | Peserta | Mengandung identitas peserta | Bertabrakan dengan peserta lain |
+| VM, IP statis, Service Account Cloud Build, trigger, GitHub connection, image | Peserta | Mengandung identitas peserta | Dapat menimpa resource peserta lain bila namanya tidak unik atau sama |
 
 Nama pada baris terakhir diturunkan seluruhnya dari satu nilai, yaitu identitas peserta. Nilai itulah yang ditetapkan pada Tahap 2.
 
@@ -161,13 +161,13 @@ Nama pada baris terakhir diturunkan seluruhnya dari satu nilai, yaitu identitas 
 
 ### Tahap 1. Buka project
 
-Dijalankan di: Google Cloud Console
+<p class="dijalankan">Dijalankan di: <strong>Google Cloud Console</strong></p>
 
 Masuk memakai email yang diberikan koordinator, lalu pilih project kelompok yang sudah disiapkan. Pastikan Project ID yang tampil di bagian atas sudah benar sebelum melanjutkan.
 
 ### Tahap 2. Tetapkan identitas peserta
 
-Dijalankan di: Cloud Shell
+<p class="dijalankan">Dijalankan di: <strong>Cloud Shell</strong></p>
 
 ::: tip Ambil dua nilai ini dari tabel peserta
 Sebelum menempel blok di bawah, cari nama atau email Anda pada halaman [Peserta dan Project](/hari-4/praktik-11/peserta-project). Halaman itu memuat **Nama Peserta**, **Project ID**, dan kelompok Anda.
@@ -205,16 +205,13 @@ IMAGE_NAME="nextjs-${PARTICIPANT_ID}"
 SUBDOMAIN="${PARTICIPANT_ID}.webgisbig.com"
 VM_REGION="${ZONE%-*}"
 
-printf '%s' "$PARTICIPANT_ID" | grep -qE '^[a-z0-9]{3,12}$' \
-  || { echo "NAMA_PESERTA harus 3 sampai 12 karakter, huruf kecil dan angka saja."; exit 1; }
-
 gcloud config set project "$PROJECT_ID" >/dev/null
 echo "Siap. VM_NAME=$VM_NAME  SUBDOMAIN=$SUBDOMAIN"
 ```
 
 `NAMA_PESERTA` hanya boleh huruf kecil dan angka, 3 sampai 12 karakter. Nama VM, Service Account, dan subdomain menolak karakter di luar itu, dan pesan galatnya menyebut nama resource, bukan nama variabel, sehingga sulit dilacak bila lolos sampai ke perintah `gcloud`.
 
-Batas teknisnya sebenarnya 27 karakter, berasal dari nama Service Account `cb-<nama>` yang dibatasi 30 karakter. Angka 12 diambil jauh di bawah itu supaya nama resource tetap pendek dan mudah dibaca pada daftar, sementara nama seperti `dhanypedia` atau `arkabumihd1` tetap muat.
+Batas teknisnya 27 karakter, berasal dari nama Service Account `cb-<nama>` yang dibatasi 30 karakter. Angka 12 diambil jauh di bawah itu supaya nama resource tetap pendek pada daftar.
 
 Baris `gcloud config set project` wajib ada. Banyak perintah pada tahap berikutnya tidak menyebut `--project`, misalnya `gcloud compute instances create` dan `gcloud iam service-accounts create`. Tanpa baris itu, perintah tersebut memakai project yang aktif di Cloud Shell, yang belum tentu project Anda. Resource pun dibuat di project kelompok lain, dan karena perintahnya berhasil, tidak ada pesan galat yang memberitahu. VM baru ditemukan pada tahap berikutnya ketika alamatnya tidak muncul di project yang benar.
 
@@ -249,7 +246,6 @@ echo "PROJECT_ID=$PROJECT_ID  VM_NAME=$VM_NAME  ZONE=$ZONE"
 ```
 
 Bila ada yang kosong, jalankan ulang blok Tahap 2.
-
 
 ---
 

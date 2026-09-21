@@ -4,15 +4,13 @@ Halaman ini memeriksa berkas yang dibutuhkan container sebelum aplikasi bisa ber
 
 **Berkasnya sudah tersedia di repositori Anda.** Anda tidak perlu membuatnya dari nol. Yang perlu dikerjakan adalah memastikan kelimanya ada, memahami isinya, lalu mengujinya sebelum di-push.
 
-Menulis berkas YAML sepanjang ini dari nol adalah sumber kesalahan paling sering. Satu spasi yang salah membuat container gagal jalan, dan pesan galatnya tidak menyebut baris yang bermasalah.
-
 ## Alur Deployment Project
 
 Deployment Project bukan satu pekerjaan, melainkan rangkaian yang berujung pada satu hasil: Geoportal yang berjalan di alamat HTTPS dengan subdomain sendiri.
 
 Diagram berikut menunjukkan titik mulai Anda, pekerjaan yang Anda kerjakan sendiri, bagian yang berjalan otomatis, dan hasil akhirnya.
 
-![Alur Deployment Project dari titik mulai sampai hasil akhir. Dari atas ke bawah: fork repositori, siapkan database Supabase, buat akun super admin, isi berkas .env, uji di laptop, salin repositori ke VM, hubungkan Cloud Build, lalu git push. Setelah itu Cloud Build bekerja otomatis membangun image dan memperbarui container di VM, sehingga Geoportal terbit di alamat HTTPS bersama GeoServer.](alur-deployment-project.webp)
+![Alur Deployment Project dari titik mulai sampai hasil akhir, dua belas langkah. Dikerjakan sebelum menyentuh server: fork repositori lalu clone ke laptop, siapkan database Supabase, buat akun super admin, periksa berkas konfigurasi, isi berkas .env, lalu uji di laptop sampai bisa login. Menyiapkan server: buat VM lalu salin repositori ke dalamnya, hubungkan Cloud Build ke GitHub, lalu klik Push origin di GitHub Desktop. Setelah itu berjalan sendiri: Cloud Build membangun image dan container di VM diperbarui tanpa masuk ke VM. Hasilnya Geoportal terbit di alamat HTTPS bersama GeoServer. Setiap kotak ditandai tempat menjalankannya.](alur-deployment-project.png)
 
 Ada dua batas yang perlu diperhatikan pada diagram itu:
 
@@ -28,6 +26,8 @@ Jadi seluruh pekerjaan manual ada di laptop dan di VM, dan berhenti pada satu ka
 ## Tahap 1. Fork dan clone repositori
 
 Halaman ini memeriksa berkas yang sudah ada di repositori, jadi repositori itu harus ada di laptop Anda lebih dahulu. Seluruh pekerjaan repositori pada pelatihan ini memakai **GitHub Desktop**.
+
+<p class="dijalankan">Dijalankan di: <strong>Laptop</strong></p>
 
 ### Fork repositori
 
@@ -79,6 +79,8 @@ Yang memang harus berbeda antar peserta, yaitu nama VM, nama image, dan subdomai
 ## Tahap 2. Siapkan database Supabase
 
 Portal memerlukan database. Tanpanya aplikasi tetap berjalan, tetapi halaman login selalu gagal. Tahap ini dikerjakan sebelum berkas konfigurasi, karena `DATABASE_URL` dari sini dipakai pada Tahap 5.
+
+<p class="dijalankan">Dijalankan di: <strong>SQL Editor Supabase</strong></p>
 
 Database yang dipakai adalah **Supabase**, layanan PostgreSQL yang berjalan di cloud. Peserta memakai project Supabase masing-masing.
 
@@ -148,6 +150,8 @@ Seluruh isi tiap berkas tetap ditampilkan di halaman ini supaya Anda dapat memer
 
 Buka folder proyek di Visual Studio Code, lalu buka berkas `docker-compose.yml` di root folder. Berkas itu sudah ada di repositori Anda.
 
+<p class="dijalankan">Dijalankan di: <strong>Laptop</strong></p>
+
 Isi yang seharusnya terlihat:
 
 ```yaml
@@ -205,12 +209,6 @@ networks:
     driver: bridge
 ```
 
-![Mengunduh nginx.conf dan docker-compose.yml dari folder berkas pelatihan](konfigurasi-project/image%2020.png)
-
-![Membuka docker-compose.yml di Visual Studio Code](konfigurasi-project/image%2021.png)
-
-![Memeriksa nilai pada docker-compose.yml sebelum disimpan](konfigurasi-project/image25.png)
-
 Dua hal pada service `nginx` yang mudah terlewat, dan keduanya membuat HTTPS tidak terjangkau bila dihilangkan:
 
 - Port `443:443` harus dipublikasikan. Tanpa itu Nginx mendengarkan di dalam container, tetapi host tidak meneruskan trafik ke sana.
@@ -219,6 +217,8 @@ Dua hal pada service `nginx` yang mudah terlewat, dan keduanya membuat HTTPS tid
 ## Tahap 4. Periksa nginx.conf
 
 Buka berkas `nginx.conf` di root folder proyek. Berkas itu sudah ada di repositori Anda, jadi tidak ada yang perlu diketik.
+
+<p class="dijalankan">Dijalankan di: <strong>Laptop</strong></p>
 
 Periksa isinya dengan perintah ini:
 
@@ -256,6 +256,8 @@ Pesan itu tidak menyebut ukuran berkas sama sekali, sehingga penyebabnya sulit d
 ## Tahap 5. Isi berkas .env
 
 `DATABASE_URL` dari Tahap 2 dan `JWT_SECRET` dari perintah acak sekarang diisi ke dalam berkas `.env`. Tahap ini penting karena aplikasi tidak bisa login tanpa berkas ini.
+
+<p class="dijalankan">Dijalankan di: <strong>Laptop</strong></p>
 
 ### Salin berkas contoh
 
@@ -358,27 +360,9 @@ Biarkan kosong di laptop, lalu isi di VM:
 Bagian `POSTGIS_*` diisi dengan kredensial Supabase, sama seperti di laptop.
 
 ::: warning Jangan tertukar antara dua alamat itu
+`GEOSERVER_URL` dipanggil aplikasi dari dalam jaringan Docker, jadi memakai nama service. `GEOSERVER_PUBLIC_URL` disimpan ke katalog lalu dibuka dari browser, jadi memakai alamat publik.
 
-Keduanya harus menunjuk ke tempat GeoServer benar-benar dapat dijangkau, dan tempat itu berbeda menurut aplikasi berjalan di mana.
-
-`GEOSERVER_URL=http://localhost:8080/geoserver` **salah** di VM, karena di dalam container, `localhost` menunjuk ke container aplikasi sendiri. Unggahan layer gagal dengan `connection refused`.
-
-`GEOSERVER_PUBLIC_URL=http://geoserver:8080/geoserver` **salah** di VM, karena nama `geoserver` hanya dikenal di dalam jaringan Docker. Alamat yang tersimpan di katalog tidak dapat dibuka dari browser Anda, dan tidak ada pesan galat yang menjelaskan sebabnya.
-
-::: danger Bila memasang GeoServer di laptop, ubah KEDUANYA
-Dua kesalahan berikut terjadi di laptop, dan keduanya membuat unggahan layer gagal.
-
-**Mengubah `GEOSERVER_PUBLIC_URL` saja.** Aplikasi memakai `GEOSERVER_URL` lebih dahulu, yaitu saat menerbitkan layer lewat REST API. Bila baris itu masih berisi `http://geoserver:8080/geoserver` dari contoh, laptop tidak dapat mengenali nama `geoserver`, karena nama itu hanya ada di dalam jaringan Docker VM.
-
-Gejalanya menyesatkan: aplikasi hanya melaporkan `fetch failed`, tanpa menyebut penyebabnya. Penyebab sebenarnya baru terlihat di log server:
-
-```text
-getaddrinfo ENOTFOUND geoserver
-```
-
-**Mengubah `GEOSERVER_URL` saja.** Layer berhasil diterbitkan, tetapi alamat yang tersimpan di katalog memakai nilai `GEOSERVER_PUBLIC_URL` yang masih kosong, sehingga alamat itu jatuh ke nilai cadangan dan tidak dapat dibuka dari browser.
-
-Jadi di laptop, **kedua baris harus berisi alamat yang sama**, yaitu `http://localhost:8080/geoserver`.
+Bila keduanya tertukar, unggahan layer gagal dengan `connection refused`, atau alamat yang tersimpan tidak dapat dibuka tanpa pesan galat yang menjelaskan sebabnya. Bila GeoServer Anda jalankan di laptop, kedua baris berisi `http://localhost:8080/geoserver`.
 :::
 
 ### Pastikan .env tidak ikut ter-commit
@@ -396,6 +380,8 @@ Keluaran yang diharapkan menyebut `.env`. Bila perintah itu tidak mengeluarkan a
 ## Tahap 6. Periksa .gitignore
 
 Buka `.gitignore` di root folder proyek. Pastikan di dalamnya ada tiga baris berikut.
+
+<p class="dijalankan">Dijalankan di: <strong>Laptop</strong></p>
 
 ```
 /geoserver-data/
@@ -451,6 +437,8 @@ Bila salah satu baris benar-benar tidak muncul walaupun garis miringnya sudah di
 ## Tahap 7. Periksa folder scripts
 
 Di root folder proyek, pastikan ada folder bernama `scripts`, sejajar dengan folder `public` dan `src`. Folder itu berisi dua berkas pemeriksa.
+
+<p class="dijalankan">Dijalankan di: <strong>Laptop</strong></p>
 
 ### 7a. scripts/check-config.mjs
 
@@ -593,6 +581,8 @@ Menjalankan salah satunya tanpa argumen akan menampilkan cara pakainya.
 
 ## Tahap 8. Uji seluruh berkas di laptop
 
+<p class="dijalankan">Dijalankan di: <strong>Laptop</strong></p>
+
 ### Uji berkas konfigurasi
 
 Buka terminal di Visual Studio Code, pada folder proyek. Jalankan pemeriksa YAML:
@@ -670,6 +660,8 @@ Bila Anda membaca panduan versi lama yang menyebut `12 lulus`, angka yang benar 
 
 Ini tahap yang membuktikan seluruh persiapan berhasil, sebelum aplikasi dipindahkan ke server. Bila login gagal di sini, penyebabnya masih mudah dilacak.
 
+<p class="dijalankan">Dijalankan di: <strong>Laptop</strong></p>
+
 ```bash
 npm run dev
 ```
@@ -696,11 +688,13 @@ Bila login gagal, periksa berurutan:
 
 Setelah berhasil login, hentikan server dengan `Ctrl+C`. Aplikasi siap dipindahkan ke server.
 
-## Tahap 10. Pastikan tidak ada rahasia yang ikut ter-commit
+## Tahap 10. Pastikan berkas .env tidak ikut ter-commit
 
-Berkas konfigurasi Anda sudah ada di repositori, jadi pada tahap ini tidak ada yang perlu di-commit. Yang perlu diperiksa hanya satu hal: pastikan berkas `.env` tidak pernah ikut masuk ke Git.
+Berkas `.env` memuat kata sandi basis data, `JWT_SECRET`, `NEXTAUTH_SECRET`, kata sandi admin GeoServer, dan token Cesium Ion Anda. Repositori GitHub bersifat publik, jadi berkas itu tidak boleh ikut ter-push.
 
-Buka GitHub Desktop dan pastikan `.env` tidak muncul di daftar **Changes**. Berkas yang diabaikan memang tidak pernah muncul di sana.
+<p class="dijalankan">Dijalankan di: <strong>Laptop</strong></p>
+
+Berkas konfigurasi Anda sudah ada di repositori, jadi pada tahap ini tidak ada yang perlu di-commit. Yang perlu diperiksa hanya satu: pastikan `.env` tidak muncul di daftar **Changes** pada GitHub Desktop. Berkas yang diabaikan memang tidak pernah muncul di sana.
 
 Bila ingin memastikan lewat terminal:
 
@@ -708,7 +702,7 @@ Bila ingin memastikan lewat terminal:
 git check-ignore .env && echo "aman, .env diabaikan"
 ```
 
-Keluaran `git check-ignore` harus menyebut `.env`. Bila perintah itu tidak mengeluarkan apa pun, berarti `.env` **tidak** diabaikan dan isinya bisa ikut ter-push ke GitHub publik. Hentikan langkah ini dan tambahkan `.env` ke `.gitignore` lebih dahulu.
+Keluaran `git check-ignore` harus menyebut `.env`. Bila perintah itu tidak mengeluarkan apa pun, berarti `.env` **tidak** diabaikan dan isinya bisa ikut ter-push ke GitHub publik. Tambahkan `.env` ke `.gitignore` lebih dahulu.
 
 Berkas `.gitignore` di repositori sudah memuat pola `.env*`, sehingga `.env` dan seluruh berkas sejenis diabaikan, sementara `.env.example` tetap ikut karena dikecualikan khusus.
 
