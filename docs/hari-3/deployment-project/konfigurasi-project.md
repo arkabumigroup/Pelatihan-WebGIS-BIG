@@ -218,76 +218,40 @@ Dua hal pada service `nginx` yang mudah terlewat, dan keduanya membuat HTTPS tid
 
 ## Tahap 4. Periksa nginx.conf
 
-Buka berkas `nginx.conf` di root folder proyek. Berkas itu sudah ada di repositori Anda.
+Buka berkas `nginx.conf` di root folder proyek. Berkas itu sudah ada di repositori Anda, jadi tidak ada yang perlu diketik.
 
-Isi yang seharusnya terlihat:
+Periksa isinya dengan perintah ini:
 
-```nginx
-server {
-    listen 80;
-    server_name _;
-
-    # Certbot menulis berkas challenge ke webroot ini, lalu Let's Encrypt
-    # mengambilnya lewat http://<domain>/.well-known/acme-challenge/<token>.
-    location ^~ /.well-known/acme-challenge/ {
-        root /var/www/certbot;
-        default_type "text/plain";
-        try_files $uri =404;
-    }
-
-    location = / {
-        return 302 /portal;
-    }
-
-    # Diarahkan langsung ke bentuk kanonik tanpa slash, karena GeoServer
-    # mengalihkan /geoserver/web/ ke /geoserver/web.
-    location = /geoserver {
-        return 302 /geoserver/web;
-    }
-
-    # Nama service di-resolve saat ada permintaan, bukan saat Nginx start.
-    # Tanpa pola ini, Nginx menolak start dengan "host not found in upstream"
-    # selama container nextjs belum ada. Padahal geoserver dan nginx sengaja
-    # dinyalakan lebih dahulu, sebelum image nextjs dibangun.
-    location /geoserver/ {
-        resolver 127.0.0.11 valid=10s ipv6=off;
-
-        set $geoserver_upstream http://geoserver:8080;
-        rewrite ^/geoserver/(.*)$ /geoserver/$1 break;
-        proxy_pass $geoserver_upstream;
-
-        proxy_set_header Host $http_host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_set_header X-Forwarded-Host $http_host;
-
-        proxy_buffers 16 16k;
-        proxy_buffer_size 32k;
-    }
-
-    location / {
-        resolver 127.0.0.11 valid=10s ipv6=off;
-
-        set $nextjs_upstream http://nextjs:3000;
-        proxy_pass $nextjs_upstream;
-
-        proxy_http_version 1.1;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-    }
-}
-
-# Server block HTTPS dimuat dari direktori ini. Sebelum sertifikat terbit,
-# direktori tls/ kosong sehingga tidak ada berkas yang dimuat dan Nginx
-# hanya melayani port 80.
-include /etc/nginx/tls/*.conf;
+```bash
+grep -nE "client_max_body_size|acme-challenge|location|proxy_pass|include" nginx.conf
 ```
 
-Perhatikan baris terakhir. Berkas ini sengaja sudah memuat direktori `tls/`, walaupun direktori itu masih kosong pada tahap ini. Dengan begitu, berkas yang ditulis pada halaman [Penambahan Subdomain](/hari-3/deployment-project/subdomain) nanti langsung terbaca tanpa mengubah `nginx.conf` lagi.
+Bagian yang harus ada, beserta alasannya:
 
+| Baris | Kegunaan |
+|---|---|
+| `client_max_body_size 100m;` | Batas bawaan Nginx hanya 1 MB, sedangkan model 3D dan berkas GeoJSON hampir selalu lebih besar |
+| `include /etc/nginx/tls/*.conf;` | Memuat berkas HTTPS yang ditulis nanti pada halaman Penambahan Subdomain. Direktori yang masih kosong bukan galat bagi Nginx |
+| `location /.well-known/acme-challenge/` | Let's Encrypt memeriksa kepemilikan domain lewat berkas di direktori ini |
+| `location = /` | Mengalihkan akar domain ke `/portal` |
+| `location = /geoserver` | Mengalihkan ke bentuk kanonik tanpa garis miring di akhir |
+| `location /geoserver/` | Meneruskan permintaan GeoServer, dengan `Host` dikirim apa adanya supaya GeoServer tahu alamat publiknya |
+| `location = /robots.txt` dan `= /sitemap.xml` | Next.js menyajikannya di bawah `/portal`, sedangkan mesin pencari memintanya di akar domain |
+| `location /` | Meneruskan sisanya ke container `nextjs` |
+
+Blok `location /geoserver/` dan `location /` sama-sama memuat `resolver 127.0.0.11 valid=10s ipv6=off;`. Nama service di-resolve saat ada permintaan, bukan saat Nginx start. Tanpa pola itu, Nginx menolak start dengan `host not found in upstream` selama container `nextjs` belum ada, padahal `geoserver` dan `nginx` sengaja dinyalakan lebih dahulu.
+
+::: warning Batas 1 MB bawaan Nginx
+Baris `client_max_body_size` mudah terlewat, karena berkasnya tetap sah tanpanya dan Nginx tetap menyala.
+
+Tanpa baris itu, unggahan di atas 1 MB ditolak Nginx dengan halaman HTML, bukan balasan JSON dari aplikasi. Peserta melihat:
+
+```text
+Unexpected token '<', "<html> ..." is not valid JSON
+```
+
+Pesan itu tidak menyebut ukuran berkas sama sekali, sehingga penyebabnya sulit ditemukan. Model 3D hampir selalu melewati 1 MB, dan berkas GeoJSON pada katalog 2D dapat ikut melewatinya.
+:::
 
 ## Tahap 5. Isi berkas .env
 
