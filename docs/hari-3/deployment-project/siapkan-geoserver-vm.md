@@ -366,6 +366,7 @@ Gejalanya menyesatkan: katalog tetap menampilkan modelnya, karena barisnya masih
 | Halaman `https://SUBDOMAIN/geoserver/web` berputar tanpa henti | `proxy_redirect` belum ada pada `nginx.conf`. Periksa halaman [Penambahan Subdomain](/hari-3/deployment-project/subdomain) |
 | Unggah model 3D gagal, atau berkasnya tidak muncul di `data/models` | Pemilik folder `data` bukan uid 1001. Kerjakan Tahap 8 |
 | Model 3D yang dulu ada kini tidak dapat dibuka | Berkasnya hilang karena ditulis ke dalam container, bukan ke volume. Kerjakan Tahap 8 |
+| `Unexpected token '<', "<html> ..." is not valid JSON` saat menyimpan data | Nginx menolak unggahannya dan membalas halaman HTML, bukan JSON. Periksa `client_max_body_size` pada `nginx.conf` seperti pada Tahap 4 halaman Konfigurasi Project, lalu buat ulang container `nginx` dengan `sudo docker compose up -d --force-recreate nginx`. Memuat ulang saja tidak cukup, karena berkas yang di-mount satu per satu mengikuti inode lama setelah `git pull` menggantinya |
 
 ## Hasil Akhir
 
