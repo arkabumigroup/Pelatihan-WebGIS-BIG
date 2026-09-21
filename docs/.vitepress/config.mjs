@@ -13,6 +13,24 @@ export default defineConfig({
     ['link', { rel: 'icon', href: '/Pelatihan-WebGIS-BIG/favicon.ico' }]
   ],
   description: "Materi pelatihan WebGIS tinggat dasar hingga lanjutan yang diselenggarakan oleh Arkabumi dan PPKIG BIG",
+
+  // Tabel dibungkus wadah bergulir.
+  //
+  // Alasannya: tabel yang dapat digulir mendatar harus memakai display block,
+  // dan pada mode itu kolomnya tidak ikut melebar sehingga menyisakan bidang
+  // kosong di kanan. Dengan wadah terpisah, tabelnya kembali menjadi tabel
+  // biasa yang lebarnya penuh, sedangkan gulir mendatarnya ditangani wadah.
+  markdown: {
+    config: (md) => {
+      const token = (self, tokens, idx, options) => self.renderToken(tokens, idx, options)
+      const buka = md.renderer.rules.table_open || ((t, i, o, e, s) => token(s, t, i, o))
+      const tutup = md.renderer.rules.table_close || ((t, i, o, e, s) => token(s, t, i, o))
+
+      md.renderer.rules.table_open = (...a) => '<div class="tabel-gulir">' + buka(...a)
+      md.renderer.rules.table_close = (...a) => tutup(...a) + '</div>'
+    }
+  },
+
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     siteTitle: 'Pelatihan WebGIS',
@@ -20,6 +38,39 @@ export default defineConfig({
       { text: 'Home', link: '/' },
       { text: 'Materi Pelatihan', link: '/materi-pelatihan' }
     ],
+
+    // Pencarian lokal VitePress. Indeksnya dibangun saat situs dibangun, jadi
+    // tidak ada layanan luar yang perlu dihubungi dan pencarian tetap bekerja
+    // pada koneksi pelatihan yang buruk.
+    //
+    // Seluruh labelnya diterjemahkan karena bawaan VitePress berbahasa Inggris,
+    // sedangkan materi ini berbahasa Indonesia.
+    search: {
+      provider: 'local',
+      options: {
+        translations: {
+          button: {
+            buttonText: 'Cari materi',
+            buttonAriaLabel: 'Cari di materi pelatihan'
+          },
+          modal: {
+            displayDetails: 'Tampilkan daftar lengkap',
+            resetButtonTitle: 'Hapus pencarian',
+            backButtonTitle: 'Tutup pencarian',
+            noResultsText: 'Tidak ada hasil untuk',
+            footer: {
+              selectText: 'untuk membuka',
+              selectKeyAriaLabel: 'enter',
+              navigateText: 'untuk berpindah',
+              navigateUpKeyAriaLabel: 'panah atas',
+              navigateDownKeyAriaLabel: 'panah bawah',
+              closeText: 'untuk menutup',
+              closeKeyAriaLabel: 'escape'
+            }
+          }
+        }
+      }
+    },
 
     sidebar: [
       hari('Hari 1 - Dasar GIS, Web, dan Peta 2D', '/hari-1/', [
