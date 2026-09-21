@@ -57,22 +57,6 @@ echo "IP statis : $(gcloud compute addresses describe "$STATIC_IP_NAME" \
 
 Selama record belum ditambahkan, `dig` pada Tahap 4 akan mengembalikan kosong. Itu wajar, bukan tanda ada yang salah pada VM Anda.
 
-::: warning Cara menambahkan record di Cloudflare
-Bagian ini untuk penyelenggara, bukan peserta.
-
-Isi record sebagai berikut:
-
-| Kolom | Nilai |
-|---|---|
-| Type | `A` |
-| Name | `PARTICIPANT_ID` saja, tanpa `.webgisbig.com` |
-| IPv4 address | Alamat IP statis VM peserta |
-| Proxy status | **DNS only**, bukan Proxied |
-| TTL | `Auto` |
-
-**Proxy status harus DNS only**, yaitu awan kelabu, bukan awan jingga. Alasannya dijelaskan pada bagian berikut.
-:::
-
 ### Mengapa proxy Cloudflare harus dimatikan
 
 Certbot pada halaman ini memakai metode `webroot`, sehingga Let's Encrypt memverifikasi kepemilikan domain dengan mengakses alamat berikut dari internet:
@@ -374,26 +358,6 @@ Diuji pada Nginx 1.27:
 
 Karena itu berkas di atas menetapkan variabel `$alihkan` lebih dahulu, lalu mengosongkannya kembali khusus untuk jalur ACME.
 
-::: warning Kesalahan ini baru ketahuan setelah 60 hari
-Bentuk yang salah tidak terlihat saat dipasang. Sertifikat baru terbit, dan situs berjalan normal.
-
-Yang gagal adalah perpanjangan pada hari ke-60. Pada saat itu situs Anda mati dengan sertifikat kedaluwarsa, dan penyebabnya sudah sulit dilacak karena pemasangannya terjadi dua bulan sebelumnya.
-
-Tahap 12 menguji perpanjangan memakai `--dry-run`. Uji itulah yang menangkap kesalahan ini, jadi **jangan dilewati.**
-:::
-
-::: danger Jangan menulis blok `server` di berkas ini
-Panduan versi lama menyuruh menulis blok `server { ... }` lengkap ke dalam `tls/aktifkan.conf`. Cara itu **selalu gagal**, dengan pesan:
-
-```text
-[emerg] "server" directive is not allowed here in /etc/nginx/tls/aktifkan.conf:1
-```
-
-Blok `server` hanya sah di dalam konteks `http`, sedangkan `include` pada `nginx.conf` berada di dalam konteks `server`.
-
-Diuji pada Nginx 1.27: berkas berisi blok `server` gagal, sedangkan berkas berisi direktif `listen` dan `ssl_certificate` berhasil, dan port 443 benar-benar terbuka.
-:::
-
 ### Tahap 11. Verifikasi HTTPS
 
 <p class="dijalankan dijalankan--cloud">Dijalankan di: <strong>Cloud Shell</strong></p>
@@ -519,8 +483,7 @@ Alamat email yang dipakai pada Tahap 9 domainnya tidak terdaftar. Penyebab seben
 The ACME server believes peserta@latihan.local is an invalid email address.
 ```
 
-Yang membuat jebakan ini sulit terlihat: server uji Let's Encrypt menerima alamat apa pun, sehingga `--dry-run` pada Tahap 9a menyatakan berhasil. Penolakan baru muncul saat penerbitan sungguhan. Ganti `EMAIL` dengan alamat berdomain nyata, lalu ulangi Tahap 9.
-
+Yang membuatnya sulit terlihat: server uji Let's Encrypt menerima alamat apa pun, sehingga `--dry-run` pada Tahap 9a menyatakan berhasil. Penolakan baru muncul saat penerbitan sungguhan. Ganti `EMAIL` dengan alamat berdomain nyata, lalu ulangi Tahap 9.
 
 | Gejala | Penyebab yang paling sering |
 |---|---|

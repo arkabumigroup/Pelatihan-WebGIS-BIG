@@ -159,7 +159,7 @@ Perbaikannya adalah satu variabel pada service `geoserver` di `docker-compose.ym
 **Baris itu sudah ada di berkas yang Anda clone**, karena ikut ketika Anda mem-fork repositori peserta. Yang perlu Anda lakukan hanya memastikan barisnya ada, bukan menambahkannya.
 
 ::: danger Namanya tanpa awalan GEOSERVER_
-Ini jebakan yang tidak menimbulkan pesan galat apa pun. Image kartoza membaca variabel bernama `CSRF_WHITELIST`, lalu meneruskannya ke GeoServer sebagai `-DGEOSERVER_CSRF_WHITELIST`. Jadi namanya memang berbeda di kedua sisi.
+Image kartoza membaca variabel bernama `CSRF_WHITELIST`, lalu meneruskannya ke GeoServer sebagai `-DGEOSERVER_CSRF_WHITELIST`. Namanya memang berbeda di kedua sisi, dan di situlah kesalahannya biasa terjadi.
 
 Bila Anda menulisnya dengan awalan, yaitu `GEOSERVER_CSRF_WHITELIST`, compose tetap menerima barisnya, container tetap menyala, dan GeoServer tetap berjalan. Yang terjadi hanya nilainya kosong, sehingga whitelist tidak terpasang dan gejalanya kembali seperti semula.
 

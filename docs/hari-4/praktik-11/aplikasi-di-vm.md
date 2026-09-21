@@ -173,24 +173,6 @@ Bila fork Anda memakai nama bawaan `personal-geoportal`, ganti nilai `GITHUB_REP
 
 Bila GitHub meminta kata sandi, isi dengan Personal Access Token, bukan kata sandi akun.
 
-::: warning Jangan menyalin berkas konfigurasi dari laptop
-Versi sebelumnya pada halaman ini menyuruh menyalin `docker-compose.yml`, `nginx.conf`, dan `.env.example` dari laptop memakai `gcloud compute scp` **sebelum** tahap ini.
-
-Langkah itu tidak diperlukan, karena `git clone` di atas sudah membawa ketiganya dengan isi yang sama persis.
-
-Yang lebih penting, langkah itu **menggagalkan tahap ini.** `git clone` menolak menulis ke folder yang sudah berisi berkas:
-
-```text
-fatal: destination path '/opt/webgis/app' already exists and is not an empty directory.
-```
-
-Bila Anda pernah menjalankan langkah lama itu dan `/opt/webgis/app` sudah berisi berkas, hapus dulu isinya:
-
-```bash
-rm -rf /opt/webgis/app
-```
-:::
-
 ### Tahap 17. Periksa berkas konfigurasi
 
 <p class="dijalankan dijalankan--server">Dijalankan di: <strong>Terminal VM</strong></p>
@@ -391,10 +373,10 @@ Diperiksa pada `roles/editor`:
 | Seluruh isi `roles/logging.logWriter` | ya |
 
 `roles/artifactregistry.admin` hanya menambah tiga izin yang tidak dipakai untuk
-mendorong image: `createTagBinding`, `deleteTagBinding`, dan `setIamPolicy`.
+push image: `createTagBinding`, `deleteTagBinding`, dan `setIamPolicy`.
 
 **Cara mengetahui apakah tahap ini perlu:** lanjutkan saja ke Tahap 21. Bila
-image berhasil didorong, tahap ini boleh dilewati. Bila gagal dengan pesan
+image berhasil di-push, tahap ini boleh dilewati. Bila gagal dengan pesan
 `Permission "artifactregistry.repositories.uploadArtifacts" denied`, kembali ke
 sini dan kerjakan.
 :::
@@ -403,7 +385,7 @@ VM perlu izin menulis image ke Artifact Registry. Buka IAM & Admin, lalu IAM, la
 
 | Role | Kegunaan |
 |---|---|
-| Artifact Registry Administrator | Mendorong image ke repository |
+| Artifact Registry Administrator | Push image ke repository |
 | Logs Writer | Menulis log dari VM |
 
 Gunakan alamat `VM_SA` yang tercetak pada Tahap 6.
@@ -440,7 +422,7 @@ dan itu cara tercepat mengenali kesalahan ini. Perintah IAM selalu dijalankan
 di Cloud Shell, sebagai Anda.
 :::
 
-### Tahap 21. Dorong image ke Artifact Registry
+### Tahap 21. Push image ke Artifact Registry
 
 <p class="dijalankan dijalankan--server">Dijalankan di: <strong>Terminal VM</strong></p>
 
@@ -452,7 +434,7 @@ REPOSITORY="katalog-images"
 IMAGE_NAME="nextjs-nama01"
 ```
 
-Lalu dorong image-nya:
+Lalu push image-nya:
 
 ```bash
 gcloud auth configure-docker asia-southeast2-docker.pkg.dev --quiet

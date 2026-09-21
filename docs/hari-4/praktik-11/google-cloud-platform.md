@@ -26,10 +26,10 @@ Empat layanan itu adalah yang benar-benar dipakai:
 Bila ada yang belum muncul, hentikan tahap ini dan lapor ke koordinator. Peserta tidak punya izin mengaktifkan API pada project kelompok.
 
 ::: tip Cloud DNS, Cloud Domains, dan Secret Manager tidak diperlukan
-Ketiganya sempat ikut diperiksa pada versi sebelumnya, padahal tidak dipakai di mana pun pada pelatihan ini.
+Ketiganya tidak dipakai di mana pun pada pelatihan ini.
 
 - **Cloud DNS** dan **Cloud Domains** tidak dipakai karena subdomain diatur penyelenggara melalui Cloudflare
-- **Secret Manager** tidak dipakai karena rahasia aplikasi disimpan pada berkas `.env` di VM
+- **Secret Manager** tidak dipakai karena kata sandi dan token aplikasi disimpan pada berkas `.env` di VM
 
 Bila ketiganya belum aktif, abaikan saja. Tidak ada tahap yang membutuhkannya.
 :::
