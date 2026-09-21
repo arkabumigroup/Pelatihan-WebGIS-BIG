@@ -3,6 +3,26 @@ import { defineConfig } from 'vitepress'
 const hari = (text, link, items) => ({ text, link, collapsed: true, items })
 
 // https://vitepress.dev/reference/site-config
+import temaGelapAsli from '@shikijs/themes/github-dark'
+import temaTerangAsli from '@shikijs/themes/github-light'
+
+// Warna komentar pada tema github-dark adalah #6a737d. Di atas latar blok kode
+// situs ini, yaitu #1d2025, kontrasnya hanya 3,4:1 dan tidak lulus WCAG AA.
+// Pada modul ini komentar di dalam perintah justru sering dibaca, karena di
+// situlah keterangan tiap baris berada, jadi warnanya dinaikkan menjadi 7,0:1.
+// Sisanya tidak diubah.
+const perbaikiKomentar = (tema, warna) => ({
+  ...tema,
+  name: tema.name + '-webgis',
+  tokenColors: [
+    ...tema.tokenColors.filter((x) => !JSON.stringify(x.scope || '').includes('comment')),
+    { scope: ['comment', 'punctuation.definition.comment', 'string.comment'], settings: { foreground: warna } },
+  ],
+})
+
+const temaKodeGelap = perbaikiKomentar(temaGelapAsli, '#9aa4b2')
+const temaKodeTerang = perbaikiKomentar(temaTerangAsli, '#5c6370')
+
 export default defineConfig({
   // Tautan ke localhost hanya muncul sebagai contoh di dalam blok kode, yang
   // tetap diperiksa pemeriksa tautan VitePress.
@@ -21,6 +41,7 @@ export default defineConfig({
   // kosong di kanan. Dengan wadah terpisah, tabelnya kembali menjadi tabel
   // biasa yang lebarnya penuh, sedangkan gulir mendatarnya ditangani wadah.
   markdown: {
+    theme: { light: temaKodeTerang, dark: temaKodeGelap },
     config: (md) => {
       const token = (self, tokens, idx, options) => self.renderToken(tokens, idx, options)
       const buka = md.renderer.rules.table_open || ((t, i, o, e, s) => token(s, t, i, o))

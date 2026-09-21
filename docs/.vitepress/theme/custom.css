@@ -355,11 +355,32 @@
 
 /* Judul kolom diberi blok navy penuh. Pada tabel panjang, kepala tabel yang
    berwarna membuat mata langsung menemukan baris pertamanya. */
-.vp-doc th {
+/* Selector kedua perlu ada karena VitePress memuat aturan
+   .custom-block.custom-block th { color: inherit }. Aturan itu lebih
+   spesifik daripada .vp-doc th, sehingga tabel di dalam blok tip atau
+   peringatan mewarisi warna teks bloknya dan kepala tabel menjadi gelap
+   di atas latar navy. Selector .vp-doc .custom-block.custom-block th
+   didahulukan supaya warnanya tetap putih. */
+.vp-doc th,
+.vp-doc .custom-block.custom-block th {
   background-color: var(--pelatihan-navy);
   color: #ffffff;
   border: var(--pelatihan-tebal) solid var(--pelatihan-garis) !important;
   font-weight: 700;
+}
+
+/* Kode di dalam kepala tabel perlu chip sendiri. Bawaannya chip itu memakai
+   warna brand, yaitu navy, dan latar kepala tabel juga navy, sehingga teksnya
+   hilang di mode terang. Chipnya sekarang memakai warna kertas dan tinta,
+   sama seperti blok kode, supaya tetap terbaca di kedua mode. */
+/* Selector kedua perlu ada karena VitePress memuat aturan
+   .custom-block.tip code { color: var(--vp-c-tip-1) }, yang lebih spesifik
+   daripada .vp-doc th code. Tanpa itu, tabel di dalam blok tip kembali
+   memakai warna brand dan teksnya hilang di atas latar navy. */
+.vp-doc th code,
+.vp-doc .custom-block th code {
+  background-color: var(--pelatihan-kertas);
+  color: var(--pelatihan-tinta);
 }
 
 .dark .vp-doc th {

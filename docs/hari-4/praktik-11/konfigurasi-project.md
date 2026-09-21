@@ -319,7 +319,7 @@ Halaman connection string Supabase juga menampilkan `DIRECT_URL`. Untuk aplikasi
 
 Alasannya, GeoServer berjalan di dalam VM lewat `docker-compose.yml`, bukan di laptop Anda. Mengisi alamat `localhost:8080` sekarang berarti menunjuk ke sesuatu yang belum ada.
 
-Yang Anda perlukan di laptop hanya bagian **WAJIB** di atas, yaitu `DATABASE_URL` dan kunci-kunci rahasia. Itu sudah cukup untuk login dan menguji portal.
+Yang Anda perlukan di laptop hanya bagian **WAJIB** di atas, yaitu `DATABASE_URL`, `JWT_SECRET`, dan `NEXTAUTH_SECRET`. Itu sudah cukup untuk login dan menguji portal.
 
 #### Bila Anda menjalankan GeoServer di laptop
 
@@ -651,9 +651,7 @@ HASIL UJI DATABASE
 Baris terakhir harus berbunyi `13 lulus, 0 gagal`. Bila ada yang gagal, keluarannya menyebut bagian mana yang belum siap.
 
 ::: tip Angka 13, bukan 12
-Jumlah pemeriksaan bertambah satu setelah peran `editor` dihapus dari sistem. Ditambahkan uji yang memastikan database **menolak** peran itu, supaya peran lama tidak dapat masuk lagi tanpa disadari.
-
-Bila Anda membaca panduan versi lama yang menyebut `12 lulus`, angka yang benar sekarang adalah 13.
+Salah satu dari ketiga belas pemeriksaan itu memastikan database **menolak** peran di luar `admin` dan `viewer`, supaya peran asing tidak dapat masuk tanpa disadari.
 :::
 
 ## Tahap 9. Jalankan portal di laptop

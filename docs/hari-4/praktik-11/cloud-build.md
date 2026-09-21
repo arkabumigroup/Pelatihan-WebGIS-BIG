@@ -30,22 +30,7 @@ export default nextConfig;
 
 Berkas `cloudbuild.yaml` juga **sudah ada** di fork Anda. **Jangan menulis ulang berkas ini.** Cukup buka dan pastikan isinya seperti berikut.
 
-Berkas ini menjalankan tiga hal setiap kali ada push ke branch `main`: membangun image dari `Dockerfile`, mendorongnya ke Artifact Registry, lalu masuk ke VM untuk menarik image terbaru dan menyalakan container.
-
-::: warning Versi lama pada panduan ini memakai berkas yang berbeda
-Panduan versi lama menampilkan `cloudbuild.yaml` yang lebih sederhana, dengan region dan nama repository ditulis tetap, serta tag image `:latest`. Berkas itu **berbeda dari yang ada di fork Anda**, dan menyalinnya akan menimpa versi yang lebih baru.
-
-Perbedaannya:
-
-| | Versi lama | Versi di fork Anda |
-|---|---|---|
-| Region dan repository | ditulis tetap | substitution `_REGION` dan `_REPOSITORY`, sudah punya nilai bawaan |
-| Tag image | `:latest` | `$SHORT_SHA`, sehingga setiap build tersimpan sebagai versi tersendiri |
-| Login Docker | `configure-docker` | `print-access-token` lalu `docker login` |
-| Bagian `options` | tidak ada | `dynamicSubstitutions` dan `CLOUD_LOGGING_ONLY` |
-
-Yang paling terasa akibatnya adalah tag `$SHORT_SHA`. Dengan `:latest`, seluruh build menimpa satu tag yang sama, sehingga riwayat versi di Artifact Registry hilang dan Anda tidak dapat kembali ke build sebelumnya.
-:::
+Berkas ini menjalankan tiga hal setiap kali ada push ke branch `main`: membangun image dari `Dockerfile`, push ke Artifact Registry, lalu masuk ke VM untuk menarik image terbaru dan menyalakan container.
 
 ```yaml
 substitutions:
@@ -54,7 +39,7 @@ substitutions:
   # _IMAGE_NAME, _VM_NAME, _VM_ZONE, _VM_APP_DIR, dan _CESIUM_ION_TOKEN sengaja
   # tidak diberi nilai bawaan. Semuanya wajib diisi pada substitution variable
   # trigger. Tanpa nilai bawaan, build berhenti dengan pesan yang jelas daripada
-  # diam-diam memakai satu nama image bersama dan menimpa image milik asisten
+  # diam-diam memakai satu nama image bersama dan menimpa image milik peserta
   # lain di Artifact Registry.
 
 steps:
