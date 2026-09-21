@@ -182,7 +182,7 @@
    Berlaku untuk semua blok yang punya batas. Bayangannya tidak kabur sama
    sekali, karena yang dinyatakan di sini adalah batas, bukan ketinggian.
    --------------------------------------------------------------------- */
-.vp-doc table,
+.tabel-gulir,
 .vp-doc div[class*="language-"],
 .vp-doc .custom-block,
 .VPDoc .custom-block,
@@ -328,13 +328,29 @@
    sehingga halaman tidak ikut melebar. Perilaku ini yang membuat seluruh
    halaman bebas dari gulir mendatar.
    --------------------------------------------------------------------- */
-.vp-doc table {
+/* Wadah gulir tabel. Banyak tabel pada materi memuat perintah dan jalur
+   berkas yang panjang. Pada layar sempit, tabel digulir mendatar di dalam
+   wadahnya sendiri, sehingga halaman tidak ikut melebar. Perilaku ini yang
+   membuat seluruh halaman bebas dari gulir mendatar.
+
+   Wadahnya terpisah dari tabelnya karena tabel yang digulir mendatar harus
+   memakai display block, dan pada mode itu kolomnya tidak ikut melebar
+   sehingga menyisakan bidang kosong di kanan. */
+.tabel-gulir {
   display: block;
   overflow-x: auto;
   max-width: 100%;
-  /* Tanpa lebar penuh, kolom tabel hanya selebar isinya dan menyisakan
-     bidang kosong di kanan yang terbaca seperti kolom tambahan. */
+  margin: 20px 0;
+}
+
+/* Di dalam wadahnya, tabel kembali menjadi tabel biasa yang lebarnya penuh,
+   sehingga kolomnya ikut melebar mengisi ruang yang tersedia. */
+.vp-doc .tabel-gulir table {
+  display: table;
   width: 100%;
+  max-width: 100%;
+  margin: 0;
+  border-collapse: collapse;
 }
 
 /* Judul kolom diberi blok navy penuh. Pada tabel panjang, kepala tabel yang
@@ -575,6 +591,72 @@
 }
 
 /* ---------------------------------------------------------------------
+   Kotak pencarian
+   Pencarian lokal VitePress dibuka dengan Ctrl+K atau dengan menekan tombol
+   di navbar. Gayanya disamakan dengan sisa situs supaya tidak terlihat
+   seperti antarmuka dari aplikasi lain yang menempel begitu saja.
+   --------------------------------------------------------------------- */
+.VPLocalSearchBox .shell {
+  border: var(--pelatihan-tebal) solid var(--pelatihan-garis);
+  border-radius: var(--pelatihan-radius);
+  box-shadow: var(--pelatihan-bayangan-jauh-besar) var(--pelatihan-bayangan-jauh-besar) 0 var(--pelatihan-bayangan);
+  background-color: var(--pelatihan-permukaan);
+}
+
+.VPLocalSearchBox .search-bar {
+  border-bottom: var(--pelatihan-tebal) solid var(--pelatihan-garis);
+}
+
+.VPLocalSearchBox .result {
+  border: var(--pelatihan-tebal) solid transparent;
+  border-radius: var(--pelatihan-radius);
+}
+
+/* Hasil yang sedang disorot diberi blok navy penuh, sama seperti butir
+   sidebar yang sedang dibuka. Satu bahasa visual untuk satu arti yang sama:
+   "yang ini sedang dipilih". */
+.VPLocalSearchBox .result.selected {
+  background-color: var(--pelatihan-navy);
+  border-color: var(--pelatihan-garis);
+  box-shadow: 3px 3px 0 var(--pelatihan-aksen);
+}
+
+.dark .VPLocalSearchBox .result.selected {
+  background-color: #24405e;
+}
+
+.VPLocalSearchBox .result.selected .title,
+.VPLocalSearchBox .result.selected .text,
+.VPLocalSearchBox .result.selected .excerpt,
+.VPLocalSearchBox .result.selected .title-icon {
+  color: #ffffff;
+}
+
+/* Tombol pintasan keyboard diberi garis, karena tanpa garis huruf kecil di
+   dalam kotak hanya terbaca sebagai teks biasa. */
+.VPLocalSearchBox kbd {
+  border: var(--pelatihan-tebal) solid var(--pelatihan-garis);
+  border-radius: var(--pelatihan-radius);
+  background-color: var(--pelatihan-kertas);
+  box-shadow: none;
+}
+
+/* Tombol pencarian di navbar. VitePress menggambarnya dengan garis tipis;
+   di sini garisnya disamakan dengan tombol lain di situs. */
+.VPNavBarSearchButton {
+  border: var(--pelatihan-tebal) solid var(--pelatihan-garis);
+  border-radius: var(--pelatihan-radius);
+  background-color: var(--pelatihan-permukaan);
+  box-shadow: 2px 2px 0 var(--pelatihan-bayangan);
+  transition: transform 120ms ease, box-shadow 120ms ease;
+}
+
+.VPNavBarSearchButton:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 var(--pelatihan-bayangan);
+}
+
+/* ---------------------------------------------------------------------
    Gerakan dikurangi
    Sistem pembaca yang meminta gerakan dikurangi mendapat seluruh gerakan
    dimatikan. Warna dan batas tetap berubah, karena keduanya bukan gerakan.
@@ -601,7 +683,7 @@
    bayangan dimatikan dan diganti garis tepi saja.
    --------------------------------------------------------------------- */
 @media print {
-  .vp-doc table,
+  .tabel-gulir,
   .vp-doc div[class*="language-"],
   .custom-block,
   .VPButton,
