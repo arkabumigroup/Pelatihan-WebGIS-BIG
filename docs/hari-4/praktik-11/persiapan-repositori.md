@@ -4,7 +4,7 @@ Halaman ini menyiapkan dua hal sebelum menyentuh Google Cloud: repositori yang a
 
 ## Prasyarat
 
-Halaman ini melanjutkan pekerjaan dari halaman [Konfigurasi Project](/hari-3/deployment-project/konfigurasi-project). Tahap 1 sampai 10 di sana harus sudah selesai, karena halaman ini memindahkan aplikasi yang sudah terbukti berjalan di laptop.
+Halaman ini melanjutkan pekerjaan dari halaman [Konfigurasi Project](/hari-4/praktik-11/konfigurasi-project). Tahap 1 sampai 10 di sana harus sudah selesai, karena halaman ini memindahkan aplikasi yang sudah terbukti berjalan di laptop.
 
 Ringkasnya, empat hal berikut harus sudah benar.
 
@@ -55,7 +55,7 @@ Deployment Project bekerja pada fork repositori peserta di akun GitHub Anda send
 | Sumber, yang di-fork | `https://github.com/dhanyyudi/personal-geoportal-peserta` |
 | Fork Anda | `https://github.com/<username-anda>/personal-geoportal-peserta` |
 
-Fork dan clone repositori itu dikerjakan pada halaman [Konfigurasi Project](/hari-3/deployment-project/konfigurasi-project), Tahap 1. Pastikan tahap itu sudah selesai sebelum melanjutkan.
+Fork dan clone repositori itu dikerjakan pada halaman [Konfigurasi Project](/hari-4/praktik-11/konfigurasi-project), Tahap 1. Pastikan tahap itu sudah selesai sebelum melanjutkan.
 
 ### Mengirim perubahan
 
@@ -170,7 +170,7 @@ Masuk memakai email yang diberikan koordinator, lalu pilih project kelompok yang
 Dijalankan di: Cloud Shell
 
 ::: tip Ambil dua nilai ini dari tabel peserta
-Sebelum menempel blok di bawah, cari nama atau email Anda pada halaman [Peserta dan Project](/hari-3/deployment-project/peserta-project). Halaman itu memuat **Nama Peserta**, **Project ID**, dan kelompok Anda.
+Sebelum menempel blok di bawah, cari nama atau email Anda pada halaman [Peserta dan Project](/hari-4/praktik-11/peserta-project). Halaman itu memuat **Nama Peserta**, **Project ID**, dan kelompok Anda.
 
 Isi `PROJECT_ID` dan `NAMA_PESERTA` dengan nilai dari tabel itu. Keduanya harus sama persis.
 :::
@@ -253,4 +253,4 @@ Bila ada yang kosong, jalankan ulang blok Tahap 2.
 
 ---
 
-Lanjutkan ke [Menyiapkan Project dan VM](/hari-3/deployment-project/google-cloud-platform).
+Lanjutkan ke [Menyiapkan Project dan VM](/hari-4/praktik-11/google-cloud-platform).

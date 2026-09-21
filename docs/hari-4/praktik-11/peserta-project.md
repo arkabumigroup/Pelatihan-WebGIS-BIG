@@ -2,7 +2,7 @@
 
 Halaman ini memuat pemetaan peserta ke project Google Cloud. Gunakan pencarian di bawah untuk menemukan nama atau email Anda, lalu catat **Nama Peserta**, **Project ID**, dan **kelompok** Anda.
 
-Data ini dipakai pada [Persiapan Repositori dan Identitas](/hari-3/deployment-project/persiapan-repositori) Tahap 1 dan 2.
+Data ini dipakai pada [Persiapan Repositori dan Identitas](/hari-4/praktik-11/persiapan-repositori) Tahap 1 dan 2.
 
 ## Istilah pada tabel
 
@@ -54,4 +54,4 @@ Project ID     :
 Kelompok       :
 ```
 
-Langkah berikutnya ada pada halaman [Persiapan Repositori dan Identitas](/hari-3/deployment-project/persiapan-repositori), Tahap 2. Di sana Nama Peserta dan Project ID dipakai untuk menetapkan identitas Anda, yang kemudian menurunkan nama VM, nama Service Account, dan subdomain Anda.
+Langkah berikutnya ada pada halaman [Persiapan Repositori dan Identitas](/hari-4/praktik-11/persiapan-repositori), Tahap 2. Di sana Nama Peserta dan Project ID dipakai untuk menetapkan identitas Anda, yang kemudian menurunkan nama VM, nama Service Account, dan subdomain Anda.

@@ -15,7 +15,7 @@ Halaman terakhir Deployment Project. Setelah selesai, setiap push ke branch `mai
 
 Dijalankan di: Terminal Laptop
 
-Berkas `Dockerfile` dan `.dockerignore` ada di fork Anda, di root repositori, karena keduanya ikut ketika Anda mem-fork repositori instruktur. Bila ternyata belum ada, salin keduanya dari repositori sumber pada halaman [Persiapan Repositori](/hari-3/deployment-project/persiapan-repositori#repositori-yang-dipakai).
+Berkas `Dockerfile` dan `.dockerignore` ada di fork Anda, di root repositori, karena keduanya ikut ketika Anda mem-fork repositori instruktur. Bila ternyata belum ada, salin keduanya dari repositori sumber pada halaman [Persiapan Repositori](/hari-4/praktik-11/persiapan-repositori#repositori-yang-dipakai).
 
 Selanjutnya periksa `next.config.mjs`. Dua baris berikut wajib ada, dan keduanya bukan tambahan yang opsional:
 
@@ -104,7 +104,7 @@ options:
   logging: CLOUD_LOGGING_ONLY
 ```
 
-Periksa kembali pemeriksa YAML pada Tahap 6 halaman [Konfigurasi Project](/hari-3/deployment-project/konfigurasi-project). Sekarang kedua berkas sudah ada, sehingga keluaran yang diharapkan adalah:
+Periksa kembali pemeriksa YAML pada Tahap 6 halaman [Konfigurasi Project](/hari-4/praktik-11/konfigurasi-project). Sekarang kedua berkas sudah ada, sehingga keluaran yang diharapkan adalah:
 
 ```
 OK   docker-compose.yml -> services, networks
@@ -118,7 +118,7 @@ Dijalankan di: GitHub Desktop
 
 Buka GitHub Desktop. Keempat berkas yang baru ditambahkan akan muncul di daftar **Changes** pada kolom kiri.
 
-**Periksa lebih dahulu bahwa `.env` tidak ada di daftar itu.** Berkas tersebut berisi kredensial Anda dan tidak boleh ikut terkirim. Bila `.env` muncul di sana, hentikan pekerjaan dan periksa kembali halaman [Konfigurasi Project](/hari-3/deployment-project/konfigurasi-project) Tahap 6.
+**Periksa lebih dahulu bahwa `.env` tidak ada di daftar itu.** Berkas tersebut berisi kredensial Anda dan tidak boleh ikut terkirim. Bila `.env` muncul di sana, hentikan pekerjaan dan periksa kembali halaman [Konfigurasi Project](/hari-4/praktik-11/konfigurasi-project) Tahap 6.
 
 Bila daftarnya sudah benar:
 
@@ -345,4 +345,4 @@ Setelah project tersedia, kembali ke Tahap 2 dan isi `PROJECT_ID` dengan Project
 
 ---
 
-Lanjutkan ke [Penambahan Subdomain](/hari-3/deployment-project/subdomain).
+Lanjutkan ke [Penambahan Subdomain](/hari-4/praktik-11/subdomain).

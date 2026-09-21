@@ -2,7 +2,7 @@
 
 Halaman ini memuat tiga berkas SQL yang membuat dan memeriksa tabel database. Isinya ditampilkan lengkap supaya dapat disalin langsung dari sini.
 
-Berkas aslinya juga ada di folder `sql/` pada repositori Anda, dan isinya sama. Bila Anda sudah menjalankan [Tahap 1 hingga 2 pada halaman Konfigurasi Project](/hari-3/deployment-project/konfigurasi-project), berkas itu sudah ada di laptop Anda.
+Berkas aslinya juga ada di folder `sql/` pada repositori Anda, dan isinya sama. Bila Anda sudah menjalankan [Tahap 1 hingga 2 pada halaman Konfigurasi Project](/hari-4/praktik-11/konfigurasi-project), berkas itu sudah ada di laptop Anda.
 
 ## Jangan membuat tabel secara manual
 
@@ -590,7 +590,7 @@ Yang dapat dilakukan adalah menggantinya, dan itulah yang dikerjakan bagian ini.
 
 Periksa berurutan:
 
-1. **`DATABASE_URL` salah.** Pesan galatnya menyebut `Can't reach database server`. Periksa bagian catatan tentang `DATABASE_URL` pada [Tahap 5 halaman Konfigurasi Project](/hari-3/deployment-project/konfigurasi-project).
+1. **`DATABASE_URL` salah.** Pesan galatnya menyebut `Can't reach database server`. Periksa bagian catatan tentang `DATABASE_URL` pada [Tahap 5 halaman Konfigurasi Project](/hari-4/praktik-11/konfigurasi-project).
 2. **Tabel belum ada.** Jalankan `03-periksa.sql`. Hasilnya harus menampilkan tiga tabel.
 3. **Akun belum aktif.** Jalankan di SQL Editor:
 

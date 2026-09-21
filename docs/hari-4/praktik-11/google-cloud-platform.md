@@ -157,7 +157,7 @@ Perintah itu menampilkan peringatan yang aman diabaikan:
 WARNING: Disk size: '30 GB' is larger than image size: '10 GB'.
 ```
 
-Ukuran disk tetap dipakai, dan pertumbuhannya diperiksa pada [Tahap 10 halaman Menyiapkan Aplikasi di VM](/hari-3/deployment-project/aplikasi-di-vm#tahap-10-masuk-ke-vm).
+Ukuran disk tetap dipakai, dan pertumbuhannya diperiksa pada [Tahap 10 halaman Menyiapkan Aplikasi di VM](/hari-4/praktik-11/aplikasi-di-vm#tahap-10-masuk-ke-vm).
 
 ### Tahap 8. Periksa VM dan firewall
 ![Daftar VM instances dengan tombol Create instance dan Connect](google-cloud-platform/cb-image-17.png)
@@ -185,7 +185,7 @@ Kedua firewall rule dibuat koordinator dan hasil perintah di atas seharusnya men
 
 Dijalankan di: Cloud Shell
 
-Alamat IP perlu dikunci supaya tidak berubah saat VM dimatikan dan dinyalakan kembali. Ini penting karena record DNS pada halaman [Penambahan Subdomain](/hari-3/deployment-project/subdomain) menunjuk ke alamat tersebut.
+Alamat IP perlu dikunci supaya tidak berubah saat VM dimatikan dan dinyalakan kembali. Ini penting karena record DNS pada halaman [Penambahan Subdomain](/hari-4/praktik-11/subdomain) menunjuk ke alamat tersebut.
 
 ```bash
 EXTERNAL_IP="$(gcloud compute instances describe "$VM_NAME" \
@@ -207,4 +207,4 @@ Statusnya harus `IN_USE`, dan alamatnya harus sama dengan IP VM pada Tahap 8. Al
 
 ---
 
-Lanjutkan ke [Menyiapkan Aplikasi di VM](/hari-3/deployment-project/aplikasi-di-vm).
+Lanjutkan ke [Menyiapkan Aplikasi di VM](/hari-4/praktik-11/aplikasi-di-vm).

@@ -103,7 +103,7 @@
 ::: warning `ALTER DATABASE` bekerja di PostgreSQL lokal, tidak di Supabase
 Perintah `ALTER DATABASE ... SET search_path` di atas bekerja pada PostgreSQL yang Anda pasang sendiri, karena Anda memegang hak penuh atas servernya.
 
-Di Supabase, perintah yang sama **tidak berpengaruh**. Penyebabnya, Supabase menyediakan koneksi lewat pooler, dan pooler menetapkan `search_path` pada tingkat koneksi sehingga menimpa nilai tingkat database. Karena itu pada [Google Cloud Platform](/hari-3/deployment-project/google-cloud-platform) tabel non spasial diletakkan di schema `public`, sedangkan tabel spasial di schema `gis` dan datastore GeoServer diarahkan ke schema itu.
+Di Supabase, perintah yang sama **tidak berpengaruh**. Penyebabnya, Supabase menyediakan koneksi lewat pooler, dan pooler menetapkan `search_path` pada tingkat koneksi sehingga menimpa nilai tingkat database. Karena itu pada [Google Cloud Platform](/hari-4/praktik-11/google-cloud-platform) tabel non spasial diletakkan di schema `public`, sedangkan tabel spasial di schema `gis` dan datastore GeoServer diarahkan ke schema itu.
 :::
 
 16. Setelah SQL expression di atas di execute QGIS masih menyimpan konfigurasi lama sebelum SQL expression dijalankan, oleh karena itu harus re-connect database nya, remove connection database kemudian connect lagi

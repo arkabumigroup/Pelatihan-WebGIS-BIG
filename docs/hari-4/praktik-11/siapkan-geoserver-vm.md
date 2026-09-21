@@ -1,6 +1,6 @@
 # Menyiapkan GeoServer di VM
 
-Halaman ini melanjutkan [Penambahan Subdomain](/hari-3/deployment-project/subdomain). Setelah HTTPS aktif, GeoServer di VM perlu disiapkan sebelum layer 2D dapat diunggah, dan satu folder perlu disiapkan sebelum model 3D dapat disimpan.
+Halaman ini melanjutkan [Penambahan Subdomain](/hari-4/praktik-11/subdomain). Setelah HTTPS aktif, GeoServer di VM perlu disiapkan sebelum layer 2D dapat diunggah, dan satu folder perlu disiapkan sebelum model 3D dapat disimpan.
 
 Tanpa halaman ini, unggahan layer gagal dengan pesan yang tidak menunjuk penyebabnya, dan model 3D hilang pada deploy berikutnya.
 
@@ -11,7 +11,7 @@ Tanpa halaman ini, unggahan layer gagal dengan pesan yang tidak menunjuk penyeba
 - Schema `gis` sudah dibuat pada database yang sama
 - Variabel `PROJECT_ID`, `VM_NAME`, `ZONE`, dan `SUBDOMAIN` masih tersedia di Cloud Shell
 
-Bila Cloud Shell sudah berganti, jalankan ulang blok **Tahap 2** pada halaman [Persiapan Repositori dan Identitas](/hari-3/deployment-project/persiapan-repositori) lebih dahulu.
+Bila Cloud Shell sudah berganti, jalankan ulang blok **Tahap 2** pada halaman [Persiapan Repositori dan Identitas](/hari-4/praktik-11/persiapan-repositori) lebih dahulu.
 
 ## Tahap 1. Pastikan PostGIS dan schema gis ada
 
@@ -363,7 +363,7 @@ Gejalanya menyesatkan: katalog tetap menampilkan modelnya, karena barisnya masih
 | `Could not find datastore` | Nama datastore tidak sama dengan `GEOSERVER_POSTGIS_DATASTORE` pada `.env` |
 | `Test Connection` gagal | Nilai `POSTGIS_*` pada datastore berbeda dari `.env`, atau datastore dibuat sebelum PostGIS aktif |
 | Unggahan berhasil tetapi layer tidak muncul | Layer belum diterbitkan. Periksa `Data > Layers` pada GeoServer |
-| Halaman `https://SUBDOMAIN/geoserver/web` berputar tanpa henti | `proxy_redirect` belum ada pada `nginx.conf`. Periksa halaman [Penambahan Subdomain](/hari-3/deployment-project/subdomain) |
+| Halaman `https://SUBDOMAIN/geoserver/web` berputar tanpa henti | `proxy_redirect` belum ada pada `nginx.conf`. Periksa halaman [Penambahan Subdomain](/hari-4/praktik-11/subdomain) |
 | Unggah model 3D gagal, atau berkasnya tidak muncul di `data/models` | Pemilik folder `data` bukan uid 1001. Kerjakan Tahap 8 |
 | Model 3D yang dulu ada kini tidak dapat dibuka | Berkasnya hilang karena ditulis ke dalam container, bukan ke volume. Kerjakan Tahap 8 |
 | `Unexpected token '<', "<html> ..." is not valid JSON` saat menyimpan data | Nginx menolak unggahannya dan membalas halaman HTML, bukan JSON. Periksa `client_max_body_size` pada `nginx.conf` seperti pada Tahap 4 halaman Konfigurasi Project, lalu buat ulang container `nginx` dengan `sudo docker compose up -d --force-recreate nginx`. Memuat ulang saja tidak cukup, karena berkas yang di-mount satu per satu mengikuti inode lama setelah `git pull` menggantinya |

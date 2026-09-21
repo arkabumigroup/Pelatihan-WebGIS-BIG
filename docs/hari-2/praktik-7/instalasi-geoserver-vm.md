@@ -5,7 +5,7 @@
 ::: warning Halaman ini memerlukan VM dan repositori dari Hari 3
 Halaman ini mengandaikan dua hal yang sudah siap:
 
-1. **VM dari Deployment Project**, pada [Tahap 6 halaman Google Cloud Platform](/hari-3/deployment-project/google-cloud-platform).
+1. **VM dari Deployment Project**, pada [Tahap 6 halaman Google Cloud Platform](/hari-4/praktik-11/google-cloud-platform).
 2. **Repositori peserta sudah di-clone ke VM**, pada folder `/opt/webgis/app`. Folder itu memuat `docker-compose.yml` dan `nginx.conf` yang diperbarui di halaman ini.
 
 Bila VM belum siap, GeoServer masih dapat dicoba di laptop dengan menjalankan container GeoServer saja. Namun langkah pada halaman ini menyebut `/opt/webgis/app`, sehingga perintahnya perlu disesuaikan.

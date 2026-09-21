@@ -74,7 +74,7 @@ Empat berkas ini tidak perlu diubah. Alasan tiap baris ada di kolom terakhir, su
 | `cloudbuild.yaml` | Tidak | Seluruh nilai yang berbeda antar peserta diisi sebagai substitution variable pada trigger Cloud Build, bukan di berkas ini |
 | `.env.example` | Tidak | Berkas contoh. Yang diisi adalah `.env`, dan itu dibuat di VM |
 
-Yang memang harus berbeda antar peserta, yaitu nama VM, nama image, dan subdomain, diatur pada trigger Cloud Build. Caranya ada di halaman [Otomatisasi Cloud Build](/hari-3/deployment-project/cloud-build).
+Yang memang harus berbeda antar peserta, yaitu nama VM, nama image, dan subdomain, diatur pada trigger Cloud Build. Caranya ada di halaman [Otomatisasi Cloud Build](/hari-4/praktik-11/cloud-build).
 
 ## Tahap 2. Siapkan database Supabase
 
@@ -111,7 +111,7 @@ Tiga berkas perlu dijalankan, berurutan:
 | 2 | `02-seed-super-admin.sql` | Membuat satu akun super admin untuk login pertama |
 | 3 | `03-periksa.sql` | Memeriksa hasilnya, hanya membaca |
 
-**Isi ketiga berkas itu ditampilkan lengkap pada halaman [Skema Database](/hari-3/deployment-project/skema-database)**, supaya dapat disalin langsung tanpa membuka berkas di laptop.
+**Isi ketiga berkas itu ditampilkan lengkap pada halaman [Skema Database](/hari-4/praktik-11/skema-database)**, supaya dapat disalin langsung tanpa membuka berkas di laptop.
 
 Halaman itu juga memuat cara membuka SQL Editor, urutan pengerjaan, dan langkah membuat akun super admin.
 
@@ -121,7 +121,7 @@ Akun super admin dibuat oleh `02-seed-super-admin.sql`. Berkas itu berupa templa
 
 Ringkasnya: jalankan `node scripts/hash-password.mjs` untuk membuat hash kata sandi, isi hash itu beserta email Anda ke dalam berkas, lalu jalankan lewat SQL Editor.
 
-Langkah lengkapnya ada pada halaman [Skema Database](/hari-3/deployment-project/skema-database).
+Langkah lengkapnya ada pada halaman [Skema Database](/hari-4/praktik-11/skema-database).
 
 ::: warning Peserta yang mendaftar sendiri tidak menjadi super admin
 Halaman `/register` pada aplikasi selalu menghasilkan peran `viewer` dan status belum aktif. Itu memang disengaja, supaya tidak ada yang bisa menaikkan perannya sendiri.
@@ -287,7 +287,7 @@ openssl rand -hex 32
 node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 ```
 
-`NEXTAUTH_URL` diisi `localhost` untuk sekarang, dan diubah menjadi alamat VM nanti pada [Tahap 18 halaman Menyiapkan Aplikasi di VM](/hari-3/deployment-project/aplikasi-di-vm#tahap-18-isi-berkas-env).
+`NEXTAUTH_URL` diisi `localhost` untuk sekarang, dan diubah menjadi alamat VM nanti pada [Tahap 18 halaman Menyiapkan Aplikasi di VM](/hari-4/praktik-11/aplikasi-di-vm#tahap-18-isi-berkas-env).
 
 ### Catatan tentang DATABASE_URL
 
@@ -313,7 +313,7 @@ Halaman connection string Supabase juga menampilkan `DIRECT_URL`. Untuk aplikasi
 
 ### Bagian DATA SPASIAL
 
-**Di laptop, biarkan bagian ini kosong.** Seluruh variabel `POSTGIS_*` dan `GEOSERVER_*` diisi nanti di VM, pada [Tahap 18 halaman Menyiapkan Aplikasi di VM](/hari-3/deployment-project/aplikasi-di-vm#tahap-18-isi-berkas-env).
+**Di laptop, biarkan bagian ini kosong.** Seluruh variabel `POSTGIS_*` dan `GEOSERVER_*` diisi nanti di VM, pada [Tahap 18 halaman Menyiapkan Aplikasi di VM](/hari-4/praktik-11/aplikasi-di-vm#tahap-18-isi-berkas-env).
 
 Alasannya, GeoServer berjalan di dalam VM lewat `docker-compose.yml`, bukan di laptop Anda. Mengisi alamat `localhost:8080` sekarang berarti menunjuk ke sesuatu yang belum ada.
 
@@ -336,13 +336,13 @@ Sebagian peserta memasang GeoServer di laptop untuk latihan Hari 2. Bila Anda me
 | `GEOSERVER_USERNAME` | `admin` |
 | `GEOSERVER_PASSWORD` | Kata sandi GeoServer Anda |
 | `GEOSERVER_WORKSPACE` | `geoportal` |
-| `GEOSERVER_POSTGIS_DATASTORE` | `postgis_geoportal`, nama datastore yang Anda buat di [Koneksi PostgreSQL ke GeoServer](/hari-2/geoserver/koneksi-postgis) |
+| `GEOSERVER_POSTGIS_DATASTORE` | `postgis_geoportal`, nama datastore yang Anda buat di [Koneksi PostgreSQL ke GeoServer](/hari-2/praktik-7/koneksi-postgis) |
 
 Di laptop, `GEOSERVER_URL` dan `GEOSERVER_PUBLIC_URL` bernilai **sama**, karena aplikasi dan browser berjalan di komputer yang sama.
 
 #### Kapan datastore GeoServer dibuat
 
-`GEOSERVER_POSTGIS_DATASTORE` berisi nama datastore yang Anda buat sendiri di antarmuka GeoServer, pada halaman [Koneksi PostgreSQL ke GeoServer](/hari-2/geoserver/koneksi-postgis). Nama yang dipakai sepanjang pelatihan adalah `postgis_geoportal`.
+`GEOSERVER_POSTGIS_DATASTORE` berisi nama datastore yang Anda buat sendiri di antarmuka GeoServer, pada halaman [Koneksi PostgreSQL ke GeoServer](/hari-2/praktik-7/koneksi-postgis). Nama yang dipakai sepanjang pelatihan adalah `postgis_geoportal`.
 
 Karena datastore itu belum ada sebelum GeoServer berjalan, variabel ini **dibiarkan kosong di laptop** dan diisi di VM pada Tahap 18, setelah datastore-nya dibuat. Bila namanya tidak sama persis dengan yang ada di GeoServer, unggahan layer gagal dengan `Could not find datastore`.
 

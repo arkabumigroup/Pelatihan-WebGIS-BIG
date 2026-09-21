@@ -22,24 +22,51 @@ export default defineConfig({
     ],
 
     sidebar: [
-      hari('Hari 1 - Dasar GIS, QGIS, dan Peta 2D', '/hari-1/', [
+      hari('Hari 1 - Dasar GIS, Web, dan Peta 2D', '/hari-1/', [
         { text: 'Ringkasan Hari 1', link: '/hari-1/' },
         {
-          text: 'Persiapan Lingkungan',
+          text: 'Persiapan',
           collapsed: true,
           items: [
-            { text: 'Instalasi Aplikasi', link: '/hari-1/persiapan-lingkungan/instalasi-aplikasi' },
-            { text: 'Persiapan dan Konfigurasi Framework', link: '/hari-1/persiapan-lingkungan/konfigurasi-framework' }
+            { text: 'Instalasi Aplikasi', link: '/hari-1/persiapan/instalasi-aplikasi' }
           ]
         },
         {
-          text: 'Peta 2D dengan Leaflet',
+          text: 'Praktik 1 - Dasar GIS dan WebGIS',
           collapsed: true,
           items: [
-            { text: 'Perancangan dan Pembangunan Awal Peta 2D', link: '/hari-1/peta-2d-leaflet/peta-awal' },
-            { text: 'Menampilkan Layer GeoJSON, KML dan WMS Geoserver', link: '/hari-1/peta-2d-leaflet/layer-geojson-kml-wms' },
-            { text: 'Menampilkan Data Raster', link: '/hari-1/peta-2d-leaflet/data-raster' },
-            { text: 'Styling Layer Dengan Javascript', link: '/hari-1/peta-2d-leaflet/styling-layer' }
+            { text: '1.1 Dasar-dasar GIS', link: '/hari-1/praktik-1/dasar-gis' },
+            { text: '1.2 Alur Kerja WebGIS', link: '/hari-1/praktik-1/alur-kerja-webgis' },
+            { text: '1.3 Pengolahan Data dengan QGIS', link: '/hari-1/praktik-1/pengolahan-data-qgis' }
+          ]
+        },
+        {
+          text: 'Praktik 2 - Dasar Web dan Leaflet',
+          collapsed: true,
+          items: [
+            { text: '2.1 Dasar HTML, CSS, dan JavaScript', link: '/hari-1/praktik-2/dasar-html-css-javascript' },
+            { text: '2.2 Membuat Halaman Login', link: '/hari-1/praktik-2/halaman-login' },
+            { text: '2.3 Dasar Leaflet dan Layanan OGC', link: '/hari-1/praktik-2/dasar-leaflet' }
+          ]
+        },
+        {
+          text: 'Praktik 3 - Dasar Framework Next.js',
+          collapsed: true,
+          items: [
+            { text: '3.1 Persiapan dan Konfigurasi Framework', link: '/hari-1/praktik-3/konfigurasi-framework' },
+            { text: '3.2 Membuat Form Login', link: '/hari-1/praktik-3/form-login' },
+            { text: '3.3 Membuat Halaman Profil dengan Material UI', link: '/hari-1/praktik-3/halaman-profil' },
+            { text: '3.4 Peta 2D: Perancangan dan Pembangunan Awal', link: '/hari-1/praktik-3/peta-awal' },
+            { text: '3.5 Menampilkan Layer GeoJSON, KML, dan WMS', link: '/hari-1/praktik-3/layer-geojson-kml-wms' },
+            { text: '3.6 Menampilkan Data Raster', link: '/hari-1/praktik-3/data-raster' },
+            { text: '3.7 Styling Layer dengan JavaScript', link: '/hari-1/praktik-3/styling-layer' }
+          ]
+        },
+        {
+          text: 'Praktik 4 - Dasar Penggunaan GitHub',
+          collapsed: true,
+          items: [
+            { text: '4.1 Dasar-dasar GitHub', link: '/hari-1/praktik-4/dasar-github' }
           ]
         }
       ]),
@@ -47,64 +74,80 @@ export default defineConfig({
       hari('Hari 2 - Peta 3D, Basis Data Spasial, dan GeoServer', '/hari-2/', [
         { text: 'Ringkasan Hari 2', link: '/hari-2/' },
         {
-          text: 'Peta 3D dengan CesiumJS',
+          text: 'Praktik 5 - Peta 3D dengan CesiumJS',
           collapsed: true,
           items: [
-            { text: 'Konfigurasi Cesium Viewer', link: '/hari-2/peta-3d-cesium/konfigurasi-viewer' },
-            { text: 'Impor dan Pengelolaan Aset 3D dan 3D Tiles', link: '/hari-2/peta-3d-cesium/aset-3d-tiles' },
-            { text: 'Terrain dan Citra', link: '/hari-2/peta-3d-cesium/terrain-citra' },
-            { text: 'Kontrol Kamera dan Navigasi', link: '/hari-2/peta-3d-cesium/kontrol-kamera' },
-            { text: 'Visualisasi Data 2D dan 3D', link: '/hari-2/peta-3d-cesium/visualisasi-2d-3d' },
-            { text: 'Interaksi Pengguna', link: '/hari-2/peta-3d-cesium/interaksi-pengguna' }
+            { text: '5.1 Konfigurasi Cesium Viewer', link: '/hari-2/praktik-5/konfigurasi-viewer' },
+            { text: '5.2 Impor dan Pengelolaan Aset 3D dan 3D Tiles', link: '/hari-2/praktik-5/aset-3d-tiles' },
+            { text: '5.3 Terrain dan Citra', link: '/hari-2/praktik-5/terrain-citra' },
+            { text: '5.4 Kontrol Kamera dan Navigasi', link: '/hari-2/praktik-5/kontrol-kamera' },
+            { text: '5.5 Visualisasi Data 2D dan 3D', link: '/hari-2/praktik-5/visualisasi-2d-3d' },
+            { text: '5.6 Interaksi Pengguna', link: '/hari-2/praktik-5/interaksi-pengguna' }
           ]
         },
         {
-          text: 'Basis Data Spasial',
+          text: 'Praktik 6 - PostgreSQL dan PostGIS',
           collapsed: true,
           items: [
-            { text: 'Instalasi dan Konfigurasi Basis Data Local', link: '/hari-2/database-spasial/basis-data-lokal' },
-            { text: 'Setup Cloud PostgreSQL + PostGIS + Koneksi Dbeaver', link: '/hari-2/database-spasial/cloud-postgresql' }
+            { text: '6.1 Instalasi dan Konfigurasi Basis Data', link: '/hari-2/praktik-6/basis-data-lokal' },
+            { text: '6.2 Membuat Tabel, Primary Key, dan Foreign Key', link: '/hari-2/praktik-6/tabel-dan-relasi' },
+            { text: '6.3 Management Database Spasial', link: '/hari-2/praktik-6/database-spasial' }
           ]
         },
         {
-          text: 'GeoServer',
+          text: 'Praktik 7 - GeoServer',
           collapsed: true,
           items: [
-            { text: 'Instalasi GeoServer di VM', link: '/hari-2/geoserver/instalasi-geoserver-vm' },
-            { text: 'Koneksi PostgreSQL ke GeoServer sebagai Data Store', link: '/hari-2/geoserver/koneksi-postgis' }
+            { text: '7.1 Instalasi GeoServer di VM', link: '/hari-2/praktik-7/instalasi-geoserver-vm' },
+            { text: '7.2 Koneksi PostgreSQL dan Publish Layer', link: '/hari-2/praktik-7/koneksi-postgis' }
           ]
         }
       ]),
 
-      hari('Hari 3 - Backend, Autentikasi, dan Deployment', '/hari-3/', [
+      hari('Hari 3 - Backend dan Autentikasi', '/hari-3/', [
         { text: 'Ringkasan Hari 3', link: '/hari-3/' },
         {
-          text: 'Backend dan Autentikasi',
+          text: 'Praktik 8 - Database Cloud dan Prisma ORM',
           collapsed: true,
           items: [
-            { text: 'Konfigurasi Prisma dan Membuat API Login', link: '/hari-3/backend-auth/prisma-api-login' },
-            { text: 'Konfigurasi Access Token dan NextAuth', link: '/hari-3/backend-auth/nextauth-access-token' }
+            { text: '8.1 Setup Cloud PostgreSQL dan PostGIS di Supabase', link: '/hari-3/praktik-8/cloud-postgresql' },
+            { text: '8.2 Konfigurasi Prisma dan Membuat API Login', link: '/hari-3/praktik-8/prisma-api-login' }
           ]
         },
         {
-          text: 'Deployment Project',
+          text: 'Praktik 9 - API dan Backend',
           collapsed: true,
           items: [
-            { text: '1. Peserta dan Project', link: '/hari-3/deployment-project/peserta-project' },
-            { text: '2. Konfigurasi Project', link: '/hari-3/deployment-project/konfigurasi-project' },
-            { text: '3. Skema Database', link: '/hari-3/deployment-project/skema-database' },
-            { text: '4. Persiapan Repositori', link: '/hari-3/deployment-project/persiapan-repositori' },
-            { text: '5. Menyiapkan Project dan VM', link: '/hari-3/deployment-project/google-cloud-platform' },
-            { text: '6. Menyiapkan Aplikasi di VM', link: '/hari-3/deployment-project/aplikasi-di-vm' },
-            { text: '7. Otomatisasi Cloud Build', link: '/hari-3/deployment-project/cloud-build' },
-            { text: '8. Penambahan Subdomain', link: '/hari-3/deployment-project/subdomain' },
-            { text: '9. Menyiapkan GeoServer di VM', link: '/hari-3/deployment-project/siapkan-geoserver-vm' }
+            { text: '9.1 Konsep Dasar API dan Backend', link: '/hari-3/praktik-9/konsep-api-backend' },
+            { text: '9.2 Membuat CRUD API Users', link: '/hari-3/praktik-9/crud-api-users' }
+          ]
+        },
+        {
+          text: 'Praktik 10 - Autentikasi NextAuth',
+          collapsed: true,
+          items: [
+            { text: '10.1 Konfigurasi NextAuth dan Access Token', link: '/hari-3/praktik-10/nextauth-access-token' }
           ]
         }
       ]),
 
-      hari('Hari 4 - Penyempurnaan dan Studi Kasus', '/hari-4/', [
-        { text: 'Ringkasan Hari 4', link: '/hari-4/' }
+      hari('Hari 4 - Deployment Project', '/hari-4/', [
+        { text: 'Ringkasan Hari 4', link: '/hari-4/' },
+        {
+          text: 'Praktik 11 - Deployment Project',
+          collapsed: true,
+          items: [
+            { text: '11.1 Peserta dan Project', link: '/hari-4/praktik-11/peserta-project' },
+            { text: '11.2 Konfigurasi Project', link: '/hari-4/praktik-11/konfigurasi-project' },
+            { text: '11.3 Skema Database', link: '/hari-4/praktik-11/skema-database' },
+            { text: '11.4 Persiapan Repositori', link: '/hari-4/praktik-11/persiapan-repositori' },
+            { text: '11.5 Menyiapkan Project dan VM', link: '/hari-4/praktik-11/google-cloud-platform' },
+            { text: '11.6 Menyiapkan Aplikasi di VM', link: '/hari-4/praktik-11/aplikasi-di-vm' },
+            { text: '11.7 Otomatisasi Cloud Build', link: '/hari-4/praktik-11/cloud-build' },
+            { text: '11.8 Penambahan Subdomain', link: '/hari-4/praktik-11/subdomain' },
+            { text: '11.9 Menyiapkan GeoServer di VM', link: '/hari-4/praktik-11/siapkan-geoserver-vm' }
+          ]
+        }
       ])
     ],
   }

@@ -1,40 +1,41 @@
-# Hari 4 - Penyempurnaan dan Studi Kasus
+# Hari 4 - Deployment Project
 
-Hari keempat menutup pelatihan. Aplikasi yang sudah berjalan di server disempurnakan, satu teknik visualisasi baru ditambahkan, lalu seluruh alur WebGIS ditinjau ulang bersama.
+Hari keempat memindahkan aplikasi dari laptop ke server yang dapat diakses publik. Seluruh pekerjaannya ada pada Praktik 11, mulai dari menyiapkan konfigurasi dan repositori, membuat Virtual Machine di Google Cloud, menjalankan aplikasi di dalamnya, sampai subdomain dan HTTPS aktif.
 
-## Jadwal Hari 4
+Halaman-halaman Praktik 11 adalah satu rangkaian yang dikerjakan berurutan. Berkas yang dibuat pada tahap awal dipakai pada tahap berikutnya, dan konfigurasi Nginx yang dibuat di awal baru berguna setelah sertifikat pada tahap subdomain terbit.
 
-Mengacu pada susunan acara pelatihan periode 15 sampai 18 September 2026.
+## Susunan Praktik 11
 
-| Waktu | Kegiatan | Materi di halaman ini |
-|---|---|---|
-| 08.00 - 10.00 | Penyempurnaan WebGIS | Belum tersedia |
-| 10.15 - 11.30 | Implementasi data Gaussian Splatting | Belum tersedia |
-| 13.30 - 15.00 | Review alur WebGIS dan diskusi | Belum tersedia |
-| 15.00 - 15.30 | Post-Test | Tidak memerlukan materi |
-| 15.30 - 16.15 | Penutupan Pelatihan | Tidak memerlukan materi |
+| Tahap | Isi |
+|---|---|
+| 11.1 sampai 11.4 | Menyiapkan konfigurasi proyek, skema basis data, repositori, dan identitas peserta |
+| 11.5 sampai 11.7 | Membuat Virtual Machine, menjalankan aplikasi di dalamnya, dan mengotomatiskan build |
+| 11.8 sampai 11.9 | Mengarahkan subdomain, menerbitkan sertifikat, dan menyiapkan GeoServer di VM |
 
-::: warning Seluruh materi Hari 4 belum tersedia
-Belum ada berkas materi untuk Hari 4 di repositori ini. Seluruh sesi pada hari tersebut saat ini disampaikan langsung oleh instruktur. Halaman ini akan diperbarui begitu materinya tersedia.
+## Praktik 11 - Deployment Project
 
-Status ini dicatat apa adanya supaya peserta tidak menyimpulkan bahwa halamannya hilang atau tautannya rusak.
-:::
+1. [Peserta dan Project](/hari-4/praktik-11/peserta-project) - memetakan peserta ke project Google Cloud.
+2. [Konfigurasi Project](/hari-4/praktik-11/konfigurasi-project) - menyiapkan `docker-compose.yml`, `nginx.conf`, `.env.example`, dan pemeriksa konfigurasi di repositori proyek.
+3. [Skema Database](/hari-4/praktik-11/skema-database) - berkas SQL yang membuat tabel, lengkap dengan isinya.
+4. [Persiapan Repositori](/hari-4/praktik-11/persiapan-repositori) - mengirim perubahan ke fork, menyelaraskan fork yang tertinggal, dan menetapkan identitas peserta yang menurunkan nama seluruh resource.
+5. [Menyiapkan Project dan VM](/hari-4/praktik-11/google-cloud-platform) - memeriksa API, membuat service account, VM, dan IP statis di Cloud Shell.
+6. [Menyiapkan Aplikasi di VM](/hari-4/praktik-11/aplikasi-di-vm) - memasang Docker dan gcloud, meng-clone repositori, mengisi `.env`, lalu membangun dan mendorong image aplikasi.
+7. [Otomatisasi Cloud Build](/hari-4/praktik-11/cloud-build) - menghubungkan repositori GitHub ke Cloud Build, membuat trigger, lalu memverifikasi hasilnya.
+8. [Penambahan Subdomain](/hari-4/praktik-11/subdomain) - mengarahkan subdomain ke IP statis VM dan menerbitkan sertifikat Let's Encrypt.
+9. [Menyiapkan GeoServer di VM](/hari-4/praktik-11/siapkan-geoserver-vm) - membuat workspace, datastore, dan mengunggah layer dari Geoportal.
 
-## Gambaran Sesi
+## Yang Perlu Disiapkan Peserta
 
-Bagian ini menjelaskan apa yang dikerjakan pada tiap sesi, tanpa memuat langkah teknis. Langkah teknisnya menyusul setelah materinya tersedia.
+- Akses ke project Google Cloud dari koordinator, beserta identitas peserta untuk `PARTICIPANT_ID`. Datanya ada pada [Peserta dan Project](/hari-4/praktik-11/peserta-project).
+- Akun GitHub berisi fork repositori proyek. Berkas `cloudbuild.yaml` dan pemeriksa konfigurasi diambil dari sana.
+- Domain dari penyelenggara beserta subdomain yang sudah ditetapkan, dipakai pada [Penambahan Subdomain](/hari-4/praktik-11/subdomain).
+- Berkas `.env.example` dari instruktur, dipakai pada [Konfigurasi Project](/hari-4/praktik-11/konfigurasi-project).
+- Aplikasi dari Hari 3 yang sudah berjalan di laptop, karena yang dipindahkan adalah aplikasi itu.
 
-**Penyempurnaan WebGIS.** Peserta meninjau kembali aplikasi yang sudah berjalan dan memperbaiki bagian yang belum selesai. Cakupannya bergantung pada keadaan tiap peserta, sehingga instruktur menetapkan prioritas pada awal sesi.
+## Hasil Akhir Hari 4
 
-**Implementasi data Gaussian Splatting.** Sesi ini menambahkan satu cara baru menampilkan objek 3D, yaitu Gaussian Splatting, sebagai pelengkap 3D Tiles yang sudah dikerjakan pada Hari 2. Bentuk datanya berbeda, dan cara memuatnya di CesiumJS juga berbeda.
+Geoportal berjalan di alamat `http://IP_EKSTERNAL_VM/portal` setelah tahap aplikasi selesai, lalu berubah menjadi `https://SUBDOMAIN/portal` setelah tahap subdomain dan sertifikat selesai. Pada titik itu aplikasi, basis data, dan GeoServer sudah dapat diakses dari internet.
 
-**Review alur WebGIS dan diskusi.** Seluruh rantai kerja ditinjau ulang: data spasial diolah, disimpan di basis data, disajikan GeoServer, ditampilkan di web sebagai peta 2D dan 3D, diamankan dengan autentikasi, lalu dijalankan di server. Sesi ini menutup rangkaian tersebut menjadi satu gambaran utuh.
+## Sesi Lain pada Hari 4
 
-## Yang Sudah Dimiliki Peserta Sebelum Hari 4
-
-Setelah Hari 1 sampai Hari 3, peserta sudah memiliki:
-
-- Repositori GitHub berisi proyek Next.js, terhubung ke Cloud Build.
-- Basis data PostgreSQL dengan PostGIS, dan GeoServer yang menyajikan layernya.
-- Geoportal yang berjalan di alamat HTTPS dengan subdomain sendiri.
-- Sistem login dan hak akses berbasis NextAuth.
+Susunan acara pelatihan juga mencantumkan sesi penyempurnaan WebGIS, implementasi data Gaussian Splatting, serta review alur WebGIS dan diskusi. Ketiganya disampaikan langsung oleh instruktur dan belum punya halaman materi di repositori ini.

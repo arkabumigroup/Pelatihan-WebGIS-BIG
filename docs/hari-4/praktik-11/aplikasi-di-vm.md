@@ -540,4 +540,4 @@ exit
 
 ---
 
-Lanjutkan ke [Otomatisasi Cloud Build](/hari-3/deployment-project/cloud-build).
+Lanjutkan ke [Otomatisasi Cloud Build](/hari-4/praktik-11/cloud-build).

@@ -10,7 +10,7 @@ import { BASE, sorter, pdfOptions, puppeteerLaunchOptions } from './pdf-bersama.
 // mengambilnya dari urutan sidebar, sehingga tidak perlu disamakan manual.
 
 const AKAR_DOCS = join(dirname(fileURLToPath(import.meta.url)), '..')
-const BAGIAN = 'hari-3/deployment-project'
+const BAGIAN = 'hari-4/praktik-11'
 
 // Pengekspor selalu menyisipkan "/**" di depan daftar pola, sehingga pola
 // positif apa pun tidak pernah menyaring. Penyaringan hanya bisa dilakukan
