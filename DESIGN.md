@@ -28,8 +28,8 @@ Bukan membuat mereka terkesan.
 ## Reading
 
 > Reading this as: dokumentasi teknis pelatihan untuk peserta dan instruktur,
-> dengan bahasa visual institusional yang tenang, dial ENERGY 1 / RHYTHM 1 /
-> MOTION 1.
+> dengan bahasa visual neo-brutalism yang ditahan, dial ENERGY 2 / RHYTHM 1 /
+> MOTION 2.
 
 ---
 
@@ -37,12 +37,21 @@ Bukan membuat mereka terkesan.
 
 | Dial | Nilai | Alasan satu baris |
 |---|---|---|
-| **ENERGY** | 1 | Peserta membuka halaman ini sambil bekerja. Halaman yang "menyapa keras" mengganggu pekerjaan itu. |
-| **RHYTHM** | 1 | Semua halaman adalah petunjuk teknis dengan bentuk yang sama: judul, tabel, perintah, peringatan. Keseragaman membuat peserta tahu di mana mencari, tanpa belajar ulang tiap halaman. |
-| **MOTION** | 1 | Gerakan hanya pada respons sentuhan: hover, fokus, dan buka tutup sidebar. Animasi tidak menambah kemampuan membaca perintah terminal. |
+| **ENERGY** | 2 | Situs ini alat kerja, bukan halaman promosi. Garis dan bayangan tegas memberi batas yang jelas antar bagian tanpa berteriak |
+| **RHYTHM** | 1 | Semua halaman adalah petunjuk teknis dengan bentuk yang sama: judul, tabel, perintah, peringatan. Keseragaman membuat peserta tahu di mana mencari, tanpa belajar ulang tiap halaman |
+| **MOTION** | 2 | Gerakan hanya pada elemen yang dapat disentuh, dan setiap gerakan menjawab pertanyaan "apakah ini bisa ditekan". Tidak ada animasi masuk saat menggulir |
 
-Dial ini disengaja rendah. Menambah gerakan atau variasi tata letak di sini
-akan mengurangi keterbacaan, bukan menambah karakter.
+RHYTHM sengaja tetap 1. Empat puluh empat halaman petunjuk teknis dibaca dengan
+cara yang sama, dan variasi tata letak di sini akan mengurangi keterbacaan,
+bukan menambah karakter. Yang dinaikkan adalah ENERGY pada kulitnya, bukan
+susunan halamannya.
+
+**Yang berubah, dan mengapa.** Arah sebelumnya memakai ENERGY 1 dan MOTION 1
+dengan alasan bahwa halaman ini dibaca sambil bekerja. Alasan itu masih berlaku,
+sehingga RHYTHM tidak dinaikkan dan tidak ada animasi gulir. Yang dikoreksi
+adalah anggapan bahwa ketenangan harus berarti tanpa batas yang tegas: garis dan
+bayangan keras justru membantu mata menemukan batas tabel dan blok perintah,
+terutama pada halaman sepanjang halaman deployment.
 
 ---
 
@@ -91,6 +100,21 @@ ini dari situs lain.
 
 Maksimal tiga warna ditambah netral. Tidak ada warna keempat.
 
+### Netral
+
+Neo-brutalism bekerja karena warna netralnya ikut ditentukan, bukan diserahkan
+ke bawaan. Netral di bawah tidak dihitung sebagai warna inti.
+
+| Peran | Terang | Gelap | Asalnya |
+|---|---|---|---|
+| Kertas (latar halaman) | `#f4f1ea` | `#14161a` | Kertas hangat, bukan putih murni: garis hitam tebal di atas putih murni menyilaukan untuk bacaan panjang |
+| Permukaan (kartu, blok kode) | `#ffffff` | `#1d2025` | Satu tingkat di atas kertas, supaya batas blok terlihat tanpa bayangan |
+| Tinta (teks dan garis) | `#111111` | `#f2f2f0` | Hitam pekat, bukan hitam murni, agar tidak bergetar di layar |
+| Garis tepi | `#111111` | `#e8e6e1` | Pada mode gelap, garis terang di atas latar nyaris hitam; inilah yang membuat batas tetap terbaca |
+
+Rasio kontras terukur: tinta pada kertas **16,74:1** di mode terang dan
+**16,16:1** di mode gelap. Batas minimum teks biasa 4,5:1.
+
 ---
 
 ## Tipografi
@@ -113,20 +137,56 @@ menambah keterbacaan.
 
 ## Motif Identitas
 
-Satu pola yang diulang, supaya situs ini terasa milik lembaga ini dan bukan
-templat umum:
+Dua pola yang diulang, supaya situs ini terasa milik lembaga ini dan bukan
+templat umum.
 
-**Garis penanda bagian aktif berwarna oranye.**
+**Pertama, garis penanda bagian aktif berwarna oranye.**
 
-- Di sidebar: batang tipis di tepi kiri butir yang sedang dibuka.
-- Di teks isi: garis bawah tipis pada judul bagian yang sedang dibaca, saat
-  masuk daftar isi.
+- Di sidebar: batang tebal di tepi kiri butir yang sedang dibuka, dengan latar
+  blok navy sehingga posisinya terbaca dari jauh.
+- Di teks isi: batang pada daftar isi untuk judul bagian yang sedang dibaca.
 
 Garis itu menjawab satu pertanyaan yang sering ditanyakan peserta di tengah
 materi yang panjang: **"saya sedang di bagian mana"**.
 
 Oranye dipakai di sini karena warnanya sudah ada di logo, dan karena
 pemakaiannya yang terbatas membuatnya menonjol tanpa perlu efek lain.
+
+**Kedua, garis tepi tegas dengan bayangan keras tanpa blur.**
+
+Setiap blok yang punya batas, yaitu tabel, blok kode, blok peringatan, kartu,
+dan tombol, memakai garis tepi 2px berwarna tinta dengan bayangan padat
+4px mengikuti arahnya. Bayangannya tidak kabur sama sekali.
+
+Alasannya: bayangan kabur menyatakan ketinggian, sedangkan di dokumen ini yang
+perlu dinyatakan adalah **batas**. Bayangan padat menyatakan batas itu dengan
+cara yang sama seperti kertas yang ditumpuk, dan itu sesuai untuk materi yang
+juga dicetak menjadi PDF.
+
+Tombol memakai pola yang sama untuk menyatakan tekan: saat disentuh, tombolnya
+bergerak ke arah bayangannya, dan saat ditekan bayangannya hilang sehingga
+tombolnya rata dengan halaman.
+
+---
+
+## Gerakan
+
+Gerakan hanya dipakai pada elemen yang dapat disentuh, dan setiap gerakan
+menjawab satu pertanyaan: apakah ini bisa ditekan.
+
+| Gerakan | Durasi | Menjawab |
+|---|---|---|
+| Tombol bergeser 2px ke arah bayangannya saat hover | 120ms | Menandai bahwa elemennya dapat ditekan |
+| Tombol rata dengan halaman saat ditekan | 120ms | Mengonfirmasi tekanannya tercatat |
+| Kartu dan tautan terangkat 2px saat hover | 140ms | Menandai bahwa seluruh kartunya dapat diklik |
+| Butir sidebar aktif berpindah latar | 160ms | Menandai perpindahan halaman tanpa perlu membaca ulang |
+| Cincin fokus saat Tab | tanpa animasi | Fokus keyboard harus muncul seketika, bukan menyusul |
+
+Yang **tidak** dipakai: animasi masuk saat menggulir, animasi pada judul, dan
+animasi pada tabel. Ketiganya menunda isi yang sedang dicari peserta.
+
+Seluruh gerakan dimatikan ketika sistem pembaca meminta gerakan dikurangi
+melalui `prefers-reduced-motion`.
 
 ---
 
@@ -135,9 +195,9 @@ pemakaiannya yang terbatas membuatnya menonjol tanpa perlu efek lain.
 | Tidak dipakai | Alasan |
 |---|---|
 | Gradien | Tidak menambah keterbacaan, dan tidak ada di identitas lembaga |
-| Bayangan besar pada kartu | Situs ini dokumen, bukan dasbor. Bayangan hanya menambah keramaian |
+| Bayangan kabur | Bayangan di sini menyatakan batas, bukan ketinggian. Bayangan kabur mengaburkan batas itu |
 | Efek kaca (backdrop blur) | Sama, dan menghambat pembacaan teks di atasnya |
-| Sudut sangat membulat | Tabel dan blok kode butuh sudut yang jelas agar batasnya terlihat |
+| Sudut sangat membulat | Tabel dan blok kode butuh sudut yang jelas agar batasnya terlihat. Sudut dipakai 3px, bukan 0 dan bukan pil |
 | Animasi masuk saat menggulir | Peserta menggulir cepat mencari satu perintah. Animasi menunda perintah itu muncul |
 | Ikon hiasan | Tidak ada ikon yang menambah arti pada perintah terminal |
 | Mode gelap sebagai bawaan | Peserta sering membaca sambil membandingkan dengan terminal yang gelap, tetapi materi ini juga dibaca di ruang terang. Pilihan diserahkan ke pembaca, dan kedua mode diuji |
