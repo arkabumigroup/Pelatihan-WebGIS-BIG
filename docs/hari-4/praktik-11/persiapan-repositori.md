@@ -24,9 +24,11 @@ Kelima butir itu dikerjakan pada Tahap 2 dan Tahap 8 sampai 9 halaman Konfiguras
 
 ### 3. Berkas .env sudah terisi
 
-`.env` di laptop sudah diisi pada Tahap 5. Yang perlu Anda siapkan di sini adalah nilai untuk `.env` di VM, yang merupakan berkas terpisah.
+`.env` di laptop sudah diisi pada [Tahap 5 halaman Konfigurasi Project](/hari-4/praktik-11/konfigurasi-project#tahap-5-isi-berkas-env). Yang perlu Anda siapkan di sini adalah nilai untuk `.env` di VM, yang merupakan berkas terpisah.
 
 Enam variabel berikut wajib ada. Tanpa salah satunya, login di VM tidak bekerja.
+
+Enam ini baru syarat agar login berjalan. Pemeriksa pada [Tahap 18 halaman Menyiapkan Aplikasi di VM](/hari-4/praktik-11/aplikasi-di-vm#tahap-18-isi-berkas-env) juga memeriksa lima variabel GeoServer dan PostGIS, dan kelimanya baru diisi di sana karena datastore-nya belum ada sebelum GeoServer berjalan. Jadi wajar bila baru sebagian yang terisi sekarang.
 
 | Variabel | Isi |
 |---|---|
@@ -37,7 +39,7 @@ Enam variabel berikut wajib ada. Tanpa salah satunya, login di VM tidak bekerja.
 | `ADMIN_CONTACT_EMAIL` | Email Anda sendiri |
 | `JWT_EXPIRES_IN` | `1h`, sudah terisi di `.env.example` |
 
-Dua nilai yang berbeda antara laptop dan VM hanya `NEXTAUTH_URL`, `BASE_URL`, dan `NEXT_PUBLIC_URL_BASE_PATH`, karena ketiganya memuat alamat aplikasi. Nilainya diisi pada Tahap 18.
+Tiga nilai yang berbeda antara laptop dan VM adalah `NEXTAUTH_URL`, `BASE_URL`, dan `NEXT_PUBLIC_URL_BASE_PATH`, karena ketiganya memuat alamat aplikasi. Nilainya diisi pada [Tahap 18 halaman Menyiapkan Aplikasi di VM](/hari-4/praktik-11/aplikasi-di-vm#tahap-18-isi-berkas-env).
 
 Berkas `.env` di laptop tidak ikut ter-commit, dan tidak ikut tersalin ke VM. Berkas di VM dibuat langsung di sana.
 
@@ -73,7 +75,7 @@ Bila muncul konflik, artinya Anda dan sumber mengubah berkas yang sama. Cara ter
 
 ### Perubahan belum sampai ke VM
 
-Fork yang sudah diperbarui **belum mengubah apa pun di VM Anda.** VM memakai salinannya sendiri di `/opt/webgis/app`, yang di-clone dari fork pada Tahap 16, dan salinan itu tidak ikut berubah sendiri.
+Fork yang sudah diperbarui **belum mengubah apa pun di VM Anda.** VM memakai salinannya sendiri di `/opt/webgis/app`, yang di-clone dari fork pada [Tahap 16 halaman Menyiapkan Aplikasi di VM](/hari-4/praktik-11/aplikasi-di-vm#tahap-16-clone-repositori), dan salinan itu tidak ikut berubah sendiri.
 
 Alurnya tiga tahap, dan ketiganya perlu:
 
@@ -130,11 +132,11 @@ Nilai unik itu **tidak ada di berkas repositori Anda**. Seluruhnya diatur pada t
 
 | Nilai | Unik per peserta? | Diatur di mana |
 |---|---|---|
-| `_VM_NAME` | Ya | Substitution variable pada trigger, Tahap 28 |
-| `_IMAGE_NAME` | Ya | Substitution variable pada trigger, Tahap 28 |
-| `_VM_ZONE` | Tidak, sama untuk semua | Substitution variable pada trigger, Tahap 28 |
-| `_VM_APP_DIR` | Tidak, sama untuk semua | Substitution variable pada trigger, Tahap 28 |
-| `_CESIUM_ION_TOKEN` | Ya, token Anda sendiri | Substitution variable pada trigger, Tahap 28 |
+| `_VM_NAME` | Ya | Substitution variable pada trigger, [Tahap 28 halaman Otomatisasi Cloud Build](/hari-4/praktik-11/cloud-build#tahap-28-isi-substitution-variable) |
+| `_IMAGE_NAME` | Ya | Substitution variable pada trigger, [Tahap 28 halaman Otomatisasi Cloud Build](/hari-4/praktik-11/cloud-build#tahap-28-isi-substitution-variable) |
+| `_VM_ZONE` | Tidak, sama untuk semua | Substitution variable pada trigger, [Tahap 28 halaman Otomatisasi Cloud Build](/hari-4/praktik-11/cloud-build#tahap-28-isi-substitution-variable) |
+| `_VM_APP_DIR` | Tidak, sama untuk semua | Substitution variable pada trigger, [Tahap 28 halaman Otomatisasi Cloud Build](/hari-4/praktik-11/cloud-build#tahap-28-isi-substitution-variable) |
+| `_CESIUM_ION_TOKEN` | Ya, token Anda sendiri | Substitution variable pada trigger, [Tahap 28 halaman Otomatisasi Cloud Build](/hari-4/praktik-11/cloud-build#tahap-28-isi-substitution-variable) |
 | Nama Project ID | Tidak, milik kelompok | Dari koordinator |
 | `katalog-images` | Tidak, milik kelompok | Dibuat koordinator, peserta hanya memakai |
 | `nextjs_portal`, `geoserver_app`, `nginx_proxy` | Tidak | Nama container di dalam VM Anda sendiri. Tidak bertabrakan dengan peserta lain karena VM-nya terpisah |

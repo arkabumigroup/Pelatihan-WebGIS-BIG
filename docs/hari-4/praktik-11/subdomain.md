@@ -38,16 +38,9 @@ echo "$SUBDOMAIN"
 
 <p class="dijalankan dijalankan--cloud">Dijalankan di: <strong>Cloud Shell</strong></p>
 
-Record DNS **ditambahkan oleh penyelenggara**, bukan oleh peserta. Domain `webgisbig.com` dikelola satu akun Cloudflare oleh penyelenggara, dan peserta tidak diberi akses ke sana.
+Pelaporan ini sudah dikerjakan lebih awal, pada [Tahap 9 halaman Menyiapkan Project dan VM](/hari-4/praktik-11/google-cloud-platform#tahap-9-buat-ip-statis), supaya record DNS punya waktu berpropagasi selama Anda mengerjakan tahap berikutnya.
 
-Yang perlu Anda lakukan hanya melaporkan dua nilai:
-
-| Yang dilaporkan | Contoh | Diambil dari |
-|---|---|---|
-| Subdomain | `dhanypedia.webgisbig.com` | `$SUBDOMAIN` |
-| Alamat IP statis | `34.101.xx.xx` | `$STATIC_IP` |
-
-Kirim keduanya ke penyelenggara:
+Bila Anda melewatinya, lakukan sekarang:
 
 ```bash
 echo "Subdomain : $SUBDOMAIN"
@@ -55,35 +48,7 @@ echo "IP statis : $(gcloud compute addresses describe "$STATIC_IP_NAME" \
   --region="$VM_REGION" --project="$PROJECT_ID" --format='value(address)')"
 ```
 
-Selama record belum ditambahkan, `dig` pada Tahap 4 akan mengembalikan kosong. Itu wajar, bukan tanda ada yang salah pada VM Anda.
-
-### Mengapa proxy Cloudflare harus dimatikan
-
-Certbot pada halaman ini memakai metode `webroot`, sehingga Let's Encrypt memverifikasi kepemilikan domain dengan mengakses alamat berikut dari internet:
-
-```text
-http://<subdomain>/.well-known/acme-challenge/<token>
-```
-
-Bila record diproksikan, permintaan itu tidak langsung menuju VM, melainkan melewati Cloudflare lebih dahulu. Cloudflare kemudian meneruskannya ke VM memakai mode SSL/TLS yang sedang berlaku, dan beberapa mode yang umum dipakai justru menggagalkan penerbitan sertifikat pertama.
-
-Mode **Full (strict)** adalah contohnya. Cloudflare meminta sertifikat yang sah dari VM, sedangkan sertifikat itu justru yang sedang hendak diterbitkan. Keadaannya berputar: sertifikat butuh verifikasi, verifikasi butuh sertifikat.
-
-Masalah ini dikenal luas di luar pelatihan ini, misalnya pada [Stack Harbor](https://stackharbor.com/en/knowledge-base/cffix-lets-encrypt-http01-behind-proxy/) dan [diskusi cert-manager](https://github.com/cert-manager/cert-manager/discussions/6471).
-
-Dengan **DNS only**, Let's Encrypt menghubungi VM secara langsung. Tidak ada lapisan yang perlu diatur, tidak ada mode SSL yang bisa salah, dan perpanjangan otomatis pada Tahap 12 bekerja tanpa perubahan.
-
-Yang dikorbankan hanya caching dan perlindungan DDoS Cloudflare. Untuk pelatihan ini keduanya tidak diperlukan.
-
-::: tip Bila proxy tetap diinginkan
-Pilihannya masuk akal, tetapi jangan dikerjakan pada hari pelatihan. Yang perlu disiapkan:
-
-- Mode SSL/TLS diset **Full**, bukan Full (strict), sampai sertifikat asli terbit
-- Aturan Page Rule atau WAF yang mengecualikan `/.well-known/acme-challenge/*` dari pengalihan ke HTTPS
-- Setelah sertifikat terbit, mode boleh dinaikkan ke Full (strict)
-
-Tiga hal itu menambah kemungkinan gagal yang tidak sebanding dengan manfaatnya untuk satu sesi pelatihan.
-:::
+Kirim kedua nilai itu ke penyelenggara, lalu lanjutkan. Selama record belum ditambahkan, `dig` pada Tahap 4 akan mengembalikan kosong. Itu wajar, bukan tanda ada yang salah pada VM Anda.
 
 ### Tahap 4. Periksa resolusi DNS
 
@@ -435,7 +400,7 @@ cd /opt/webgis/app && sudo docker compose up -d
 ::: warning Layer yang sudah dibuat tetap memakai alamat lama
 `GEOSERVER_PUBLIC_URL` dan `NEXT_PUBLIC_URL_BASE_PATH` disalin ke database **saat layer dibuat**, bukan dibaca ulang setiap kali dibuka.
 
-Artinya layer yang dibuat sebelum Tahap 13 masih menyimpan alamat IP, walaupun `.env` sudah diperbaiki. Perbaiki barisnya di SQL Editor Supabase. Ganti `IP_EKSTERNAL_VM` dengan alamat dari Tahap 9, dan `nama01.webgisbig.com` dengan subdomain Anda:
+Artinya layer yang dibuat sebelum Tahap 13 masih menyimpan alamat IP, walaupun `.env` sudah diperbaiki. Perbaiki barisnya di SQL Editor Supabase. Ganti `IP_EKSTERNAL_VM` dengan alamat IP statis VM Anda dari [Tahap 9 halaman Menyiapkan Project dan VM](/hari-4/praktik-11/google-cloud-platform#tahap-9-buat-ip-statis), dan `nama01.webgisbig.com` dengan subdomain Anda:
 
 ```sql
 UPDATE katalog_data_2d

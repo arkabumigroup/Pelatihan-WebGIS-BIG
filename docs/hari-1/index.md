@@ -6,11 +6,11 @@ Hari pertama membangun dua hal sekaligus: pemahaman tentang apa yang sedang dike
 
 | Waktu | Kegiatan | Materi |
 |---|---|---|
-| 09.00 - 10.00 | Dasar-dasar GIS, jenis data GIS, sistem koordinat dan transformasi. Alur kerja WebGIS dan komponennya | [Praktik 1](#praktik-1---dasar-gis-dan-webgis) |
-| 10.15 - 12.00 | Dasar QGIS, digitasi, pengisian atribut, styling data, layanan WFS, WMS, WMTS, WCS | [Praktik 1](#praktik-1---dasar-gis-dan-webgis) |
-| 13.00 - 14.00 | Dasar HTML, CSS, JS dan pengenalan Leaflet | [Praktik 2](#praktik-2---dasar-web-dan-leaflet) |
-| 14.00 - 15.00 | Membuat berkas HTML, menampilkan peta Leaflet, data lokal dan layanan OGC, widget Leaflet | [Praktik 2](#praktik-2---dasar-web-dan-leaflet) |
-| 15.15 - 16.00 | Penjelasan framework dan package pendukung, penyiapan proyek, serta GitHub | [Praktik 3](#praktik-3---dasar-framework-nextjs) dan [Praktik 4](#praktik-4---dasar-penggunaan-github) |
+| 09.00 - 10.00 | Dasar-dasar GIS, jenis data GIS, sistem koordinat dan transformasi. Alur kerja WebGIS dan komponennya | [Praktik 1](#praktik-1-dasar-gis-dan-webgis) |
+| 10.15 - 12.00 | Dasar QGIS, digitasi, pengisian atribut, styling data, layanan WFS, WMS, WMTS, WCS | [Praktik 1](#praktik-1-dasar-gis-dan-webgis) |
+| 13.00 - 14.00 | Dasar HTML, CSS, JS dan pengenalan Leaflet | [Praktik 2](#praktik-2-dasar-web-dan-leaflet) |
+| 14.00 - 15.00 | Membuat berkas HTML, menampilkan peta Leaflet, data lokal dan layanan OGC, widget Leaflet | [Praktik 2](#praktik-2-dasar-web-dan-leaflet) |
+| 15.15 - 16.00 | Penjelasan framework dan package pendukung, penyiapan proyek, serta GitHub | [Praktik 3](#praktik-3-dasar-framework-next-js) dan [Praktik 4](#praktik-4-dasar-penggunaan-github) |
 
 ## Persiapan
 
