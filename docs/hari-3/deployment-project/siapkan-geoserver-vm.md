@@ -151,31 +151,38 @@ Message: Origin does not correspond to request
 Perbaikannya adalah satu variabel pada service `geoserver` di `docker-compose.yml`:
 
 ```yaml
-- GEOSERVER_CSRF_WHITELIST=webgisbig.com
+- CSRF_WHITELIST=webgisbig.com
 ```
 
-**Baris itu sudah ada di berkas yang Anda clone**, karena ikut ketika Anda mem-fork repositori peserta. Jadi yang perlu Anda lakukan hanya memastikan barisnya ada, bukan menambahkannya.
+**Baris itu sudah ada di berkas yang Anda clone**, karena ikut ketika Anda mem-fork repositori peserta. Yang perlu Anda lakukan hanya memastikan barisnya ada, bukan menambahkannya.
 
-Nilai itu mencakup seluruh subdomain `webgisbig.com`, sehingga satu baris berlaku untuk semua peserta. Diuji pada GeoServer 2.24.1:
+::: danger Namanya tanpa awalan GEOSERVER_
+Ini jebakan yang tidak menimbulkan pesan galat apa pun. Image kartoza membaca variabel bernama `CSRF_WHITELIST`, lalu meneruskannya ke GeoServer sebagai `-DGEOSERVER_CSRF_WHITELIST`. Jadi namanya memang berbeda di kedua sisi.
 
-| `Origin` pengirim | Hasil |
-|---|---|
-| `https://dhanypedia.webgisbig.com` | diterima |
-| `https://andi.webgisbig.com` | diterima |
-| `https://webgisbig.com` | diterima |
-| `https://jahat.com` | ditolak, `400` |
+Bila Anda menulisnya dengan awalan, yaitu `GEOSERVER_CSRF_WHITELIST`, compose tetap menerima barisnya, container tetap menyala, dan GeoServer tetap berjalan. Yang terjadi hanya nilainya kosong, sehingga whitelist tidak terpasang dan gejalanya kembali seperti semula.
+
+Periksa dengan perintah ini, dan pastikan ada nilai di belakang tanda sama dengan:
+
+```bash
+sudo docker logs geoserver_app 2>&1 | grep -o -- '-DGEOSERVER_CSRF_WHITELIST=.*' | head -1
+```
+
+Yang benar menampilkan `-DGEOSERVER_CSRF_WHITELIST=webgisbig.com`. Bila yang muncul hanya `-DGEOSERVER_CSRF_WHITELIST=`, namanya salah tulis.
+:::
+
+Nilai itu mencakup seluruh subdomain `webgisbig.com`, sehingga satu baris berlaku untuk semua peserta.
 
 Periksa dengan perintah ini:
 
 ```bash
 cd /opt/webgis/app
-grep -n 'GEOSERVER_CSRF_WHITELIST' docker-compose.yml
+grep -n 'CSRF_WHITELIST' docker-compose.yml
 ```
 
 Keluarannya harus menunjukkan baris itu berada di dalam blok `environment:` milik service `geoserver`, seperti ini:
 
 ```yaml
-      - GEOSERVER_CSRF_WHITELIST=webgisbig.com
+      - CSRF_WHITELIST=webgisbig.com
 ```
 
 Bila baris itu **tidak muncul**, tambahkan dengan blok berikut. Blok ini menyisipkannya tepat di bawah `GEOSERVER_CORS_ALLOWED_ORIGINS`, sehingga induknya dipastikan benar:
@@ -185,10 +192,10 @@ cd /opt/webgis/app
 python3 - <<'PY2'
 p = 'docker-compose.yml'
 baris = open(p).read().split('\n')
-baris = [b for b in baris if 'GEOSERVER_CSRF_WHITELIST' not in b]
+baris = [b for b in baris if 'CSRF_WHITELIST' not in b]
 i = next(k for k, b in enumerate(baris) if 'GEOSERVER_CORS_ALLOWED_ORIGINS' in b)
 indent = ' ' * (len(baris[i]) - len(baris[i].lstrip()))
-baris.insert(i + 1, f'{indent}- GEOSERVER_CSRF_WHITELIST=webgisbig.com')
+baris.insert(i + 1, f'{indent}- CSRF_WHITELIST=webgisbig.com')
 open(p, 'w').write('\n'.join(baris))
 PY2
 
@@ -201,7 +208,7 @@ Di YAML, arti sebuah baris ditentukan oleh induknya. Baris `- sesuatu` di bawah 
 Bila baris itu masuk ke bagian `volumes:`, pembuatan ulang container gagal dengan:
 
 ```text
-invalid mount path: 'GEOSERVER_CSRF_WHITELIST=webgisbig.com' mount path must be absolute
+invalid mount path: 'CSRF_WHITELIST=webgisbig.com' mount path must be absolute
 ```
 
 Periksa dengan `sed -n '/^  geoserver:/,/^  nginx:/p' docker-compose.yml`, dan pastikan barisnya berada di bawah `environment:`.
