@@ -18,13 +18,16 @@ Repositori ini adalah situs VitePress berisi materi Pelatihan WebGIS tingkat das
 ```
 docs/
   index.md                 halaman depan
-  materi-pelatihan.md      daftar materi per hari
+  materi-pelatihan.md      daftar materi per hari dan daftar praktik
   hari-1/ ... hari-4/      materi menurut hari pelaksanaan
-  public/unduhan/          berkas yang bisa diunduh peserta
+    praktik-N/             satu folder per praktik
+  public/                  berkas statis situs
   .vitepress/config.mjs    sidebar dan pengaturan situs
 ```
 
-Materi disusun **per hari**, mengikuti susunan acara pelatihan. Setiap folder hari punya `index.md` berisi jadwal sesi dan daftar materi.
+Materi disusun **per hari**, mengikuti susunan acara pelatihan, dan di dalam tiap hari dibagi menjadi **praktik**. Setiap folder hari punya `index.md` berisi jadwal sesi dan daftar praktiknya. Satu praktik boleh memuat beberapa halaman; jumlahnya mengikuti banyaknya modul pada praktik itu.
+
+Nomor praktik berjalan terus dari Hari 1 sampai Hari 4, yaitu Praktik 1 sampai 11. Halaman diberi awalan nomor praktiknya, misalnya `praktik-3/form-login.md` adalah modul kedua Praktik 3.
 
 Satu halaman berisi satu berkas `.md` dengan folder gambar bernama sama di sebelahnya. Rujukan gambar selalu relatif, misalnya `![alt](peta-awal/image2.png)`. Kalau berkas `.md` atau foldernya diubah namanya, rujukan di dalamnya harus ikut diubah.
 
@@ -33,9 +36,10 @@ Satu halaman berisi satu berkas `.md` dengan folder gambar bernama sama di sebel
 Beberapa aturan yang perlu dipegang:
 
 - Satu halaman `.md` berpasangan dengan satu folder gambar seusai nama berkasnya. Jangan memisahkan keduanya.
-- Berkas pendukung yang bisa diunduh diletakkan di `docs/public/unduhan/`. Jangan taruh berkas `.yml` atau `.conf` di folder gambar halaman, karena VitePress menyajikannya sebagai halaman, bukan sebagai berkas.
+- Berkas pendukung yang bisa diunduh diletakkan di `docs/public/`, bukan di folder gambar halaman. VitePress menyajikan isi folder gambar sebagai halaman, sehingga berkas `.yml` atau `.conf` di sana tidak dapat diunduh.
 - Bagian yang belum punya materi ditandai dengan blok `::: warning` yang menjelaskan statusnya. Jangan mengosongkan bagian tanpa keterangan.
 - Sebutkan di mana perintah dijalankan (Cloud Shell, terminal VM, terminal laptop) pada setiap tahap yang memakainya.
+- Materi hasil pemindahan dari dokumen Word atau PowerPoint memakai penomoran praktik yang sama dengan susunan acara. Sebut nomor praktiknya di judul halaman bila halaman itu bagian dari satu rangkaian praktik.
 
 ## Perintah
 

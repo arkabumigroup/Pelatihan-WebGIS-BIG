@@ -1,49 +1,38 @@
-# Hari 3 - Backend, Autentikasi, dan Deployment
+# Hari 3 - Backend dan Autentikasi
 
-Hari ketiga menutup rantai pengembangan. Sesi pagi menghubungkan aplikasi ke basis data, membangun CRUD API, lalu mengamankan API itu dengan NextAuth. Sesi siang memindahkan seluruh aplikasi dari laptop ke server: membuat VM di Google Cloud, membangun image Docker, menjalankan GeoServer serta Nginx di dalamnya, dan memasang Reverse Proxy.
+Hari ketiga menyambungkan aplikasi Next.js ke basis data dan mengamankan aksesnya. Praktik 8 menyiapkan basis data cloud lalu menghubungkannya lewat Prisma ORM dan membuat API login. Praktik 9 menjelaskan cara kerja API serta membuat CRUD pengguna. Praktik 10 menambahkan autentikasi NextAuth beserta pemeriksaan hak akses.
 
 ## Jadwal Hari 3
 
-Mengacu pada susunan acara pelatihan periode 15 sampai 18 September 2026.
-
-| Waktu | Kegiatan | Materi di halaman ini |
+| Waktu | Kegiatan | Materi |
 |---|---|---|
-| 08.00 - 10.00 | Membuat koneksi database dengan ORM, membuat CRUD API | [Backend dan Autentikasi](#backend-dan-autentikasi) |
-| 10.15 - 12.00 | Penjelasan NextAuth, session, hashing, enkripsi. Membuat session, logika hak akses, konfigurasi middleware | [Backend dan Autentikasi](#backend-dan-autentikasi) |
-| 13.00 - 14.30 | Penjelasan GCP, VM, Docker dan Nginx | [Deployment ke Google Cloud](#deployment-ke-google-cloud) |
-| 14.45 - 16.00 | Pembuatan VM dan Artifact Registry, build project Next.js di Docker, konfigurasi Reverse Proxy Nginx | [Deployment ke Google Cloud](#deployment-ke-google-cloud) |
+| 08.00 - 10.00 | Membuat koneksi basis data dengan ORM, membuat CRUD API | [Praktik 8](#praktik-8---database-cloud-dan-prisma-orm) dan [Praktik 9](#praktik-9---api-dan-backend) |
+| 10.15 - 12.00 | Penjelasan NextAuth, session, hashing, enkripsi. Membuat session, logika hak akses, konfigurasi middleware | [Praktik 10](#praktik-10---autentikasi-nextauth) |
 
-::: warning Dua blok belum punya berkas materi
-Penjelasan CRUD API pada blok pagi dan penjelasan GCP, VM, Docker serta Nginx sebelum sesi praktik belum punya halaman di repositori ini. Keduanya saat ini disampaikan langsung oleh instruktur. Halaman ini akan diperbarui begitu materinya tersedia.
-:::
+Pekerjaan deployment yang sebelumnya menempati sesi siang Hari 3 sekarang menjadi [Praktik 11 pada Hari 4](/hari-4/).
 
-## Backend dan Autentikasi
+## Praktik 8 - Database Cloud dan Prisma ORM
 
-Bagian ini menghubungkan aplikasi Next.js ke basis data dan menambahkan sistem login.
+Basis data dipindahkan dari perangkat sendiri ke layanan cloud, lalu aplikasi disambungkan ke sana.
 
-1. [Konfigurasi Prisma dan Membuat API Login](/hari-3/backend-auth/prisma-api-login) - memasang Prisma ORM, menyambungkannya ke PostgreSQL, dan membuat endpoint login.
-2. [Konfigurasi Access Token dan NextAuth](/hari-3/backend-auth/nextauth-access-token) - membuat session, mengatur hak akses, dan mengonfigurasi middleware.
+1. [Setup Cloud PostgreSQL dan PostGIS di Supabase](/hari-3/praktik-8/cloud-postgresql) - membuat project Supabase, mengaktifkan PostGIS, menjalankan skema lewat SQL Editor, dan memeriksanya dari QGIS.
+2. [Konfigurasi Prisma dan Membuat API Login](/hari-3/praktik-8/prisma-api-login) - memasang Prisma ORM, menyambungkannya ke basis data, dan membuat endpoint login.
 
-## Deployment ke Google Cloud
+## Praktik 9 - API dan Backend
 
-Halaman-halaman berikut adalah satu rangkaian. Berkas yang dibuat pada tahap pertama dipakai pada tahap kedua, dan konfigurasi Nginx yang dibuat pada tahap pertama baru berguna setelah sertifikat pada tahap ketiga terbit.
+1. [Konsep Dasar API dan Backend](/hari-3/praktik-9/konsep-api-backend) - cara kerja permintaan HTTP, metode, status, dan bentuk balasan.
+2. [Membuat CRUD API Users](/hari-3/praktik-9/crud-api-users) - membuat endpoint daftar, tambah, ubah, dan hapus pengguna.
 
-1. [Konfigurasi Project](/hari-3/deployment-project/konfigurasi-project) - menyiapkan `docker-compose.yml`, `nginx.conf`, `.env.example`, dan pemeriksa konfigurasi di repositori proyek.
-2. [Skema Database](/hari-3/deployment-project/skema-database) - berkas SQL yang membuat tabel, lengkap dengan isinya
-3. [Persiapan Repositori](/hari-3/deployment-project/persiapan-repositori) - mengirim perubahan ke fork, menyelaraskan fork yang tertinggal, dan menetapkan identitas peserta yang menurunkan nama seluruh resource.
-4. [Menyiapkan Project dan VM](/hari-3/deployment-project/google-cloud-platform) - memeriksa API, membuat service account, VM, dan IP statis di Cloud Shell.
-5. [Menyiapkan Aplikasi di VM](/hari-3/deployment-project/aplikasi-di-vm) - memasang Docker dan gcloud, meng-clone repositori, mengisi `.env`, lalu membangun dan mendorong image aplikasi.
-6. [Otomatisasi Cloud Build](/hari-3/deployment-project/cloud-build) - menghubungkan repositori GitHub ke Cloud Build, membuat trigger, lalu memverifikasi hasilnya.
-7. [Penambahan Subdomain](/hari-3/deployment-project/subdomain) - mengarahkan subdomain ke IP statis VM dan menerbitkan sertifikat Let's Encrypt.
-8. [Menyiapkan GeoServer di VM](/hari-3/deployment-project/siapkan-geoserver-vm) - membuat workspace, datastore, dan mengunggah layer dari Geoportal.
+## Praktik 10 - Autentikasi NextAuth
+
+[Konfigurasi NextAuth dan Access Token](/hari-3/praktik-10/nextauth-access-token) - membuat session, menerbitkan access token, mengatur hak akses, dan melindungi route.
 
 ## Yang Perlu Disiapkan Peserta
 
-- Akses ke Google Cloud project dari koordinator, beserta identitas peserta untuk `PARTICIPANT_ID`.
-- Akun GitHub berisi fork repositori proyek. Berkas `cloudbuild.yaml` dan pemeriksa konfigurasi diambil dari sana.
-- Domain dari penyelenggara beserta subdomain yang sudah ditetapkan, dipakai pada [Penambahan Subdomain](/hari-3/deployment-project/subdomain).
-- Berkas `.env.example` dari instruktur, dipakai pada [Konfigurasi Project](/hari-3/deployment-project/konfigurasi-project).
+- Akun Supabase, dipakai pada [Setup Cloud PostgreSQL dan PostGIS di Supabase](/hari-3/praktik-8/cloud-postgresql).
+- Proyek Next.js dari Hari 1 dan basis data dari Hari 2.
+- QGIS, dipakai pada Praktik 8 untuk memeriksa hasilnya.
 
 ## Hasil Akhir Hari 3
 
-Di akhir hari, Geoportal sudah berjalan di alamat `http://IP_EKSTERNAL_VM/portal`, sistem login berfungsi, dan GeoServer dapat diakses dari halaman yang sama. Setelah tahap subdomain selesai, alamat itu berubah menjadi `https://SUBDOMAIN/portal` dan sertifikatnya dipercaya browser.
+Di akhir hari, aplikasi Next.js tersambung ke basis data cloud, memiliki API untuk login dan mengelola pengguna, serta membatasi akses berdasarkan peran pengguna. Aplikasi pada tahap ini masih berjalan di perangkat sendiri; memindahkannya ke server dikerjakan pada Hari 4.
