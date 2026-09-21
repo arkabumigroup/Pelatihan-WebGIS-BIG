@@ -198,9 +198,27 @@ Dijalankan di: Cloud Shell
 Ganti `EMAIL` dengan alamat email yang aktif. Let's Encrypt mengirim pemberitahuan ke alamat itu bila sertifikat mendekati kedaluwarsa.
 
 ::: warning Ini bukan email peserta
-`EMAIL` di sini hanya alamat kontak untuk Let's Encrypt, dan tidak berhubungan dengan identitas Anda di Google Cloud. Isinya bebas, yang penting alamatnya aktif dan bisa Anda buka. Alamat yang sama boleh dipakai semua peserta.
+`EMAIL` di sini hanya alamat kontak untuk Let's Encrypt, dan tidak berhubungan dengan identitas Anda di Google Cloud. Alamat yang sama boleh dipakai semua peserta.
 
 Identitas Anda sudah ditetapkan pada Tahap 2 halaman sebelumnya, melalui `NAMA_PESERTA`.
+:::
+
+::: danger Domain emailnya harus benar-benar ada
+Alamatnya tidak perlu milik Anda, tetapi **domain di belakang tanda `@` harus domain yang benar-benar terdaftar.** Alamat seperti `peserta@latihan.local` atau `admin@contoh` akan ditolak.
+
+Yang membuat jebakan ini menyakitkan: **uji coba `--dry-run` tidak menolaknya.** Server uji Let's Encrypt menerima alamat apa pun, sehingga uji coba menyatakan berhasil dan Anda mengira semuanya beres. Penolakan baru muncul di Tahap 9b, saat penerbitan sungguhan:
+
+```text
+Unable to register an account with ACME server
+```
+
+Penyebab sebenarnya ada di `/var/log/letsencrypt/letsencrypt.log`:
+
+```text
+The ACME server believes peserta@latihan.local is an invalid email address.
+```
+
+Pakai alamat yang domainnya nyata, misalnya Gmail Anda sendiri. Alamat contoh seperti `nama01@example.com` juga diterima, karena `example.com` memang domain terdaftar.
 :::
 
 ```bash
