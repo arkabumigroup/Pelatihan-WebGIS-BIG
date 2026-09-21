@@ -2,6 +2,10 @@
    Tema situs Materi Pelatihan WebGIS
    Arah visual: DESIGN.md di akar repositori.
    Setiap aturan di bawah memuat alasan satu baris, sesuai R-31.
+
+   Bahasa visualnya neo-brutalism yang ditahan: batas dinyatakan dengan garis
+   tegas dan bayangan padat tanpa blur, bukan dengan bayangan kabur. Alasan
+   lengkapnya ada pada DESIGN.md bagian Motif Identitas.
    ===================================================================== */
 
 /* Pembesaran gambar: lapisan zoom harus berada di atas seluruh antarmuka,
@@ -17,6 +21,27 @@
    bukan dipilih dari selera. Lihat DESIGN.md bagian Palet.
    --------------------------------------------------------------------- */
 :root {
+  /* --- Warna lembaga, dari logo --- */
+  --pelatihan-navy: #003060;
+  --pelatihan-sky: #1070b0;
+  --pelatihan-oranye: #e08000;
+
+  /* --- Netral neo-brutalism ---
+     Kertas hangat, bukan putih murni: garis hitam tebal di atas putih murni
+     menyilaukan untuk bacaan panjang. Permukaan satu tingkat di atas kertas
+     supaya batas blok terlihat tanpa perlu bayangan kabur. */
+  --pelatihan-kertas: #f4f1ea;
+  --pelatihan-permukaan: #ffffff;
+  --pelatihan-tinta: #111111;
+  --pelatihan-garis: #111111;
+  --pelatihan-bayangan: #111111;
+
+  /* --- Ukuran yang menyusun motif --- */
+  --pelatihan-tebal: 2px;
+  --pelatihan-radius: 3px;
+  --pelatihan-bayangan-jauh: 4px;
+  --pelatihan-bayangan-jauh-besar: 6px;
+
   /* Navy dari badan huruf ARKABUMI. Dipakai untuk tautan dan tombol utama
      supaya teks yang dapat diklik langsung terbaca sebagai milik lembaga. */
   --vp-c-brand-1: #003060;
@@ -25,10 +50,10 @@
   --vp-c-brand-soft: rgba(0, 48, 96, 0.12);
 
   /* Oranye dari segitiga Arkabumi, digelapkan satu tingkat.
-     Oranye asli #e08000 hanya mencapai 2,68:1 pada latar sidebar terang,
-     sedangkan batang penanda posisi memerlukan minimum 3:1. Nilai di bawah
-     adalah oranye yang sama dengan kecerahan diturunkan, dan terukur 4,65:1
-     pada latar sidebar serta 5,02:1 pada latar dokumen putih. */
+     Oranye asli #e08000 hanya mencapai 2,89:1 pada latar terang, sedangkan
+     batang penanda posisi memerlukan minimum 3:1. Nilai di bawah adalah
+     oranye yang sama dengan kecerahan diturunkan, dan terukur 4,65:1 pada
+     latar sidebar. */
   --pelatihan-aksen: #b45309;
 
   /* Tinggi batang penanda posisi pada sidebar. Angka ini juga dipakai
@@ -37,6 +62,49 @@
 
   /* Panah kecil penanda tautan luar, dipakai oleh aturan di bawah. */
   --pelatihan-panah-luar: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M5 2H2v12h12v-3h-2v1H4V4h1V2zm6.7 0-1.4 1.4L12.6 5.7 8 10.3l1.4 1.4L14 7.1l2.3 2.3L17.7 8l-1.4-1.4L16.3 6 15 4.7 17 2.7 15.6 1.3 13.6 3.3 11.9 1.6 10.5 3z'/%3E%3C/svg%3E");
+
+  /* --- Pemetaan ke variabel VitePress ---
+     Tema bawaan memakai variabelnya sendiri untuk latar, garis, dan teks.
+     Nilainya dipetakan di sini supaya seluruh komponen bawaan ikut berubah
+     tanpa perlu menimpa setiap komponen satu per satu. */
+  --vp-c-bg: var(--pelatihan-kertas);
+  --vp-c-bg-alt: var(--pelatihan-kertas);
+  --vp-c-bg-soft: var(--pelatihan-permukaan);
+  --vp-c-bg-elv: var(--pelatihan-permukaan);
+
+  --vp-c-text-1: var(--pelatihan-tinta);
+  --vp-c-text-2: #3f3f3f;
+  --vp-c-text-3: #5c5c5c;
+
+  --vp-c-divider: var(--pelatihan-garis);
+  --vp-c-border: var(--pelatihan-garis);
+  --vp-c-gutter: var(--pelatihan-garis);
+
+  --vp-button-brand-border: var(--pelatihan-garis);
+  --vp-button-brand-text: var(--pelatihan-kertas);
+  --vp-button-brand-bg: var(--pelatihan-navy);
+  --vp-button-brand-hover-border: var(--pelatihan-garis);
+  --vp-button-brand-hover-text: var(--pelatihan-kertas);
+  --vp-button-brand-hover-bg: #0a4a86;
+  --vp-button-brand-active-border: var(--pelatihan-garis);
+  --vp-button-brand-active-text: var(--pelatihan-kertas);
+  --vp-button-brand-active-bg: var(--pelatihan-navy);
+
+  --vp-button-alt-border: var(--pelatihan-garis);
+  --vp-button-alt-text: var(--pelatihan-tinta);
+  --vp-button-alt-bg: var(--pelatihan-permukaan);
+  --vp-button-alt-hover-border: var(--pelatihan-garis);
+  --vp-button-alt-hover-text: var(--pelatihan-tinta);
+  --vp-button-alt-hover-bg: var(--pelatihan-kertas);
+
+  /* --- Warna status untuk blok peringatan ---
+     Hijau, kuning, dan merah di bawah adalah warna status, bukan warna
+     identitas. Ketiganya menandai tingkat bahaya, dan sudah dipakai sejak
+     sebelum tema ini berubah. Batas tiga warna identitas tidak berlaku untuk
+     warna status, karena artinya berbeda bagi pembaca. */
+  --pelatihan-status-tip: #1f6f43;
+  --pelatihan-status-warning: #8a5a00;
+  --pelatihan-status-danger: #a3231c;
 }
 
 .dark {
@@ -49,32 +117,138 @@
   --vp-c-brand-soft: rgba(108, 182, 232, 0.16);
 
   /* Pada latar gelap, oranye asli logo justru yang memenuhi syarat:
-     6,25:1 pada latar sidebar dan 5,93:1 pada latar dokumen. Nilainya
-     dikembalikan ke oranye logo, sehingga identitasnya paling dekat pada
-     mode yang paling sering dipakai peserta. */
+     6,25:1 pada latar sidebar. Nilainya dikembalikan ke oranye logo,
+     sehingga identitasnya paling dekat pada mode yang paling sering dipakai
+     peserta. */
   --pelatihan-aksen: #e08000;
+
+  /* Garis terang di atas latar nyaris hitam. Inilah yang membuat neo-brutalism
+     tetap terbaca di mode gelap: batasnya tidak hilang menjadi kegelapan. */
+  --pelatihan-kertas: #14161a;
+  --pelatihan-permukaan: #1d2025;
+  --pelatihan-tinta: #f2f2f0;
+  --pelatihan-garis: #e8e6e1;
+  --pelatihan-bayangan: #e8e6e1;
+
+  --vp-c-bg: var(--pelatihan-kertas);
+  --vp-c-bg-alt: var(--pelatihan-kertas);
+  --vp-c-bg-soft: var(--pelatihan-permukaan);
+  --vp-c-bg-elv: var(--pelatihan-permukaan);
+
+  --vp-c-text-1: var(--pelatihan-tinta);
+  --vp-c-text-2: #c9c7c2;
+  --vp-c-text-3: #a3a19c;
+
+  --vp-c-divider: var(--pelatihan-garis);
+  --vp-c-border: var(--pelatihan-garis);
+  --vp-c-gutter: var(--pelatihan-garis);
+
+  --vp-button-brand-text: #0d1116;
+  --vp-button-brand-bg: #6cb6e8;
+  --vp-button-brand-hover-bg: #8ecbf5;
+  --vp-button-alt-text: var(--pelatihan-tinta);
+  --vp-button-alt-bg: var(--pelatihan-permukaan);
+
+  --pelatihan-status-tip: #5fd39a;
+  --pelatihan-status-warning: #f0b429;
+  --pelatihan-status-danger: #ff8a80;
+}
+
+/* Permukaan dasar. Navbar dan sidebar memakai kertas yang sama dengan isi,
+   dan hanya dipisahkan oleh garis, supaya batasnya tegas tanpa lapisan
+   bayangan tambahan. */
+.VPNav,
+.VPSidebar,
+.VPLocalNav,
+.VPFooter {
+  background-color: var(--pelatihan-kertas) !important;
+  border-color: var(--pelatihan-garis) !important;
+}
+
+.VPNav {
+  border-bottom: var(--pelatihan-tebal) solid var(--pelatihan-garis);
+}
+
+.VPSidebar {
+  border-right: var(--pelatihan-tebal) solid var(--pelatihan-garis);
+}
+
+.VPLocalNav {
+  border-bottom: var(--pelatihan-tebal) solid var(--pelatihan-garis);
 }
 
 /* ---------------------------------------------------------------------
-   Motif identitas: batang penanda posisi
+   Motif: garis tegas dengan bayangan padat
+   Berlaku untuk semua blok yang punya batas. Bayangannya tidak kabur sama
+   sekali, karena yang dinyatakan di sini adalah batas, bukan ketinggian.
+   --------------------------------------------------------------------- */
+.vp-doc table,
+.vp-doc div[class*="language-"],
+.vp-doc .custom-block,
+.VPDoc .custom-block,
+.VPHero .container,
+.VPFeature {
+  border: var(--pelatihan-tebal) solid var(--pelatihan-garis);
+  border-radius: var(--pelatihan-radius);
+  box-shadow: var(--pelatihan-bayangan-jauh) var(--pelatihan-bayangan-jauh) 0 var(--pelatihan-bayangan);
+  background-color: var(--pelatihan-permukaan);
+}
+
+/* ---------------------------------------------------------------------
+   Tombol
+   Tombol menyatakan tekan dengan bergerak ke arah bayangannya. Saat ditekan,
+   bayangannya hilang sehingga tombolnya rata dengan halaman. Gerakan ini
+   yang menjawab pertanyaan "apakah ini bisa ditekan".
+   --------------------------------------------------------------------- */
+.VPButton {
+  border: var(--pelatihan-tebal) solid var(--pelatihan-garis) !important;
+  border-radius: var(--pelatihan-radius) !important;
+  box-shadow: var(--pelatihan-bayangan-jauh) var(--pelatihan-bayangan-jauh) 0 var(--pelatihan-bayangan);
+  font-weight: 700;
+  transition: transform 120ms ease, box-shadow 120ms ease, background-color 120ms ease;
+}
+
+.VPButton:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: var(--pelatihan-bayangan-jauh-besar) var(--pelatihan-bayangan-jauh-besar) 0 var(--pelatihan-bayangan);
+}
+
+.VPButton:active {
+  transform: translate(var(--pelatihan-bayangan-jauh), var(--pelatihan-bayangan-jauh));
+  box-shadow: 0 0 0 var(--pelatihan-bayangan);
+}
+
+/* ---------------------------------------------------------------------
+   Motif identitas: penanda posisi
    Menjawab pertanyaan "saya sedang di bagian mana" pada materi panjang.
+   Butir aktif diberi blok navy penuh, bukan hanya batang, supaya posisinya
+   terbaca dari jauh tanpa harus membaca teksnya.
    --------------------------------------------------------------------- */
 
 /* Butir sidebar yang sedang dibuka. VitePress menandainya dengan kelas
    has-active, sehingga penanda mengikuti halaman tanpa skrip tambahan.
-   
+
    PENTING: VitePress menandai SETIAP tingkat yang memuat halaman aktif, bukan
    hanya butir terakhirnya. Pada satu halaman, tiga tingkat sekaligus memakai
-   kelas itu: nama hari, nama praktik, lalu nama halamannya. Karena itu batang
-   penanda dibatasi pada butir terakhir saja. Lihat catatan di bawah. */
+   kelas itu: nama hari, nama praktik, lalu nama halamannya. Karena itu blok
+   penanda dibatasi pada butir terakhir saja. */
 .VPSidebarItem.is-link.has-active:not(:has(.VPSidebarItem.has-active)) > .item {
   position: relative;
+  background-color: var(--pelatihan-navy);
+  border: var(--pelatihan-tebal) solid var(--pelatihan-garis);
+  border-radius: var(--pelatihan-radius);
+  box-shadow: 3px 3px 0 var(--pelatihan-aksen);
+  padding-right: 8px;
+  transition: background-color 160ms ease;
 }
 
-/* Batang penanda hanya pada butir terakhir yang dapat diklik. Aturan ini
-   sengaja memakai is-link, sehingga judul kelompok yang memuat halaman aktif
-   tidak ikut mendapat batang. Tanpa pembatasan itu, tiga batang oranye muncul
-   bertumpuk pada satu halaman, dan penandanya kehilangan arti. */
+.dark .VPSidebarItem.is-link.has-active:not(:has(.VPSidebarItem.has-active)) > .item {
+  background-color: #24405e;
+}
+
+/* Batang penanda di tepi kiri, warna aksen. Batangnya tetap ada meskipun
+   bloknya sudah berwarna, karena batang itulah yang terbaca sebagai penanda
+   saat blok navy menyatu dengan latar gelap. */
 .VPSidebarItem.is-link.has-active:not(:has(.VPSidebarItem.has-active)) > .item::before {
   content: "";
   position: absolute;
@@ -86,13 +260,20 @@
   background: var(--pelatihan-aksen);
 }
 
-/* Ruang di kiri ditambah supaya teks tidak menempel pada batang penanda. */
+/* Teks butir aktif dibalik menjadi terang di atas blok navy. Tanpa ini,
+   tinta gelap di atas navy tidak terbaca. */
+.VPSidebarItem.is-link.has-active:not(:has(.VPSidebarItem.has-active)) > .item .link .text,
+.VPSidebarItem.is-link.has-active:not(:has(.VPSidebarItem.has-active)) > .item .link:hover .text {
+  color: #ffffff;
+  font-weight: 700;
+}
+
 .VPSidebarItem.is-link.has-active:not(:has(.VPSidebarItem.has-active)) > .item .link {
   padding-left: 10px;
 }
 
 /* Judul kelompok yang memuat halaman aktif, misalnya "Praktik 11 - Deploy
-   Project". Ditebalkan saja tanpa batang, supaya peserta tahu bab mana yang
+   Project". Ditebalkan saja tanpa blok, supaya peserta tahu bab mana yang
    sedang dibuka sementara penanda tetap satu. */
 .VPSidebarItem.collapsible.has-active > .item .text {
   font-weight: 700;
@@ -107,7 +288,7 @@
 
 .VPDocAsideOutline .outline-link.active {
   color: var(--vp-c-brand-1);
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .VPDocAsideOutline .outline-link.active::before {
@@ -125,13 +306,13 @@
 /* ---------------------------------------------------------------------
    Fokus keyboard
    Penanda fokus bawaan VitePress tipis dan mudah terlewat saat peserta
-   berpindah bagian dengan Tab. Diganti penanda yang lebih tebal, memakai
-   warna aksen supaya sejalan dengan batang penanda posisi.
+   berpindah bagian dengan Tab. Diganti cincin tebal, dan sengaja tanpa
+   animasi: fokus harus muncul seketika, bukan menyusul.
    --------------------------------------------------------------------- */
 :focus-visible {
-  outline: 2px solid var(--pelatihan-aksen);
+  outline: 3px solid var(--pelatihan-aksen);
   outline-offset: 2px;
-  border-radius: 3px;
+  border-radius: var(--pelatihan-radius);
 }
 
 /* Tautan pada isi dokumen sering berbentuk teks panjang. Tanpa offset,
@@ -151,13 +332,33 @@
   display: block;
   overflow-x: auto;
   max-width: 100%;
+  /* Tanpa lebar penuh, kolom tabel hanya selebar isinya dan menyisakan
+     bidang kosong di kanan yang terbaca seperti kolom tambahan. */
+  width: 100%;
 }
 
-/* Batas kolom diberi garis tipis supaya mata tidak kehilangan baris saat
-   tabelnya panjang. */
-.vp-doc th,
+/* Judul kolom diberi blok navy penuh. Pada tabel panjang, kepala tabel yang
+   berwarna membuat mata langsung menemukan baris pertamanya. */
+.vp-doc th {
+  background-color: var(--pelatihan-navy);
+  color: #ffffff;
+  border: var(--pelatihan-tebal) solid var(--pelatihan-garis) !important;
+  font-weight: 700;
+}
+
+.dark .vp-doc th {
+  background-color: #24405e;
+  color: var(--pelatihan-tinta);
+}
+
 .vp-doc td {
-  border-color: var(--vp-c-divider);
+  border: var(--pelatihan-tebal) solid var(--pelatihan-garis) !important;
+}
+
+/* Baris genap diberi latar berbeda supaya mata tidak kehilangan baris saat
+   tabelnya panjang. */
+.vp-doc tr:nth-child(2n) td {
+  background-color: var(--pelatihan-kertas);
 }
 
 /* ---------------------------------------------------------------------
@@ -167,22 +368,109 @@
    menjadi dua baris yang terlihat seperti dua perintah berbeda.
    --------------------------------------------------------------------- */
 .vp-doc div[class*="language-"] {
-  border: 1px solid var(--vp-c-divider);
+  border: var(--pelatihan-tebal) solid var(--pelatihan-garis);
 }
 
-/* Judul bahasa pada blok kode ditahan huruf kecil. Huruf kapital dengan
-   jarak lebar akan terbaca sebagai hiasan, bukan keterangan. */
+/* Judul bahasa pada blok kode dipindahkan menjadi kepala blok, bukan lagi
+   label yang mengambang di kanan atas. Alasannya: perintah terminal di sini
+   sering panjang, dan label yang mengambang menutupi ujung perintah itu.
+   Dengan kepala blok, tidak ada teks yang tertutup sama sekali. */
+.vp-doc div[class*="language-"] {
+  padding-top: 26px;
+  overflow: hidden;
+}
+
 .vp-doc div[class*="language-"] > span.lang {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 26px;
+  line-height: 22px;
+  padding: 0 10px;
+  box-sizing: border-box;
+  text-align: left;
   text-transform: none;
   letter-spacing: 0;
   font-size: 12px;
+  font-weight: 700;
+  color: var(--pelatihan-tinta);
+  background-color: var(--pelatihan-kertas);
+  border: none;
+  border-bottom: var(--pelatihan-tebal) solid var(--pelatihan-garis);
+  border-radius: 0;
+}
+
+/* Tombol salin diletakkan di dalam kepala blok, sejajar dengan nama bahasanya. */
+.vp-doc div[class*="language-"] > button.copy {
+  top: 3px;
+  right: 3px;
+  border: var(--pelatihan-tebal) solid var(--pelatihan-garis);
+  border-radius: var(--pelatihan-radius);
+  background-color: var(--pelatihan-permukaan);
 }
 
 /* ---------------------------------------------------------------------
-   Tautan luar
-   Beranda memuat tombol menuju folder berkas pelatihan. Ikonnya
-   ditambahkan oleh theme/index.js, aturan di bawah hanya mengatur letaknya.
+   Blok peringatan
+   Tingkat bahaya ditandai garis tepi kiri yang tebal, bukan latar berwarna
+   penuh, supaya teks di dalamnya tetap di atas permukaan dan tetap terbaca.
    --------------------------------------------------------------------- */
+.custom-block {
+  border: var(--pelatihan-tebal) solid var(--pelatihan-garis);
+  border-left-width: 6px;
+  border-radius: var(--pelatihan-radius);
+  box-shadow: var(--pelatihan-bayangan-jauh) var(--pelatihan-bayangan-jauh) 0 var(--pelatihan-bayangan);
+}
+
+.custom-block .custom-block-title {
+  font-weight: 700;
+}
+
+.custom-block.tip {
+  border-left-color: var(--pelatihan-status-tip);
+}
+
+.custom-block.warning {
+  border-left-color: var(--pelatihan-status-warning);
+}
+
+.custom-block.danger {
+  border-left-color: var(--pelatihan-status-danger);
+}
+
+.custom-block.info {
+  border-left-color: var(--pelatihan-sky);
+}
+
+/* ---------------------------------------------------------------------
+   Beranda
+   Judul utama diberi blok navy penuh. Ini satu-satunya tempat di situs yang
+   memakai warna identitas sebagai latar, dan dipakai sekali supaya tetap
+   menjadi penanda, bukan kebiasaan.
+   --------------------------------------------------------------------- */
+.VPHero .container {
+  padding: 32px;
+  margin: 8px 0 24px 8px;
+}
+
+.VPHero .name .clip {
+  background: var(--pelatihan-navy);
+  -webkit-background-clip: border-box;
+  background-clip: border-box;
+  color: #ffffff;
+  -webkit-text-fill-color: #ffffff;
+  display: inline-block;
+  padding: 2px 14px 6px;
+  border: var(--pelatihan-tebal) solid var(--pelatihan-garis);
+  box-shadow: var(--pelatihan-bayangan-jauh-besar) var(--pelatihan-bayangan-jauh-besar) 0 var(--pelatihan-oranye);
+}
+
+.dark .VPHero .name .clip {
+  background: #24405e;
+  color: var(--pelatihan-tinta);
+  -webkit-text-fill-color: var(--pelatihan-tinta);
+}
+
 .VPHero .action .VPButton {
   display: inline-flex;
   align-items: center;
@@ -194,6 +482,24 @@
   height: 16px;
   flex: none;
 }
+
+/* ---------------------------------------------------------------------
+   Kartu fitur di beranda, bila ada
+   --------------------------------------------------------------------- */
+.VPFeature {
+  transition: transform 140ms ease, box-shadow 140ms ease;
+}
+
+.VPFeature:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: var(--pelatihan-bayangan-jauh-besar) var(--pelatihan-bayangan-jauh-besar) 0 var(--pelatihan-bayangan);
+}
+
+/* ---------------------------------------------------------------------
+   Tautan luar
+   Beranda memuat tombol menuju folder berkas pelatihan. Ikonnya
+   ditambahkan oleh theme/index.js, aturan di bawah hanya mengatur letaknya.
+   --------------------------------------------------------------------- */
 
 /* Tautan luar pada isi dokumen. Panah kecil ini menjelaskan bahwa tautannya
    membuka tab baru, sehingga peserta tidak kehilangan halaman yang dibaca. */
@@ -213,10 +519,8 @@
 /* ---------------------------------------------------------------------
    Logo di beranda
    Logo adalah dua lembaga dalam satu berkas gambar, jadi tingginya dibatasi
-   supaya tidak mendominasi halaman. Aturan sebelumnya ditulis dua kali
-   dengan nilai justify-content yang berlawanan, dan yang kedua menimpa yang
-   pertama. Sekarang hanya ada satu aturan, dengan perataan ke kiri karena
-   teks di sekitarnya juga rata kiri.
+   supaya tidak mendominasi halaman. Perataannya ke kiri karena teks di
+   sekitarnya juga rata kiri.
    --------------------------------------------------------------------- */
 .logo-row {
   display: flex;
@@ -255,7 +559,7 @@
   padding: 24px 0;
   font-size: 13px;
   color: var(--vp-c-text-2);
-  border-top: 1px solid var(--vp-c-divider);
+  border-top: var(--pelatihan-tebal) solid var(--pelatihan-garis);
 }
 
 .my-footer p {
@@ -268,4 +572,49 @@
 
 .my-footer a:hover {
   color: var(--vp-c-brand-2);
+}
+
+/* ---------------------------------------------------------------------
+   Gerakan dikurangi
+   Sistem pembaca yang meminta gerakan dikurangi mendapat seluruh gerakan
+   dimatikan. Warna dan batas tetap berubah, karena keduanya bukan gerakan.
+   --------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .VPButton,
+  .VPFeature,
+  .VPSidebarItem.is-link.has-active:not(:has(.VPSidebarItem.has-active)) > .item {
+    transition: none;
+  }
+
+  .VPButton:hover,
+  .VPButton:active,
+  .VPFeature:hover {
+    transform: none;
+    box-shadow: var(--pelatihan-bayangan-jauh) var(--pelatihan-bayangan-jauh) 0 var(--pelatihan-bayangan);
+  }
+}
+
+/* ---------------------------------------------------------------------
+   Cetak dan ekspor PDF
+   Modul ini rutin diekspor menjadi PDF untuk peserta. Bayangan padat pada
+   kertas tidak tercetak dan hanya menyisakan bintik kelabu, jadi seluruh
+   bayangan dimatikan dan diganti garis tepi saja.
+   --------------------------------------------------------------------- */
+@media print {
+  .vp-doc table,
+  .vp-doc div[class*="language-"],
+  .custom-block,
+  .VPButton,
+  .VPFeature {
+    box-shadow: none !important;
+  }
+
+  .VPHero .name .clip {
+    background: none !important;
+    color: #000 !important;
+    -webkit-text-fill-color: #000 !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+  }
 }
