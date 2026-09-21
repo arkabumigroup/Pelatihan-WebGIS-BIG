@@ -40,13 +40,17 @@ Beberapa aturan yang perlu dipegang:
 ## Perintah
 
 ```bash
-npm install          # memasang dependensi
-npm run docs:dev     # menjalankan server pengembangan
-npm run docs:build   # membangun situs; gagal bila ada tautan mati
-npm run docs:preview # melihat hasil build
+npm install              # memasang dependensi
+npm run docs:dev         # menjalankan server pengembangan
+npm run docs:build       # membangun situs; gagal bila ada tautan mati
+npm run docs:preview     # melihat hasil build
+npm run export-pdf       # mengekspor panduan Deployment Project saja
+npm run export-pdf:semua # mengekspor seluruh modul
 ```
 
 `npm run docs:build` memeriksa tautan mati dan akan berhenti dengan galat. Jalankan perintah itu sebelum mengirim perubahan.
+
+Kedua perintah ekspor menghasilkan PDF di `pdf/`. Halaman yang diekspor ditentukan oleh `routePatterns` pada `docs/.vitepress/vitepress-pdf.config.mjs` untuk Deployment Project, dan pada `vitepress-pdf-semua.config.mjs` untuk seluruh modul. Folder `pdf/` diabaikan git, jadi hasilnya tidak ikut ter-commit.
 
 ## Gaya Penulisan
 
