@@ -6,8 +6,8 @@ Hari ketiga menyambungkan aplikasi Next.js ke basis data dan mengamankan aksesny
 
 | Waktu | Kegiatan | Materi |
 |---|---|---|
-| 08.00 - 10.00 | Membuat koneksi basis data dengan ORM, membuat CRUD API | [Praktik 8](#praktik-8---database-cloud-dan-prisma-orm) dan [Praktik 9](#praktik-9---api-dan-backend) |
-| 10.15 - 12.00 | Penjelasan NextAuth, session, hashing, enkripsi. Membuat session, logika hak akses, konfigurasi middleware | [Praktik 10](#praktik-10---autentikasi-nextauth) |
+| 08.00 - 10.00 | Membuat koneksi basis data dengan ORM, membuat CRUD API | [Praktik 8](#praktik-8-database-cloud-dan-prisma-orm) dan [Praktik 9](#praktik-9-api-dan-backend) |
+| 10.15 - 12.00 | Penjelasan NextAuth, session, hashing, enkripsi. Membuat session, logika hak akses, konfigurasi middleware | [Praktik 10](#praktik-10-autentikasi-nextauth) |
 
 Pekerjaan deployment yang sebelumnya menempati sesi siang Hari 3 sekarang menjadi [Praktik 11 pada Hari 4](/hari-4/).
 

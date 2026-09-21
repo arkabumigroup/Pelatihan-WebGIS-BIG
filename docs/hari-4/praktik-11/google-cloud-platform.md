@@ -159,6 +159,29 @@ gcloud compute addresses describe "$STATIC_IP_NAME" \
 
 Statusnya harus `IN_USE`, dan alamatnya harus sama dengan IP VM pada Tahap 8. Alamat itulah yang dipakai subdomain Anda nanti, sehingga tidak berubah walaupun VM dimatikan dan dinyalakan kembali.
 
+### Tahap 9b. Laporkan alamat IP dan subdomain ke penyelenggara
+
+<p class="dijalankan dijalankan--cloud">Dijalankan di: <strong>Cloud Shell</strong></p>
+
+Record DNS **ditambahkan oleh penyelenggara**, bukan oleh peserta. Domain `webgisbig.com` dikelola satu akun Cloudflare oleh penyelenggara, dan peserta tidak diberi akses ke sana.
+
+Laporkan sekarang, bukan nanti. Record DNS perlu waktu berpropagasi, dan bila dilaporkan di akhir, DNS baru mulai menyebar setelah Anda selesai mengerjakan seluruh tahap berikutnya. Dilaporkan di sini, propagasinya berjalan sementara Anda mengerjakan Tahap 10 sampai 32.
+
+Yang perlu dilaporkan hanya dua nilai:
+
+| Yang dilaporkan | Contoh | Diambil dari |
+|---|---|---|
+| Subdomain | `dhanypedia.webgisbig.com` | `$SUBDOMAIN` |
+| Alamat IP statis | `34.101.xx.xx` | `$STATIC_IP` |
+
+Cetak keduanya, lalu kirim ke penyelenggara:
+
+```bash
+echo "Subdomain : $SUBDOMAIN"
+echo "IP statis : $(gcloud compute addresses describe "$STATIC_IP_NAME" \
+  --region="$VM_REGION" --project="$PROJECT_ID" --format='value(address)')"
+```
+
 ## Bila ada yang gagal di halaman ini
 
 **`Quota 'IN_USE_ADDRESSES' exceeded. Limit: 4.0 in region asia-southeast2.`**

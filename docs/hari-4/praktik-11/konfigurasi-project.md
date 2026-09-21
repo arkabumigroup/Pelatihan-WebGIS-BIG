@@ -346,7 +346,7 @@ Di laptop, `GEOSERVER_URL` dan `GEOSERVER_PUBLIC_URL` bernilai **sama**, karena 
 
 `GEOSERVER_POSTGIS_DATASTORE` berisi nama datastore yang Anda buat sendiri di antarmuka GeoServer, pada halaman [Koneksi PostgreSQL ke GeoServer](/hari-2/praktik-7/koneksi-postgis). Nama yang dipakai sepanjang pelatihan adalah `postgis_geoportal`.
 
-Karena datastore itu belum ada sebelum GeoServer berjalan, variabel ini **dibiarkan kosong di laptop** dan diisi di VM pada Tahap 18, setelah datastore-nya dibuat. Bila namanya tidak sama persis dengan yang ada di GeoServer, unggahan layer gagal dengan `Could not find datastore`.
+Karena datastore itu belum ada sebelum GeoServer berjalan, variabel ini **dibiarkan kosong di laptop** dan diisi di VM pada [Tahap 18 halaman Menyiapkan Aplikasi di VM](/hari-4/praktik-11/aplikasi-di-vm#tahap-18-isi-berkas-env), setelah datastore-nya dibuat. Bila namanya tidak sama persis dengan yang ada di GeoServer, unggahan layer gagal dengan `Could not find datastore`.
 
 #### Bila GeoServer hanya ada di VM
 

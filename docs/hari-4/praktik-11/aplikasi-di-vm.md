@@ -226,7 +226,7 @@ ENVEOF
 
 Tanda kutip pada `'ENVEOF'` wajib. Tanpa kutip, shell menerjemahkan isi berkas, sehingga karakter seperti `$` berubah sebelum tersimpan.
 
-**4.** Ubah kelima baris yang berbeda. Ganti `IP_EKSTERNAL_VM` dengan alamat dari Tahap 9:
+**4.** Ubah kelima baris yang berbeda. Ganti `IP_EKSTERNAL_VM` dengan alamat IP statis VM Anda dari [Tahap 9 halaman Menyiapkan Project dan VM](/hari-4/praktik-11/google-cloud-platform#tahap-9-buat-ip-statis):
 
 ```bash
 IP="IP_EKSTERNAL_VM"
@@ -322,7 +322,7 @@ Sebelum Cloud Build dipakai, image dibangun sekali secara manual supaya masalah 
 
 #### Setel tiga variabel lebih dahulu
 
-Blok Tahap 2 dijalankan di **Cloud Shell**, sehingga `PROJECT_ID`, `REPOSITORY`, dan `IMAGE_NAME` tidak ikut terbawa ke VM. Di sini ketiganya masih kosong, dan perintah `docker build` akan menghasilkan nama image yang rusak:
+Blok [Tahap 2 halaman Persiapan Repositori](/hari-4/praktik-11/persiapan-repositori#tahap-2-tetapkan-identitas-peserta) dijalankan di **Cloud Shell**, sehingga `PROJECT_ID`, `REPOSITORY`, dan `IMAGE_NAME` tidak ikut terbawa ke VM. Di sini ketiganya masih kosong, dan perintah `docker build` akan menghasilkan nama image yang rusak:
 
 ```text
 asia-southeast2-docker.pkg.dev////:latest
@@ -352,7 +352,9 @@ cd /opt/webgis/app
 docker build -t "asia-southeast2-docker.pkg.dev/${PROJECT_ID}/${REPOSITORY}/${IMAGE_NAME}:latest" .
 ```
 
-Prosesnya lama, karena mengunduh image dasar Node dan memasang dependensi. Bagian akhir keluarannya menyebut nama image yang baru dibuat.
+Prosesnya lama, dan itu wajar. Diukur pada VM e2-medium dengan spesifikasi yang sama seperti yang Anda pakai, build tanpa cache memerlukan waktu **5 menit 40 detik**. Pada VM yang baru pertama kali membangun, image dasar Node dan Nginx masih perlu diunduh lebih dahulu, sehingga waktunya lebih lama lagi.
+
+Jangan hentikan prosesnya walaupun layar tampak tidak bergerak. Bagian akhir keluarannya menyebut nama image yang baru dibuat.
 
 ### Tahap 20. Beri izin Artifact Registry pada Service Account VM
 
@@ -372,8 +374,10 @@ Diperiksa pada `roles/editor`:
 | `artifactregistry.repositories.downloadArtifacts` | ya |
 | Seluruh isi `roles/logging.logWriter` | ya |
 
-`roles/artifactregistry.admin` hanya menambah tiga izin yang tidak dipakai untuk
-push image: `createTagBinding`, `deleteTagBinding`, dan `setIamPolicy`.
+`roles/artifactregistry.writer` sudah cukup untuk push image, dan itulah yang
+dipakai. `roles/artifactregistry.admin` tidak dipakai karena menambah tiga izin
+yang tidak diperlukan di sini: `createTagBinding`, `deleteTagBinding`, dan
+`setIamPolicy`.
 
 **Cara mengetahui apakah tahap ini perlu:** lanjutkan saja ke Tahap 21. Bila
 image berhasil di-push, tahap ini boleh dilewati. Bila gagal dengan pesan
@@ -385,10 +389,10 @@ VM perlu izin menulis image ke Artifact Registry. Buka IAM & Admin, lalu IAM, la
 
 | Role | Kegunaan |
 |---|---|
-| Artifact Registry Administrator | Push image ke repository |
+| Artifact Registry Writer | Push image ke repository |
 | Logs Writer | Menulis log dari VM |
 
-Gunakan alamat `VM_SA` yang tercetak pada Tahap 6.
+Gunakan alamat `VM_SA` yang tercetak pada [Tahap 6 halaman Menyiapkan Project dan VM](/hari-4/praktik-11/google-cloud-platform#tahap-6-siapkan-identitas-vm).
 
 #### Lewat Cloud Shell
 
@@ -398,7 +402,7 @@ menelusuri Console:
 ```bash
 gcloud projects add-iam-policy-binding "$PROJECT_ID" \
   --member="serviceAccount:$VM_SA" \
-  --role="roles/artifactregistry.admin" \
+  --role="roles/artifactregistry.writer" \
   --condition=None
 
 gcloud projects add-iam-policy-binding "$PROJECT_ID" \

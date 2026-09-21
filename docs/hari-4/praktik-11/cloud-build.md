@@ -4,7 +4,7 @@ Halaman terakhir Deployment Project. Setelah selesai, setiap push ke branch `mai
 
 ## Menyiapkan Trigger Cloud Build
 
-### Tahap 24. Tambahkan Dockerfile dan cloudbuild.yaml
+### Tahap 24. Periksa Dockerfile dan cloudbuild.yaml
 
 <p class="dijalankan dijalankan--lokal">Dijalankan di: <strong>Terminal Laptop</strong></p>
 
@@ -78,7 +78,7 @@ options:
   logging: CLOUD_LOGGING_ONLY
 ```
 
-Periksa kembali pemeriksa YAML pada Tahap 6 halaman [Konfigurasi Project](/hari-4/praktik-11/konfigurasi-project). Sekarang kedua berkas sudah ada, sehingga keluaran yang diharapkan adalah:
+Periksa kembali pemeriksa YAML pada [Tahap 8 halaman Konfigurasi Project](/hari-4/praktik-11/konfigurasi-project#tahap-8-uji-seluruh-berkas-di-laptop). Seluruh berkas sudah ada di fork Anda, jadi keluaran yang diharapkan adalah:
 
 ```
 OK   docker-compose.yml -> services, networks
@@ -86,27 +86,23 @@ OK   docker-compose.yml -> services, networks
 OK   cloudbuild.yaml -> substitutions, steps, images, options
 ```
 
-### Tahap 25. Commit dan push
+### Tahap 25. Pastikan .env tidak ikut ter-commit
 
 <p class="dijalankan dijalankan--lokal">Dijalankan di: <strong>GitHub Desktop</strong></p>
 
-Buka GitHub Desktop. Keempat berkas yang baru ditambahkan akan muncul di daftar **Changes** pada kolom kiri.
+Tidak ada yang perlu di-commit pada tahap ini. `Dockerfile`, `.dockerignore`, `cloudbuild.yaml`, dan `next.config.mjs` sudah ikut ketika Anda mem-fork repositori, dan sudah ada di fork Anda. Daftar **Changes** pada GitHub Desktop memang akan kosong, dan itu memang seharusnya.
 
-**Periksa lebih dahulu bahwa `.env` tidak ada di daftar itu.** Berkas tersebut berisi kredensial Anda dan tidak boleh ikut terkirim. Bila `.env` muncul di sana, hentikan pekerjaan dan periksa kembali halaman [Konfigurasi Project](/hari-4/praktik-11/konfigurasi-project) Tahap 6.
+Yang perlu diperiksa hanya satu: pastikan `.env` juga tidak muncul di daftar itu. Berkas tersebut berisi kredensial Anda dan tidak boleh ikut terkirim. Bila `.env` muncul di sana, kembali ke [Tahap 10 halaman Konfigurasi Project](/hari-4/praktik-11/konfigurasi-project#tahap-10-pastikan-berkas-env-tidak-ikut-ter-commit).
 
-Bila daftarnya sudah benar:
+Build pertama tidak dijalankan oleh push, melainkan oleh tombol **Run** pada [Tahap 29](#tahap-29-jalankan-trigger-dan-pantau-hasilnya). Setelah trigger tersambung, setiap push ke branch `main` barulah menjalankan build sendiri.
 
-1. Tulis ringkasan perubahan di kotak kiri bawah, misalnya `Tambah Cloud Build dan Dockerfile`
-2. Klik **Commit to main**
-3. Klik **Push origin**
-
-Setelah terkirim, Cloud Build akan mulai bekerja sendiri. Tahap berikutnya menyiapkan sisi GitHub-nya.
+Bila Anda ingin melihat jalur otomatis itu bekerja, buat satu perubahan kecil yang aman, misalnya menambah satu baris keterangan di `README.md`, lalu commit dan push. Bila tidak, lanjutkan saja ke tahap berikutnya.
 
 ### Tahap 26. Hubungkan repositori GitHub
 
 <p class="dijalankan dijalankan--cloud">Dijalankan di: <strong>Google Cloud Console</strong></p>
 
-Buka Cloud Build, lalu Repositories, lalu Connect repository. Buat connection dengan nama sesuai `CONNECTION_NAME` yang tercetak pada Tahap 2, pilih GitHub, masuk memakai akun pemilik fork, pilih repositori peserta, isi linked repository sesuai `LINKED_REPO_NAME`, lalu pastikan status connection berubah menjadi COMPLETE.
+Buka Cloud Build, lalu Repositories, lalu Connect repository. Buat connection dengan nama sesuai `CONNECTION_NAME` yang tercetak pada [Tahap 2 halaman Persiapan Repositori](/hari-4/praktik-11/persiapan-repositori#tahap-2-tetapkan-identitas-peserta), pilih GitHub, masuk memakai akun pemilik fork, pilih repositori peserta, isi linked repository sesuai `LINKED_REPO_NAME`, lalu pastikan status connection berubah menjadi COMPLETE.
 
 ### Tahap 27. Buat trigger Cloud Build
 
@@ -201,12 +197,12 @@ Buka alamat `http://IP_EKSTERNAL_VM/portal` di browser. Tulis `http://` secara e
 
 | Gejala | Penyebab yang paling sering |
 |---|---|
-| `ALREADY_EXISTS` saat membuat Service Account | Identitas peserta sama dengan peserta lain. Jalankan kembali blok Tahap 2 dan laporkan ke koordinator. |
+| `ALREADY_EXISTS` saat membuat Service Account | Identitas peserta sama dengan peserta lain. Jalankan kembali blok identitas peserta pada [Tahap 2 halaman Persiapan Repositori](/hari-4/praktik-11/persiapan-repositori#tahap-2-tetapkan-identitas-peserta) dan laporkan ke koordinator. |
 | `host not found in upstream "nextjs"` | `nginx.conf` belum memakai pola `resolver` dengan `proxy_pass` variabel. Ambil berkas dari halaman Konfigurasi Project. |
 | Container `nextjs` tidak muncul | Trigger belum pernah berjalan, atau `cloudbuild.yaml` belum ada di branch `main`. |
 | Geoportal terbuka tetapi login gagal | `DATABASE_URL` masih kosong di `.env`. Isi, lalu jalankan `docker compose up -d` lagi. |
 | `pull access denied` untuk image nextjs | `NEXTJS_IMAGE` masih berisi nama karangan. Nilai sementara yang aman adalah `nginx:1.27-alpine`. |
-| Build gagal pada langkah SSH ke VM | Service Account trigger belum diberi `roles/iam.serviceAccountUser` pada Service Account VM. Ulangi Tahap 6. |
+| Build gagal pada langkah SSH ke VM | Service Account trigger belum diberi `roles/iam.serviceAccountUser` pada Service Account VM. Ulangi [Tahap 6 halaman Menyiapkan Project dan VM](/hari-4/praktik-11/google-cloud-platform#tahap-6-siapkan-identitas-vm). |
 
 ## Hasil Tahap Ini
 

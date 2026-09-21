@@ -6,9 +6,9 @@ Hari kedua menyambungkan tiga hal yang sebelumnya berdiri sendiri: tampilan 3D d
 
 | Waktu | Kegiatan | Materi |
 |---|---|---|
-| 08.00 - 10.00 | Penjelasan CesiumJS, membuat tampilan 3D dan memuat layer 3D, kontrol kamera dan navigasi | [Praktik 5](#praktik-5---peta-3d-dengan-cesiumjs) |
-| 10.15 - 12.00 | Basis data, tabel spasial dan non-spasial, relasi tabel, schema spasial, digitasi lewat basis data | [Praktik 6](#praktik-6---postgresql-dan-postgis) |
-| 13.00 - 14.30 | GeoServer workspace, store, layer dan style, store dari PostGIS, publish tabel dan menampilkan layer di Leaflet | [Praktik 7](#praktik-7---geoserver) |
+| 08.00 - 10.00 | Penjelasan CesiumJS, membuat tampilan 3D dan memuat layer 3D, kontrol kamera dan navigasi | [Praktik 5](#praktik-5-peta-3d-dengan-cesiumjs) |
+| 10.15 - 12.00 | Basis data, tabel spasial dan non-spasial, relasi tabel, schema spasial, digitasi lewat basis data | [Praktik 6](#praktik-6-postgresql-dan-postgis) |
+| 13.00 - 14.30 | GeoServer workspace, store, layer dan style, store dari PostGIS, publish tabel dan menampilkan layer di Leaflet | [Praktik 7](#praktik-7-geoserver) |
 | 14.45 - 16.00 | Penjelasan ORM Prisma, HTTP request, dan App Routes Next.js | [Praktik 8](/hari-3/praktik-8/prisma-api-login) dan [Praktik 9](/hari-3/praktik-9/konsep-api-backend) |
 
 Materi blok terakhir dikerjakan pada Hari 3, karena di sanalah aplikasi Next.js dan basis datanya sudah tersambung. Halamannya ada pada Praktik 8 dan Praktik 9.
