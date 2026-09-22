@@ -15,6 +15,8 @@ http:///geoserver/web
 
 Halaman ini membuat pemulihannya tidak perlu mengetik apa pun. Identitas disimpan di peramban, jadi cukup dibuka dan bloknya disalin lagi.
 
+Daftar namanya memuat peserta **batch 1 dan batch 2**, masing-masing 41 orang. Setiap pilihan sudah diberi keterangan batch dan kelompoknya, supaya peserta dapat memastikan dirinya memilih baris yang benar sebelum bloknya disalin.
+
 ## Cara Memakai
 
 <KitIdentitas :judul="''" />

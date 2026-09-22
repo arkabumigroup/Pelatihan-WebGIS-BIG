@@ -87,6 +87,7 @@ const daftarPeserta = kelompokPeserta.flatMap((k) =>
     email: p.email,
     master: k.master,
     bagian: p.bagian,
+    batch: p.batch,
     projectId: k.project[p.bagian],
   }))
 )
@@ -551,7 +552,7 @@ onMounted(() => {
           <select v-model="namaTerpilih" @change="pilihPeserta">
             <option value="">Pilih nama Anda</option>
             <option v-for="p in daftarPeserta" :key="p.namaPeserta" :value="p.namaPeserta">
-              {{ p.nama }} ({{ p.namaPeserta }}) - {{ p.bagian.toUpperCase() }}
+              Batch {{ p.batch }} - {{ p.nama }} ({{ p.namaPeserta }}) - Kelompok {{ p.bagian.toUpperCase() }}
             </option>
           </select>
         </label>
@@ -569,7 +570,8 @@ onMounted(() => {
       </div>
 
       <p v-if="pesertaTerpilih" class="ki-catatan">
-        Kelompok {{ pesertaTerpilih.bagian.toUpperCase() }} di akun master
+        Batch {{ pesertaTerpilih.batch }}, kelompok
+        {{ pesertaTerpilih.bagian.toUpperCase() }}, di akun master
         {{ pesertaTerpilih.master }}.
       </p>
 

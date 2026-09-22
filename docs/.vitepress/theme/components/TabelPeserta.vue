@@ -2,7 +2,7 @@
 // Tabel pemetaan peserta ke project, dikelompokkan per akun master.
 //
 // Pencarian dan saringan dikerjakan di sisi browser, bukan di server, karena
-// datanya hanya 41 baris dan halaman ini statis. Tidak ada permintaan jaringan
+// datanya hanya 82 baris dan halaman ini statis. Tidak ada permintaan jaringan
 // saat peserta mengetik, sehingga hasilnya muncul seketika.
 
 import { ref, computed } from 'vue'
@@ -10,23 +10,40 @@ import { kelompokPeserta } from '../data/peserta'
 
 const kataKunci = ref('')
 const masterTerpilih = ref('semua')
+const batchTerpilih = ref('semua')
 
 // Daftar akun master untuk saringan. Dihitung sekali, bukan tiap render.
 const daftarMaster = kelompokPeserta.map((k) => k.master)
 
-const jumlahPeserta = computed(() =>
-  kelompokPeserta.reduce((n, k) => n + k.peserta.length, 0)
+// Seluruh peserta dari kedua batch, dipakai untuk menghitung jumlah dan untuk
+// menyusun saringan batch.
+const semuaPeserta = computed(() => kelompokPeserta.flatMap((k) => k.peserta))
+
+const jumlahPeserta = computed(() => semuaPeserta.value.length)
+
+const jumlahPerBatch = computed(() => {
+  const n = {}
+  for (const p of semuaPeserta.value) n[p.batch] = (n[p.batch] || 0) + 1
+  return n
+})
+
+const daftarBatch = computed(() =>
+  Object.keys(jumlahPerBatch.value)
+    .map(Number)
+    .sort((a, b) => a - b)
 )
 
 // Hanya kelompok yang dipilih yang disaring isinya. Bila "semua" dipilih,
 // pencarian tetap berlaku untuk seluruh kelompok.
 const hasil = computed(() => {
   const cari = kataKunci.value.trim().toLowerCase()
+  const batch = batchTerpilih.value
 
   return kelompokPeserta
     .filter((k) => masterTerpilih.value === 'semua' || k.master === masterTerpilih.value)
     .map((k) => {
       const peserta = k.peserta.filter((p) => {
+        if (batch !== 'semua' && p.batch !== Number(batch)) return false
         if (!cari) return true
         return (
           p.nama.toLowerCase().includes(cari) ||
@@ -41,9 +58,14 @@ const hasil = computed(() => {
 
 const adaHasil = computed(() => hasil.value.some((k) => k.peserta.length > 0))
 
+const jumlahTampil = computed(() =>
+  hasil.value.reduce((n, k) => n + k.peserta.length, 0)
+)
+
 function bersihkan() {
   kataKunci.value = ''
   masterTerpilih.value = 'semua'
+  batchTerpilih.value = 'semua'
 }
 </script>
 
@@ -64,6 +86,16 @@ function bersihkan() {
       </label>
 
       <label class="tp-saring">
+        <span class="tp-label">Batch</span>
+        <select v-model="batchTerpilih">
+          <option value="semua">Semua batch</option>
+          <option v-for="b in daftarBatch" :key="b" :value="b">
+            Batch {{ b }} ({{ jumlahPerBatch[b] }} peserta)
+          </option>
+        </select>
+      </label>
+
+      <label class="tp-saring">
         <span class="tp-label">Akun master</span>
         <select v-model="masterTerpilih">
           <option value="semua">Semua akun master</option>
@@ -71,14 +103,19 @@ function bersihkan() {
         </select>
       </label>
 
-      <button v-if="kataKunci || masterTerpilih !== 'semua'" class="tp-bersih" type="button" @click="bersihkan">
+      <button
+        v-if="kataKunci || masterTerpilih !== 'semua' || batchTerpilih !== 'semua'"
+        class="tp-bersih"
+        type="button"
+        @click="bersihkan"
+      >
         Bersihkan
       </button>
     </div>
 
     <p class="tp-ringkas" role="status">
       <template v-if="adaHasil">
-        Menampilkan <strong>{{ hasil.reduce((n, k) => n + k.peserta.length, 0) }}</strong>
+        Menampilkan <strong>{{ jumlahTampil }}</strong>
         dari {{ jumlahPeserta }} peserta.
       </template>
       <template v-else>
@@ -119,7 +156,8 @@ function bersihkan() {
               <th scope="col">Nama</th>
               <th scope="col">Nama Peserta</th>
               <th scope="col">Email</th>
-              <th scope="col">Kelompok</th>
+              <th scope="col" class="tp-kolom-pendek">Batch</th>
+              <th scope="col" class="tp-kolom-pendek">Kelompok</th>
             </tr>
           </thead>
           <tbody>
@@ -132,6 +170,7 @@ function bersihkan() {
                      tanpa mengurangi keterbacaan bagi peserta. -->
                 <span class="tp-email">{{ p.email.split('@')[0] }}<span class="tp-at">@</span>{{ p.email.split('@')[1] }}</span>
               </td>
+              <td>{{ p.batch }}</td>
               <td>{{ p.bagian.toUpperCase() }}</td>
             </tr>
           </tbody>
@@ -162,13 +201,13 @@ function bersihkan() {
 }
 
 /* Pencarian diberi ruang paling lebar, karena itu kendali yang paling sering
-   dipakai peserta. */
+   dipakai peserta. Kedua saringan di sampingnya cukup selebar isinya. */
 .tp-cari {
-  flex: 1 1 260px;
+  flex: 1 1 240px;
 }
 
 .tp-saring {
-  flex: 0 1 220px;
+  flex: 0 1 190px;
 }
 
 .tp-label {
@@ -180,6 +219,7 @@ function bersihkan() {
 .tp input,
 .tp select {
   width: 100%;
+  min-height: 44px;
   padding: 8px 10px;
   font-size: 14px;
   color: var(--vp-c-text-1);
@@ -195,6 +235,7 @@ function bersihkan() {
 }
 
 .tp-bersih {
+  min-height: 44px;
   padding: 8px 14px;
   font-size: 13px;
   font-weight: 600;
@@ -312,6 +353,12 @@ function bersihkan() {
   color: var(--vp-c-text-2);
   text-transform: uppercase;
   background: var(--vp-c-bg-soft);
+}
+
+/* Kolom Batch dan Kelompok isinya satu karakter, jadi lebarnya tidak perlu
+   ikut melebar. Tanpa batas ini, keduanya memakan ruang kolom Nama. */
+.tp-kolom-pendek {
+  width: 84px;
 }
 
 .tp-tabel tbody tr:hover {
