@@ -220,9 +220,7 @@ gcloud compute ssh "$VM_NAME" \
 Sertifikat tersimpan di `/etc/letsencrypt/live/$SUBDOMAIN/`.
 
 ::: danger Kuota penerbitan ini dipakai bersama seluruh peserta
-Let's Encrypt membatasi **50 sertifikat per domain per 7 hari**, dan batas itu berlaku untuk semua orang yang memakai domain yang sama, bukan per peserta.
-
-Jumlah peserta dua batch **sudah melewati batas 50 itu**, sehingga kuota mingguan ini bukan lagi soal cadangan. Bila penerbitan gagal berkali-kali karena satu kesalahan yang sama, peserta berikutnya berhenti dengan pesan `too many certificates already issued`, dan **tidak ada cara mempercepat pemulihannya.** Kuota itu terisi ulang satu sertifikat setiap 202 menit.
+Let's Encrypt membatasi **50 sertifikat per domain per 7 hari**, dan batas itu berlaku untuk semua orang yang memakai domain yang sama, bukan per peserta. Bila penerbitan gagal berkali-kali, peserta berikutnya berhenti dengan pesan `too many certificates already issued`, dan **tidak ada cara mempercepat pemulihannya.** Kuota itu terisi ulang satu sertifikat setiap 202 menit.
 
 Karena itu langkah 9a bukan formalitas. Uji coba memakai server uji, tidak memakai kuota, dan menangkap hampir semua penyebab kegagalan. Jangan pula mengulang penerbitan hanya untuk mencoba-coba.
 
