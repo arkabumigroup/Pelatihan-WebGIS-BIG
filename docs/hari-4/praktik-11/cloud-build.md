@@ -10,7 +10,7 @@ Halaman terakhir Deployment Project. Setelah selesai, setiap push ke branch `mai
 
 <p class="dijalankan dijalankan--lokal">Dijalankan di: <strong>Terminal Laptop</strong></p>
 
-Berkas `Dockerfile` dan `.dockerignore` ada di fork Anda, di root repositori, karena keduanya ikut ketika Anda mem-fork repositori instruktur. Bila ternyata belum ada, salin keduanya dari repositori sumber pada halaman [Persiapan Repositori](/hari-4/praktik-11/persiapan-repositori#repositori-yang-dipakai).
+File `Dockerfile` dan `.dockerignore` ada di fork Anda, di root repositori, karena keduanya ikut ketika Anda mem-fork repositori instruktur. Bila ternyata belum ada, salin keduanya dari repositori sumber pada halaman [Persiapan Repositori](/hari-4/praktik-11/persiapan-repositori#repositori-yang-dipakai).
 
 Selanjutnya periksa `next.config.mjs`. Dua baris berikut wajib ada, dan keduanya bukan tambahan yang opsional:
 
@@ -30,9 +30,9 @@ export default nextConfig;
 
 #### cloudbuild.yaml
 
-Berkas `cloudbuild.yaml` juga **sudah ada** di fork Anda. **Jangan menulis ulang berkas ini.** Cukup buka dan pastikan isinya seperti berikut.
+File `cloudbuild.yaml` juga **sudah ada** di fork Anda. **Jangan menulis ulang file ini.** Cukup buka dan pastikan isinya seperti berikut.
 
-Berkas ini menjalankan tiga hal setiap kali ada push ke branch `main`: membangun image dari `Dockerfile`, push ke Artifact Registry, lalu masuk ke VM untuk menarik image terbaru dan menyalakan container.
+File ini menjalankan tiga hal setiap kali ada push ke branch `main`: membangun image dari `Dockerfile`, push ke Artifact Registry, lalu masuk ke VM untuk menarik image terbaru dan menyalakan container.
 
 ```yaml
 substitutions:
@@ -80,7 +80,7 @@ options:
   logging: CLOUD_LOGGING_ONLY
 ```
 
-Periksa kembali pemeriksa YAML pada [Tahap 8 halaman Konfigurasi Project](/hari-4/praktik-11/konfigurasi-project#tahap-8-uji-seluruh-berkas-di-laptop). Seluruh berkas sudah ada di fork Anda, jadi keluaran yang diharapkan adalah:
+Periksa kembali pemeriksa YAML pada [Tahap 8 halaman Konfigurasi Project](/hari-4/praktik-11/konfigurasi-project#tahap-8-uji-seluruh-file-di-laptop). Seluruh file sudah ada di fork Anda, jadi keluaran yang diharapkan adalah:
 
 ```
 OK   docker-compose.yml -> services, networks
@@ -94,7 +94,7 @@ OK   cloudbuild.yaml -> substitutions, steps, images, options
 
 Tidak ada yang perlu di-commit pada tahap ini. `Dockerfile`, `.dockerignore`, `cloudbuild.yaml`, dan `next.config.mjs` sudah ikut ketika Anda mem-fork repositori, dan sudah ada di fork Anda. Daftar **Changes** pada GitHub Desktop memang akan kosong, dan itu memang seharusnya.
 
-Yang perlu diperiksa hanya satu: pastikan `.env` juga tidak muncul di daftar itu. Berkas tersebut berisi kredensial Anda dan tidak boleh ikut terkirim. Bila `.env` muncul di sana, kembali ke [Tahap 10 halaman Konfigurasi Project](/hari-4/praktik-11/konfigurasi-project#tahap-10-pastikan-berkas-env-tidak-ikut-ter-commit).
+Yang perlu diperiksa hanya satu: pastikan `.env` juga tidak muncul di daftar itu. File tersebut berisi kredensial Anda dan tidak boleh ikut terkirim. Bila `.env` muncul di sana, kembali ke [Tahap 10 halaman Konfigurasi Project](/hari-4/praktik-11/konfigurasi-project#tahap-10-pastikan-file-env-tidak-ikut-ter-commit).
 
 Build pertama tidak dijalankan oleh push, melainkan oleh tombol **Run** pada [Tahap 29](#tahap-29-jalankan-trigger-dan-pantau-hasilnya). Setelah trigger tersambung, setiap push ke branch `main` barulah menjalankan build sendiri.
 
@@ -139,9 +139,9 @@ Tambahkan lima variabel berikut pada trigger. Ganti `PARTICIPANT_ID` dengan iden
 Bagian `PARTICIPANT_ID` pada dua nilai pertama dan terakhir itulah yang membuat trigger peserta A tidak pernah menyentuh VM peserta B.
 
 ::: warning Mengapa `_CESIUM_ION_TOKEN` harus ada di trigger, bukan hanya di `.env`
-Token Cesium Ion dipakai komponen peta 3D, dan komponen itu berjalan di browser. NextJS **menanam** nilai `NEXT_PUBLIC_*` ke dalam berkas hasil build, bukan membacanya saat aplikasi berjalan.
+Token Cesium Ion dipakai komponen peta 3D, dan komponen itu berjalan di browser. NextJS **menanam** nilai `NEXT_PUBLIC_*` ke dalam file hasil build, bukan membacanya saat aplikasi berjalan.
 
-Karena `.dockerignore` mengecualikan berkas `.env` dari build context, nilai yang ada di `.env` VM **tidak ikut** ke dalam build. Nilainya harus dikirim sebagai build argument, dan itulah yang dilakukan `cloudbuild.yaml` dengan `${_CESIUM_ION_TOKEN}`.
+Karena `.dockerignore` mengecualikan file `.env` dari build context, nilai yang ada di `.env` VM **tidak ikut** ke dalam build. Nilainya harus dikirim sebagai build argument, dan itulah yang dilakukan `cloudbuild.yaml` dengan `${_CESIUM_ION_TOKEN}`.
 
 Akibat bila variabel ini kosong: build tetap berhasil dan situs tetap tampil, tetapi peta 3D gagal memuat aset 3D Tiles dari Cesium Ion. Peta dasar dan terrain tetap muncul, karena keduanya memakai sumber sendiri, sehingga gejalanya mudah disalahartikan sebagai model yang rusak.
 :::
@@ -230,7 +230,7 @@ Buka alamat `http://IP_EKSTERNAL_VM/portal` di browser. Tulis `http://` secara e
 | Gejala | Penyebab yang paling sering |
 |---|---|
 | `ALREADY_EXISTS` saat membuat Service Account | Identitas peserta sama dengan peserta lain. Jalankan kembali blok identitas peserta pada [Tahap 2 halaman Persiapan Repositori](/hari-4/praktik-11/persiapan-repositori#tahap-2-tetapkan-identitas-peserta) dan laporkan ke koordinator. |
-| `host not found in upstream "nextjs"` | `nginx.conf` belum memakai pola `resolver` dengan `proxy_pass` variabel. Ambil berkas dari halaman Konfigurasi Project. |
+| `host not found in upstream "nextjs"` | `nginx.conf` belum memakai pola `resolver` dengan `proxy_pass` variabel. Ambil file dari halaman Konfigurasi Project. |
 | Container `nextjs` tidak muncul | Trigger belum pernah berjalan, atau `cloudbuild.yaml` belum ada di branch `main`. |
 | Geoportal terbuka tetapi login gagal | `DATABASE_URL` masih kosong di `.env`. Isi, lalu jalankan `docker compose up -d` lagi. |
 | `pull access denied` untuk image nextjs | `NEXTJS_IMAGE` masih berisi nama karangan. Nilai sementara yang aman adalah `nginx:1.27-alpine`. |

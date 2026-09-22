@@ -1,6 +1,6 @@
 # Kit Identitas Peserta
 
-Halaman ini menyimpan identitas peserta di peramban, lalu membangkitkan seluruh nama resource dan nilai rahasia yang diturunkan darinya. Isinya menggantikan blok yang harus diketik pada [Tahap 2 halaman Persiapan Repositori](/hari-4/praktik-11/persiapan-repositori#tahap-2-tetapkan-identitas-peserta).
+Halaman ini menyimpan identitas peserta di browser, lalu membangkitkan seluruh nama resource dan nilai rahasia yang diturunkan darinya. Isinya menggantikan blok yang harus diketik pada [Tahap 2 halaman Persiapan Repositori](/hari-4/praktik-11/persiapan-repositori#tahap-2-tetapkan-identitas-peserta).
 
 ## Masalah yang Dipecahkan
 
@@ -13,7 +13,7 @@ ERROR: (gcloud.compute.instances.describe) could not parse resource []
 http:///geoserver/web
 ```
 
-Halaman ini membuat pemulihannya tidak perlu mengetik apa pun. Identitas disimpan di peramban, jadi cukup dibuka dan bloknya disalin lagi.
+Halaman ini membuat pemulihannya tidak perlu mengetik apa pun. Identitas disimpan di browser, jadi cukup dibuka dan bloknya disalin lagi.
 
 Daftar namanya memuat peserta **batch 1 dan batch 2**, masing-masing 41 orang. Setiap pilihan sudah diberi keterangan batch dan kelompoknya, supaya peserta dapat memastikan dirinya memilih baris yang benar sebelum bloknya disalin.
 
@@ -25,9 +25,9 @@ Daftar namanya memuat peserta **batch 1 dan batch 2**, masing-masing 41 orang. S
 
 Tujuh nilai disimpan, yaitu **Nama Peserta**, **Project ID**, dan **empat nilai acak** yang Anda buat pada langkah 3. Tiga belas nilai turunan lainnya tidak disimpan, melainkan dihitung ulang setiap kali halaman ini dibuka, sehingga tidak ada yang dapat tertinggal saat salah satu nilai di atas berubah.
 
-Empat nilai acak itu disimpan justru supaya tidak berubah. Nilai yang sudah Anda salin ke berkas `.env` harus tetap sama dengan yang tertulis di sini, dan menggantinya setelah terpasang membuat login gagal. Karena itu tombol **Buat ulang** meminta konfirmasi lebih dahulu.
+Empat nilai acak itu disimpan justru supaya tidak berubah. Nilai yang sudah Anda salin ke file `.env` harus tetap sama dengan yang tertulis di sini, dan menggantinya setelah terpasang membuat login gagal. Karena itu tombol **Buat ulang** meminta konfirmasi lebih dahulu.
 
-Penyimpanannya memakai dua tempat sekaligus. Pilihan pertama `localStorage`, dan bila tidak tersedia barulah cookie. Alasannya, `localStorage` dapat kosong pada mode penyamaran tertentu dan pada peramban yang membersihkan penyimpanan lokal antar sesi, sedangkan cookie bertahan pada kedua keadaan itu.
+Penyimpanannya memakai dua tempat sekaligus. Pilihan pertama `localStorage`, dan bila tidak tersedia barulah cookie. Alasannya, `localStorage` dapat kosong pada mode penyamaran tertentu dan pada browser yang membersihkan penyimpanan lokal antar sesi, sedangkan cookie bertahan pada kedua keadaan itu.
 
 Keempat baris itu mengisi lima variabel, karena `GEOSERVER_PASSWORD` dan `GEOSERVER_ADMIN_PASSWORD` memang harus bernilai sama. Satu baris menanganinya sekaligus, sehingga keduanya tidak dapat berbeda tanpa sengaja.
 
@@ -39,7 +39,7 @@ Empat nilai acaknya berbeda. `JWT_SECRET`, `NEXTAUTH_SECRET`, dan `GEOSERVER_PAS
 
 ### Data ini tidak pindah ke komputer lain
 
-Isinya melekat pada peramban dan alamat situs ini. Membuka halaman ini dari laptop lain, atau dari peramban lain pada laptop yang sama, akan menampilkan halaman kosong.
+Isinya melekat pada browser dan alamat situs ini. Membuka halaman ini dari laptop lain, atau dari browser lain pada laptop yang sama, akan menampilkan halaman kosong.
 
 Isinya juga tidak sampai ke Cloud Shell dengan sendirinya. Yang berpindah hanya blok dan nilai yang Anda salin sendiri.
 
@@ -51,10 +51,10 @@ Pakai tombol itu bila Anda salah memilih nama peserta dan ingin memulai dari awa
 
 ## Bila Tombolnya Tidak Dapat Dipakai
 
-Halaman ini memerlukan JavaScript, karena seluruh nilainya dihitung di peramban Anda dan tidak ada server yang terlibat. Bila tombolnya tidak bereaksi, periksa dua hal berikut.
+Halaman ini memerlukan JavaScript, karena seluruh nilainya dihitung di browser Anda dan tidak ada server yang terlibat. Bila tombolnya tidak bereaksi, periksa dua hal berikut.
 
-1. **Peramban memblokir penyimpanan.** Mode penyamaran pada sebagian peramban menolak penulisan. Nilainya tetap dapat dibuat dan disalin, hanya saja tidak tersimpan setelah halaman ditutup.
-2. **Situs dibuka tanpa HTTPS.** Sumber acaknya tetap bekerja, tetapi tombol **Salin** memerlukan HTTPS pada sebagian peramban. Bila tombolnya gagal, blok dan nilainya masih dapat dipilih lalu disalin dengan `Ctrl+C`.
+1. **Browser memblokir penyimpanan.** Mode penyamaran pada sebagian browser menolak penulisan. Nilainya tetap dapat dibuat dan disalin, hanya saja tidak tersimpan setelah halaman ditutup.
+2. **Situs dibuka tanpa HTTPS.** Sumber acaknya tetap bekerja, tetapi tombol **Salin** memerlukan HTTPS pada sebagian browser. Bila tombolnya gagal, blok dan nilainya masih dapat dipilih lalu disalin dengan `Ctrl+C`.
 
 Bila keduanya bukan penyebabnya, kembali ke perintah terminal yang digantikan halaman ini:
 

@@ -123,7 +123,7 @@ Saat container dijalankan pada tahap sebelumnya, folder `certbot-webroot` dan
 `tls` kemungkinan besar **belum ada**. Docker membuatnya sendiri untuk keperluan
 bind-mount pada `docker-compose.yml`, dan Docker membuatnya **sebagai root**.
 
-Akibatnya Tahap 10 akan gagal saat menulis berkas konfigurasi:
+Akibatnya Tahap 10 akan gagal saat menulis file konfigurasi:
 
 ```text
 -bash: tls/aktifkan.conf: Permission denied
@@ -180,7 +180,7 @@ curl  -o /dev/null -w "acme %{http_code}\n" "http://${SUBDOMAIN}/.well-known/acm
 
 </div>
 
-Balasan `404` adalah hasil yang diharapkan, karena berkas `uji` memang belum ada. Yang sedang diuji adalah apakah permintaan itu sampai ke direktori `certbot-webroot`, bukan diteruskan ke aplikasi Next.js.
+Balasan `404` adalah hasil yang diharapkan, karena file `uji` memang belum ada. Yang sedang diuji adalah apakah permintaan itu sampai ke direktori `certbot-webroot`, bukan diteruskan ke aplikasi Next.js.
 
 Bila balasan yang muncul `502` atau `200`, hentikan tahap ini. Periksa kembali `nginx.conf`: blok `location ^~ /.well-known/acme-challenge/` harus ada di atas blok `location /`, dan volume `./certbot-webroot:/var/www/certbot:ro` harus ada pada service `nginx`.
 
@@ -275,7 +275,7 @@ Batas 5 kegagalan verifikasi per alamat per jam juga berlaku. Mengulang perintah
 
 <p class="dijalankan dijalankan--server">Dijalankan di: <strong>Terminal VM</strong></p>
 
-Nginx pada proyek ini memakai **satu blok `server`** yang memuat seluruh `location`, dan blok itu mendengarkan port 80. Berkas `nginx.conf` memuat berkas tambahan di dalam blok tersebut:
+Nginx pada proyek ini memakai **satu blok `server`** yang memuat seluruh `location`, dan blok itu mendengarkan port 80. File `nginx.conf` memuat file tambahan di dalam blok tersebut:
 
 ```nginx
 server {
@@ -287,7 +287,7 @@ server {
 }
 ```
 
-Karena `include` itu berada **di dalam** blok `server`, berkas `tls/aktifkan.conf` hanya boleh memuat direktif yang sah pada konteks `server`. Yang perlu ditambahkan hanyalah port 443 beserta sertifikatnya.
+Karena `include` itu berada **di dalam** blok `server`, file `tls/aktifkan.conf` hanya boleh memuat direktif yang sah pada konteks `server`. Yang perlu ditambahkan hanyalah port 443 beserta sertifikatnya.
 
 Seluruh `location` pada `nginx.conf` otomatis berlaku untuk port 443 juga, karena berada pada blok `server` yang sama. Tidak ada yang perlu ditulis ulang.
 
@@ -299,7 +299,7 @@ gcloud compute ssh "$VM_NAME" \
   --tunnel-through-iap
 ```
 
-Buat berkasnya. Ganti `nama01.webgisbig.com` dengan subdomain Anda pada kedua baris sertifikat:
+Buat filenya. Ganti `nama01.webgisbig.com` dengan subdomain Anda pada kedua baris sertifikat:
 
 ```bash
 cd /opt/webgis/app
@@ -340,7 +340,7 @@ Muat ulang Nginx:
 sudo docker compose exec -T nginx nginx -s reload
 ```
 
-Yang diharapkan, tidak ada keluaran sama sekali. Bila muncul galat, Nginx menolak konfigurasi barunya dan tetap memakai konfigurasi lama, sehingga situs Anda tidak ikut mati.
+Yang diharapkan, tidak ada keluaran sama sekali. Bila muncul error, Nginx menolak konfigurasi barunya dan tetap memakai konfigurasi lama, sehingga situs Anda tidak ikut mati.
 
 #### Mengapa ada bagian pengalihan
 
@@ -361,9 +361,9 @@ Diuji pada Nginx 1.27:
 | Bentuk | `/portal` lewat HTTP | Jalur ACME lewat HTTP |
 |---|---|---|
 | Tanpa pengecualian | `301` | `301`, salah, verifikasi akan gagal |
-| Dengan pengecualian | `301` | `404`, benar, berkas ujinya memang tidak ada |
+| Dengan pengecualian | `301` | `404`, benar, file ujinya memang tidak ada |
 
-Karena itu berkas di atas menetapkan variabel `$alihkan` lebih dahulu, lalu mengosongkannya kembali khusus untuk jalur ACME.
+Karena itu file di atas menetapkan variabel `$alihkan` lebih dahulu, lalu mengosongkannya kembali khusus untuk jalur ACME.
 
 ### Tahap 11. Verifikasi HTTPS
 
@@ -391,7 +391,7 @@ Balasan yang diharapkan adalah `HTTP/2 200`. Bila muncul peringatan sertifikat, 
 
 <p class="dijalankan dijalankan--cloud">Dijalankan di: <strong>Cloud Shell</strong></p>
 
-Sertifikat Let's Encrypt berlaku 90 hari. Hook berikut memuat ulang Nginx setiap kali sertifikat diperbarui, sehingga container membaca berkas sertifikat yang baru.
+Sertifikat Let's Encrypt berlaku 90 hari. Hook berikut memuat ulang Nginx setiap kali sertifikat diperbarui, sehingga container membaca file sertifikat yang baru.
 
 ```bash
 gcloud compute ssh "$VM_NAME" \
@@ -400,7 +400,7 @@ gcloud compute ssh "$VM_NAME" \
   --command='sudo mkdir -p /etc/letsencrypt/renewal-hooks/deploy && printf "%s\n" "#!/bin/sh" "cd /opt/webgis/app && docker compose exec -T nginx nginx -s reload" | sudo tee /etc/letsencrypt/renewal-hooks/deploy/reload-nginx.sh >/dev/null && sudo chmod +x /etc/letsencrypt/renewal-hooks/deploy/reload-nginx.sh && sudo certbot renew --dry-run'
 ```
 
-Opsi `--dry-run` menguji seluruh proses perpanjangan tanpa memakai kuota penerbitan sertifikat yang sebenarnya. Pastikan hasilnya menyatakan keberhasilan, bukan sekadar tidak ada pesan galat.
+Opsi `--dry-run` menguji seluruh proses perpanjangan tanpa memakai kuota penerbitan sertifikat yang sebenarnya. Pastikan hasilnya menyatakan keberhasilan, bukan sekadar tidak ada pesan error.
 
 ### Tahap 13. Ubah alamat aplikasi di .env
 
@@ -440,7 +440,7 @@ Keempatnya harus menampilkan alamat `https://`, tanpa garis miring di akhir.
 |---|---|---|
 | `NEXTAUTH_URL` | Alamat callback login | Login gagal setelah HTTPS aktif |
 | `BASE_URL` | Alamat yang dipakai server | Sama, login dan pengalihan gagal |
-| `NEXT_PUBLIC_URL_BASE_PATH` | Alamat berkas model 3D | Berkas model diminta lewat HTTP, diblokir browser sebagai mixed content, sehingga model tidak muncul di pratinjau |
+| `NEXT_PUBLIC_URL_BASE_PATH` | Alamat file model 3D | File model diminta lewat HTTP, diblokir browser sebagai mixed content, sehingga model tidak muncul di pratinjau |
 | `GEOSERVER_PUBLIC_URL` | Alamat WMS dan WFS yang **disimpan ke database** | Kolom `wms_url` dan `wfs_url` berisi alamat IP, sehingga layer tidak dapat dibuka dari katalog maupun dari QGIS |
 
 Dua variabel terakhir mudah terlewat, karena keduanya tidak menggagalkan login. Gejalanya baru muncul saat model 3D dibuka atau layer 2D dipanggil.
@@ -477,7 +477,7 @@ SELECT nama, url           FROM katalog_data_3d;
 
 Tidak boleh ada lagi alamat IP pada hasilnya.
 
-Bila tidak ada baris yang perlu diperbaiki, kedua `UPDATE` menjawab `Success. No rows returned`. Itu bukan galat.
+Bila tidak ada baris yang perlu diperbaiki, kedua `UPDATE` menjawab `Success. No rows returned`. Itu bukan error.
 :::
 
 ### Tahap 14. Verifikasi akhir
@@ -490,7 +490,7 @@ Buka `https://SUBDOMAIN/portal`, lalu periksa satu per satu:
 - Login berhasil memakai akun dari materi autentikasi.
 - Layer GeoServer dapat dimuat dari dalam Geoportal.
 - Alamat `http://SUBDOMAIN/portal` dialihkan ke versi HTTPS.
-- `certbot renew --dry-run` pada Tahap 12 selesai tanpa galat.
+- `certbot renew --dry-run` pada Tahap 12 selesai tanpa error.
 
 ## Bila Ada yang Gagal
 

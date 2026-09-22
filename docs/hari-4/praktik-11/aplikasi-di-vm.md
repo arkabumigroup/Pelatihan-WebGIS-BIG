@@ -52,7 +52,7 @@ Filesystem      Size  Used Avail Use% Mounted on
 /dev/root        29G  1.8G   27G   7% /
 ```
 
-Bila masih menunjukkan sekitar **9.7G**, partisinya belum ikut memakai sisa disk. Perluas partisi beserta sistem berkasnya:
+Bila masih menunjukkan sekitar **9.7G**, partisinya belum ikut memakai sisa disk. Perluas partisi beserta sistem filenya:
 
 ```bash
 sudo growpart /dev/sda 1
@@ -60,7 +60,7 @@ sudo resize2fs /dev/sda1
 df -h /
 ```
 
-Perintah pertama memperbesar partisinya, yang kedua memperbesar sistem berkasnya agar memakai seluruh partisi. Keduanya hanya mengubah ukuran dan tidak menghapus data. Setelah itu `df -h /` harus menunjukkan sekitar 29G.
+Perintah pertama memperbesar partisinya, yang kedua memperbesar sistem filenya agar memakai seluruh partisi. Keduanya hanya mengubah ukuran dan tidak menghapus data. Setelah itu `df -h /` harus menunjukkan sekitar 29G.
 
 ### Tahap 11. Pasang Docker, Git, dan Google Cloud CLI
 
@@ -111,7 +111,7 @@ gcloud --version
 
 `sudo` masih diperlukan di sini, karena akun Anda belum menjadi anggota grup `docker`. Tahap berikutnya yang menambahkannya, dan sejak itu `sudo` tidak diperlukan lagi.
 
-Hasil yang diharapkan, ketiganya berhasil tanpa galat.
+Hasil yang diharapkan, ketiganya berhasil tanpa error.
 
 ### Tahap 13. Tambahkan user ke grup docker
 
@@ -158,7 +158,7 @@ Keluaran `ls -ld` harus menampilkan nama pengguna Anda sebagai pemiliknya.
 
 <p class="dijalankan dijalankan--server">Dijalankan di: <strong>Terminal VM</strong></p>
 
-Perintah ini membawa seluruh berkas repositori, termasuk `docker-compose.yml`, `nginx.conf`, dan `.env.example`, sehingga tidak ada yang perlu disalin terpisah dari laptop.
+Perintah ini membawa seluruh file repositori, termasuk `docker-compose.yml`, `nginx.conf`, dan `.env.example`, sehingga tidak ada yang perlu disalin terpisah dari laptop.
 
 Ganti `USERNAME_GITHUB_PESERTA` dengan username GitHub Anda.
 
@@ -175,11 +175,11 @@ Bila fork Anda memakai nama bawaan `personal-geoportal`, ganti nilai `GITHUB_REP
 
 Bila GitHub meminta kata sandi, isi dengan Personal Access Token, bukan kata sandi akun.
 
-### Tahap 17. Periksa berkas konfigurasi
+### Tahap 17. Periksa file konfigurasi
 
 <p class="dijalankan dijalankan--server">Dijalankan di: <strong>Terminal VM</strong></p>
 
-Pastikan ketiga berkas yang dibutuhkan sudah ada. Semuanya berasal dari clone pada tahap sebelumnya, bukan dari salinan terpisah.
+Pastikan ketiga file yang dibutuhkan sudah ada. Semuanya berasal dari clone pada tahap sebelumnya, bukan dari salinan terpisah.
 
 ```bash
 cd /opt/webgis/app
@@ -203,11 +203,11 @@ git log --oneline -1
 
 `git remote -v` harus menampilkan alamat fork Anda, bukan alamat repositori sumber.
 
-### Tahap 18. Isi berkas .env
+### Tahap 18. Isi file .env
 
 <p class="dijalankan dijalankan--server">Dijalankan di: <strong>Terminal VM</strong></p>
 
-Berkas `.env` di laptop sudah terisi lengkap. Mengisinya ulang dari nol di VM hanya membuang waktu, karena hanya **lima baris** yang berbeda. Cara ini tidak memerlukan gcloud CLI di laptop.
+File `.env` di laptop sudah terisi lengkap. Mengisinya ulang dari nol di VM hanya membuang waktu, karena hanya **lima baris** yang berbeda. Cara ini tidak memerlukan gcloud CLI di laptop.
 
 **1.** Di terminal VM, siapkan penerimanya:
 
@@ -226,7 +226,7 @@ Perintah itu menunggu masukan. Kursor turun ke baris baru tanpa menampilkan apa 
 ENVEOF
 ```
 
-Tanda kutip pada `'ENVEOF'` wajib. Tanpa kutip, shell menerjemahkan isi berkas, sehingga karakter seperti `$` berubah sebelum tersimpan.
+Tanda kutip pada `'ENVEOF'` wajib. Tanpa kutip, shell menerjemahkan isi file, sehingga karakter seperti `$` berubah sebelum tersimpan.
 
 **4.** Ubah kelima baris yang berbeda. Ganti `IP_EKSTERNAL_VM` dengan alamat IP statis VM Anda dari [Tahap 9 halaman Menyiapkan Project dan VM](/hari-4/praktik-11/google-cloud-platform#tahap-9-buat-ip-statis):
 
@@ -259,7 +259,7 @@ done
 Tidak ada keluaran berarti semuanya sudah terisi. Bila ada nama yang muncul, isi dulu sebelum lanjut.
 
 ::: tip Bila penempelan terlalu panjang
-Unggah berkas `.env` ke Cloud Shell lewat tombol **Upload** di kanan atas, lalu kirim ke VM:
+Unggah file `.env` ke Cloud Shell lewat tombol **Upload** di kanan atas, lalu kirim ke VM:
 
 ```bash
 gcloud compute scp .env "$VM_NAME:/opt/webgis/app/.env" --zone="$ZONE" --tunnel-through-iap

@@ -1,8 +1,8 @@
 # Konfigurasi Project
 
-Halaman ini memeriksa berkas yang dibutuhkan container sebelum aplikasi bisa berjalan di server. Semuanya dikerjakan di laptop, di dalam folder proyek yang sudah Anda fork.
+Halaman ini memeriksa file yang dibutuhkan container sebelum aplikasi bisa berjalan di server. Semuanya dikerjakan di laptop, di dalam folder proyek yang sudah Anda fork.
 
-**Berkasnya sudah tersedia di repositori Anda.** Anda tidak perlu membuatnya dari nol. Yang perlu dikerjakan adalah memastikan kelimanya ada, memahami isinya, lalu mengujinya sebelum di-push.
+**Filenya sudah tersedia di repositori Anda.** Anda tidak perlu membuatnya dari nol. Yang perlu dikerjakan adalah memastikan kelimanya ada, memahami isinya, lalu mengujinya sebelum di-push.
 
 ## Alur Deployment Project
 
@@ -10,7 +10,7 @@ Deployment Project bukan satu pekerjaan, melainkan rangkaian yang berujung pada 
 
 Diagram berikut menunjukkan titik mulai Anda, pekerjaan yang Anda kerjakan sendiri, bagian yang berjalan otomatis, dan hasil akhirnya.
 
-![Alur Deployment Project dari titik mulai sampai hasil akhir, dua belas langkah. Dikerjakan sebelum menyentuh server: fork repositori lalu clone ke laptop, siapkan database Supabase, buat akun super admin, periksa berkas konfigurasi, isi berkas .env, lalu uji di laptop sampai bisa login. Menyiapkan server: buat VM lalu salin repositori ke dalamnya, hubungkan Cloud Build ke GitHub, lalu klik Push origin di GitHub Desktop. Setelah itu berjalan sendiri: Cloud Build membangun image dan container di VM diperbarui tanpa masuk ke VM. Hasilnya Geoportal terbit di alamat HTTPS bersama GeoServer. Setiap kotak ditandai tempat menjalankannya.](alur-deployment-project.png)
+![Alur Deployment Project dari titik mulai sampai hasil akhir, dua belas langkah. Dikerjakan sebelum menyentuh server: fork repositori lalu clone ke laptop, siapkan database Supabase, buat akun super admin, periksa file konfigurasi, isi file .env, lalu uji di laptop sampai bisa login. Menyiapkan server: buat VM lalu salin repositori ke dalamnya, hubungkan Cloud Build ke GitHub, lalu klik Push origin di GitHub Desktop. Setelah itu berjalan sendiri: Cloud Build membangun image dan container di VM diperbarui tanpa masuk ke VM. Hasilnya Geoportal terbit di alamat HTTPS bersama GeoServer. Setiap kotak ditandai tempat menjalankannya.](alur-deployment-project.png)
 
 Ada dua batas yang perlu diperhatikan pada diagram itu:
 
@@ -25,7 +25,7 @@ Jadi seluruh pekerjaan manual ada di laptop dan di VM, dan berhenti pada satu ka
 
 ## Tahap 1. Fork dan clone repositori
 
-Halaman ini memeriksa berkas yang sudah ada di repositori, jadi repositori itu harus ada di laptop Anda lebih dahulu. Seluruh pekerjaan repositori pada pelatihan ini memakai **GitHub Desktop**.
+Halaman ini memeriksa file yang sudah ada di repositori, jadi repositori itu harus ada di laptop Anda lebih dahulu. Seluruh pekerjaan repositori pada pelatihan ini memakai **GitHub Desktop**.
 
 <p class="dijalankan dijalankan--lokal">Dijalankan di: <strong>Laptop</strong></p>
 
@@ -56,7 +56,7 @@ Perintah itu memuat paket yang dipakai aplikasi, termasuk Prisma dan skrip pemer
 
 ### Periksa isi repositori
 
-Pastikan berkas-berkas berikut ada. Bila salah satunya tidak ada, berarti clone Anda belum lengkap.
+Pastikan file-file berikut ada. Bila salah satunya tidak ada, berarti clone Anda belum lengkap.
 
 ```bash
 ls docker-compose.yml nginx.conf .env.example Dockerfile cloudbuild.yaml
@@ -65,20 +65,20 @@ ls scripts/check-config.mjs scripts/periksa-nginx.mjs
 
 ### Yang tidak perlu Anda ubah
 
-Empat berkas ini tidak perlu diubah. Alasan tiap baris ada di kolom terakhir, supaya tidak perlu ditanyakan lagi.
+Empat file ini tidak perlu diubah. Alasan tiap baris ada di kolom terakhir, supaya tidak perlu ditanyakan lagi.
 
-| Berkas | Perlu diedit? | Alasan |
+| File | Perlu diedit? | Alasan |
 |---|---|---|
 | `docker-compose.yml` | Tidak | Tidak ada nilai yang berbeda antar peserta. Nama service seperti `geoserver` dipakai antar container di dalam VM yang sama |
 | `nginx.conf` | Tidak | Alamat tujuan memakai nama service internal, bukan alamat peserta |
-| `cloudbuild.yaml` | Tidak | Seluruh nilai yang berbeda antar peserta diisi sebagai substitution variable pada trigger Cloud Build, bukan di berkas ini |
-| `.env.example` | Tidak | Berkas contoh. Yang diisi adalah `.env`, dan itu dibuat di VM |
+| `cloudbuild.yaml` | Tidak | Seluruh nilai yang berbeda antar peserta diisi sebagai substitution variable pada trigger Cloud Build, bukan di file ini |
+| `.env.example` | Tidak | File contoh. Yang diisi adalah `.env`, dan itu dibuat di VM |
 
 Yang memang harus berbeda antar peserta, yaitu nama VM, nama image, dan subdomain, diatur pada trigger Cloud Build. Caranya ada di halaman [Otomatisasi Cloud Build](/hari-4/praktik-11/cloud-build).
 
 ## Tahap 2. Siapkan database Supabase
 
-Portal memerlukan database. Tanpanya aplikasi tetap berjalan, tetapi halaman login selalu gagal. Tahap ini dikerjakan sebelum berkas konfigurasi, karena `DATABASE_URL` dari sini dipakai pada Tahap 5.
+Portal memerlukan database. Tanpanya aplikasi tetap berjalan, tetapi halaman login selalu gagal. Tahap ini dikerjakan sebelum file konfigurasi, karena `DATABASE_URL` dari sini dipakai pada Tahap 5.
 
 <p class="dijalankan dijalankan--layanan">Dijalankan di: <strong>SQL Editor Supabase</strong></p>
 
@@ -105,50 +105,50 @@ Satu akun Supabase dibatasi dua project aktif. Jadi satu akun untuk satu peserta
 
 Tabel database dibuat lewat **SQL Editor**, bukan dibuat manual satu per satu. SQL Editor adalah halaman di dalam dashboard Supabase untuk menjalankan perintah SQL, dan bentuknya seperti terminal khusus database.
 
-Tiga berkas perlu dijalankan, berurutan:
+Tiga file perlu dijalankan, berurutan:
 
-| # | Berkas | Yang dilakukan |
+| # | File | Yang dilakukan |
 |---|---|---|
 | 1 | `01-schema.sql` | Membuat tiga tabel: `users`, `katalog_data_2d`, dan `katalog_data_3d` |
 | 2 | `02-seed-super-admin.sql` | Membuat satu akun super admin untuk login pertama |
 | 3 | `03-periksa.sql` | Memeriksa hasilnya, hanya membaca |
 
-**Isi ketiga berkas itu ditampilkan lengkap pada halaman [Skema Database](/hari-4/praktik-11/skema-database)**, supaya dapat disalin langsung tanpa membuka berkas di laptop.
+**Isi ketiga file itu ditampilkan lengkap pada halaman [Skema Database](/hari-4/praktik-11/skema-database)**, supaya dapat disalin langsung tanpa membuka file di laptop.
 
 Halaman itu juga memuat cara membuka SQL Editor, urutan pengerjaan, dan langkah membuat akun super admin.
 
 ### Buat akun super admin
 
-Akun super admin dibuat oleh `02-seed-super-admin.sql`. Berkas itu berupa template, jadi dua nilai di dalamnya harus diganti lebih dahulu.
+Akun super admin dibuat oleh `02-seed-super-admin.sql`. File itu berupa template, jadi dua nilai di dalamnya harus diganti lebih dahulu.
 
-Ringkasnya: jalankan `node scripts/hash-password.mjs` untuk membuat hash kata sandi, isi hash itu beserta email Anda ke dalam berkas, lalu jalankan lewat SQL Editor.
+Ringkasnya: jalankan `node scripts/hash-password.mjs` untuk membuat hash kata sandi, isi hash itu beserta email Anda ke dalam file, lalu jalankan lewat SQL Editor.
 
 Langkah lengkapnya ada pada halaman [Skema Database](/hari-4/praktik-11/skema-database).
 
 ::: warning Peserta yang mendaftar sendiri tidak menjadi super admin
 Halaman `/register` pada aplikasi selalu menghasilkan peran `viewer` dan status belum aktif. Itu memang disengaja, supaya tidak ada yang bisa menaikkan perannya sendiri.
 
-Akun super admin hanya bisa lahir dari `02-seed-super-admin.sql`. Jadi berkas itu wajib dijalankan, bukan pilihan.
+Akun super admin hanya bisa lahir dari `02-seed-super-admin.sql`. Jadi file itu wajib dijalankan, bukan pilihan.
 :::
 
-## Berkas yang Diperiksa
+## File yang Diperiksa
 
-| Berkas | Isi | Status di repositori |
+| File | Isi | Status di repositori |
 |---|---|---|
 | `docker-compose.yml` | Tiga service: `nextjs`, `geoserver`, dan `nginx` | sudah ada |
 | `nginx.conf` | Rute reverse proxy untuk portal dan GeoServer | sudah ada |
 | `.env.example` | Daftar variabel lingkungan beserta penjelasannya | sudah ada |
-| `scripts/check-config.mjs` | Memeriksa struktur YAML pada berkas compose dan Cloud Build | sudah ada |
+| `scripts/check-config.mjs` | Memeriksa struktur YAML pada file compose dan Cloud Build | sudah ada |
 | `scripts/periksa-nginx.mjs` | Memeriksa struktur `nginx.conf` | sudah ada |
-| `.gitignore` | Daftar berkas yang tidak boleh masuk repositori | sudah ada |
+| `.gitignore` | Daftar file yang tidak boleh masuk repositori | sudah ada |
 | `Dockerfile` | Cara aplikasi dibangun menjadi image container | sudah ada |
 | `cloudbuild.yaml` | Otomatisasi build saat push ke branch `main` | sudah ada |
 
-Seluruh isi tiap berkas tetap ditampilkan di halaman ini supaya Anda dapat memeriksa dan memahami maksudnya. Bandingkan dengan berkas di repositori Anda. Bila ada perbedaan, samakan dengan yang ada di repositori, bukan dengan yang tercetak di sini.
+Seluruh isi tiap file tetap ditampilkan di halaman ini supaya Anda dapat memeriksa dan memahami maksudnya. Bandingkan dengan file di repositori Anda. Bila ada perbedaan, samakan dengan yang ada di repositori, bukan dengan yang tercetak di sini.
 
 ## Tahap 3. Periksa docker-compose.yml
 
-Buka folder proyek di Visual Studio Code, lalu buka berkas `docker-compose.yml` di root folder. Berkas itu sudah ada di repositori Anda.
+Buka folder proyek di Visual Studio Code, lalu buka file `docker-compose.yml` di root folder. File itu sudah ada di repositori Anda.
 
 <p class="dijalankan dijalankan--lokal">Dijalankan di: <strong>Laptop</strong></p>
 
@@ -212,11 +212,11 @@ networks:
 Dua hal pada service `nginx` yang mudah terlewat, dan keduanya membuat HTTPS tidak terjangkau bila dihilangkan:
 
 - Port `443:443` harus dipublikasikan. Tanpa itu Nginx mendengarkan di dalam container, tetapi host tidak meneruskan trafik ke sana.
-- Volume `/etc/letsencrypt` menunjuk lokasi di VM, bukan di repository. Tanpa itu, `nginx -t` gagal dengan pesan berkas sertifikat tidak ditemukan meskipun sertifikatnya ada.
+- Volume `/etc/letsencrypt` menunjuk lokasi di VM, bukan di repository. Tanpa itu, `nginx -t` gagal dengan pesan file sertifikat tidak ditemukan meskipun sertifikatnya ada.
 
 ## Tahap 4. Periksa nginx.conf
 
-Buka berkas `nginx.conf` di root folder proyek. Berkas itu sudah ada di repositori Anda, jadi tidak ada yang perlu diketik.
+Buka file `nginx.conf` di root folder proyek. File itu sudah ada di repositori Anda, jadi tidak ada yang perlu diketik.
 
 <p class="dijalankan dijalankan--lokal">Dijalankan di: <strong>Laptop</strong></p>
 
@@ -230,23 +230,23 @@ Bagian yang harus ada, beserta alasannya:
 
 | Baris | Kegunaan |
 |---|---|
-| `client_max_body_size 1024m;` | Batas bawaan Nginx hanya 1 MB, sedangkan model 3D dan berkas GeoJSON hampir selalu lebih besar. Nilainya 1 GB supaya Gaussian Splatting hasil rekaman utuh dapat diunggah tanpa dipangkas lebih dahulu |
+| `client_max_body_size 1024m;` | Batas bawaan Nginx hanya 1 MB, sedangkan model 3D dan file GeoJSON hampir selalu lebih besar. Nilainya 1 GB supaya Gaussian Splatting hasil rekaman utuh dapat diunggah tanpa dipangkas lebih dahulu |
 | `client_body_timeout 300s;` | Jeda antar potongan badan permintaan yang masih ditoleransi. Bawaannya 60 detik, dan itu terlewati pada unggahan besar di jaringan yang lambat |
-| `include /etc/nginx/tls/*.conf;` | Memuat berkas HTTPS yang ditulis nanti pada halaman Penambahan Subdomain. Direktori yang masih kosong bukan galat bagi Nginx |
-| `location /.well-known/acme-challenge/` | Let's Encrypt memeriksa kepemilikan domain lewat berkas di direktori ini |
+| `include /etc/nginx/tls/*.conf;` | Memuat file HTTPS yang ditulis nanti pada halaman Penambahan Subdomain. Direktori yang masih kosong bukan error bagi Nginx |
+| `location /.well-known/acme-challenge/` | Let's Encrypt memeriksa kepemilikan domain lewat file di direktori ini |
 | `location = /` | Mengalihkan akar domain ke `/portal` |
 | `location = /geoserver` | Mengalihkan ke bentuk kanonik tanpa garis miring di akhir |
 | `location /geoserver/` | Meneruskan permintaan GeoServer, dengan `Host` dikirim apa adanya supaya GeoServer tahu alamat publiknya |
 | `location = /robots.txt` dan `= /sitemap.xml` | Next.js menyajikannya di bawah `/portal`, sedangkan mesin pencari memintanya di akar domain |
 | `location /` | Meneruskan sisanya ke container `nextjs` |
-| `proxy_request_buffering off;` | Nginx tidak lagi menulis seluruh badan permintaan ke berkas sementara sebelum meneruskannya ke aplikasi. Tanpa baris ini berkas 1 GB ditulis dua kali ke disk, dan bilah kemajuan di peramban melesat ke 100 persen lebih dahulu karena Nginx menerimanya jauh lebih cepat daripada aplikasi memakainya |
+| `proxy_request_buffering off;` | Nginx tidak lagi menulis seluruh badan permintaan ke file sementara sebelum meneruskannya ke aplikasi. Tanpa baris ini file 1 GB ditulis dua kali ke disk, dan bilah kemajuan di browser melesat ke 100 persen lebih dahulu karena Nginx menerimanya jauh lebih cepat daripada aplikasi memakainya |
 | `proxy_send_timeout 1800s;` | Batas 60 detik bawaan Nginx terlewati saat mengirim badan permintaan besar ke aplikasi |
-| `proxy_read_timeout 1800s;` | Batas yang sama terlewati saat menunggu aplikasi menulis berkasnya ke disk dan menyimpan barisnya ke database |
+| `proxy_read_timeout 1800s;` | Batas yang sama terlewati saat menunggu aplikasi menulis filenya ke disk dan menyimpan barisnya ke database |
 
 Blok `location /geoserver/` dan `location /` sama-sama memuat `resolver 127.0.0.11 valid=10s ipv6=off;`. Nama service di-resolve saat ada permintaan, bukan saat Nginx start. Tanpa pola itu, Nginx menolak start dengan `host not found in upstream` selama container `nextjs` belum ada, padahal `geoserver` dan `nginx` sengaja dinyalakan lebih dahulu.
 
 ::: warning Batas 1 MB bawaan Nginx
-Baris `client_max_body_size` mudah terlewat, karena berkasnya tetap sah tanpanya dan Nginx tetap menyala.
+Baris `client_max_body_size` mudah terlewat, karena filenya tetap sah tanpanya dan Nginx tetap menyala.
 
 Tanpa baris itu, unggahan di atas 1 MB ditolak Nginx dengan halaman HTML, bukan balasan JSON dari aplikasi. Peserta melihat:
 
@@ -254,28 +254,28 @@ Tanpa baris itu, unggahan di atas 1 MB ditolak Nginx dengan halaman HTML, bukan 
 Unexpected token '<', "<html> ..." is not valid JSON
 ```
 
-Pesan itu tidak menyebut ukuran berkas sama sekali, sehingga penyebabnya sulit ditemukan. Model 3D hampir selalu melewati 1 MB, dan berkas GeoJSON pada katalog 2D dapat ikut melewatinya.
+Pesan itu tidak menyebut ukuran file sama sekali, sehingga penyebabnya sulit ditemukan. Model 3D hampir selalu melewati 1 MB, dan file GeoJSON pada katalog 2D dapat ikut melewatinya.
 :::
 
-::: tip Berkas di atas 1 GB
-Peramban mengirim `Content-Length` bersama unggahannya, dan Nginx memeriksa header itu sebelum membaca badannya. Berkas yang melewati 1 GB karena itu ditolak hampir seketika, bukan setelah menunggu unggahannya selesai. Peserta melihat pesan yang menyebut batasnya, bukan halaman HTML tanpa penjelasan.
+::: tip File di atas 1 GB
+Browser mengirim `Content-Length` bersama unggahannya, dan Nginx memeriksa header itu sebelum membaca badannya. File yang melewati 1 GB karena itu ditolak hampir seketika, bukan setelah menunggu unggahannya selesai. Peserta melihat pesan yang menyebut batasnya, bukan halaman HTML tanpa penjelasan.
 
 Batas 1 GB dipilih karena satu rekaman Gaussian Splatting utuh biasanya berkisar ratusan MB. Bila peserta memerlukan lebih besar, ubah `client_max_body_size` pada `nginx.conf` **dan** `BATAS_BERKAS` pada `src/app/api/katalog-data-3d/create/route.js`, lalu buat ulang container `nginx`. Keduanya sengaja dipisah: Nginx menahan lebih dahulu, sedangkan nilai pada route adalah jaring pengaman supaya permintaan tanpa `Content-Length` tidak dapat menulis melebihi batas itu ke disk.
 :::
 
-## Tahap 5. Isi berkas .env
+## Tahap 5. Isi file .env
 
-`DATABASE_URL` dari Tahap 2 dan `JWT_SECRET` dari perintah acak sekarang diisi ke dalam berkas `.env`. Tahap ini penting karena aplikasi tidak bisa login tanpa berkas ini.
+`DATABASE_URL` dari Tahap 2 dan `JWT_SECRET` dari perintah acak sekarang diisi ke dalam file `.env`. Tahap ini penting karena aplikasi tidak bisa login tanpa file ini.
 
 <p class="dijalankan dijalankan--lokal">Dijalankan di: <strong>Laptop</strong></p>
 
-### Salin berkas contoh
+### Salin file contoh
 
 ```bash
 cp .env.example .env
 ```
 
-Berkas `.env.example` adalah contoh yang di-commit ke GitHub, sedangkan `.env` yang berisi nilai asli tidak pernah di-commit.
+File `.env.example` adalah contoh yang di-commit ke GitHub, sedangkan `.env` yang berisi nilai asli tidak pernah di-commit.
 
 ### Isi bagian WAJIB
 
@@ -289,7 +289,7 @@ Buka `.env`, lalu isi lima nilai berikut.
 | `NEXTAUTH_URL` | `http://localhost:3000/portal` untuk sekarang |
 | `ADMIN_CONTACT_EMAIL` | Email Anda sendiri |
 
-Dua nilai acak itu dibuat di [Kit Identitas Peserta](/hari-4/praktik-11/kit-identitas), satu halaman dengan identitas peserta. Nilainya tersimpan di peramban Anda, jadi tetap sama setelah halaman dimuat ulang dan dapat dibuka lagi kapan saja tanpa membuat yang baru.
+Dua nilai acak itu dibuat di [Kit Identitas Peserta](/hari-4/praktik-11/kit-identitas), satu halaman dengan identitas peserta. Nilainya tersimpan di browser Anda, jadi tetap sama setelah halaman dimuat ulang dan dapat dibuka lagi kapan saja tanpa membuat yang baru.
 
 Bila Anda lebih suka terminal, keduanya juga dapat dibuat dengan:
 
@@ -301,7 +301,7 @@ openssl rand -hex 32
 node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 ```
 
-`NEXTAUTH_URL` diisi `localhost` untuk sekarang, dan diubah menjadi alamat VM nanti pada [Tahap 18 halaman Menyiapkan Aplikasi di VM](/hari-4/praktik-11/aplikasi-di-vm#tahap-18-isi-berkas-env).
+`NEXTAUTH_URL` diisi `localhost` untuk sekarang, dan diubah menjadi alamat VM nanti pada [Tahap 18 halaman Menyiapkan Aplikasi di VM](/hari-4/praktik-11/aplikasi-di-vm#tahap-18-isi-file-env).
 
 ### Catatan tentang DATABASE_URL
 
@@ -327,7 +327,7 @@ Halaman connection string Supabase juga menampilkan `DIRECT_URL`. Untuk aplikasi
 
 ### Bagian DATA SPASIAL
 
-**Di laptop, biarkan bagian ini kosong.** Seluruh variabel `POSTGIS_*` dan `GEOSERVER_*` diisi nanti di VM, pada [Tahap 18 halaman Menyiapkan Aplikasi di VM](/hari-4/praktik-11/aplikasi-di-vm#tahap-18-isi-berkas-env).
+**Di laptop, biarkan bagian ini kosong.** Seluruh variabel `POSTGIS_*` dan `GEOSERVER_*` diisi nanti di VM, pada [Tahap 18 halaman Menyiapkan Aplikasi di VM](/hari-4/praktik-11/aplikasi-di-vm#tahap-18-isi-file-env).
 
 Alasannya, GeoServer berjalan di dalam VM lewat `docker-compose.yml`, bukan di laptop Anda. Mengisi alamat `localhost:8080` sekarang berarti menunjuk ke sesuatu yang belum ada.
 
@@ -358,7 +358,7 @@ Di laptop, `GEOSERVER_URL` dan `GEOSERVER_PUBLIC_URL` bernilai **sama**, karena 
 
 `GEOSERVER_POSTGIS_DATASTORE` berisi nama datastore yang Anda buat sendiri di antarmuka GeoServer, pada halaman [Koneksi PostgreSQL ke GeoServer](/hari-2/praktik-7/koneksi-postgis). Nama yang dipakai sepanjang pelatihan adalah `postgis_geoportal`.
 
-Karena datastore itu belum ada sebelum GeoServer berjalan, variabel ini **dibiarkan kosong di laptop** dan diisi di VM pada [Tahap 18 halaman Menyiapkan Aplikasi di VM](/hari-4/praktik-11/aplikasi-di-vm#tahap-18-isi-berkas-env), setelah datastore-nya dibuat. Bila namanya tidak sama persis dengan yang ada di GeoServer, unggahan layer gagal dengan `Could not find datastore`.
+Karena datastore itu belum ada sebelum GeoServer berjalan, variabel ini **dibiarkan kosong di laptop** dan diisi di VM pada [Tahap 18 halaman Menyiapkan Aplikasi di VM](/hari-4/praktik-11/aplikasi-di-vm#tahap-18-isi-file-env), setelah datastore-nya dibuat. Bila namanya tidak sama persis dengan yang ada di GeoServer, unggahan layer gagal dengan `Could not find datastore`.
 
 #### Bila GeoServer hanya ada di VM
 
@@ -374,12 +374,12 @@ Bagian `POSTGIS_*` diisi dengan kredensial Supabase, sama seperti di laptop.
 ::: warning Jangan tertukar antara dua alamat itu
 `GEOSERVER_URL` dipanggil aplikasi dari dalam jaringan Docker, jadi memakai nama service. `GEOSERVER_PUBLIC_URL` disimpan ke katalog lalu dibuka dari browser, jadi memakai alamat publik.
 
-Bila keduanya tertukar, unggahan layer gagal dengan `connection refused`, atau alamat yang tersimpan tidak dapat dibuka tanpa pesan galat yang menjelaskan sebabnya. Bila GeoServer Anda jalankan di laptop, kedua baris berisi `http://localhost:8080/geoserver`.
+Bila keduanya tertukar, unggahan layer gagal dengan `connection refused`, atau alamat yang tersimpan tidak dapat dibuka tanpa pesan error yang menjelaskan sebabnya. Bila GeoServer Anda jalankan di laptop, kedua baris berisi `http://localhost:8080/geoserver`.
 :::
 
 ### Pastikan .env tidak ikut ter-commit
 
-Cara termudah: buka GitHub Desktop dan pastikan `.env` **tidak muncul** di daftar **Changes**. Berkas yang diabaikan memang tidak pernah muncul di sana.
+Cara termudah: buka GitHub Desktop dan pastikan `.env` **tidak muncul** di daftar **Changes**. File yang diabaikan memang tidak pernah muncul di sana.
 
 Bila ingin memastikan lewat terminal:
 
@@ -416,9 +416,9 @@ Yang paling berbahaya adalah `geoserver-data`, karena di dalamnya GeoServer meny
 | `gwc/` | Cache tile |
 | `logs/` | Catatan aktivitas |
 
-Pada mesin pengembang, folder itu berisi 60 berkas. Yang paling perlu diperhatikan bukan ukurannya, melainkan isi `security/`. Bila folder itu ikut ter-commit dan Anda push ke repositori publik, kata sandi admin GeoServer Anda dapat dibaca siapa pun.
+Pada mesin pengembang, folder itu berisi 60 file. Yang paling perlu diperhatikan bukan ukurannya, melainkan isi `security/`. Bila folder itu ikut ter-commit dan Anda push ke repositori publik, kata sandi admin GeoServer Anda dapat dibaca siapa pun.
 
-Dua folder lainnya, `tls` dan `certbot-webroot`, berisi sertifikat HTTPS dan berkas tantangan Let's Encrypt. Fungsinya sama: keduanya dibuat di VM dan tidak boleh masuk repositori.
+Dua folder lainnya, `tls` dan `certbot-webroot`, berisi sertifikat HTTPS dan file tantangan Let's Encrypt. Fungsinya sama: keduanya dibuat di VM dan tidak boleh masuk repositori.
 
 ### Periksa dengan perintah
 
@@ -448,7 +448,7 @@ Bila salah satu baris benar-benar tidak muncul walaupun garis miringnya sudah di
 
 ## Tahap 7. Periksa folder scripts
 
-Di root folder proyek, pastikan ada folder bernama `scripts`, sejajar dengan folder `public` dan `src`. Folder itu berisi dua berkas pemeriksa.
+Di root folder proyek, pastikan ada folder bernama `scripts`, sejajar dengan folder `public` dan `src`. Folder itu berisi dua file pemeriksa.
 
 <p class="dijalankan dijalankan--lokal">Dijalankan di: <strong>Laptop</strong></p>
 
@@ -487,7 +487,7 @@ process.exit(failed ? 1 : 0);
 ```
 
 ::: warning Pasang paket yaml lebih dahulu
-Berkas ini memuat paket `yaml` yang tidak termasuk dependensi bawaan proyek Next.js. Tanpa pemasangan, perintah `node scripts/check-config.mjs` berhenti dengan `Error: Cannot find module 'yaml'`.
+File ini memuat paket `yaml` yang tidak termasuk dependensi bawaan proyek Next.js. Tanpa pemasangan, perintah `node scripts/check-config.mjs` berhenti dengan `Error: Cannot find module 'yaml'`.
 
 Jalankan lebih dahulu:
 
@@ -499,11 +499,17 @@ npm install yaml
 ### 7b. scripts/periksa-nginx.mjs
 
 ```javascript
+// Pemeriksa berkas konfigurasi Nginx yang berjalan dengan Node.js saja.
+// Tidak memerlukan Docker maupun Podman, supaya semua asisten bisa memakainya
+// di sistem operasi apa pun.
+//
+// Jalankan: node scripts/periksa-nginx.mjs nginx.conf
 import { readFileSync } from 'node:fs';
 
 const berkas = process.argv[2] ?? 'nginx.conf';
 const isi = readFileSync(berkas, 'utf8');
 
+// Buang komentar, tetapi hormati tanda kutip supaya tanda # di dalam nilai aman.
 function tanpaKomentar(teks) {
   let hasil = '';
   let kutip = null;
@@ -522,9 +528,42 @@ function tanpaKomentar(teks) {
 }
 
 const bersih = tanpaKomentar(isi);
-const masalah = [];
 
-bersih.split('\n').forEach((baris, nomor) => {
+// Token: directive sebagai teks, ditambah { } ;
+function tokenisasi(teks) {
+  const token = [];
+  let buf = '';
+  for (let i = 0; i < teks.length; i++) {
+    const c = teks[i];
+    if (c === '"' || c === "'") {
+      let nilai = c;
+      i++;
+      while (i < teks.length && teks[i] !== c) { nilai += teks[i]; i++; }
+      buf += nilai;
+      continue;
+    }
+    if (c === '{' || c === '}' || c === ';') {
+      if (buf.trim()) token.push({ tipe: 'teks', nilai: buf.trim() });
+      token.push({ tipe: c });
+      buf = '';
+      continue;
+    }
+    buf += c;
+  }
+  if (buf.trim()) token.push({ tipe: 'teks', nilai: buf.trim() });
+  return token;
+}
+
+const token = tokenisasi(bersih);
+const masalah = [];
+const namaBlok = [];
+let kedalaman = 0;
+
+// Periksa struktur per baris. Pendekatan ini dipilih karena menghilangkan titik
+// koma membuat dua baris menyatu menjadi satu, sehingga jumlah titik koma pada
+// baris itu menjadi kurang dari jumlah pernyataannya.
+const barisKode = bersih.split('\n');
+barisKode.forEach((baris, nomor) => {
   const t = baris.trim();
   if (!t) return;
 
@@ -532,34 +571,48 @@ bersih.split('\n').forEach((baris, nomor) => {
   const kurungTutup = (t.match(/\}/g) ?? []).length;
   const titikKoma = (t.match(/;/g) ?? []).length;
 
+  // Baris yang hanya membuka blok wajib menyebut nama direktifnya lebih dahulu,
+  // misalnya "server {" atau "location / {". Kurung buka tanpa nama direktif
+  // membuat Nginx menolak seluruh berkas.
   if (kurungBuka > 0 && kurungTutup === 0) {
-    if (!t.replace(/[{};]/g, '').trim()) {
+    const tanpaKurung = t.replace(/[{};]/g, '').trim();
+    if (!tanpaKurung) {
       masalah.push(`baris ${nomor + 1}: blok dibuka tanpa nama directive di depannya`);
     }
     return;
   }
   if (kurungBuka === 0 && kurungTutup > 0 && titikKoma === 0) return;
 
+  // Satu pernyataan pada satu baris wajib diakhiri titik koma, kecuali baris
+  // itu membuka blok yang ditutup pada baris yang sama.
   if (titikKoma === 0) {
     masalah.push(`baris ${nomor + 1}: "${t.slice(0, 50)}" tidak diakhiri titik koma`);
     return;
   }
+
+  // Lebih dari satu pernyataan pada satu baris hanya sah bila ada blok di
+  // dalamnya, misalnya "location / { proxy_pass ...; }".
   if (titikKoma > 1 && kurungBuka === 0) {
-    masalah.push(`baris ${nomor + 1}: ada ${titikKoma} pernyataan tanpa blok`);
+    masalah.push(`baris ${nomor + 1}: ada ${titikKoma} pernyataan tanpa blok, kemungkinan baris menyatu karena titik koma hilang`);
   }
 });
 
+// Periksa keseimbangan kurung kurawal secara keseluruhan
 const totalBuka = (bersih.match(/\{/g) ?? []).length;
 const totalTutup = (bersih.match(/\}/g) ?? []).length;
 if (totalBuka !== totalTutup) {
   masalah.push(`kurung kurawal tidak seimbang, ${totalBuka} buka dan ${totalTutup} tutup`);
 }
 
+// Periksa hal yang bergantung antar directive.
 const proxy = [...bersih.matchAll(/proxy_pass\s+([^;]+);/g)].map((m) => m[1].trim());
+// Setelah alamat resolver masih ada opsi lain, misalnya valid dan ipv6,
+// jadi polanya harus menangkap sampai titik koma, bukan satu kata saja.
 const adaResolver = /resolver\s+[^;]+;/.test(bersih);
+const pakaiVariabel = proxy.some((p) => p.startsWith('$'));
 
-if (proxy.some((p) => p.startsWith('$')) && !adaResolver) {
-  masalah.push('proxy_pass memakai variabel tanpa directive resolver, nama upstream tidak akan terselesaikan');
+if (pakaiVariabel && !adaResolver) {
+  masalah.push('proxy_pass memakai variabel tetapi tidak ada directive resolver, nama upstream tidak akan terselesaikan');
 }
 if (!/server\s*\{/.test(bersih)) masalah.push('tidak ada blok server');
 if (!/listen\s+\d+/.test(bersih)) masalah.push('tidak ada directive listen');
@@ -578,24 +631,24 @@ for (const m of masalah) console.log(` - ${m}`);
 process.exit(1);
 ```
 
-### 7c. Berkas lain di folder scripts
+### 7c. File lain di folder scripts
 
-Selain empat skrip di atas, folder `scripts` memuat empat berkas yang dipakai pada keperluan tertentu. Tidak diperlukan untuk menyiapkan atau menjalankan portal, tetapi berguna saat Anda mengerjakan data spasial di Hari 2.
+Selain empat skrip di atas, folder `scripts` memuat empat file yang dipakai pada keperluan tertentu. Tidak diperlukan untuk menyiapkan atau menjalankan portal, tetapi berguna saat Anda mengerjakan data spasial di Hari 2.
 
-| Berkas | Untuk apa |
+| File | Untuk apa |
 |---|---|
 | `geojson-ke-csv-wkt.mjs` | Mengubah GeoJSON menjadi CSV dengan kolom WKT. Dipakai karena store GeoJSON tidak tersedia pada GeoServer bawaan |
 | `geojson-ke-shapefile-zip.mjs` | Mengubah GeoJSON menjadi shapefile lalu membungkusnya menjadi satu zip, untuk diunggah ke GeoServer |
-| `verifikasi-shapefile.mjs` | Memeriksa berkas shapefile hasil skrip di atas, tanpa pustaka luar |
-| `uji-periksa-nginx.mjs` | Menguji `periksa-nginx.mjs` memakai berkas yang sengaja dirusak |
+| `verifikasi-shapefile.mjs` | Memeriksa file shapefile hasil skrip di atas, tanpa pustaka luar |
+| `uji-periksa-nginx.mjs` | Menguji `periksa-nginx.mjs` memakai file yang sengaja dirusak |
 
 Menjalankan salah satunya tanpa argumen akan menampilkan cara pakainya.
 
-## Tahap 8. Uji seluruh berkas di laptop
+## Tahap 8. Uji seluruh file di laptop
 
 <p class="dijalankan dijalankan--lokal">Dijalankan di: <strong>Laptop</strong></p>
 
-### Uji berkas konfigurasi
+### Uji file konfigurasi
 
 Buka terminal di Visual Studio Code, pada folder proyek. Jalankan pemeriksa YAML:
 
@@ -698,13 +751,13 @@ Bila login gagal, periksa berurutan:
 
 Setelah berhasil login, hentikan server dengan `Ctrl+C`. Aplikasi siap dipindahkan ke server.
 
-## Tahap 10. Pastikan berkas .env tidak ikut ter-commit
+## Tahap 10. Pastikan file .env tidak ikut ter-commit
 
-Berkas `.env` memuat kata sandi basis data, `JWT_SECRET`, `NEXTAUTH_SECRET`, kata sandi admin GeoServer, dan token Cesium Ion Anda. Repositori GitHub bersifat publik, jadi berkas itu tidak boleh ikut ter-push.
+File `.env` memuat kata sandi basis data, `JWT_SECRET`, `NEXTAUTH_SECRET`, kata sandi admin GeoServer, dan token Cesium Ion Anda. Repositori GitHub bersifat publik, jadi file itu tidak boleh ikut ter-push.
 
 <p class="dijalankan dijalankan--lokal">Dijalankan di: <strong>Laptop</strong></p>
 
-Berkas konfigurasi Anda sudah ada di repositori, jadi pada tahap ini tidak ada yang perlu di-commit. Yang perlu diperiksa hanya satu: pastikan `.env` tidak muncul di daftar **Changes** pada GitHub Desktop. Berkas yang diabaikan memang tidak pernah muncul di sana.
+File konfigurasi Anda sudah ada di repositori, jadi pada tahap ini tidak ada yang perlu di-commit. Yang perlu diperiksa hanya satu: pastikan `.env` tidak muncul di daftar **Changes** pada GitHub Desktop. File yang diabaikan memang tidak pernah muncul di sana.
 
 Bila ingin memastikan lewat terminal:
 
@@ -714,8 +767,8 @@ git check-ignore .env && echo "aman, .env diabaikan"
 
 Keluaran `git check-ignore` harus menyebut `.env`. Bila perintah itu tidak mengeluarkan apa pun, berarti `.env` **tidak** diabaikan dan isinya bisa ikut ter-push ke GitHub publik. Tambahkan `.env` ke `.gitignore` lebih dahulu.
 
-Berkas `.gitignore` di repositori sudah memuat pola `.env*`, sehingga `.env` dan seluruh berkas sejenis diabaikan, sementara `.env.example` tetap ikut karena dikecualikan khusus.
+File `.gitignore` di repositori sudah memuat pola `.env*`, sehingga `.env` dan seluruh file sejenis diabaikan, sementara `.env.example` tetap ikut karena dikecualikan khusus.
 
 ## Hasil Tahap Ini
 
-Seluruh berkas konfigurasi sudah diperiksa dan lolos uji di laptop. Berkas `docker-compose.yml` dan `nginx.conf` akan dipakai lagi di VM pada halaman berikutnya, dan `cloudbuild.yaml` mengambil alih proses build mulai deploy pertama.
+Seluruh file konfigurasi sudah diperiksa dan lolos uji di laptop. File `docker-compose.yml` dan `nginx.conf` akan dipakai lagi di VM pada halaman berikutnya, dan `cloudbuild.yaml` mengambil alih proses build mulai deploy pertama.
