@@ -220,10 +220,9 @@ Cara mengisinya ada pada bagian **Membuat Akun Super Admin** di bawah.
 -- Seed akun super admin. Ganti dua penanda di blok DO di bawah, lalu jalankan.
 -- SQL biasa tanpa meta-command, jadi bisa ditempel apa adanya ke SQL Editor Supabase.
 
--- Buat hash dulu di terminal, karena bcrypt tidak ada di PostgreSQL:
---   node scripts/hash-password.mjs
--- Hasilnya satu baris berawalan $2b$12$, dan kata sandi aslinya tidak masuk
--- riwayat terminal.
+-- Buat hash dulu di halaman Kit Identitas Peserta (langkah 3), karena bcrypt
+-- tidak ada di PostgreSQL. Hasilnya 60 karakter berawalan $2b$12$, dan kata
+-- sandinya tidak perlu diketik di terminal mana pun.
 
 DO $$
 DECLARE
@@ -238,7 +237,8 @@ BEGIN
     END IF;
 
     IF hash_admin LIKE '%<ISI_HASH%' THEN
-        RAISE EXCEPTION 'Hash belum diisi. Buat dulu dengan: node scripts/hash-password.mjs';
+        RAISE EXCEPTION
+            'Hash belum diisi. Buat dulu di halaman Kit Identitas Peserta, langkah 3, lalu tempel hasilnya di sini.';
     END IF;
 
     -- Menolak nilai yang bukan hash bcrypt. Tanpa ini, salah paste kata sandi
@@ -277,15 +277,15 @@ WHERE role = 'super_admin';
 
 ### Membuat Akun Super Admin
 
-Tiga langkah. Langkah 1 dijalankan di terminal, langkah 2 dan 3 di SQL Editor.
+Tiga langkah. Langkah 1 dikerjakan di [Kit Identitas Peserta](/hari-4/praktik-11/kit-identitas), langkah 2 dan 3 di SQL Editor.
 
-**Langkah 1. Buat hash kata sandi.** Di root folder proyek, jalankan:
+**Langkah 1. Buat hash kata sandi.** Buka [Kit Identitas Peserta](/hari-4/praktik-11/kit-identitas), lalu tekan **Buat kata sandi dan hash** pada langkah 3.
 
-```bash
-node scripts/hash-password.mjs
-```
+Kata sandinya dibuat sekaligus dengan hash-nya di peramban Anda, jadi tidak ada yang perlu dijalankan di terminal. Hasilnya satu baris panjang berawalan `$2b$12$`; salin baris itu.
 
-Skrip itu meminta kata sandi lewat prompt tersembunyi, jadi kata sandinya tidak muncul di layar dan tidak masuk riwayat terminal. Hasilnya satu baris berawalan `$2b$12$`. Salin baris itu.
+Kata sandi aslinya juga ditampilkan di sana, dan tetap tersimpan setelah halaman ditutup. Simpan keduanya: yang ditempel ke berkas SQL adalah hash-nya, sedangkan yang dipakai untuk masuk ke portal adalah kata sandinya. Bcrypt satu arah, jadi kata sandi yang hilang tidak dapat dibaca kembali dari kolom `password` di database.
+
+Bila halaman itu dimuat ulang, hash-nya tidak ikut muncul kembali karena memang tidak disimpan. Tekan **Hitung ulang hash** untuk membuatnya lagi dari kata sandi yang tersimpan. Hash yang muncul akan berbeda dari yang lama walaupun kata sandinya sama, karena bcrypt menyisipkan salt baru setiap kali; keduanya tetap sah dan tetap cocok dengan kata sandi itu.
 
 **Langkah 2. Isi penandanya.** Buka file `02-seed-super-admin.sql`, lalu ganti dua penanda:
 
@@ -444,17 +444,17 @@ Yang perlu Anda pastikan bukan angkanya, melainkan:
 
 Kata sandi tidak disimpan dalam bentuk aslinya, melainkan sebagai hash bcrypt. Karena itu kata sandi yang terlupa **tidak dapat dibaca kembali**, tetapi dapat diganti.
 
-Seluruh langkah di bawah dikerjakan di laptop dan di SQL Editor Supabase. Tidak ada yang perlu dijalankan di VM.
+Seluruh langkah di bawah dikerjakan di peramban dan di SQL Editor Supabase. Tidak ada yang perlu dijalankan di VM, dan tidak ada perintah terminal yang perlu diketik.
 
 ### 1. Buat hash baru
 
-Di folder repositori Anda:
+Buka [Kit Identitas Peserta](/hari-4/praktik-11/kit-identitas), lalu tekan **Buat ulang kata sandi** pada langkah 3. Kata sandi baru beserta hash-nya dibuat sekaligus di peramban Anda.
 
-```bash
-node scripts/hash-password.mjs
-```
+Salin hash yang muncul, yang dimulai dengan `$2b$12$`. Kata sandi barunya juga tercatat di situ, dan tetap tersimpan setelah halaman ditutup.
 
-Skrip itu meminta kata sandi **tanpa menampilkannya di layar**, dan tanpa menyimpannya ke riwayat terminal. Salin hash yang tercetak, yang dimulai dengan `$2b$12$`.
+::: tip Periksa halaman Kit Identitas lebih dahulu
+Kata sandi yang tersimpan di peramban masih dapat dibaca di halaman itu, dengan mencentang **Tampilkan di layar**. Bila kata sandinya masih ada di sana, tidak ada yang perlu diganti: coba masuk memakai kata sandi itu.
+:::
 
 ### 2. Cari akun super admin
 
@@ -511,11 +511,18 @@ Periksa berurutan:
     UPDATE users SET is_active = true WHERE email = 'email-anda';
     ```
 
-4. **Kata sandi tidak cocok.** Periksa hash yang tersimpan:
+4. **Kata sandi tidak cocok.** Periksa bentuk hash yang tersimpan di kolom `password`. Yang benar berjumlah 60 karakter dan berawalan `$2b$` atau `$2a$`.
 
-    ```bash
-    node scripts/hash-password.mjs --cek '<hash-dari-kolom-password>'
+    ```sql
+    SELECT email,
+           length(password)                  AS panjang,
+           substring(password from 1 for 7)  AS awalan,
+           password ~ '^\$2[aby]\$[0-9]{2}\$' AS hash_bcrypt
+    FROM users
+    WHERE role = 'super_admin';
     ```
+
+    Harapannya `panjang` 60, `awalan` `$2b$12$`, dan `hash_bcrypt` bernilai `true`. Bila `awalan` justru berisi kata sandi aslinya, penandanya belum diganti dan berkas SQL-nya perlu dijalankan ulang dengan hash yang benar.
 
 5. **Pesan menyebut tabel tidak ditemukan.** Prisma membaca schema `public`. Pastikan ketiga tabel dibuat di sana.
 6. **Kegagalan constraint yang sulit dilacak.** Jalankan `05-diagnosa-constraint.sql`. File itu memeriksa sepuluh hal sekaligus dan diakhiri tabel keputusan: gejala mana menunjuk ke perbaikan mana.
