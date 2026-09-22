@@ -6,6 +6,7 @@ import TabelPeserta from './components/TabelPeserta.vue'
 import KitIdentitas from './components/KitIdentitas.vue'
 import PanelAcak from './components/PanelAcak.vue'
 import PilihanCari from './components/PilihanCari.vue'
+import PilihShell from './components/PilihShell.vue'
 import './custom.css'
 import './semesta.css'
 import './latar-peta.css'
@@ -95,6 +96,7 @@ export default {
     app.component('KitIdentitas', KitIdentitas)
     app.component('PanelAcak', PanelAcak)
     app.component('PilihanCari', PilihanCari)
+    app.component('PilihShell', PilihShell)
   },
 
   // Kaki halaman ditambahkan lewat slot layout-bottom, satu-satunya slot

@@ -752,6 +752,77 @@
 }
 
 /* ---------------------------------------------------------------------
+   Pengalih tempat menjalankan: Cloud Shell atau terminal laptop
+
+   Sebagian perintah dapat dijalankan di dua tempat. Yang berbeda hanya
+   perintah pemeriksaan seperti `dig` dan `curl`, sedangkan seluruh perintah
+   gcloud sama persis. Karena itu yang digandakan hanya blok yang memang
+   berbeda, bukan seluruh 92 blok pada modul.
+
+   Cara kerjanya: atribut data-shell pada elemen <html> menentukan versi mana
+   yang tampil. Atribut itu ditulis oleh komponen PilihShell, dan gaya di
+   bawah ini yang menyembunyikan versi lainnya. Isi halaman tetap satu berkas
+   markdown, sehingga tidak ada isi yang perlu disunting dua kali.
+
+   Nilai bawaannya Cloud Shell, yaitu cara yang dipakai modul sebelum
+   pengalih ini ada. Halaman tetap terbaca walaupun JavaScript mati, karena
+   tanpa atribut itu pun versi Cloud Shell yang tampil.
+   --------------------------------------------------------------------- */
+
+/* Tanpa atribut, yang tampil adalah versi Cloud Shell. Aturan ini menjaga
+   halaman tetap terbaca sebelum JavaScript berjalan. */
+.shell-versi[data-shell='local'] {
+  display: none;
+}
+
+html[data-shell='local'] .shell-versi[data-shell='cloud'] {
+  display: none;
+}
+
+/* Versi laptop ditampilkan kembali saat pilihannya laptop. Blok ditulis
+   lengkap, bukan hanya `display: block`, supaya mengalahkan aturan
+   penyembunyian di atas tanpa bergantung pada urutan berkas. */
+html[data-shell='local'] .shell-versi[data-shell='local'] {
+  display: block;
+}
+
+/* Penanda kecil di atas blok yang punya dua versi. Tanpa ini, peserta tidak
+   tahu bahwa blok itu ikut berubah saat pengalihnya ditekan.
+
+   Ditulis tanpa `display`, supaya versi yang disembunyikan tetap tersembunyi.
+   Aturan ini hanya menyisipkan penanda pada versi yang sedang tampil. */
+html[data-shell='cloud'] .shell-versi[data-shell='cloud']::before {
+  content: 'Versi Cloud Shell';
+  display: block;
+  margin: 0 0 6px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--vp-c-text-2);
+}
+
+html[data-shell='local'] .shell-versi[data-shell='local']::before {
+  content: 'Versi terminal laptop';
+  display: block;
+  margin: 0 0 6px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--vp-c-text-2);
+}
+
+/* Salinan cetak dan ekspor PDF tidak memuat pengalih, jadi versi Cloud Shell
+   yang dicetak. Versi laptop disembunyikan supaya tidak ada dua blok
+   berdampingan di kertas. */
+@media print {
+  .shell-versi[data-shell='local'] {
+    display: none !important;
+  }
+}
+
+/* ---------------------------------------------------------------------
    Kotak pencarian
    Pencarian lokal VitePress dibuka dengan Ctrl+K atau dengan menekan tombol
    di navbar. Gayanya disamakan dengan sisa situs supaya tidak terlihat

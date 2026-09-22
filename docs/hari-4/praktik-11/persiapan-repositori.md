@@ -2,6 +2,8 @@
 
 Halaman ini menyiapkan dua hal sebelum menyentuh Google Cloud: repositori yang akan dipakai, dan identitas peserta yang menurunkan nama seluruh resource Anda.
 
+<PilihShell />
+
 ## Prasyarat
 
 Halaman ini melanjutkan pekerjaan dari halaman [Konfigurasi Project](/hari-4/praktik-11/konfigurasi-project). Tahap 1 sampai 10 di sana harus sudah selesai, karena halaman ini memindahkan aplikasi yang sudah terbukti berjalan di laptop.
