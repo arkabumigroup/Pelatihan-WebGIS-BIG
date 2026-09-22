@@ -5,6 +5,7 @@ import { useRoute } from 'vitepress'
 import TabelPeserta from './components/TabelPeserta.vue'
 import KitIdentitas from './components/KitIdentitas.vue'
 import PanelAcak from './components/PanelAcak.vue'
+import PilihanCari from './components/PilihanCari.vue'
 import './custom.css'
 import './semesta.css'
 import './latar-peta.css'
@@ -93,6 +94,7 @@ export default {
     app.component('TabelPeserta', TabelPeserta)
     app.component('KitIdentitas', KitIdentitas)
     app.component('PanelAcak', PanelAcak)
+    app.component('PilihanCari', PilihanCari)
   },
 
   // Kaki halaman ditambahkan lewat slot layout-bottom, satu-satunya slot

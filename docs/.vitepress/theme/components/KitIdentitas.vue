@@ -493,6 +493,23 @@ function pilihPeserta() {
   if (ketemu) projectId.value = ketemu.projectId
 }
 
+// Pilihan pada daftar nama peserta.
+//
+// Labelnya sengaja hanya memuat yang membedakan satu peserta dari yang lain,
+// yaitu nama, nama peserta, dan kelompoknya. Batch ditulis singkat dan akun
+// master tidak diulang, karena keduanya sama untuk puluhan baris berturut-turut
+// sehingga hanya menambah panjang barisnya.
+//
+// Yang tidak ditampilkan tetap dapat dicari lewat `cari`, sehingga peserta yang
+// hanya mengingat emailnya atau akun masternya tetap menemukan barisnya.
+const pilihanPeserta = computed(() =>
+  daftarPeserta.map((p) => ({
+    nilai: p.namaPeserta,
+    label: `${p.nama} (${p.namaPeserta}) · Batch ${p.batch}${p.bagian.toUpperCase()}`,
+    cari: `${p.email} ${p.master}`,
+  }))
+)
+
 // Pemulihan mengubah isian satu per satu, dan setiap perubahan itu memicu
 // kedua pengamat di bawah. Penanda ini mencegah catatan ditulis ulang
 // berkali-kali saat halaman baru dibuka, sehingga waktu simpannya tetap yang
@@ -547,15 +564,19 @@ onMounted(() => {
       </p>
 
       <div class="ki-isian">
-        <label class="ki-label">
-          <span>Nama peserta</span>
-          <select v-model="namaTerpilih" @change="pilihPeserta">
-            <option value="">Pilih nama Anda</option>
-            <option v-for="p in daftarPeserta" :key="p.namaPeserta" :value="p.namaPeserta">
-              Batch {{ p.batch }} - {{ p.nama }} ({{ p.namaPeserta }}) - Kelompok {{ p.bagian.toUpperCase() }}
-            </option>
-          </select>
-        </label>
+        <!-- Daftar peserta memakai komponen pilihan sendiri, bukan <select>,
+             karena 82 nama tidak dapat ditelusuri dengan menggulir, dan daftar
+             bawaan <select> tidak dapat diberi motif situs ini. -->
+        <div class="ki-label ki-label--pilihan">
+          <PilihanCari
+            v-model="namaTerpilih"
+            :pilihan="pilihanPeserta"
+            label="Nama peserta"
+            kosong="Pilih nama Anda"
+            petunjuk-cari="Ketik nama, email, atau nama peserta"
+            @pilih="pilihPeserta"
+          />
+        </div>
 
         <label class="ki-label">
           <span>Project ID</span>
@@ -802,20 +823,36 @@ onMounted(() => {
   color: var(--vp-c-text-2);
 }
 
-.ki-label input,
-.ki-label select {
+/* Kolom pilihan peserta tidak dibungkus <label>, karena komponen di dalamnya
+   sudah membawa labelnya sendiri. Aturan flex-nya tetap sama supaya kedua
+   kolom pada baris ini lebarnya seimbang. */
+.ki-label--pilihan {
+  flex: 1 1 260px;
+}
+
+/* Isian teks memakai motif situs: garis tegas 2px, sudut 3px, dan bayangan
+   padat. Sebelumnya garisnya 1px dengan sudut 6px, sehingga terbaca sebagai
+   kontrol bawaan peramban, berbeda dari blok dan tombol di sekitarnya. */
+.ki-label input {
   width: 100%;
   min-height: 44px;
-  padding: 8px 10px;
+  padding: 8px 12px;
   font-size: 14px;
+  font-weight: 600;
   color: var(--vp-c-text-1);
-  background: var(--vp-c-bg);
-  border: 1px solid var(--vp-c-divider);
-  border-radius: 6px;
+  background: var(--pelatihan-permukaan, #ffffff);
+  border: var(--pelatihan-tebal, 2px) solid var(--pelatihan-garis, #111111);
+  border-radius: var(--pelatihan-radius, 3px);
+  box-shadow: var(--pelatihan-bayangan-jauh, 4px) var(--pelatihan-bayangan-jauh, 4px) 0
+    var(--pelatihan-bayangan, #111111);
+}
+
+.ki-label input::placeholder {
+  font-weight: 400;
+  color: var(--vp-c-text-3);
 }
 
 .ki-label input:focus-visible,
-.ki-label select:focus-visible,
 .ki-blok:focus-visible,
 .ki-tombol:focus-visible,
 .ki-tautan:focus-visible {
@@ -895,29 +932,38 @@ onMounted(() => {
   background: var(--pelatihan-permukaan, #ffffff);
   border: var(--pelatihan-tebal, 2px) solid var(--pelatihan-garis, #111111);
   border-radius: var(--pelatihan-radius, 3px);
-  cursor: pointer;
-}
-
-/* Tombol utama menyatakan tekan dengan bergerak ke arah bayangannya, sama
-   seperti tombol pada materi. Ini satu-satunya tombol di halaman ini yang
-   diberi gerakan, karena hanya tombol ini yang ditekan berulang kali. */
-.ki-tombol--utama {
-  color: var(--vp-button-brand-text);
-  background: var(--vp-button-brand-bg);
   box-shadow: var(--pelatihan-bayangan-jauh, 4px) var(--pelatihan-bayangan-jauh, 4px) 0
     var(--pelatihan-bayangan, #111111);
+  cursor: pointer;
   transition: transform 120ms ease, box-shadow 120ms ease, background-color 120ms ease;
 }
 
-.ki-tombol--utama:hover {
+/* Seluruh tombol menyatakan tekan dengan bergerak ke arah bayangannya, sama
+   seperti tombol pada materi. DESIGN.md menyebut tombol sebagai salah satu blok
+   yang memakai garis tegas dengan bayangan padat, jadi bayangannya ada pada
+   semua tombol, bukan hanya tombol utama.
+
+   Latar hover ditulis per jenis tombol. Tombol utama dan tombol bahaya sudah
+   punya warnanya sendiri, sehingga latar kertas tidak boleh menimpanya. */
+.ki-tombol:hover:not(:disabled) {
+  background: var(--pelatihan-kertas, #f4f1ea);
   transform: translate(-2px, -2px);
   box-shadow: var(--pelatihan-bayangan-jauh-besar, 6px)
     var(--pelatihan-bayangan-jauh-besar, 6px) 0 var(--pelatihan-bayangan, #111111);
 }
 
-.ki-tombol--utama:active {
+.ki-tombol:active:not(:disabled) {
   transform: translate(var(--pelatihan-bayangan-jauh, 4px), var(--pelatihan-bayangan-jauh, 4px));
   box-shadow: 0 0 0 var(--pelatihan-bayangan, #111111);
+}
+
+.ki-tombol--utama {
+  color: var(--vp-button-brand-text);
+  background: var(--vp-button-brand-bg);
+}
+
+.ki-tombol--utama:hover:not(:disabled) {
+  background: var(--vp-c-brand-2);
 }
 
 .ki-tombol--kecil {
@@ -926,13 +972,10 @@ onMounted(() => {
   font-weight: 600;
 }
 
-.ki-tombol--kecil:hover:not(:disabled) {
-  background: var(--pelatihan-kertas, #f4f1ea);
-}
-
 .ki-tombol:disabled {
   color: var(--vp-c-text-3);
   border-color: var(--vp-c-divider);
+  box-shadow: none;
   cursor: default;
 }
 
@@ -1157,12 +1200,12 @@ onMounted(() => {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .ki-tombol--utama {
+  .ki-tombol {
     transition: none;
   }
 
-  .ki-tombol--utama:hover,
-  .ki-tombol--utama:active {
+  .ki-tombol:hover,
+  .ki-tombol:active {
     transform: none;
     box-shadow: var(--pelatihan-bayangan-jauh, 4px) var(--pelatihan-bayangan-jauh, 4px) 0
       var(--pelatihan-bayangan, #111111);

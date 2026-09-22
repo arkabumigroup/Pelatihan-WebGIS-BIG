@@ -331,7 +331,12 @@ function potong(nilai) {
 }
 
 /* Tinggi minimum 44px mengikuti batas sasaran sentuh, karena halaman ini
-   juga dibuka dari ponsel saat peserta menyalin nilai ke terminal. */
+   juga dibuka dari ponsel saat peserta menyalin nilai ke terminal.
+
+   Bayangan padatnya mengikuti DESIGN.md, yang menyebut tombol sebagai salah
+   satu blok bergaris tegas dengan bayangan tanpa blur. Sebelumnya tombol di
+   panel ini hanya bergaris, sehingga terlihat lebih datar daripada tombol di
+   bagian lain halaman yang sama. */
 .pr-tombol {
   min-height: 44px;
   padding: 10px 16px;
@@ -341,11 +346,22 @@ function potong(nilai) {
   background: var(--pelatihan-permukaan, #ffffff);
   border: var(--pelatihan-tebal, 2px) solid var(--pelatihan-garis, #111111);
   border-radius: var(--pelatihan-radius, 3px);
+  box-shadow: var(--pelatihan-bayangan-jauh, 4px) var(--pelatihan-bayangan-jauh, 4px) 0
+    var(--pelatihan-bayangan, #111111);
   cursor: pointer;
+  transition: transform 120ms ease, box-shadow 120ms ease, background-color 120ms ease;
 }
 
 .pr-tombol:hover {
   background: var(--pelatihan-kertas, #f4f1ea);
+  transform: translate(-2px, -2px);
+  box-shadow: var(--pelatihan-bayangan-jauh-besar, 6px)
+    var(--pelatihan-bayangan-jauh-besar, 6px) 0 var(--pelatihan-bayangan, #111111);
+}
+
+.pr-tombol:active {
+  transform: translate(var(--pelatihan-bayangan-jauh, 4px), var(--pelatihan-bayangan-jauh, 4px));
+  box-shadow: 0 0 0 var(--pelatihan-bayangan, #111111);
 }
 
 .pr-tombol--utama {
@@ -387,6 +403,13 @@ function potong(nilai) {
 @media (prefers-reduced-motion: reduce) {
   .pr-tombol {
     transition: none;
+  }
+
+  .pr-tombol:hover,
+  .pr-tombol:active {
+    transform: none;
+    box-shadow: var(--pelatihan-bayangan-jauh, 4px) var(--pelatihan-bayangan-jauh, 4px) 0
+      var(--pelatihan-bayangan, #111111);
   }
 }
 </style>
