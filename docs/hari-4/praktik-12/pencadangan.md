@@ -109,6 +109,22 @@ Ubuntu menjalankan seluruh isi `/etc/cron.daily` lewat systemd timer sekitar puk
 
 Nilai sesungguhnya ada pada prosedurnya, bukan pada banyaknya riwayat. Yang penting Anda tahu caranya, dan tahu bahwa hasilnya bisa dipulihkan.
 
+### Identitas yang dipakai skripnya
+
+Skrip itu berjalan sebagai `root`, dan `gcloud` di dalamnya memakai service account milik VM, bukan akun Google Anda. Pada VM pelatihan, bentuknya seperti ini:
+
+```text
+123749324413-compute@developer.gserviceaccount.com
+```
+
+Itu memang begitu, dan bukan tanda ada yang salah. Service account itu sudah memegang peran `roles/editor` pada project, dan itu cukup untuk membuat bucket serta menulis ke dalamnya.
+
+Angka di depan alamat itu adalah nomor project Anda, jadi nilainya berbeda antar project. Untuk memeriksanya sendiri:
+
+```bash
+sudo gcloud config list account
+```
+
 ## Tahap 4. Buktikan pencadangannya bekerja
 
 <p class="dijalankan dijalankan--server">Dijalankan di: <strong>Terminal VM</strong></p>
@@ -221,7 +237,7 @@ Perintah itu menghapus bucket beserta seluruh arsip di dalamnya, jadi pastikan b
 |---|---|
 | `storage.googleapis.com` tidak muncul pada Tahap 1 | Layanan Cloud Storage belum menyala di project. Peserta tidak punya izin menyalakannya, jadi lapor ke koordinator |
 | `The requested bucket name is not available` | Nama bucket sudah dipakai orang lain di seluruh dunia. Tambahkan satu kata di belakangnya, lalu ulangi Tahap 2 |
-| `AccessDeniedException` saat mengunggah arsip | Nama bucket pada skrip tidak sama dengan yang dibuat di Tahap 2, atau akun VM tidak punya hak tulis ke bucket itu |
+| `AccessDeniedException` saat mengunggah arsip | Nama bucket pada skrip tidak sama dengan yang dibuat di Tahap 2, atau bucketnya sudah terhapus. Periksa juga identitas yang dipakai dengan `sudo gcloud config list account` |
 | Skripnya berjalan tetapi tidak ada arsip di bucket | Periksa hasil `cat /etc/cron.daily/cadangkan-webgis`. Bila tertulis tanggal yang sudah terisi di dalam berkasnya, tanda `\` di depan `$` terlewat saat menempel |
 | Layer tidak kembali setelah pemulihan | Folder diekstrak bukan dari `/opt/webgis/app`, atau container GeoServer tidak dibuat ulang dengan `--force-recreate` |
 | `permission denied` saat mengekstrak arsip | Perintah `tar` dijalankan tanpa `sudo` |
