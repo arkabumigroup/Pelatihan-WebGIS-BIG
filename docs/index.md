@@ -62,6 +62,9 @@ Setiap praktik memuat satu atau beberapa halaman, sesuai banyaknya modul pada pr
 <p class="hari-tema">Deployment Project</p>
 
 - [Praktik 11 - Deployment Project](/hari-4/praktik-11/peserta-project)
+- [11.5 Persiapan Repositori dan Identitas](/hari-4/praktik-11/persiapan-repositori)
+- [11.7 Menyiapkan Aplikasi di VM](/hari-4/praktik-11/aplikasi-di-vm)
+- [11.8 Otomatisasi Cloud Build](/hari-4/praktik-11/cloud-build)
 
 </div>
 
