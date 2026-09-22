@@ -1,9 +1,11 @@
 <script setup>
 // Panel kata sandi super admin untuk Kit Identitas.
 //
-// Menggantikan `node scripts/hash-password.mjs` pada halaman Skema Database.
-// Perintah itu memerlukan Node.js di laptop peserta, dan bila Node belum
-// terpasang, langkahnya berhenti sebelum akun super admin pernah dibuat.
+// Salah satu dari dua cara membuat hash kata sandi super admin. Cara lainnya
+// adalah `node scripts/hash-password.mjs` di terminal, yang tetap berlaku dan
+// tetap disebut pada halaman Skema Database. Panel ini dipakai peserta yang
+// belum memasang Node.js, atau yang lebih suka seluruh nilainya tersimpan di
+// peramban sehingga tidak perlu dicatat ulang.
 //
 // Dua nilai yang dihasilkan di sini berbeda sifatnya:
 //
@@ -297,9 +299,10 @@ onBeforeUnmount(() => {
 
     <p class="ps-keterangan">
       Dipakai untuk membuat akun super admin pada
-      <a :href="TAUTAN_SKEMA">Skema Database</a>.
-      Menggantikan <code>node scripts/hash-password.mjs</code>. Hash-nya
-      dihitung di peramban Anda, jadi Node.js tidak perlu dipasang di laptop.
+      <a :href="TAUTAN_SKEMA">Skema Database</a>. Hash-nya dihitung di peramban
+      Anda, jadi Node.js tidak perlu dipasang di laptop. Perintah
+      <code>node scripts/hash-password.mjs</code> tetap dapat dipakai sebagai
+      cara lain; hasil keduanya sama-sama sah.
     </p>
 
     <label class="ps-label">

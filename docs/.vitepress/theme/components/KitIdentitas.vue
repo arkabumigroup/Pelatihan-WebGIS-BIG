@@ -684,9 +684,9 @@ onMounted(() => {
       <p class="ki-antar">
         Akun super admin adalah akun pertama yang dapat masuk ke portal Anda.
         Kata sandinya dibuat di sini, lalu hash-nya ditempel ke
-        <code>sql/02-seed-super-admin.sql</code>. Langkah ini menggantikan
-        perintah <code>node scripts/hash-password.mjs</code>, sehingga Node.js
-        tidak perlu dipasang di laptop.
+        <code>sql/02-seed-super-admin.sql</code>. Ini salah satu dari dua cara;
+        perintah <code>node scripts/hash-password.mjs</code> di terminal tetap
+        dapat dipakai, dan keduanya menghasilkan hash yang sama-sama sah.
       </p>
 
       <PanelSandi />

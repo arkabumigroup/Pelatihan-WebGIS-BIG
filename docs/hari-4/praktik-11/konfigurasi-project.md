@@ -121,7 +121,7 @@ Halaman itu juga memuat cara membuka SQL Editor, urutan pengerjaan, dan langkah 
 
 Akun super admin dibuat oleh `02-seed-super-admin.sql`. File itu berupa template, jadi dua nilai di dalamnya harus diganti lebih dahulu.
 
-Ringkasnya: buat kata sandi beserta hash-nya pada langkah 3 [Kit Identitas Peserta](/hari-4/praktik-11/kit-identitas), isi hash itu beserta email Anda ke dalam file, lalu jalankan lewat SQL Editor.
+Ringkasnya: buat hash kata sandi beserta kata sandinya, lalu isi hash itu beserta email Anda ke dalam file, lalu jalankan lewat SQL Editor. Hash-nya dapat dibuat dengan dua cara: tombol pada langkah 3 [Kit Identitas Peserta](/hari-4/praktik-11/kit-identitas), atau perintah `node scripts/hash-password.mjs` di root folder proyek.
 
 Langkah lengkapnya ada pada halaman [Skema Database](/hari-4/praktik-11/skema-database).
 

@@ -1,6 +1,6 @@
 # Kit Identitas Peserta
 
-Halaman ini menyimpan identitas peserta di browser, lalu membangkitkan seluruh nama resource dan nilai rahasia yang diturunkan darinya. Isinya menggantikan blok yang harus diketik pada [Tahap 2 halaman Persiapan Repositori](/hari-4/praktik-11/persiapan-repositori#tahap-2-tetapkan-identitas-peserta), dan menggantikan perintah `node scripts/hash-password.mjs` yang membuat hash kata sandi super admin.
+Halaman ini menyimpan identitas peserta di browser, lalu membangkitkan seluruh nama resource dan nilai rahasia yang diturunkan darinya. Isinya menggantikan blok yang harus diketik pada [Tahap 2 halaman Persiapan Repositori](/hari-4/praktik-11/persiapan-repositori#tahap-2-tetapkan-identitas-peserta). Langkah 3 di sini juga dapat dipakai sebagai ganti perintah `node scripts/hash-password.mjs` yang membuat hash kata sandi super admin; keduanya sama-sama sah, dan [halaman Skema Database](/hari-4/praktik-11/skema-database#membuat-akun-super-admin) menyebut keduanya sebagai dua pilihan.
 
 ## Masalah yang Dipecahkan
 
@@ -68,7 +68,7 @@ Halaman ini memerlukan JavaScript, karena seluruh nilainya dihitung di browser A
 1. **Browser memblokir penyimpanan.** Mode penyamaran pada sebagian browser menolak penulisan. Nilainya tetap dapat dibuat dan disalin, hanya saja tidak tersimpan setelah halaman ditutup.
 2. **Situs dibuka tanpa HTTPS.** Sumber acaknya tetap bekerja, tetapi tombol **Salin** memerlukan HTTPS pada sebagian browser. Bila tombolnya gagal, blok dan nilainya masih dapat dipilih lalu disalin dengan `Ctrl+C`.
 
-Bila keduanya bukan penyebabnya, kembali ke perintah terminal yang digantikan halaman ini:
+Bila keduanya bukan penyebabnya, atau bila Anda memang lebih suka bekerja di terminal, perintah berikut menghasilkan nilai yang sama:
 
 ```bash
 # Di terminal, untuk JWT_SECRET dan NEXTAUTH_SECRET: 64 karakter
@@ -80,7 +80,7 @@ openssl rand -hex 16
 # Di Windows, PowerShell, atau Command Prompt, sebagai ganti `openssl`
 node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 
-# Di folder proyek, bila hash kata sandi super admin gagal dihitung di peramban
+# Di folder proyek, sebagai cara lain membuat hash kata sandi super admin
 node scripts/hash-password.mjs
 ```
 
