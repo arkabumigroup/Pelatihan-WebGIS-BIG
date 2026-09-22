@@ -221,7 +221,15 @@ export default defineConfig({
             { text: '11.10 Menyiapkan GeoServer di VM', link: '/hari-4/praktik-11/siapkan-geoserver-vm' }
           ]
         },
-        { text: 'Gaussian Splatting', link: '/hari-4/gaussian-splatting' }
+        { text: 'Gaussian Splatting', link: '/hari-4/gaussian-splatting' },
+        {
+          text: 'Praktik 12 - Pencadangan dan Pemantauan',
+          collapsed: true,
+          items: [
+            { text: '12.1 Pencadangan Data dan Konfigurasi', link: '/hari-4/praktik-12/pencadangan' },
+            { text: '12.2 Pemantauan Sistem dan Container', link: '/hari-4/praktik-12/pemantauan' }
+          ]
+        }
       ])
     ],
   }
