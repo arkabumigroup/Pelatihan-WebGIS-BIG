@@ -94,7 +94,7 @@ Gambar route `register`, `create`, dan `update` pada slide berhenti di tengah be
 
 | Field | Wajib | Keterangan |
 |---|---|---|
-| `nama` | ya | Nama user |
+| `name` | ya | Nama user |
 | `email` | ya | Harus belum terdaftar di tabel `users` |
 | `password` | ya | Disimpan dalam bentuk hash Bcrypt |
 
@@ -110,9 +110,9 @@ export async function POST(request) {
         const data = await request.json();
 
         // 1. Validasi sederhana input data
-        if (!data.email || !data.password || !data.nama) {
+        if (!data.email || !data.password || !data.name) {
             return NextResponse.json(
-                { message: "Nama, email, dan password wajib diisi!" },
+                { message: "Name, email, dan password wajib diisi!" },
                 { status: 400 }
             );
         }
@@ -139,17 +139,30 @@ export async function POST(request) {
         const registerUser = await db.users.create({
             data: {
                 user_id: user_id,
-                nama: data.nama,
+                name: data.name,
                 email: data.email,
                 password: hashedPassword,
                 role: "editor", // Default role
                 is_active: false, // Default status non-aktif
             },
+        });
+
+        return NextResponse.json(
+            { message: "Berhasil mendaftar" },
+            { status: 201 }
+        );
+    } catch (err) {
+        return NextResponse.json(
+            { message: err.message || "Terjadi kesalahan pada server" },
+            { status: 500 }
+        );
+    }
+}
 ```
 
 ![Route register](crud-api-users/image11.png)
 
-Kode yang terlihat mengembalikan status 400 untuk dua kondisi, yaitu field wajib yang kosong dan email yang sudah terdaftar. Gambar berhenti sebelum blok penutup berkas.
+Kode itu mengembalikan status 400 untuk dua kondisi, yaitu field wajib yang kosong dan email yang sudah terdaftar.
 
 ### src/app/api/users/list/route.js
 
@@ -163,7 +176,7 @@ import { db } from "../../../../../lib/db";
 import { requireAuth } from "../../../../../lib/auth/verifyBearerToken";
 
 export async function GET(request) {
-    const { payload, error, status } = requireAuth(request, "super_admin");
+    const { payload, error, status } = requireAuth(request, "super_admin"); // pengecekan apakah token yang dimasukan adalah token super_admin
     if (error) {
         return NextResponse.json({ message: error }, { status });
     }
@@ -172,7 +185,7 @@ export async function GET(request) {
         const users = await db.users.findMany({ // ambil data user dari table users
             select: {
                 user_id: true,
-                nama: true,
+                name: true,
                 email: true,
                 role: true,
                 is_active: true,
@@ -197,7 +210,7 @@ Respons 200 memuat `message` dan `data`, yaitu daftar user dengan field `user_id
 
 | Field | Wajib | Keterangan |
 |---|---|---|
-| `nama` | ya | Nama user |
+| `name` | ya | Nama user |
 | `email` | ya | Harus belum terdaftar di tabel `users` |
 | `password` | ya | Di-hash dengan `bcrypt.hashSync` sebelum disimpan |
 | `role` | tidak | `"editor"` atau `"admin"` |
@@ -237,9 +250,8 @@ export async function POST(request) {
         const newUser = await db.users.create({
             data: {
                 user_id: crypto.randomUUID(),
-                nama: data.nama,
+                name: data.name,
                 email: data.email,
-                nama: data.nama,
                 password: password,
                 role: data.role,
                 is_active: data.is_active,
@@ -248,11 +260,18 @@ export async function POST(request) {
 
         return NextResponse.json(
             { message: "Berhasil membuat user baru", data: newUser },
+            { status: 201 }
+        );
+
+    } catch (err) {
+        return NextResponse.json({ message: err.message }, { status: 500 });
+    }
+}
 ```
 
 ![Route create](crud-api-users/image13.png)
 
-Dua kondisi yang dijawab status 400 adalah role di luar `allowedRoles` dan email yang sudah terdaftar. Baris `nama: data.nama` tertulis dua kali pada gambar aslinya, dan gambar berhenti sebelum blok penutup berkas.
+Dua kondisi yang dijawab status 400 adalah role di luar `allowedRoles` dan email yang sudah terdaftar. Bedanya dengan route `register`, di sini `role` dan `is_active` datang dari permintaan, bukan dipaksa satu nilai.
 
 ### src/app/api/users/delete/route.js
 
@@ -347,11 +366,16 @@ export async function POST(request) {
         return NextResponse.json(
             { message: "Berhasil memperbarui data user", data: user },
             { status: 200 }
+        );
+    } catch (err) {
+        return NextResponse.json({ message: err.message }, { status: 500 });
+    }
+}
 ```
 
 ![Route update](crud-api-users/image15.png)
 
-Status 400 dipakai untuk role di luar `allowedRoles`, status 404 untuk `user_id` yang tidak ada di database, dan status 200 untuk pembaruan yang berhasil. Gambar berhenti sebelum blok `catch` pada berkas ini.
+Status 400 dipakai untuk role di luar `allowedRoles`, status 404 untuk `user_id` yang tidak ada di database, dan status 200 untuk pembaruan yang berhasil.
 
 ## Setelah halaman ini
 
