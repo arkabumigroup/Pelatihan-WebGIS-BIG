@@ -325,6 +325,7 @@ export async function verifyCredentials(email, password) {
 
     return {
         user_id: user.user_id,
+        name: user.name,
         email: user.email,
         role: user.role
     };
@@ -344,6 +345,7 @@ export function signAccessToken(user) {
     {
       id: user.user_id || user.id,
       user_id: user.user_id || user.id,
+      name: user.name,
       email: user.email,
       role: user.role,
     },

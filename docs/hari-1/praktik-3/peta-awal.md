@@ -1,6 +1,26 @@
 # Perancangan dan Pembangunan Awal Peta 2D
 
-**Modul 2 - Pengembangan Front-End : Peta 2D**
+**Praktik 3 - Pengembangan Front-End : Peta 2D**
+
+## **Library yang Perlu Dipasang**
+
+Empat pustaka berikut dipasang sekaligus di awal, supaya halaman-halaman Praktik 3 sesudah ini tidak berhenti di tengah hanya karena satu pustaka belum ada. Jalankan di terminal Visual Studio Code, dari root folder proyek.
+
+```bash
+npm install leaflet
+npm install leaflet-kml
+npm install georaster
+npm install georaster-layer-for-leaflet
+```
+
+Ketiganya dipakai bergantian sepanjang praktik ini:
+
+| Pustaka | Dipakai pada |
+|---|---|
+| `leaflet` | Seluruh halaman peta 2D |
+| `leaflet-kml` | [Menampilkan Layer GeoJSON, KML, dan WMS](/hari-1/praktik-3/layer-geojson-kml-wms) |
+| `georaster` | [Menampilkan Data Raster](/hari-1/praktik-3/data-raster) |
+| `georaster-layer-for-leaflet` | [Menampilkan Data Raster](/hari-1/praktik-3/data-raster) |
 
 ## **Persiapan Project dan Instalasi Library Leaflet**
 
@@ -12,7 +32,7 @@
     
 ![](peta-awal/image2.png)
     
-3. Selanjutnya install library leaflet pada terminal dengan cara **klik kanan** pada tombol panah, kemudian pada tampilan powershell input perintah **npm install leaflet**.
+3. Selanjutnya pasang pustakanya di terminal dengan cara **klik kanan** pada tombol panah, lalu pada tampilan powershell jalankan keempat perintah `npm install` pada bagian [Library yang Perlu Dipasang](#library-yang-perlu-dipasang) di atas.
     
 ![image.png](peta-awal/image%201.png)
     
