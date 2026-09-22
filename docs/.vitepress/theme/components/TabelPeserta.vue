@@ -33,6 +33,23 @@ const daftarBatch = computed(() =>
     .sort((a, b) => a - b)
 )
 
+// Pilihan untuk kedua saringan. Keduanya memakai komponen pilihan yang sama
+// dengan daftar peserta di Kit Identitas, supaya seluruh kontrol formulir di
+// situs ini bergaya sama dan daftar pilihannya tidak berubah menjadi daftar
+// bawaan peramban saat dibuka.
+const pilihanBatch = computed(() => [
+  { nilai: 'semua', label: 'Semua batch' },
+  ...daftarBatch.value.map((b) => ({
+    nilai: String(b),
+    label: `Batch ${b} (${jumlahPerBatch.value[b]} peserta)`,
+  })),
+])
+
+const pilihanMaster = computed(() => [
+  { nilai: 'semua', label: 'Semua akun master' },
+  ...daftarMaster.map((m) => ({ nilai: m, label: m })),
+])
+
 // Hanya kelompok yang dipilih yang disaring isinya. Bila "semua" dipilih,
 // pencarian tetap berlaku untuk seluruh kelompok.
 const hasil = computed(() => {
@@ -85,23 +102,25 @@ function bersihkan() {
         />
       </label>
 
-      <label class="tp-saring">
-        <span class="tp-label">Batch</span>
-        <select v-model="batchTerpilih">
-          <option value="semua">Semua batch</option>
-          <option v-for="b in daftarBatch" :key="b" :value="b">
-            Batch {{ b }} ({{ jumlahPerBatch[b] }} peserta)
-          </option>
-        </select>
-      </label>
+      <div class="tp-saring">
+        <PilihanCari
+          v-model="batchTerpilih"
+          :pilihan="pilihanBatch"
+          label="Batch"
+          kosong="Semua batch"
+          :bisa-dicari="false"
+        />
+      </div>
 
-      <label class="tp-saring">
-        <span class="tp-label">Akun master</span>
-        <select v-model="masterTerpilih">
-          <option value="semua">Semua akun master</option>
-          <option v-for="m in daftarMaster" :key="m" :value="m">{{ m }}</option>
-        </select>
-      </label>
+      <div class="tp-saring">
+        <PilihanCari
+          v-model="masterTerpilih"
+          :pilihan="pilihanMaster"
+          label="Akun master"
+          kosong="Semua akun master"
+          :bisa-dicari="false"
+        />
+      </div>
 
       <button
         v-if="kataKunci || masterTerpilih !== 'semua' || batchTerpilih !== 'semua'"
@@ -216,20 +235,30 @@ function bersihkan() {
   color: var(--vp-c-text-2);
 }
 
-.tp input,
-.tp select {
+/* Isian pencarian dan tombol Bersihkan memakai motif situs: garis tegas 2px,
+   sudut 3px, dan bayangan padat. Sebelumnya garisnya 1px dengan sudut 6px,
+   sehingga terbaca sebagai kontrol bawaan peramban, berbeda dari tabel dan
+   blok di sekitarnya. */
+.tp input {
   width: 100%;
   min-height: 44px;
-  padding: 8px 10px;
+  padding: 8px 12px;
   font-size: 14px;
+  font-weight: 600;
   color: var(--vp-c-text-1);
-  background: var(--vp-c-bg);
-  border: 1px solid var(--vp-c-divider);
-  border-radius: 6px;
+  background: var(--pelatihan-permukaan, #ffffff);
+  border: var(--pelatihan-tebal, 2px) solid var(--pelatihan-garis, #111111);
+  border-radius: var(--pelatihan-radius, 3px);
+  box-shadow: var(--pelatihan-bayangan-jauh, 4px) var(--pelatihan-bayangan-jauh, 4px) 0
+    var(--pelatihan-bayangan, #111111);
 }
 
-.tp input:focus-visible,
-.tp select:focus-visible {
+.tp input::placeholder {
+  font-weight: 400;
+  color: var(--vp-c-text-3);
+}
+
+.tp input:focus-visible {
   outline: 2px solid var(--pelatihan-aksen, #b45309);
   outline-offset: 2px;
 }
@@ -238,17 +267,31 @@ function bersihkan() {
   min-height: 44px;
   padding: 8px 14px;
   font-size: 13px;
-  font-weight: 600;
-  color: var(--vp-c-brand-1);
-  background: transparent;
-  border: 1px solid var(--vp-c-brand-1);
-  border-radius: 6px;
+  font-weight: 700;
+  color: var(--pelatihan-permukaan, #ffffff);
+  background: var(--pelatihan-navy, #003060);
+  border: var(--pelatihan-tebal, 2px) solid var(--pelatihan-garis, #111111);
+  border-radius: var(--pelatihan-radius, 3px);
+  box-shadow: var(--pelatihan-bayangan-jauh, 4px) var(--pelatihan-bayangan-jauh, 4px) 0
+    var(--pelatihan-bayangan, #111111);
   cursor: pointer;
+  transition: transform 120ms ease, box-shadow 120ms ease, background-color 120ms ease;
 }
 
 .tp-bersih:hover {
-  color: var(--vp-c-bg);
-  background: var(--vp-c-brand-1);
+  transform: translate(-2px, -2px);
+  box-shadow: var(--pelatihan-bayangan-jauh-besar, 6px)
+    var(--pelatihan-bayangan-jauh-besar, 6px) 0 var(--pelatihan-bayangan, #111111);
+}
+
+.tp-bersih:active {
+  transform: translate(var(--pelatihan-bayangan-jauh, 4px), var(--pelatihan-bayangan-jauh, 4px));
+  box-shadow: 0 0 0 var(--pelatihan-bayangan, #111111);
+}
+
+.tp-bersih:focus-visible {
+  outline: 2px solid var(--pelatihan-aksen, #b45309);
+  outline-offset: 2px;
 }
 
 .tp-ringkas {
