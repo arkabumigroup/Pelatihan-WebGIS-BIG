@@ -8,7 +8,7 @@
 //
 // Cara kerjanya: tombol di sini hanya menulis satu atribut pada elemen <html>,
 // yaitu data-shell. Gaya pada custom.css yang menyembunyikan salah satu versi
-// blok. Dengan begitu isi halaman tetap satu berkas, dan halaman yang tidak
+// blok. Dengan begitu isi halaman tetap satu file, dan halaman yang tidak
 // memuat pengalih ini tidak terpengaruh.
 //
 // Pilihannya disimpan di localStorage, sehingga tetap terpakai saat peserta
@@ -47,7 +47,7 @@ function pasang(nilai) {
 
 onMounted(() => {
   // Nilai dari penyimpanan dibaca di sini, bukan saat render. Situs ini dibangun
-  // menjadi berkas statis lebih dahulu, dan membaca penyimpanan peramban saat
+  // menjadi file statis lebih dahulu, dan membaca penyimpanan browser saat
   // render menghasilkan HTML yang berbeda antara hasil build dan hasil di layar.
   let tersimpan = ''
   try {

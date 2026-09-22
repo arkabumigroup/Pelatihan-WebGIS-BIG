@@ -36,7 +36,7 @@ const daftarBatch = computed(() =>
 // Pilihan untuk kedua saringan. Keduanya memakai komponen pilihan yang sama
 // dengan daftar peserta di Kit Identitas, supaya seluruh kontrol formulir di
 // situs ini bergaya sama dan daftar pilihannya tidak berubah menjadi daftar
-// bawaan peramban saat dibuka.
+// bawaan browser saat dibuka.
 const pilihanBatch = computed(() => [
   { nilai: 'semua', label: 'Semua batch' },
   ...daftarBatch.value.map((b) => ({
@@ -237,7 +237,7 @@ function bersihkan() {
 
 /* Isian pencarian dan tombol Bersihkan memakai motif situs: garis tegas 2px,
    sudut 3px, dan bayangan padat. Sebelumnya garisnya 1px dengan sudut 6px,
-   sehingga terbaca sebagai kontrol bawaan peramban, berbeda dari tabel dan
+   sehingga terbaca sebagai kontrol bawaan browser, berbeda dari tabel dan
    blok di sekitarnya. */
 .tp input {
   width: 100%;

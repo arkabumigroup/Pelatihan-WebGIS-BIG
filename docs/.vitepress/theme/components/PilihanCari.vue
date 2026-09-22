@@ -13,7 +13,7 @@
 //    halaman, sehingga tidak dapat diberi garis tegas dan bayangan padat
 //    seperti blok lain di situs ini. Yang tampak sebelum dibuka bergaya
 //    neo-brutalism, tetapi setelah dibuka berubah menjadi daftar bawaan
-//    peramban, dan itu terbaca sebagai dua antarmuka yang berbeda.
+//    browser, dan itu terbaca sebagai dua antarmuka yang berbeda.
 //
 // Papan ketik: Enter atau Space membuka, panah atas dan bawah memilih, Enter
 // menetapkan, Escape menutup tanpa mengubah, dan Tab menutup lalu berpindah.
@@ -164,7 +164,7 @@ onBeforeUnmount(() => document.removeEventListener('pointerdown', diLuar))
       >
         <span class="pc-nilai">{{ terpilih ? terpilih.label : kosong }}</span>
         <!-- Tanda buka dan tutup digambar sendiri, bukan karakter panah,
-             supaya bentuknya sama di semua peramban dan dapat diputar. -->
+             supaya bentuknya sama di semua browser dan dapat diputar. -->
         <svg class="pc-panah" :class="{ 'pc-panah--buka': terbuka }" viewBox="0 0 12 8" aria-hidden="true">
           <path d="M1 1.5 6 6.5 11 1.5" fill="none" stroke="currentColor" stroke-width="2" />
         </svg>
