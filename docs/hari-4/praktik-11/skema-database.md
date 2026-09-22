@@ -75,7 +75,7 @@ BEGIN;
 
 CREATE TABLE IF NOT EXISTS users (
     user_id     uuid         PRIMARY KEY,
-    nama        varchar(100) NOT NULL,
+    name        varchar(100) NOT NULL,
     email       varchar(150) NOT NULL,
     password    varchar(255) NOT NULL,
     role        varchar(20)  NOT NULL DEFAULT 'viewer',
@@ -100,6 +100,9 @@ CREATE TABLE IF NOT EXISTS katalog_data_2d (
     wms_url     text,
     wfs_url     text,
     author      uuid,
+    -- Alias layer untuk legenda peta. Boleh kosong, dan bila kosong aplikasi
+    -- memakai layer_name.
+    layer_alias varchar(150),
 
     CONSTRAINT katalog_data_2d_layer_name_key UNIQUE (layer_name),
     CONSTRAINT katalog_data_2d_akses_valid
@@ -112,15 +115,15 @@ CREATE TABLE IF NOT EXISTS katalog_data_2d (
 CREATE TABLE IF NOT EXISTS katalog_data_3d (
     data_3d_id uuid         PRIMARY KEY,
     author     uuid,
-    nama       varchar(150) NOT NULL,
+    model_name varchar(150) NOT NULL,
     akses      varchar(20)  NOT NULL,
     url        text,
     latitude   double precision,
     longitude  double precision,
-    heading    double precision,
-    pitch      double precision,
-    roll       double precision,
-    scale      double precision,
+    heading    integer,
+    pitch      integer,
+    roll       integer,
+    scale      integer,
     -- Aplikasi tidak pernah mengirim kolom ini saat menyimpan data 3D, jadi
     -- tanpa nilai bawaan setiap penyimpanan gagal dengan "null value in
     -- column tipe_file violates not-null constraint".
@@ -155,7 +158,7 @@ SELECT k.data_2d_id,
        k.wms_url,
        k.wfs_url,
        u.user_id AS author_id,
-       u.nama    AS author_nama,
+       u.name    AS author_nama,
        u.email   AS author_email
 FROM katalog_data_2d k
 LEFT JOIN users u ON u.user_id = k.author;
@@ -250,7 +253,7 @@ BEGIN
         RAISE EXCEPTION 'Email tidak sah: %', email_admin;
     END IF;
 
-    INSERT INTO users (user_id, nama, email, password, role, is_active, created_at)
+    INSERT INTO users (user_id, name, email, password, role, is_active, created_at)
     VALUES (gen_random_uuid(), 'Super Admin', lower(btrim(email_admin)),
             hash_admin, 'super_admin', true, now())
     ON CONFLICT (email) DO UPDATE
@@ -267,7 +270,7 @@ END $$;
 -- hash bcrypt ($2a$ atau $2b$), bukan kata sandi asli.
 
 SELECT 'Akun super admin' AS bagian;
-SELECT user_id, nama, email, role, is_active, left(password, 7) AS awalan_hash
+SELECT user_id, name, email, role, is_active, left(password, 7) AS awalan_hash
 FROM users
 WHERE role = 'super_admin';
 ```
@@ -366,11 +369,11 @@ FROM information_schema.columns
 WHERE table_schema = 'public'
   AND is_nullable = 'YES'
   AND (table_name, column_name) IN (
-      ('users', 'nama'), ('users', 'email'), ('users', 'password'),
+      ('users', 'name'), ('users', 'email'), ('users', 'password'),
       ('users', 'role'), ('users', 'is_active'), ('users', 'created_at'),
       ('katalog_data_2d', 'layer_name'), ('katalog_data_2d', 'akses'),
       ('katalog_data_2d', 'is_editable'),
-      ('katalog_data_3d', 'nama'), ('katalog_data_3d', 'akses'),
+      ('katalog_data_3d', 'model_name'), ('katalog_data_3d', 'akses'),
       ('katalog_data_3d', 'tipe_file')
   )
 ORDER BY table_name, column_name;
