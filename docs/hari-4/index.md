@@ -17,7 +17,7 @@ Praktik 12 dikerjakan setelah Praktik 11 selesai sepenuhnya, karena yang di-back
 ## Praktik 11 - Deployment Project
 
 1. [Peserta dan Project](/hari-4/praktik-11/peserta-project) - memetakan peserta ke project Google Cloud.
-2. [Kit Identitas Peserta](/hari-4/praktik-11/kit-identitas) - menghitung seluruh nama resource dari identitas peserta, menyimpannya di peramban, dan membuat nilai rahasia yang dibutuhkan.
+2. [Kit Identitas Peserta](/hari-4/praktik-11/kit-identitas) - menghitung seluruh nama resource dari identitas peserta, menyimpannya di peramban, membuat nilai rahasia yang dibutuhkan, dan membuat kata sandi super admin beserta hash bcrypt-nya.
 3. [Konfigurasi Project](/hari-4/praktik-11/konfigurasi-project) - menyiapkan `docker-compose.yml`, `nginx.conf`, `.env.example`, dan pemeriksa konfigurasi di repositori proyek.
 4. [Skema Database](/hari-4/praktik-11/skema-database) - berkas SQL yang membuat tabel, lengkap dengan isinya.
 5. [Persiapan Repositori](/hari-4/praktik-11/persiapan-repositori) - mengirim perubahan ke fork, menyelaraskan fork yang tertinggal, dan menetapkan identitas peserta yang menurunkan nama seluruh resource.
