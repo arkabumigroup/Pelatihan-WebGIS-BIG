@@ -6,29 +6,46 @@ Gaussian Splatting merekam objek nyata dari sekumpulan foto, lalu menyimpannya s
 
 Bedanya dengan model 3D pada [Praktik 5](/hari-2/praktik-5/konfigurasi-viewer) cukup satu hal yang perlu Anda ingat: model 3D biasa memakai file `.glb` dan ditampilkan dengan Cesium, sedangkan Gaussian Splat memakai file `.ply` dan ditampilkan dengan penampil tersendiri di dalam portal.
 
-## File contoh yang bisa dipakai
+## File yang ada di folder latihan
 
-Portal hanya menerima dua format, yaitu `.glb` untuk model 3D biasa dan `.ply` untuk Gaussian Splat. File `.ply` tidak bisa dibuat sendiri tanpa proses perekaman, jadi pakai file contoh berikut.
+Portal hanya menerima dua format, yaitu `.glb` untuk model 3D biasa dan `.ply` untuk Gaussian Splat. Folder **File latihan** pada Drive pelatihan memuat keduanya.
 
 | File | Ukuran | Untuk apa |
 |---|---|---|
-| `vasedeck-contoh.ply` | 46,2 MB | Contoh Gaussian Splat asli, paling ringan untuk latihan upload |
-| `uji-penampil-bola.ply` | 7,1 MB | Bola uji. Bukan bahan latihan, hanya untuk memastikan penampilnya bekerja |
 | `monas.glb` | 0,3 MB | Model 3D biasa, paling ringan untuk latihan upload |
 | `gedung_sate.glb` | 11,5 MB | Model 3D biasa yang lebih besar |
+| `gedung-3d.ply` | 58,0 MB | Satu-satunya Gaussian Splat di folder itu, dan kualitasnya rendah. Gunanya untuk menunjukkan gejala splat nyasar |
+| `Pertamina Tower.rar` | 638 MB | Foto drone mentah, bahan kalau Anda ingin membuat splat sendiri |
 
-Keempat file itu ada di folder **File latihan** pada Drive pelatihan.
+Tiga file lain di folder itu bukan bahan latihan Gaussian Splatting: `.env.example` dipakai pada [Konfigurasi Project](/hari-4/praktik-11/konfigurasi-project), sedangkan `app.zip` dan `lib.zip` adalah arsip pendukung.
 
-File `vasedeck-contoh.ply` diturunkan dari scene **Vase on Deck**, salah satu dari enam scene yang dirilis bersama makalah PhysGaussian (CVPR 2024). Lisensinya **CC BY 4.0**, artinya boleh dipakai untuk keperluan apa pun termasuk komersial, asalkan sumbernya dicantumkan.
+Karena folder itu hanya memuat satu file `.ply` dan justru yang kualitasnya rendah, untuk latihan upload yang hasilnya bagus unduh file lain dari SuperSplat pada bagian berikut.
 
-Sitasi yang dipakai bila hasilnya dipublikasikan:
+## Mengunduh file .ply dari SuperSplat
 
-```text
-Xie, Tianyi, et al. "PhysGaussian: Physics-Integrated 3D Gaussians for
-Generative Dynamics." CVPR 2024.
-```
+[SuperSplat](https://superspl.at/) memuat ribuan scene Gaussian Splat yang dipublikasikan penggunanya, dan sebagian boleh diunduh gratis. Ini sumber paling praktis untuk mendapat file `.ply` tanpa harus merekam sendiri.
 
-File aslinya sebesar 237,7 MB dengan 941.746 splat. File contoh di folder pelatihan sudah dikecilkan menjadi 46,2 MB, sehingga lebih jarang daripada aslinya dan lebih cepat diunggah saat latihan. File aslinya kini juga muat, karena portal menerima sampai 1 GB, dan boleh dipakai bila Anda ingin kualitas penuh.
+1. Buka <https://superspl.at/>, lalu pilih menu **Explore**.
+2. Pada bagian **Free Downloads**, klik **CC 4.0 splats you can take home**. Alamatnya <https://superspl.at/search?features=downloadable>.
+3. Pilih satu scene, lalu periksa tombol **Download** di bawah judulnya. Tidak semua scene menyediakannya.
+4. Klik **Download**, dan file `.ply`-nya langsung terunduh.
+
+Contoh scene yang pernah dipakai untuk menguji portal ini adalah [Battleship North Carolina](https://superspl.at/scene/8f5b9f3d), hasil rekaman kapal perang dengan drone. File yang terunduh berukuran 608 MB, dan itulah yang dipakai untuk mengukur angka pada bagian [Cara upload file berukuran besar](#cara-upload-file-berukuran-besar) di bawah.
+
+::: warning Lisensinya tidak seragam, periksa labelnya
+Setiap scene mencantumkan lisensinya sendiri di sebelah tombol Download.
+
+- **CC BY 4.0** berarti boleh dipakai dan diubah, termasuk untuk keperluan komersial, asalkan pembuatnya dicantumkan
+- **CC BY-ND 4.0** berarti boleh dipakai apa adanya, tetapi versi ubahannya tidak boleh disebarkan
+
+Untuk latihan di pelatihan ini keduanya aman. Bila hasilnya akan dipublikasikan, periksa labelnya lebih dahulu dan cantumkan nama pembuatnya, karena nama itu tertulis di halaman scene-nya.
+:::
+
+::: tip Ukurannya beragam, dan yang besar tetap muat
+Scene di SuperSplat berkisar dari beberapa megabita sampai ratusan megabita. Portal menerima sampai 1 GB, jadi semuanya muat.
+
+Yang perlu diperhatikan justru waktu uploadnya. File 600 MB pada koneksi 10 Mbps memerlukan sekitar delapan menit, dan pada 5 Mbps menjadi sekitar tujuh belas menit. Dengan progress upload yang tampil di dialog, Anda dapat melihat sendiri apakah kirimannya masih maju.
+:::
 
 ### Batas ukuran upload
 
@@ -102,7 +119,7 @@ Bila setelah itu modelnya tetap terlihat seperti serpihan berduri, penyebabnya f
 
 File `gedung-3d.ply` pada folder pelatihan berasal dari rekonstruksi yang kualitasnya rendah. Separuh splatnya berkumpul dalam kotak 6,9 kali 4,4 kali 7,6 satuan, sedangkan kotak penuhnya 388 kali 175 kali 391 satuan. Enam puluh enam persen splatnya juga lebih lonjong dari 20 kali.
 
-File itu tetap dapat dipakai untuk menunjukkan gejalanya, dan berguna justru karena itu: peserta bisa melihat sendiri bagaimana splat nyasar membuat model tampil mengecil. Untuk latihan upload yang hasilnya bagus, pakai `vasedeck-contoh.ply`.
+File itu tetap dapat dipakai untuk menunjukkan gejalanya, dan berguna justru karena itu: peserta bisa melihat sendiri bagaimana splat nyasar membuat model tampil mengecil. Untuk latihan upload yang hasilnya bagus, unduh file lain dari [SuperSplat](#mengunduh-file-ply-dari-supersplat).
 
 ---
 
