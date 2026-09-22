@@ -223,14 +223,15 @@ Buka berkas `nginx.conf` di root folder proyek. Berkas itu sudah ada di reposito
 Periksa isinya dengan perintah ini:
 
 ```bash
-grep -nE "client_max_body_size|acme-challenge|location|proxy_pass|include" nginx.conf
+grep -nE "client_max_body_size|client_body_timeout|proxy_request_buffering|proxy_.*_timeout|acme-challenge|location|proxy_pass|include" nginx.conf
 ```
 
 Bagian yang harus ada, beserta alasannya:
 
 | Baris | Kegunaan |
 |---|---|
-| `client_max_body_size 100m;` | Batas bawaan Nginx hanya 1 MB, sedangkan model 3D dan berkas GeoJSON hampir selalu lebih besar |
+| `client_max_body_size 1024m;` | Batas bawaan Nginx hanya 1 MB, sedangkan model 3D dan berkas GeoJSON hampir selalu lebih besar. Nilainya 1 GB supaya Gaussian Splatting hasil rekaman utuh dapat diunggah tanpa dipangkas lebih dahulu |
+| `client_body_timeout 300s;` | Jeda antar potongan badan permintaan yang masih ditoleransi. Bawaannya 60 detik, dan itu terlewati pada unggahan besar di jaringan yang lambat |
 | `include /etc/nginx/tls/*.conf;` | Memuat berkas HTTPS yang ditulis nanti pada halaman Penambahan Subdomain. Direktori yang masih kosong bukan galat bagi Nginx |
 | `location /.well-known/acme-challenge/` | Let's Encrypt memeriksa kepemilikan domain lewat berkas di direktori ini |
 | `location = /` | Mengalihkan akar domain ke `/portal` |
@@ -238,6 +239,9 @@ Bagian yang harus ada, beserta alasannya:
 | `location /geoserver/` | Meneruskan permintaan GeoServer, dengan `Host` dikirim apa adanya supaya GeoServer tahu alamat publiknya |
 | `location = /robots.txt` dan `= /sitemap.xml` | Next.js menyajikannya di bawah `/portal`, sedangkan mesin pencari memintanya di akar domain |
 | `location /` | Meneruskan sisanya ke container `nextjs` |
+| `proxy_request_buffering off;` | Nginx tidak lagi menulis seluruh badan permintaan ke berkas sementara sebelum meneruskannya ke aplikasi. Tanpa baris ini berkas 1 GB ditulis dua kali ke disk, dan bilah kemajuan di peramban melesat ke 100 persen lebih dahulu karena Nginx menerimanya jauh lebih cepat daripada aplikasi memakainya |
+| `proxy_send_timeout 1800s;` | Batas 60 detik bawaan Nginx terlewati saat mengirim badan permintaan besar ke aplikasi |
+| `proxy_read_timeout 1800s;` | Batas yang sama terlewati saat menunggu aplikasi menulis berkasnya ke disk dan menyimpan barisnya ke database |
 
 Blok `location /geoserver/` dan `location /` sama-sama memuat `resolver 127.0.0.11 valid=10s ipv6=off;`. Nama service di-resolve saat ada permintaan, bukan saat Nginx start. Tanpa pola itu, Nginx menolak start dengan `host not found in upstream` selama container `nextjs` belum ada, padahal `geoserver` dan `nginx` sengaja dinyalakan lebih dahulu.
 
@@ -251,6 +255,12 @@ Unexpected token '<', "<html> ..." is not valid JSON
 ```
 
 Pesan itu tidak menyebut ukuran berkas sama sekali, sehingga penyebabnya sulit ditemukan. Model 3D hampir selalu melewati 1 MB, dan berkas GeoJSON pada katalog 2D dapat ikut melewatinya.
+:::
+
+::: tip Berkas di atas 1 GB
+Peramban mengirim `Content-Length` bersama unggahannya, dan Nginx memeriksa header itu sebelum membaca badannya. Berkas yang melewati 1 GB karena itu ditolak hampir seketika, bukan setelah menunggu unggahannya selesai. Peserta melihat pesan yang menyebut batasnya, bukan halaman HTML tanpa penjelasan.
+
+Batas 1 GB dipilih karena satu rekaman Gaussian Splatting utuh biasanya berkisar ratusan MB. Bila peserta memerlukan lebih besar, ubah `client_max_body_size` pada `nginx.conf` **dan** `BATAS_BERKAS` pada `src/app/api/katalog-data-3d/create/route.js`, lalu buat ulang container `nginx`. Keduanya sengaja dipisah: Nginx menahan lebih dahulu, sedangkan nilai pada route adalah jaring pengaman supaya permintaan tanpa `Content-Length` tidak dapat menulis melebihi batas itu ke disk.
 :::
 
 ## Tahap 5. Isi berkas .env

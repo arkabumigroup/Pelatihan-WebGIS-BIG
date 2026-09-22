@@ -369,6 +369,10 @@ Gejalanya menyesatkan: katalog tetap menampilkan modelnya, karena barisnya masih
 | Unggah model 3D gagal, atau berkasnya tidak muncul di `data/models` | Pemilik folder `data` bukan uid 1001. Kerjakan Tahap 8 |
 | Model 3D yang dulu ada kini tidak dapat dibuka | Berkasnya hilang karena ditulis ke dalam container, bukan ke volume. Kerjakan Tahap 8 |
 | `Unexpected token '<', "<html> ..." is not valid JSON` saat menyimpan data | Nginx menolak unggahannya dan membalas halaman HTML, bukan JSON. Periksa `client_max_body_size` pada `nginx.conf` seperti pada Tahap 4 halaman Konfigurasi Project, lalu buat ulang container `nginx` dengan `sudo docker compose up -d --force-recreate nginx`. Memuat ulang saja tidak cukup, karena berkas yang di-mount satu per satu mengikuti inode lama setelah `git pull` menggantinya |
+| `Berkas melebihi batas 1024 MB` padahal berkasnya lebih kecil | Batas pada route lebih kecil daripada `client_max_body_size`. Samakan keduanya seperti pada Tahap 4 halaman Konfigurasi Project |
+| Unggahan berhenti di tengah pada berkas besar | `client_body_timeout`, `proxy_send_timeout`, atau `proxy_read_timeout` masih pada nilai bawaan 60 detik. Kerjakan Tahap 4 halaman Konfigurasi Project |
+| Bilah kemajuan berhenti di 100 persen dan lama tidak berubah | Bukan macet. Setelah pengiriman selesai, server masih menulis berkasnya ke disk dan menyimpan barisnya ke database. Keterangan pada dialog berganti menjadi "Server sedang menyimpan berkas" selama tahap itu |
+| Disk VM hampir penuh setelah beberapa kali unggah | Model tersimpan di `data/models` dan tidak ikut terhapus saat baris katalognya dihapus. Periksa dengan `du -sh /opt/webgis/app/data/models`, lalu hapus berkas yang tidak dipakai |
 
 ## Hasil Akhir
 

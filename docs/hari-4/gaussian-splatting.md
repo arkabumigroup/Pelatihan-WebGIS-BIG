@@ -12,7 +12,7 @@ Portal hanya menerima dua format, yaitu `.glb` untuk model 3D biasa dan `.ply` u
 
 | Berkas | Ukuran | Untuk apa |
 |---|---|---|
-| `vasedeck-contoh.ply` | 46,2 MB | Contoh Gaussian Splat asli, sudah muat di batas unggah portal |
+| `vasedeck-contoh.ply` | 46,2 MB | Contoh Gaussian Splat asli, paling ringan untuk latihan unggah |
 | `uji-penampil-bola.ply` | 7,1 MB | Bola uji. Bukan bahan latihan, hanya untuk memastikan penampilnya bekerja |
 | `monas.glb` | 0,3 MB | Model 3D biasa, paling ringan untuk latihan unggah |
 | `gedung_sate.glb` | 11,5 MB | Model 3D biasa yang lebih besar |
@@ -28,17 +28,29 @@ Xie, Tianyi, et al. "PhysGaussian: Physics-Integrated 3D Gaussians for
 Generative Dynamics." CVPR 2024.
 ```
 
-Berkas aslinya sebesar 237,7 MB dengan 941.746 splat, dan itu melebihi batas unggah portal. Berkas contoh di folder pelatihan sudah dikecilkan menjadi 46,2 MB, sehingga lebih jarang daripada aslinya. Bila Anda ingin kualitas penuh, naikkan batas unggah lewat [Tahap 4 halaman Konfigurasi Project](/hari-4/praktik-11/konfigurasi-project) lalu pakai berkas aslinya.
+Berkas aslinya sebesar 237,7 MB dengan 941.746 splat. Berkas contoh di folder pelatihan sudah dikecilkan menjadi 46,2 MB, sehingga lebih jarang daripada aslinya dan lebih cepat diunggah saat latihan. Berkas aslinya kini juga muat, karena portal menerima sampai 1 GB, dan boleh dipakai bila Anda ingin kualitas penuh.
 
 ### Batas ukuran unggahan
 
-Nginx pada VM membatasi ukuran berkas yang diunggah, bawaannya **100 MB**. Berkas contoh di atas aman. Bila Anda mengunggah berkas yang lebih besar, gejalanya menyesatkan: portal membalas halaman HTML, dan peramban melaporkannya sebagai
+Portal menerima berkas sampai **1 GB**. Batas itu diatur `client_max_body_size` pada `nginx.conf`, dan berkas yang melewatinya ditolak hampir seketika, karena Nginx memeriksa `Content-Length` sebelum membaca badannya.
+
+Sebelum batas itu dinaikkan, bawaannya 100 MB, dan berkas yang melewatinya ditolak dengan gejala yang menyesatkan: portal membalas halaman HTML, dan peramban melaporkannya sebagai
 
 ```text
 Unexpected token '<', "<html> ..." is not valid JSON
 ```
 
-Bila itu muncul, periksa `client_max_body_size` pada `nginx.conf`. Penjelasannya ada pada halaman [Menyiapkan GeoServer di VM](/hari-4/praktik-11/siapkan-geoserver-vm).
+Pesan itu tidak menyebut ukuran berkas sama sekali. Bila Anda menemukannya, periksa `client_max_body_size` pada `nginx.conf`. Penjelasannya ada pada halaman [Menyiapkan GeoServer di VM](/hari-4/praktik-11/siapkan-geoserver-vm).
+
+### Bagaimana unggahan besar ditangani
+
+Dua hal membuat berkas ratusan megabita tidak lagi merepotkan.
+
+**Isinya tidak pernah ditahan di memori.** Aplikasi mengalirkan berkasnya dari jaringan langsung ke disk, sepotong demi sepotong. Diukur pada berkas uji 608 MB, pemakaian memori server naik dari 97 MB menjadi 201 MB, dan angka itu tidak tumbuh mengikuti besar berkasnya. Cara lama yang menampung seluruh isi di memori memerlukan sekitar 1,7 kali ukuran berkas, sehingga berkas 1 GB akan menghabiskan hampir seluruh memori VM yang hanya 4 GB.
+
+**Kemajuannya terlihat, dan terbagi dua tahap.** Selagi berkas dikirim, dialog menampilkan persentase, jumlah yang sudah terkirim, dan laju kirimnya. Setelah pengiriman selesai, tampilannya berganti menjadi keterangan bahwa server sedang menyimpan, karena pada saat itu berkasnya masih ditulis ke disk dan barisnya masih disimpan ke database. Tahap kedua itu yang membuat bilahnya tidak berhenti di 100 persen dan terlihat seperti macet.
+
+Menutup dialog atau menekan **Hentikan unggahan** benar-benar menghentikan pengirimannya, jadi berkas yang salah pilih tidak perlu ditunggu sampai selesai.
 
 ## Mengunggah ke Katalog Data 3D
 
@@ -49,9 +61,9 @@ Masuk ke portal, lalu buka menu **Katalog Data 3D** pada halaman internal. Halam
 3. Pilih **Akses**. Pilih **Public** bila modelnya boleh dilihat tanpa login, atau **Private** bila hanya untuk akun yang sudah masuk.
 4. Isi **Lat** dan **Lng** dengan koordinat tempat model itu akan diletakkan di peta.
 5. Pilih berkas `.ply` atau `.glb` dari komputer Anda.
-6. Klik **Submit**.
+6. Klik **Simpan**.
 
-Unggahan 46 MB memerlukan waktu, jadi biarkan halamannya terbuka sampai selesai. Berkasnya disimpan di VM pada folder `data/models`, sedangkan baris katalognya tersimpan di database Supabase.
+Dialognya menampilkan kemajuan unggahannya, lengkap dengan persentase dan jumlah yang sudah terkirim, jadi biarkan halamannya terbuka sampai muncul keterangan berhasil. Berkasnya disimpan di VM pada folder `data/models`, sedangkan baris katalognya tersimpan di database Supabase.
 
 ## Melihat hasilnya
 
