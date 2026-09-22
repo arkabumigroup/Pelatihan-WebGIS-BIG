@@ -7,7 +7,7 @@
 // acaknya `crypto.getRandomValues`, bukan `Math.random`, karena nilainya
 // dipakai sebagai kata sandi GeoServer dan kunci penanda tangan sesi.
 //
-// Nilai disimpan di penyimpanan peramban oleh halaman. Tanpa itu, memuat
+// Nilai disimpan di penyimpanan browser oleh halaman. Tanpa itu, memuat
 // ulang halaman akan mengganti nilainya, sedangkan nilai yang sudah disalin
 // ke `.env` akan berbeda dengan yang tertulis di halaman ini.
 
@@ -67,7 +67,7 @@ function buat(baris) {
       crypto.getRandomValues(buffer)
       if (acakLemah.value === k) acakLemah.value = ''
     } else {
-      // Peramban tanpa sumber acak yang layak tetap dapat memakai halaman ini,
+      // Browser tanpa sumber acak yang layak tetap dapat memakai halaman ini,
       // tetapi hasilnya tidak layak dipakai sebagai kata sandi. Peserta diberi
       // tahu alih-alih dibiarkan memakai nilai yang lemah tanpa sadar.
       for (let i = 0; i < n; i += 1) buffer[i] = Math.floor(Math.random() * 256)
@@ -176,7 +176,7 @@ function potong(nilai) {
       <div v-if="konfirmasi === kunci(b)" class="pr-konfirmasi">
         <p>
           Nilai lama akan hilang dan tidak dapat dikembalikan. Bila nilainya
-          sudah disalin ke berkas <code>.env</code>, berkas itu harus diubah
+          sudah disalin ke file <code>.env</code>, file itu harus diubah
           lagi supaya cocok.
         </p>
         <div class="pr-aksi">
@@ -215,7 +215,7 @@ function potong(nilai) {
       </p>
 
       <p v-if="acakLemah === kunci(b)" class="pr-galat" role="alert">
-        Peramban ini tidak menyediakan sumber acak yang layak untuk kata sandi,
+        Browser ini tidak menyediakan sumber acak yang layak untuk kata sandi,
         sehingga nilainya dibuat dengan cara yang lemah. Jangan pakai nilai ini.
         Jalankan <code>openssl rand -hex {{ jenis(b).panjang }}</code> di
         terminal sebagai gantinya.

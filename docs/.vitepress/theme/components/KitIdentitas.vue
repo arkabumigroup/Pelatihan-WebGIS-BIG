@@ -10,7 +10,7 @@
 //
 // 2. Variabel shell hanya bertahan selama sesi Cloud Shell terbuka, sedangkan
 //    Cloud Shell menutup sesinya sendiri setelah menganggur sekitar dua puluh
-//    menit. Nilai yang sudah dipilih disimpan di peramban peserta, sehingga
+//    menit. Nilai yang sudah dipilih disimpan di browser peserta, sehingga
 //    dapat dibuka kembali kapan saja tanpa mencari ulang di tabel peserta.
 
 import { ref, computed, watch, onMounted } from 'vue'
@@ -62,25 +62,25 @@ const paket = [
     label: 'JWT_SECRET',
     jenis: 'kunci',
     tempat: 'Tahap 5 halaman Konfigurasi Project',
-    tautan: '/hari-4/praktik-11/konfigurasi-project#tahap-5-isi-berkas-env',
+    tautan: '/hari-4/praktik-11/konfigurasi-project#tahap-5-isi-file-env',
   },
   {
     label: 'NEXTAUTH_SECRET',
     jenis: 'kunci',
     tempat: 'Tahap 5 halaman Konfigurasi Project',
-    tautan: '/hari-4/praktik-11/konfigurasi-project#tahap-5-isi-berkas-env',
+    tautan: '/hari-4/praktik-11/konfigurasi-project#tahap-5-isi-file-env',
   },
   {
     label: 'GEOSERVER_PASSWORD|GEOSERVER_ADMIN_PASSWORD',
     jenis: 'sandi',
     tempat: 'Tahap 18 halaman Menyiapkan Aplikasi di VM',
-    tautan: '/hari-4/praktik-11/aplikasi-di-vm#tahap-18-isi-berkas-env',
+    tautan: '/hari-4/praktik-11/aplikasi-di-vm#tahap-18-isi-file-env',
   },
   {
     label: 'NILAI_ACAK_4',
     jenis: 'kunci',
     tempat: 'Tahap 5 halaman Konfigurasi Project, bila ada variabel rahasia lain',
-    tautan: '/hari-4/praktik-11/konfigurasi-project#tahap-5-isi-berkas-env',
+    tautan: '/hari-4/praktik-11/konfigurasi-project#tahap-5-isi-file-env',
   },
 ]
 
@@ -340,11 +340,11 @@ function pilihSemua() {
   wadahBlok.value.focus()
 }
 
-// --- Penyimpanan di peramban -------------------------------------------
+// --- Penyimpanan di browser -------------------------------------------
 //
 // Nilainya disimpan di localStorage, lalu dicerminkan ke cookie. Cookie
 // dipakai sebagai cadangan karena localStorage dapat kosong pada mode
-// penyamaran tertentu dan pada peramban yang membersihkan penyimpanan lokal
+// penyamaran tertentu dan pada browser yang membersihkan penyimpanan lokal
 // antar sesi. Isinya hanya nama peserta dan Project ID: keduanya sudah
 // tercantum pada tabel peserta yang terbuka untuk umum, jadi tidak ada
 // kredensial yang disimpan di komputer peserta.
@@ -352,7 +352,7 @@ function pilihSemua() {
 function keCookie(isi) {
   // Isi kosong berarti menghapus. Cookie tidak hilang hanya karena nilainya
   // kosong, jadi masa berlakunya harus dimundurkan ke tanggal yang sudah lewat
-  // supaya peramban membuangnya. Tanpa itu, cookie kosong tetap tertinggal dan
+  // supaya browser membuangnya. Tanpa itu, cookie kosong tetap tertinggal dan
   // tetap terkirim pada setiap permintaan ke situs ini.
   const kadaluarsa = isi
     ? new Date(Date.now() + UMUR_COOKIE_HARI * 24 * 60 * 60 * 1000)
@@ -422,7 +422,7 @@ function lupakan() {
   } catch (e) {
     // Sama seperti di atas.
   }
-  kabari('Data yang tersimpan di peramban ini sudah dihapus.')
+  kabari('Data yang tersimpan di browser ini sudah dihapus.')
 }
 
 function pulihkan() {
@@ -533,7 +533,7 @@ watch([pesertaId, projectId], () => {
 
 // Nilai acak disimpan lewat pengamat, bukan lewat satu peristiwa dari panel.
 // Alasannya, nilai acak dapat berubah dari dua arah: dibuat peserta, dan
-// dipulihkan dari penyimpanan peramban. Pengamat menangkap keduanya, sehingga
+// dipulihkan dari penyimpanan browser. Pengamat menangkap keduanya, sehingga
 // tidak ada jalur yang dapat terlewat.
 watch(
   nilaiAcak,
@@ -543,9 +543,9 @@ watch(
   { deep: true }
 )
 
-// Dipulihkan setelah komponen terpasang di peramban, bukan saat render.
-// Situs ini dibangun menjadi berkas statis terlebih dahulu, dan membaca
-// penyimpanan peramban saat render menghasilkan HTML yang berbeda antara
+// Dipulihkan setelah komponen terpasang di browser, bukan saat render.
+// Situs ini dibangun menjadi file statis terlebih dahulu, dan membaca
+// penyimpanan browser saat render menghasilkan HTML yang berbeda antara
 // hasil build dan hasil di layar.
 onMounted(() => {
   pulihkan()
@@ -692,13 +692,13 @@ onMounted(() => {
       <PanelSandi />
     </section>
 
-    <!-- Langkah 4. Nilai acak untuk berkas .env. -->
+    <!-- Langkah 4. Nilai acak untuk file .env. -->
     <section class="ki-bagian">
       <component :is="tingkatJudul" class="ki-judul">4. Buat nilai acak</component>
 
       <p class="ki-antar">
         Empat nilai yang pada materi sebelumnya dibuat dengan perintah
-        <code>openssl</code> di terminal. Nilainya dibuat di peramban Anda,
+        <code>openssl</code> di terminal. Nilainya dibuat di browser Anda,
         lalu disimpan di halaman ini, jadi tetap sama setelah halaman dimuat
         ulang. Sumber acaknya sama dengan yang dipakai <code>openssl</code>,
         yaitu sumber acak sistem.
@@ -772,7 +772,7 @@ onMounted(() => {
     <!-- Keadaan tersimpan. Ditampilkan hanya bila ada catatan yang dipulihkan. -->
     <p v-if="waktuSimpan" class="ki-simpan" role="status">
       <span>
-        Tersimpan di peramban ini{{ waktuSimpanTeks ? ' sejak ' + waktuSimpanTeks : '' }}.
+        Tersimpan di browser ini{{ waktuSimpanTeks ? ' sejak ' + waktuSimpanTeks : '' }}.
         Nilai yang sama akan muncul lagi saat halaman ini dibuka kembali.
       </span>
       <button type="button" class="ki-tautan ki-tautan--dalam" @click="lupakan">
@@ -851,7 +851,7 @@ onMounted(() => {
 
 /* Isian teks memakai motif situs: garis tegas 2px, sudut 3px, dan bayangan
    padat. Sebelumnya garisnya 1px dengan sudut 6px, sehingga terbaca sebagai
-   kontrol bawaan peramban, berbeda dari blok dan tombol di sekitarnya. */
+   kontrol bawaan browser, berbeda dari blok dan tombol di sekitarnya. */
 .ki-label input {
   width: 100%;
   min-height: 44px;

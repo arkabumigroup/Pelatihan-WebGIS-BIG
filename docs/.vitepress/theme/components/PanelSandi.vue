@@ -5,7 +5,7 @@
 // adalah `node scripts/hash-password.mjs` di terminal, yang tetap berlaku dan
 // tetap disebut pada halaman Skema Database. Panel ini dipakai peserta yang
 // belum memasang Node.js, atau yang lebih suka seluruh nilainya tersimpan di
-// peramban sehingga tidak perlu dicatat ulang.
+// browser sehingga tidak perlu dicatat ulang.
 //
 // Dua nilai yang dihasilkan di sini berbeda sifatnya:
 //
@@ -15,7 +15,7 @@
 //   2. Hash bcrypt-nya. Itu yang ditempel ke `<ISI_HASH_DI_SINI>` pada
 //      `sql/02-seed-super-admin.sql`.
 //
-// Hash dihitung di peramban. Pustakanya sengaja tidak dimuat saat halaman
+// Hash dihitung di browser. Pustakanya sengaja tidak dimuat saat halaman
 // dibuka, melainkan saat tombolnya ditekan, supaya halaman identitas tetap
 // ringan bagi peserta yang tidak memerlukan bagian ini.
 
@@ -60,7 +60,7 @@ const tampilSandi = ref(false)
 const konfirmasi = ref(false)
 const galat = ref('')
 const terpakai = ref('')
-// Kata sandinya berasal dari penyimpanan peramban, bukan baru dibuat pada
+// Kata sandinya berasal dari penyimpanan browser, bukan baru dibuat pada
 // kunjungan ini. Bedanya dipakai untuk memberi tahu peserta bahwa yang
 // terlihat bukan kata sandi baru, melainkan yang sudah tersimpan.
 const dariSimpanan = ref(false)
@@ -69,7 +69,7 @@ let timerTerpakai = null
 let timerGalat = null
 
 // Email diperiksa dengan pola yang sama seperti `02-seed-super-admin.sql`,
-// jadi nilai yang lolos di sini juga lolos di SQL Editor. Tanpa ini, berkas
+// jadi nilai yang lolos di sini juga lolos di SQL Editor. Tanpa ini, file
 // SQL berhenti dengan pengecualian setelah hash terlanjur dihitung.
 const pesanEmail = computed(() => {
   const e = email.value.trim()
@@ -147,10 +147,10 @@ async function hitungHash(sandiUntukHash, ganti) {
       simpan()
     }
   } catch (e) {
-    // Pesan aslinya tidak ditampilkan: isinya menyebut nama berkas di dalam
+    // Pesan aslinya tidak ditampilkan: isinya menyebut nama file di dalam
     // bundel situs, yang tidak berguna bagi peserta.
     kabari(
-      'Hash gagal dihitung di peramban ini. Buat hash-nya dengan node scripts/hash-password.mjs di folder proyek, lalu tempel hasilnya ke berkas SQL.'
+      'Hash gagal dihitung di browser ini. Buat hash-nya dengan node scripts/hash-password.mjs di folder proyek, lalu tempel hasilnya ke file SQL.'
     )
   } finally {
     sedangHitung.value = false
@@ -169,7 +169,7 @@ function mintaKonfirmasi() {
   hitung()
 }
 
-// Kata sandi pilihan sendiri, untuk peramban yang tidak menyediakan sumber
+// Kata sandi pilihan sendiri, untuk browser yang tidak menyediakan sumber
 // acak. Nilainya tidak disimpan sampai hash-nya berhasil dihitung, sehingga
 // tidak ada kata sandi setengah jadi yang tertinggal di penyimpanan.
 const sandiManual = ref('')
@@ -220,13 +220,13 @@ async function salinTeks(teks) {
   }
 }
 
-// --- Penyimpanan di peramban -------------------------------------------
+// --- Penyimpanan di browser -------------------------------------------
 //
 // Berbeda dari identitas peserta yang boleh terbaca siapa saja, isi panel ini
 // adalah kredensial. Yang disimpan hanya kata sandi dan emailnya, di
 // localStorage, supaya peserta tidak kehilangan kata sandi yang sudah dipakai
 // membuat akun. Hash-nya tidak ikut disimpan: nilainya panjang, hanya dipakai
-// sekali saat mengisi berkas SQL, dan dapat dihitung ulang kapan saja.
+// sekali saat mengisi file SQL, dan dapat dihitung ulang kapan saja.
 function simpan() {
   if (!sandi.value) return
   try {
@@ -299,7 +299,7 @@ onBeforeUnmount(() => {
 
     <p class="ps-keterangan">
       Dipakai untuk membuat akun super admin pada
-      <a :href="TAUTAN_SKEMA">Skema Database</a>. Hash-nya dihitung di peramban
+      <a :href="TAUTAN_SKEMA">Skema Database</a>. Hash-nya dihitung di browser
       Anda, jadi Node.js tidak perlu dipasang di laptop. Perintah
       <code>node scripts/hash-password.mjs</code> tetap dapat dipakai sebagai
       cara lain; hasil keduanya sama-sama sah.
@@ -339,7 +339,7 @@ onBeforeUnmount(() => {
           </label>
         </div>
         <p v-if="dariSimpanan && !tampilSandi" class="ps-catatan ps-catatan--rapat">
-          Ini kata sandi yang tersimpan di peramban ini, bukan yang baru dibuat.
+          Ini kata sandi yang tersimpan di browser ini, bukan yang baru dibuat.
           Centang <strong>Tampilkan di layar</strong> untuk membacanya lagi.
         </p>
       </div>
@@ -366,7 +366,7 @@ onBeforeUnmount(() => {
       <div v-else class="ps-kotak ps-kotak--kosong">
         <p class="ps-catatan ps-catatan--rapat">
           Hash-nya belum dihitung pada pembukaan halaman ini. Hash tidak
-          disimpan, karena hanya dipakai sekali saat mengisi berkas SQL.
+          disimpan, karena hanya dipakai sekali saat mengisi file SQL.
         </p>
         <div class="ps-aksi">
           <button
@@ -406,7 +406,7 @@ onBeforeUnmount(() => {
         <button type="button" class="ps-tombol" :disabled="sedangHitung" @click="mintaKonfirmasi">
           {{ sedangHitung ? 'Menghitung hash...' : 'Buat ulang kata sandi' }}
         </button>
-        <button type="button" class="ps-tombol" @click="hapus">Hapus dari peramban ini</button>
+        <button type="button" class="ps-tombol" @click="hapus">Hapus dari browser ini</button>
       </div>
     </template>
 
@@ -422,7 +422,7 @@ onBeforeUnmount(() => {
       <span class="ps-ket">Sekitar setengah detik, karena bcrypt memang lambat</span>
     </div>
 
-    <!-- Jalan lain bila tombol di atas gagal, misalnya pada peramban tanpa
+    <!-- Jalan lain bila tombol di atas gagal, misalnya pada browser tanpa
          sumber acak yang layak. Kata sandinya dihitung dengan cara yang sama,
          jadi hash yang dihasilkan tetap dapat diverifikasi aplikasi. -->
     <div v-if="!siap" class="ps-manual">
@@ -454,14 +454,14 @@ onBeforeUnmount(() => {
     <p v-if="galat" class="ps-galat" role="alert">{{ galat }}</p>
 
     <p v-if="siap" class="ps-catatan" role="status">
-      Kata sandi dan email disimpan di peramban ini saja, sehingga muncul lagi
+      Kata sandi dan email disimpan di browser ini saja, sehingga muncul lagi
       saat halaman dibuka kembali. Hash-nya tidak disimpan, karena hanya dipakai
-      sekali pada berkas SQL. Bcrypt satu arah, jadi kata sandi yang terlupa
+      sekali pada file SQL. Bcrypt satu arah, jadi kata sandi yang terlupa
       tidak dapat dibaca kembali dari database.
     </p>
 
     <p v-else class="ps-catatan">
-      Hash dihitung memakai pustaka bcryptjs di peramban Anda, bukan dikirim ke
+      Hash dihitung memakai pustaka bcryptjs di browser Anda, bukan dikirim ke
       server mana pun. Pustaka itu sama dengan yang dipakai aplikasi Next.js,
       jadi hash yang dihasilkan pasti dapat diverifikasi saat Anda masuk ke portal.
     </p>
