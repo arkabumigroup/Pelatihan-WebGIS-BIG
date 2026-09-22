@@ -183,7 +183,7 @@ Isi `PROJECT_ID` dan `NAMA_PESERTA` dengan nilai dari tabel itu. Keduanya harus 
 Blok di halaman ini tetap ditampilkan, karena isinya yang menjelaskan dari mana setiap nama resource berasal.
 :::
 
-**Gunakan Nama Peserta dari tabel, jangan mengarang sendiri.** Nama itu sudah disusun pendek, 3 sampai 8 karakter, satu kata, dan dipastikan tidak sama dengan peserta lain.
+**Gunakan Nama Peserta dari tabel, jangan mengarang sendiri.** Nama itu sudah disusun pendek, paling banyak 12 karakter, satu kata, dan dipastikan tidak sama dengan peserta lain di kedua batch. Sebagian besar panjangnya 4 sampai 10 karakter.
 
 Bila Anda tidak tercantum di tabel dan memilih nama sendiri, panjangnya boleh sampai 12 karakter. Gunakan huruf kecil dan angka saja, tanpa spasi dan tanpa tanda hubung.
 

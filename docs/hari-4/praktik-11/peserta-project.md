@@ -1,6 +1,6 @@
 # Peserta dan Project
 
-Halaman ini memuat pemetaan peserta ke project Google Cloud. Gunakan pencarian di bawah untuk menemukan nama atau email Anda, lalu catat **Nama Peserta**, **Project ID**, dan **kelompok** Anda.
+Halaman ini memuat pemetaan peserta ke project Google Cloud untuk **dua batch**. Gunakan pencarian dan saringan di bawah untuk menemukan nama atau email Anda, lalu catat **Nama Peserta**, **Project ID**, **Batch**, dan **kelompok** Anda.
 
 Data ini dipakai pada [Persiapan Repositori dan Identitas](/hari-4/praktik-11/persiapan-repositori) Tahap 1 dan 2.
 
@@ -8,12 +8,23 @@ Data ini dipakai pada [Persiapan Repositori dan Identitas](/hari-4/praktik-11/pe
 
 | Istilah | Artinya |
 |---|---|
-| **Akun master** | Akun Google yang memegang project. Satu akun master menaungi beberapa peserta |
+| **Batch** | Angkatan pelatihan. Batch 1 dan batch 2 memakai project yang sama, tetapi pesertanya berbeda |
+| **Akun master** | Akun Google yang memegang project. Satu akun master menaungi beberapa peserta dari kedua batch |
 | **Project ID** | Nama project di Google Cloud, dipakai pada perintah `gcloud config set project` |
-| **Nama Peserta** | Nama pendek Anda, dipakai sebagai identitas di Google Cloud. Panjangnya 3 sampai 8 karakter, satu kata, dan sudah dipastikan tidak sama dengan peserta lain |
+| **Nama Peserta** | Nama pendek Anda, dipakai sebagai identitas di Google Cloud. Panjangnya 3 sampai 12 karakter, satu kata, dan sudah dipastikan tidak sama dengan peserta lain di kedua batch |
 | **Kelompok** | Pembagian peserta di dalam satu akun master. Tiap kelompok memakai project sendiri |
 
 Setiap akun master memiliki tiga project, yaitu kelompok A, B, dan C. Peserta pada kelompok berbeda memakai project berbeda, sehingga tidak saling mengganggu.
+
+::: tip Project ID dipakai bersama antar batch
+Kedua batch memakai project yang sama, karena projectnya milik akun master, bukan milik satu angkatan. Yang membedakan peserta satu dengan yang lain adalah **Nama Peserta**, bukan Project ID.
+
+Karena itu nama VM, Service Account, dan subdomain Anda diturunkan dari Nama Peserta. Dua peserta di batch berbeda boleh memakai Project ID yang sama tanpa saling mengganggu, asalkan Nama Pesertanya berbeda.
+:::
+
+::: tip Nama lengkap pada akun master dapat berbeda antar batch
+Nama pada kolom **Akun master** adalah nama pemegang akun itu, dan dapat berbeda antara batch 1 dan batch 2. Yang dipakai pada perintah hanyalah nama akunnya, misalnya `arkabumihd1`, bukan nama orangnya.
+:::
 
 ::: tip Project ID berbeda dari nama project
 Yang dipakai pada perintah adalah **Project ID**, bukan nama tampilan project. Project ID selalu huruf kecil dan memuat tanda hubung, misalnya `geoportal-kelompok-a-92650`.
@@ -24,7 +35,7 @@ Kolom **Nama Peserta** berisi nama pendek huruf kecil tanpa spasi, misalnya `ame
 
 Nama lengkap tidak dipakai di Google Cloud, karena nama VM, Service Account, dan subdomain menolak spasi serta huruf besar.
 
-Gunakan nilai dari tabel, **jangan mengarang sendiri.** Nama Peserta sudah disusun agar tidak ada dua peserta yang memakai nama sama. Bila Anda memilih nama lain, ada kemungkinan nama itu sudah dipakai peserta lain, dan pekerjaan Anda berhenti di tengah jalan.
+Gunakan nilai dari tabel, **jangan mengarang sendiri.** Nama Peserta sudah disusun agar tidak ada dua peserta yang memakai nama sama, termasuk antar batch. Bila Anda memilih nama lain, ada kemungkinan nama itu sudah dipakai peserta lain, dan pekerjaan Anda berhenti di tengah jalan.
 :::
 
 ## Cari data Anda
@@ -51,7 +62,10 @@ Nama Peserta   :
 Email          :
 Akun master    :
 Project ID     :
+Batch          :
 Kelompok       :
 ```
 
 Langkah berikutnya ada pada halaman [Persiapan Repositori dan Identitas](/hari-4/praktik-11/persiapan-repositori), Tahap 2. Di sana Nama Peserta dan Project ID dipakai untuk menetapkan identitas Anda, yang kemudian menurunkan nama VM, nama Service Account, dan subdomain Anda.
+
+Blok pada Tahap 2 itu juga dapat disusun otomatis, lengkap dengan nilai Anda, pada [Kit Identitas Peserta](/hari-4/praktik-11/kit-identitas).

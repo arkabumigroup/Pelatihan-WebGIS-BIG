@@ -222,9 +222,9 @@ Sertifikat tersimpan di `/etc/letsencrypt/live/$SUBDOMAIN/`.
 ::: danger Kuota penerbitan ini dipakai bersama seluruh peserta
 Let's Encrypt membatasi **50 sertifikat per domain per 7 hari**, dan batas itu berlaku untuk semua orang yang memakai domain yang sama, bukan per peserta.
 
-Dengan 41 peserta pada satu domain, tersisa sekitar 9 cadangan untuk seluruh angkatan. Bila belasan peserta mengulang penerbitan karena satu kesalahan yang sama, peserta berikutnya akan gagal dengan pesan `too many certificates already issued`, dan **tidak ada cara mempercepat pemulihannya.** Kuota itu terisi ulang satu sertifikat setiap 202 menit.
+Jumlah peserta dua batch **sudah melewati batas 50 itu**, sehingga kuota mingguan ini bukan lagi soal cadangan. Bila penerbitan gagal berkali-kali karena satu kesalahan yang sama, peserta berikutnya berhenti dengan pesan `too many certificates already issued`, dan **tidak ada cara mempercepat pemulihannya.** Kuota itu terisi ulang satu sertifikat setiap 202 menit.
 
-Karena itu langkah 9a bukan formalitas. Uji coba memakai server uji, tidak memakai kuota, dan menangkap hampir semua penyebab kegagalan.
+Karena itu langkah 9a bukan formalitas. Uji coba memakai server uji, tidak memakai kuota, dan menangkap hampir semua penyebab kegagalan. Jangan pula mengulang penerbitan hanya untuk mencoba-coba.
 
 Batas 5 kegagalan verifikasi per alamat per jam juga berlaku. Mengulang perintah yang gagal lebih dari lima kali dalam satu jam akan mengunci alamat itu untuk sementara. Bila sudah gagal dua kali, **berhenti dan periksa penyebabnya**, jangan mengulang terus.
 :::
