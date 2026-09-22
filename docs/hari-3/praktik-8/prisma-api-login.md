@@ -261,7 +261,7 @@ export async function POST(request) {
     
 ![](prisma-api-login/image26.png)
     
-6. Selanjutnya ubah nginx.conf menjadi seperti berikut, dengan begini semua akses ke website kita tanpa basepath ([matiur-geoportal.com](http://matiur-geoportal.com/)) akan di redirect ke /portal (matiur-geportal.com/portal)
+6. Selanjutnya ubah nginx.conf menjadi seperti berikut, dengan begini semua akses ke website kita tanpa basepath (`nama01.webgisbig.com`) akan di redirect ke /portal (`nama01.webgisbig.com/portal`)
     
 ![](prisma-api-login/image6.png)
     
@@ -291,7 +291,7 @@ export async function POST(request) {
     
 ![](prisma-api-login/image5.png)
     
-11. Setelah selesai pergi ke domain anda dengan /portal dibelakangnya [https://matiur-geoportal.com/portal](https://matiur-geoportal.com/portal)
+11. Setelah selesai pergi ke domain anda dengan /portal dibelakangnya `https://nama01.webgisbig.com/portal`
     
 ![](prisma-api-login/image21.png)
 
@@ -319,7 +319,7 @@ export async function verifyCredentials(email, password) {
 
     if (!user.is_active) {
         throw new Error(
-            "Akun anda belum di aktivasi. Silahkan request aktivasi ke email arimatiur@gmail.com"
+            "Akun anda belum di aktivasi. Silahkan hubungi admin untuk mengaktifkan akun Anda"
         );
     }
 

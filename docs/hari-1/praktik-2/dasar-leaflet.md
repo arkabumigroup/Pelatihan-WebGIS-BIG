@@ -271,7 +271,7 @@ Langkah praktikum:
 
 ```js
 // 1. WMS (Web Map Service - Raster Tile)
-const wmsLayer = L.tileLayer.wms("https://matiur-geoportal.com/geoserver/wms", {
+const wmsLayer = L.tileLayer.wms("https://GEOSERVER_ANDA/geoserver/wms", {
  layers: "geoportal:batas_rw_kelurahan_pancoran_98d957db",
  format: "image/png",
  transparent: true,
@@ -280,7 +280,7 @@ const wmsLayer = L.tileLayer.wms("https://matiur-geoportal.com/geoserver/wms", {
 layersControl.addOverlay(wmsLayer, "Layer WMS");
 
 // 2. WFS (Web Feature Service - Vector via Fetch)
-const wfsUrl = "https://matiur-geoportal.com/geoserver/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=geoportal:pulo_gadung_12345&outputFormat=application/json";
+const wfsUrl = "https://GEOSERVER_ANDA/geoserver/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=geoportal:pulo_gadung_12345&outputFormat=application/json";
 fetch(wfsUrl)
  .then(res => res.json())
  .then(data => {
