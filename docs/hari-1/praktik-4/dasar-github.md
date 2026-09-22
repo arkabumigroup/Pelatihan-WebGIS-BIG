@@ -47,9 +47,9 @@ Tiga area ini menggambarkan perjalanan berkas dari perubahan hingga tersimpan pe
 
 | Area | Isi |
 |---|---|
-| **Working Directory** | Tempat berkas diedit langsung — perubahan belum dilacak oleh Git |
+| **Working Directory** | Tempat berkas diedit langsung. Perubahan belum dilacak oleh Git |
 | **Staging Area** | Berkas yang ditandai masuk ke commit berikutnya |
-| **Repository (.git)** | Riwayat permanen setelah berkas di-commit — tersimpan sebagai snapshot |
+| **Repository (.git)** | Riwayat permanen setelah berkas di-commit. Tersimpan sebagai snapshot |
 
 Perpindahan antar area terjadi lewat tiga perintah berikut.
 
