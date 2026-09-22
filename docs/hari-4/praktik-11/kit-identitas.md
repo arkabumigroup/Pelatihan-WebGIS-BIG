@@ -29,11 +29,11 @@ Halaman ini menyimpan dua kelompok nilai.
 
 Empat nilai acak itu disimpan justru supaya tidak berubah. Nilai yang sudah Anda salin ke file `.env` harus tetap sama dengan yang tertulis di sini, dan menggantinya setelah terpasang membuat login gagal. Karena itu tombol **Buat ulang** meminta konfirmasi lebih dahulu.
 
-**Kelompok kedua** adalah kata sandi super admin beserta emailnya, dari langkah 3. Keduanya disimpan karena tidak dapat dibaca kembali dari mana pun: yang ditempel ke berkas SQL hanyalah hash bcrypt, dan hash itu satu arah. Peserta yang menutup halaman ini tanpa mencatat kata sandinya harus menggantinya lewat SQL Editor.
+**Kelompok kedua** adalah kata sandi super admin beserta emailnya, dari langkah 3. Keduanya disimpan karena tidak dapat dibaca kembali dari mana pun: yang ditempel ke file SQL hanyalah hash bcrypt, dan hash itu satu arah. Peserta yang menutup halaman ini tanpa mencatat kata sandinya harus menggantinya lewat SQL Editor.
 
 Hash bcrypt-nya sendiri tidak disimpan. Nilainya panjang, hanya dipakai sekali saat mengisi `sql/02-seed-super-admin.sql`, dan dapat dihitung ulang kapan saja selama kata sandinya masih ada. Setelah halaman dimuat ulang, kotak hash karena itu menampilkan tombol **Hitung ulang hash**, bukan nilai yang lama.
 
-Hash yang dihitung ulang **berbeda** dari yang lama, walaupun kata sandinya sama persis, karena bcrypt menyisipkan salt baru pada setiap perhitungan. Yang berbeda hanya tulisan hash-nya, bukan kata sandinya: hash lama yang sudah terlanjur ditempel ke berkas SQL tetap sah dan tetap cocok dengan kata sandi itu. Jadi nilai yang berbeda di halaman ini bukan tanda ada yang salah, dan tidak perlu menjalankan berkas SQL-nya sekali lagi.
+Hash yang dihitung ulang **berbeda** dari yang lama, walaupun kata sandinya sama persis, karena bcrypt menyisipkan salt baru pada setiap perhitungan. Yang berbeda hanya tulisan hash-nya, bukan kata sandinya: hash lama yang sudah terlanjur ditempel ke file SQL tetap sah dan tetap cocok dengan kata sandi itu. Jadi nilai yang berbeda di halaman ini bukan tanda ada yang salah, dan tidak perlu menjalankan file SQL-nya sekali lagi.
 
 Penyimpanannya memakai dua tempat sekaligus. Pilihan pertama `localStorage`, dan bila tidak tersedia barulah cookie. Alasannya, `localStorage` dapat kosong pada mode penyamaran tertentu dan pada browser yang membersihkan penyimpanan lokal antar sesi, sedangkan cookie bertahan pada kedua keadaan itu. Kata sandi super admin hanya memakai `localStorage`, karena isinya kredensial dan tidak perlu ikut terkirim pada setiap permintaan ke situs ini.
 
@@ -55,9 +55,9 @@ Isinya juga tidak sampai ke Cloud Shell dengan sendirinya. Yang berpindah hanya 
 
 ### Menghapusnya
 
-Tombol **Hapus data tersimpan** di bagian bawah alat ini menghapus identitas peserta beserta nilai acaknya. Kotak kata sandi super admin punya tombol **Hapus dari peramban ini** sendiri, karena isinya kredensial dan sebagian peserta menyimpannya di tempat lain.
+Tombol **Hapus data tersimpan** di bagian bawah alat ini menghapus identitas peserta beserta nilai acaknya. Kotak kata sandi super admin punya tombol **Hapus dari browser ini** sendiri, karena isinya kredensial dan sebagian peserta menyimpannya di tempat lain.
 
-Keduanya dijalankan terpisah supaya menghapus identitas tidak ikut menghapus kata sandi yang sudah dipakai membuat akun. Sebaliknya, menghapus kata sandi tidak mengubah akun yang sudah ada di database; yang hilang hanya salinannya di peramban ini.
+Keduanya dijalankan terpisah supaya menghapus identitas tidak ikut menghapus kata sandi yang sudah dipakai membuat akun. Sebaliknya, menghapus kata sandi tidak mengubah akun yang sudah ada di database; yang hilang hanya salinannya di browser ini.
 
 Pakai tombol itu bila Anda salah memilih nama peserta dan ingin memulai dari awal. Nilai yang salah tersimpan akan muncul lagi setiap kali halaman ini dibuka sampai dihapus.
 
