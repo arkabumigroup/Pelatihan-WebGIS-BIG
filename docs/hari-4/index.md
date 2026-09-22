@@ -1,8 +1,10 @@
 # Hari 4 - Deployment Project
 
-Hari keempat memindahkan aplikasi dari laptop ke server yang dapat diakses publik. Seluruh pekerjaannya ada pada Praktik 11, mulai dari menyiapkan konfigurasi dan repositori, membuat Virtual Machine di Google Cloud, menjalankan aplikasi di dalamnya, sampai subdomain dan HTTPS aktif.
+Hari keempat memindahkan aplikasi dari laptop ke server yang dapat diakses publik. Pekerjaannya ada pada Praktik 11 dan Praktik 12, mulai dari menyiapkan konfigurasi dan repositori, membuat Virtual Machine di Google Cloud, menjalankan aplikasi di dalamnya, sampai subdomain dan HTTPS aktif, lalu mencadangkan datanya dan memantau layanannya.
 
 Halaman-halaman Praktik 11 adalah satu rangkaian yang dikerjakan berurutan. Berkas yang dibuat pada tahap awal dipakai pada tahap berikutnya, dan konfigurasi Nginx yang dibuat di awal baru berguna setelah sertifikat pada tahap subdomain terbit.
+
+Praktik 12 dikerjakan setelah Praktik 11 selesai sepenuhnya, karena yang dicadangkan dan dipantau adalah aplikasi yang sudah berjalan.
 
 ## Susunan Praktik 11
 
@@ -25,6 +27,13 @@ Halaman-halaman Praktik 11 adalah satu rangkaian yang dikerjakan berurutan. Berk
 9. [Penambahan Subdomain](/hari-4/praktik-11/subdomain) - mengarahkan subdomain ke IP statis VM dan menerbitkan sertifikat Let's Encrypt.
 10. [Menyiapkan GeoServer di VM](/hari-4/praktik-11/siapkan-geoserver-vm) - membuat workspace, datastore, dan mengunggah layer dari Geoportal.
 
+## Praktik 12 - Pencadangan dan Pemantauan
+
+Praktik ini merawat geoportal yang sudah berjalan. Isinya dikerjakan pada VM dan project kelompok yang sama seperti Praktik 11.
+
+1. [Pencadangan Data dan Konfigurasi](/hari-4/praktik-12/pencadangan) - memisahkan apa yang sudah tercadang di GitHub dari yang hanya ada di VM, membuat bucket Cloud Storage, menjadwalkan pencadangan harian, lalu membuktikan arsipnya dapat dipulihkan.
+2. [Pemantauan Sistem dan Container](/hari-4/praktik-12/pemantauan) - memeriksa container, memori, dan disk dari dalam VM, memeriksa layanan dari luar, lalu memasang uptime check beserta email peringatannya dan mengujinya sampai emailnya benar-benar masuk.
+
 ## Yang Perlu Disiapkan Peserta
 
 - Akses ke project Google Cloud dari koordinator, beserta identitas peserta untuk `PARTICIPANT_ID`. Datanya ada pada [Peserta dan Project](/hari-4/praktik-11/peserta-project).
@@ -36,6 +45,8 @@ Halaman-halaman Praktik 11 adalah satu rangkaian yang dikerjakan berurutan. Berk
 ## Hasil Akhir Hari 4
 
 Geoportal berjalan di alamat `http://IP_EKSTERNAL_VM/portal` setelah tahap aplikasi selesai, lalu berubah menjadi `https://SUBDOMAIN/portal` setelah tahap subdomain dan sertifikat selesai. Pada titik itu aplikasi, basis data, dan GeoServer sudah dapat diakses dari internet.
+
+Setelah Praktik 12, data GeoServer dan berkas `.env` sudah punya salinannya, dan portal Anda akan mengirim email begitu layanannya tidak menjawab.
 
 ## Sesi Lain pada Hari 4
 

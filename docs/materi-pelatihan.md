@@ -22,7 +22,7 @@ Praktik 8 sampai 10. Basis data cloud di Supabase, Prisma ORM dan API login, CRU
 
 [**Hari 4 - Deployment Project**](hari-4/index.md)
 
-Praktik 11. Pemindahan aplikasi ke server: konfigurasi proyek, Virtual Machine di Google Cloud, Docker, Nginx, Cloud Build, subdomain, dan HTTPS.
+Praktik 11 dan 12. Pemindahan aplikasi ke server: konfigurasi proyek, Virtual Machine di Google Cloud, Docker, Nginx, Cloud Build, subdomain, dan HTTPS. Dilanjutkan dengan merawat project yang sudah berjalan, yaitu pencadangan data dan pemantauan layanan.
 
 ## Daftar Praktik
 
@@ -39,6 +39,7 @@ Praktik 11. Pemindahan aplikasi ke server: konfigurasi proyek, Virtual Machine d
 | 9 | API dan Backend | Hari 3 |
 | 10 | Autentikasi NextAuth | Hari 3 |
 | 11 | Deployment Project | Hari 4 |
+| 12 | Pencadangan dan Pemantauan | Hari 4 |
 
 ## Status Kelengkapan
 
@@ -49,7 +50,7 @@ Sebagian sesi pada susunan acara belum punya berkas materi di repositori ini, da
 | Hari 1 | Seluruh Praktik 1 sampai 4 | - |
 | Hari 2 | Seluruh Praktik 5 sampai 7 | - |
 | Hari 3 | Seluruh Praktik 8 sampai 10 | - |
-| Hari 4 | Praktik 11, deployment project | Penyempurnaan WebGIS, Gaussian Splatting, dan review alur |
+| Hari 4 | Praktik 11 dan 12, ditambah bahan pendamping Gaussian Splatting | Penyempurnaan WebGIS dan review alur |
 
 ## Berkas Pendukung
 
