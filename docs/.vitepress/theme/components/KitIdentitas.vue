@@ -15,10 +15,14 @@
 
 import { ref, computed, watch, onMounted } from 'vue'
 import { kelompokPeserta } from '../data/peserta'
+// Panel kata sandi didaftarkan di sini, bukan di theme/index.js, karena hanya
+// halaman ini yang memakainya. Komponen yang dipakai satu tempat lebih jelas
+// dibaca bersama pemakainya.
+import PanelSandi from './PanelSandi.vue'
 
 const props = defineProps({
   // Judul halaman yang memuat alat ini. Dipakai sebagai tingkat judul bagian,
-  // supaya daftar isi halaman tetap menampilkan ketiga langkahnya.
+  // supaya daftar isi halaman tetap menampilkan kelima langkahnya.
   judul: { type: String, default: 'Kit Identitas Peserta' },
 })
 
@@ -551,7 +555,7 @@ onMounted(() => {
 <template>
   <div class="ki">
     <!-- Judul di dalam komponen, bukan di halaman, supaya daftar isi halaman
-         menampilkan keempat langkahnya tanpa perlu menulis judul berkali-kali. -->
+         menampilkan kelima langkahnya tanpa perlu menulis judul berkali-kali. -->
     <h2 v-if="judul" class="ki-judul-halaman">{{ judul }}</h2>
 
     <!-- Langkah 1. Pemilihan peserta. -->
@@ -673,9 +677,24 @@ onMounted(() => {
       </p>
     </section>
 
-    <!-- Langkah 3. Tabel rujukan. -->
+    <!-- Langkah 3. Kata sandi super admin. -->
     <section class="ki-bagian">
-      <component :is="tingkatJudul" class="ki-judul">3. Buat nilai acak</component>
+      <component :is="tingkatJudul" class="ki-judul">3. Buat kata sandi super admin</component>
+
+      <p class="ki-antar">
+        Akun super admin adalah akun pertama yang dapat masuk ke portal Anda.
+        Kata sandinya dibuat di sini, lalu hash-nya ditempel ke
+        <code>sql/02-seed-super-admin.sql</code>. Langkah ini menggantikan
+        perintah <code>node scripts/hash-password.mjs</code>, sehingga Node.js
+        tidak perlu dipasang di laptop.
+      </p>
+
+      <PanelSandi />
+    </section>
+
+    <!-- Langkah 4. Nilai acak untuk berkas .env. -->
+    <section class="ki-bagian">
+      <component :is="tingkatJudul" class="ki-judul">4. Buat nilai acak</component>
 
       <p class="ki-antar">
         Empat nilai yang pada materi sebelumnya dibuat dengan perintah
@@ -691,9 +710,9 @@ onMounted(() => {
       <PanelAcak :isian="nilaiAcak" :paket="paket" />
     </section>
 
-    <!-- Langkah 4. Tabel rujukan. -->
+    <!-- Langkah 5. Tabel rujukan. -->
     <section class="ki-bagian">
-      <component :is="tingkatJudul" class="ki-judul">4. Daftar nilainya</component>
+      <component :is="tingkatJudul" class="ki-judul">5. Daftar nilainya</component>
 
       <p class="ki-antar">
         Dipakai bila hanya satu nilai yang dibutuhkan, misalnya saat mengisi
