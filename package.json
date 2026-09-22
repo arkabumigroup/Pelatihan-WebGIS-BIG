@@ -11,6 +11,7 @@
     "export-pdf:semua": "press-export-pdf export docs -c docs/.vitepress/vitepress-pdf-semua.config.mjs"
   },
   "devDependencies": {
+    "bcryptjs": "^3.0.3",
     "vite-plugin-vitepress-auto-sidebar": "^1.7.1",
     "vitepress": "^1.0.0",
     "vitepress-export-pdf": "^1.0.0",

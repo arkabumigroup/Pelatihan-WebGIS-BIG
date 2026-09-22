@@ -1,6 +1,6 @@
 # Kit Identitas Peserta
 
-Halaman ini menyimpan identitas peserta di browser, lalu membangkitkan seluruh nama resource dan nilai rahasia yang diturunkan darinya. Isinya menggantikan blok yang harus diketik pada [Tahap 2 halaman Persiapan Repositori](/hari-4/praktik-11/persiapan-repositori#tahap-2-tetapkan-identitas-peserta).
+Halaman ini menyimpan identitas peserta di browser, lalu membangkitkan seluruh nama resource dan nilai rahasia yang diturunkan darinya. Isinya menggantikan blok yang harus diketik pada [Tahap 2 halaman Persiapan Repositori](/hari-4/praktik-11/persiapan-repositori#tahap-2-tetapkan-identitas-peserta). Langkah 3 di sini juga dapat dipakai sebagai ganti perintah `node scripts/hash-password.mjs` yang membuat hash kata sandi super admin; keduanya sama-sama sah, dan [halaman Skema Database](/hari-4/praktik-11/skema-database#membuat-akun-super-admin) menyebut keduanya sebagai dua pilihan.
 
 ## Masalah yang Dipecahkan
 
@@ -23,18 +23,28 @@ Daftar namanya memuat peserta **batch 1 dan batch 2**, masing-masing 41 orang. S
 
 ## Yang Disimpan, dan di Mana
 
-Tujuh nilai disimpan, yaitu **Nama Peserta**, **Project ID**, dan **empat nilai acak** yang Anda buat pada langkah 3. Tiga belas nilai turunan lainnya tidak disimpan, melainkan dihitung ulang setiap kali halaman ini dibuka, sehingga tidak ada yang dapat tertinggal saat salah satu nilai di atas berubah.
+Halaman ini menyimpan dua kelompok nilai.
+
+**Kelompok pertama** adalah identitas peserta: **Nama Peserta**, **Project ID**, dan **empat nilai acak** yang Anda buat pada langkah 4. Ketiga belas nilai turunan lainnya tidak disimpan, melainkan dihitung ulang setiap kali halaman ini dibuka, sehingga tidak ada yang dapat tertinggal saat salah satu nilai di atas berubah.
 
 Empat nilai acak itu disimpan justru supaya tidak berubah. Nilai yang sudah Anda salin ke file `.env` harus tetap sama dengan yang tertulis di sini, dan menggantinya setelah terpasang membuat login gagal. Karena itu tombol **Buat ulang** meminta konfirmasi lebih dahulu.
 
-Penyimpanannya memakai dua tempat sekaligus. Pilihan pertama `localStorage`, dan bila tidak tersedia barulah cookie. Alasannya, `localStorage` dapat kosong pada mode penyamaran tertentu dan pada browser yang membersihkan penyimpanan lokal antar sesi, sedangkan cookie bertahan pada kedua keadaan itu.
+**Kelompok kedua** adalah kata sandi super admin beserta emailnya, dari langkah 3. Keduanya disimpan karena tidak dapat dibaca kembali dari mana pun: yang ditempel ke berkas SQL hanyalah hash bcrypt, dan hash itu satu arah. Peserta yang menutup halaman ini tanpa mencatat kata sandinya harus menggantinya lewat SQL Editor.
 
-Keempat baris itu mengisi lima variabel, karena `GEOSERVER_PASSWORD` dan `GEOSERVER_ADMIN_PASSWORD` memang harus bernilai sama. Satu baris menanganinya sekaligus, sehingga keduanya tidak dapat berbeda tanpa sengaja.
+Hash bcrypt-nya sendiri tidak disimpan. Nilainya panjang, hanya dipakai sekali saat mengisi `sql/02-seed-super-admin.sql`, dan dapat dihitung ulang kapan saja selama kata sandinya masih ada. Setelah halaman dimuat ulang, kotak hash karena itu menampilkan tombol **Hitung ulang hash**, bukan nilai yang lama.
 
-:::: warning Dua nilai identitas itu terbuka, empat nilai acak tidak
+Hash yang dihitung ulang **berbeda** dari yang lama, walaupun kata sandinya sama persis, karena bcrypt menyisipkan salt baru pada setiap perhitungan. Yang berbeda hanya tulisan hash-nya, bukan kata sandinya: hash lama yang sudah terlanjur ditempel ke berkas SQL tetap sah dan tetap cocok dengan kata sandi itu. Jadi nilai yang berbeda di halaman ini bukan tanda ada yang salah, dan tidak perlu menjalankan berkas SQL-nya sekali lagi.
+
+Penyimpanannya memakai dua tempat sekaligus. Pilihan pertama `localStorage`, dan bila tidak tersedia barulah cookie. Alasannya, `localStorage` dapat kosong pada mode penyamaran tertentu dan pada browser yang membersihkan penyimpanan lokal antar sesi, sedangkan cookie bertahan pada kedua keadaan itu. Kata sandi super admin hanya memakai `localStorage`, karena isinya kredensial dan tidak perlu ikut terkirim pada setiap permintaan ke situs ini.
+
+Keempat baris nilai acak itu mengisi lima variabel, karena `GEOSERVER_PASSWORD` dan `GEOSERVER_ADMIN_PASSWORD` memang harus bernilai sama. Satu baris menanganinya sekaligus, sehingga keduanya tidak dapat berbeda tanpa sengaja.
+
+:::: warning Dua nilai identitas itu terbuka, sisanya rahasia
 **Nama Peserta** dan **Project ID** sudah tercantum pada [tabel peserta](/hari-4/praktik-11/peserta-project) yang dapat dibaca siapa saja, jadi keduanya bukan rahasia.
 
-Empat nilai acaknya berbeda. `JWT_SECRET`, `NEXTAUTH_SECRET`, dan `GEOSERVER_PASSWORD` adalah kredensial, dan di halaman ini ketiganya tersimpan di komputer Anda tanpa enkripsi. Pakai tombol **Hapus data tersimpan** bila Anda memakai komputer bersama atau komputer pinjaman, dan jangan memotret halaman ini untuk dibagikan.
+Selebihnya adalah kredensial. Empat nilai acak, kata sandi super admin, dan emailnya tersimpan di komputer Anda tanpa enkripsi. Pakai tombol **Hapus data tersimpan** bila Anda memakai komputer bersama atau komputer pinjaman, dan jangan memotret halaman ini untuk dibagikan.
+
+Yang perlu diingat justru sebaliknya: kata sandi super admin **harus** Anda catat di tempat yang dapat Anda buka lagi. Menutup halaman ini tanpa mencatatnya membuat akun super admin tidak dapat dimasuki, dan satu-satunya jalan keluar adalah mengganti hash-nya lewat SQL Editor.
 ::::
 
 ### Data ini tidak pindah ke komputer lain
@@ -45,7 +55,9 @@ Isinya juga tidak sampai ke Cloud Shell dengan sendirinya. Yang berpindah hanya 
 
 ### Menghapusnya
 
-Tombol **Hapus data tersimpan** di bagian bawah alat ini menghapus seluruhnya sekaligus, baik identitas maupun nilai acaknya.
+Tombol **Hapus data tersimpan** di bagian bawah alat ini menghapus identitas peserta beserta nilai acaknya. Kotak kata sandi super admin punya tombol **Hapus dari peramban ini** sendiri, karena isinya kredensial dan sebagian peserta menyimpannya di tempat lain.
+
+Keduanya dijalankan terpisah supaya menghapus identitas tidak ikut menghapus kata sandi yang sudah dipakai membuat akun. Sebaliknya, menghapus kata sandi tidak mengubah akun yang sudah ada di database; yang hilang hanya salinannya di peramban ini.
 
 Pakai tombol itu bila Anda salah memilih nama peserta dan ingin memulai dari awal. Nilai yang salah tersimpan akan muncul lagi setiap kali halaman ini dibuka sampai dihapus.
 
@@ -56,17 +68,20 @@ Halaman ini memerlukan JavaScript, karena seluruh nilainya dihitung di browser A
 1. **Browser memblokir penyimpanan.** Mode penyamaran pada sebagian browser menolak penulisan. Nilainya tetap dapat dibuat dan disalin, hanya saja tidak tersimpan setelah halaman ditutup.
 2. **Situs dibuka tanpa HTTPS.** Sumber acaknya tetap bekerja, tetapi tombol **Salin** memerlukan HTTPS pada sebagian browser. Bila tombolnya gagal, blok dan nilainya masih dapat dipilih lalu disalin dengan `Ctrl+C`.
 
-Bila keduanya bukan penyebabnya, kembali ke perintah terminal yang digantikan halaman ini:
+Bila keduanya bukan penyebabnya, atau bila Anda memang lebih suka bekerja di terminal, perintah berikut menghasilkan nilai yang sama:
 
 ```bash
-# Di laptop, untuk JWT_SECRET dan NEXTAUTH_SECRET
+# Di terminal, untuk JWT_SECRET dan NEXTAUTH_SECRET: 64 karakter
 openssl rand -hex 32
 
-# Di Windows, PowerShell, atau Command Prompt
+# Di terminal VM, untuk GEOSERVER_PASSWORD: 32 karakter
+openssl rand -hex 16
+
+# Di Windows, PowerShell, atau Command Prompt, sebagai ganti `openssl`
 node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 
-# Di terminal VM, untuk GEOSERVER_PASSWORD
-openssl rand -hex 16
+# Di folder proyek, sebagai cara lain membuat hash kata sandi super admin
+node scripts/hash-password.mjs
 ```
 
 ## Setelah Bloknya Tersalin
@@ -74,3 +89,5 @@ openssl rand -hex 16
 Kembali ke [Persiapan Repositori](/hari-4/praktik-11/persiapan-repositori) dan lanjutkan dari Tahap 3. Perintah `gcloud config set project` sudah ikut di dalam blok, jadi tidak ada yang perlu dijalankan lebih dahulu.
 
 Bila Cloud Shell menutup sesinya lagi di tengah pekerjaan, buka halaman ini dan salin bloknya sekali lagi. Tidak ada nilai yang perlu dicari ulang di tabel peserta.
+
+Kata sandi super admin dipakai pada [Tahap 2 halaman Konfigurasi Project](/hari-4/praktik-11/konfigurasi-project#buat-akun-super-admin). Yang ditempel ke `sql/02-seed-super-admin.sql` adalah hash-nya, bukan kata sandinya, dan kata sandi itu sendiri dipakai untuk masuk ke portal pada [Tahap 8](/hari-4/praktik-11/konfigurasi-project#tahap-8-uji-seluruh-file-di-laptop).
