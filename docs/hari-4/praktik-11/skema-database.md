@@ -1,29 +1,29 @@
 # Skema Database
 
-Halaman ini memuat tiga berkas SQL yang membuat dan memeriksa tabel database. Isinya ditampilkan lengkap supaya dapat disalin langsung dari sini.
+Halaman ini memuat tiga file SQL yang membuat dan memeriksa tabel database. Isinya ditampilkan lengkap supaya dapat disalin langsung dari sini.
 
-Berkas aslinya juga ada di folder `sql/` pada repositori Anda, dan isinya sama. Bila Anda sudah menjalankan [Tahap 1 hingga 2 pada halaman Konfigurasi Project](/hari-4/praktik-11/konfigurasi-project), berkas itu sudah ada di laptop Anda.
+File aslinya juga ada di folder `sql/` pada repositori Anda, dan isinya sama. Bila Anda sudah menjalankan [Tahap 1 hingga 2 pada halaman Konfigurasi Project](/hari-4/praktik-11/konfigurasi-project), file itu sudah ada di laptop Anda.
 
 ## Cara tabel ini dibuat
 
-Ketiga tabel dibuat dengan menjalankan berkas SQL di halaman ini, bukan dengan mengetik kolomnya satu per satu di antarmuka database. Seluruh peserta memakai berkas yang sama, sehingga bentuk tabelnya seragam di semua komputer.
+Ketiga tabel dibuat dengan menjalankan file SQL di halaman ini, bukan dengan mengetik kolomnya satu per satu di antarmuka database. Seluruh peserta memakai file yang sama, sehingga bentuk tabelnya seragam di semua komputer.
 
-Bentuknya mengikuti ketentuan ERD pada halaman ini: nama kolom, tipe data, nilai bawaan, aturan `CHECK`, dan kaitannya antar tabel. Aplikasi mengharapkan bentuk itu persis, jadi yang perlu Anda pastikan adalah seluruh berkas di bawah dijalankan sampai selesai.
+Bentuknya mengikuti ketentuan ERD pada halaman ini: nama kolom, tipe data, nilai bawaan, aturan `CHECK`, dan kaitannya antar tabel. Aplikasi mengharapkan bentuk itu persis, jadi yang perlu Anda pastikan adalah seluruh file di bawah dijalankan sampai selesai.
 
 ## Menjalankan di SQL Editor
 
-Ketiga berkas dijalankan lewat **SQL Editor** Supabase, bukan lewat terminal.
+Ketiga file dijalankan lewat **SQL Editor** Supabase, bukan lewat terminal.
 
 1. Buka project Anda di [supabase.com/dashboard](https://supabase.com/dashboard).
 2. Pada menu kiri, klik **SQL Editor**.
-3. Salin **seluruh** isi salah satu berkas di bawah, tempel ke kotak yang tersedia, lalu klik **Run**.
-4. Ulangi untuk berkas berikutnya, sesuai urutan.
+3. Salin **seluruh** isi salah satu file di bawah, tempel ke kotak yang tersedia, lalu klik **Run**.
+4. Ulangi untuk file berikutnya, sesuai urutan.
 
 Jangan menyalin sebagian, karena `01-schema.sql` dan `02-seed-super-admin.sql` memakai `BEGIN` dan `COMMIT` yang harus berpasangan.
 
 ## Urutan Pengerjaan
 
-| # | Berkas | Yang dilakukan | Wajib? | Mengubah data? |
+| # | File | Yang dilakukan | Wajib? | Mengubah data? |
 |---|---|---|---|---|
 | 1 | `01-schema.sql` | Membuat tiga tabel: `users`, `katalog_data_2d`, dan `katalog_data_3d` | Ya | Tidak, hanya membuat tabel |
 | 2 | Perintah RLS | Mengaktifkan Row Level Security pada ketiga tabel itu | Ya, segera setelah langkah 1 | Tidak, hanya mengubah pengaturan tabel |
@@ -169,11 +169,11 @@ COMMIT;
 -- harus punya foreign key (contype 'f') ke users.
 ```
 
-Berkas ini hanya membuat tabel. Mengaktifkan Row Level Security dikerjakan pada langkah berikutnya, sesaat setelah tabelnya ada.
+File ini hanya membuat tabel. Mengaktifkan Row Level Security dikerjakan pada langkah berikutnya, sesaat setelah tabelnya ada.
 
 ## Mengaktifkan Row Level Security
 
-Supabase menyediakan REST API otomatis untuk setiap tabel di schema `public`, dan kunci `anon` yang dipakai API itu memang dirancang untuk dipakai di sisi peramban. Yang mencegah penyalahgunaannya adalah Row Level Security, bukan kerahasiaan kunci tersebut.
+Supabase menyediakan REST API otomatis untuk setiap tabel di schema `public`, dan kunci `anon` yang dipakai API itu memang dirancang untuk dipakai di sisi browser. Yang mencegah penyalahgunaannya adalah Row Level Security, bukan kerahasiaan kunci tersebut.
 
 Jalankan perintah ini di SQL Editor **segera setelah** `01-schema.sql` selesai, selagi tabelnya baru dibuat:
 
@@ -203,7 +203,7 @@ View `v_katalog_2d_lengkap` dibuat memakai `security_invoker = true` pada `01-sc
 
 ## 02-seed-super-admin.sql
 
-::: warning Berkas ini tidak bisa dijalankan apa adanya
+::: warning File ini tidak bisa dijalankan apa adanya
 Isinya template. Dua nilai di dalamnya masih berupa penanda, dan harus diganti lebih dahulu:
 
 ```sql
@@ -211,7 +211,7 @@ email_admin text := '<ISI_EMAIL_DI_SINI>';
 hash_admin  text := '<ISI_HASH_DI_SINI>';
 ```
 
-Bila dijalankan tanpa mengganti penandanya, berkas ini berhenti dengan pesan yang menyebut penanda mana yang belum diisi. Berhentinya disengaja, supaya akun dengan email kosong tidak pernah dibuat.
+Bila dijalankan tanpa mengganti penandanya, file ini berhenti dengan pesan yang menyebut penanda mana yang belum diisi. Berhentinya disengaja, supaya akun dengan email kosong tidak pernah dibuat.
 
 Cara mengisinya ada pada bagian **Membuat Akun Super Admin** di bawah.
 :::
@@ -287,14 +287,14 @@ node scripts/hash-password.mjs
 
 Skrip itu meminta kata sandi lewat prompt tersembunyi, jadi kata sandinya tidak muncul di layar dan tidak masuk riwayat terminal. Hasilnya satu baris berawalan `$2b$12$`. Salin baris itu.
 
-**Langkah 2. Isi penandanya.** Buka berkas `02-seed-super-admin.sql`, lalu ganti dua penanda:
+**Langkah 2. Isi penandanya.** Buka file `02-seed-super-admin.sql`, lalu ganti dua penanda:
 
 ```sql
 email_admin text := '<ISI_EMAIL_DI_SINI>';
 hash_admin  text := '<ISI_HASH_DI_SINI>';
 ```
 
-**Langkah 3. Jalankan.** Salin seluruh isi berkas yang sudah diubah ke SQL Editor, lalu Run. Hasilnya:
+**Langkah 3. Jalankan.** Salin seluruh isi file yang sudah diubah ke SQL Editor, lalu Run. Hasilnya:
 
 ```
 NOTICE: Akun super admin nama@email.com siap dipakai.
@@ -305,12 +305,12 @@ Email dan kata sandi itulah yang dipakai untuk masuk ke portal.
 ::: warning Peserta yang mendaftar sendiri tidak menjadi super admin
 Halaman `/register` pada aplikasi selalu menghasilkan peran `viewer` dan status belum aktif. Itu memang disengaja, supaya tidak ada yang bisa menaikkan perannya sendiri.
 
-Akun super admin hanya bisa lahir dari `02-seed-super-admin.sql`. Jadi berkas itu wajib dijalankan, bukan pilihan.
+Akun super admin hanya bisa lahir dari `02-seed-super-admin.sql`. Jadi file itu wajib dijalankan, bukan pilihan.
 :::
 
 ## 03-periksa.sql
 
-Berkas ini hanya berisi perintah `SELECT`. Tidak mengubah apa pun, jadi aman dijalankan kapan saja, termasuk berkali-kali.
+File ini hanya berisi perintah `SELECT`. Tidak mengubah apa pun, jadi aman dijalankan kapan saja, termasuk berkali-kali.
 
 ```sql
 -- Tempel seluruh berkas ke SQL Editor Supabase lalu Run. Semua di sini hanya SELECT.
@@ -409,7 +409,7 @@ ORDER BY s.tabel, s.nama;
 
 ## Kolom yang sengaja boleh kosong
 
-Bagian 3 pada berkas di atas memeriksa kolom wajib saja. Itu disengaja.
+Bagian 3 pada file di atas memeriksa kolom wajib saja. Itu disengaja.
 
 Sebagian kolom **memang dibiarkan boleh kosong**, karena nilainya baru terisi setelah proses berjalan:
 
@@ -417,7 +417,7 @@ Sebagian kolom **memang dibiarkan boleh kosong**, karena nilainya baru terisi se
 |---|---|
 | `katalog_data_2d.wms_url`, `wfs_url` | Setelah layer terbit ke GeoServer |
 | `katalog_data_2d.author` | Boleh kosong untuk data hasil impor |
-| `katalog_data_3d.url` | Setelah berkas model tersimpan |
+| `katalog_data_3d.url` | Setelah file model tersimpan |
 | `katalog_data_3d.latitude`, `longitude`, `heading`, `pitch`, `roll`, `scale` | Saat model ditempatkan di peta |
 | `katalog_data_3d.author` | Boleh kosong untuk data hasil impor |
 
@@ -482,7 +482,7 @@ Buka kembali halaman login, dan masuk memakai kata sandi yang baru.
 
 ### Bila akun super admin tidak ada
 
-Berarti `02-seed-super-admin.sql` belum pernah dijalankan. Buka berkas itu, ganti kedua penandanya, lalu jalankan seluruh isinya di SQL Editor. Langkahnya ada pada bagian [Membuat Akun Super Admin](#membuat-akun-super-admin) di halaman ini.
+Berarti `02-seed-super-admin.sql` belum pernah dijalankan. Buka file itu, ganti kedua penandanya, lalu jalankan seluruh isinya di SQL Editor. Langkahnya ada pada bagian [Membuat Akun Super Admin](#membuat-akun-super-admin) di halaman ini.
 
 ### Bila muncul "Akun anda belum di aktivasi"
 
@@ -502,7 +502,7 @@ Yang dapat dilakukan adalah menggantinya, dan itulah yang dikerjakan bagian ini.
 
 Periksa berurutan:
 
-1. **`DATABASE_URL` salah.** Pesan galatnya menyebut `Can't reach database server`. Periksa bagian catatan tentang `DATABASE_URL` pada [Tahap 5 halaman Konfigurasi Project](/hari-4/praktik-11/konfigurasi-project).
+1. **`DATABASE_URL` salah.** Pesan errornya menyebut `Can't reach database server`. Periksa bagian catatan tentang `DATABASE_URL` pada [Tahap 5 halaman Konfigurasi Project](/hari-4/praktik-11/konfigurasi-project).
 2. **Tabel belum ada.** Jalankan `03-periksa.sql`. Hasilnya harus menampilkan tiga tabel.
 3. **Akun belum aktif.** Jalankan di SQL Editor:
 
@@ -518,4 +518,4 @@ Periksa berurutan:
     ```
 
 5. **Pesan menyebut tabel tidak ditemukan.** Prisma membaca schema `public`. Pastikan ketiga tabel dibuat di sana.
-6. **Kegagalan constraint yang sulit dilacak.** Jalankan `05-diagnosa-constraint.sql`. Berkas itu memeriksa sepuluh hal sekaligus dan diakhiri tabel keputusan: gejala mana menunjuk ke perbaikan mana.
+6. **Kegagalan constraint yang sulit dilacak.** Jalankan `05-diagnosa-constraint.sql`. File itu memeriksa sepuluh hal sekaligus dan diakhiri tabel keputusan: gejala mana menunjuk ke perbaikan mana.

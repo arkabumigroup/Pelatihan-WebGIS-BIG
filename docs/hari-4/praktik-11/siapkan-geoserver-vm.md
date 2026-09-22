@@ -156,7 +156,7 @@ Perbaikannya adalah satu variabel pada service `geoserver` di `docker-compose.ym
 - CSRF_WHITELIST=webgisbig.com
 ```
 
-**Baris itu sudah ada di berkas yang Anda clone**, karena ikut ketika Anda mem-fork repositori peserta. Yang perlu Anda lakukan hanya memastikan barisnya ada, bukan menambahkannya.
+**Baris itu sudah ada di file yang Anda clone**, karena ikut ketika Anda mem-fork repositori peserta. Yang perlu Anda lakukan hanya memastikan barisnya ada, bukan menambahkannya.
 
 ::: danger Namanya tanpa awalan GEOSERVER_
 Image kartoza membaca variabel bernama `CSRF_WHITELIST`, lalu meneruskannya ke GeoServer sebagai `-DGEOSERVER_CSRF_WHITELIST`. Namanya memang berbeda di kedua sisi, dan di situlah kesalahannya biasa terjadi.
@@ -286,7 +286,7 @@ Periksa hasilnya:
 
 <p class="dijalankan dijalankan--server">Dijalankan di: <strong>Terminal VM</strong></p>
 
-Model 3D disimpan sebagai berkas di VM, bukan di database. Baris katalognya ada di Supabase, tetapi berkasnya ada di folder `data/models` pada VM.
+Model 3D disimpan sebagai file di VM, bukan di database. Baris katalognya ada di Supabase, tetapi filenya ada di folder `data/models` pada VM.
 
 Pada `docker-compose.yml`, folder itu dipasang sebagai volume:
 
@@ -308,7 +308,7 @@ RUN adduser --system --uid 1001 nextjs
 USER nextjs
 ```
 
-Bila folder `data` belum ada, Docker membuatnya sendiri sebagai `root:root` dengan mode `755`, sama seperti yang terjadi pada folder `tls` di halaman Subdomain. Pada mode itu, uid 1001 bukan pemiliknya dan hanya memperoleh hak baca, sehingga penulisan berkas ditolak.
+Bila folder `data` belum ada, Docker membuatnya sendiri sebagai `root:root` dengan mode `755`, sama seperti yang terjadi pada folder `tls` di halaman Subdomain. Pada mode itu, uid 1001 bukan pemiliknya dan hanya memperoleh hak baca, sehingga penulisan file ditolak.
 
 ### Membuat dan menyesuaikan pemiliknya
 
@@ -341,18 +341,18 @@ sudo docker compose up -d
 
 ### Memeriksa hasilnya
 
-Unggah satu model 3D dari Geoportal, lalu periksa berkasnya di VM:
+Unggah satu model 3D dari Geoportal, lalu periksa filenya di VM:
 
 ```bash
 ls -la /opt/webgis/app/data/models/
 ```
 
-Berkasnya harus muncul, dengan pemilik `1001`.
+Filenya harus muncul, dengan pemilik `1001`.
 
 ::: danger Tanpa folder ini, model 3D hilang pada setiap deploy
-Berkas yang ditulis ke dalam container, bukan ke volume, akan hilang setiap kali container dibuat ulang. Cloud Build menjalankan `docker compose up -d` pada setiap push ke branch `main`, sehingga setiap deploy menghapus seluruh model yang pernah diunggah.
+File yang ditulis ke dalam container, bukan ke volume, akan hilang setiap kali container dibuat ulang. Cloud Build menjalankan `docker compose up -d` pada setiap push ke branch `main`, sehingga setiap deploy menghapus seluruh model yang pernah diunggah.
 
-Gejalanya menyesatkan: katalog tetap menampilkan modelnya, karena barisnya masih ada di Supabase, tetapi berkasnya sudah tidak ada sehingga modelnya gagal dibuka.
+Gejalanya menyesatkan: katalog tetap menampilkan modelnya, karena barisnya masih ada di Supabase, tetapi filenya sudah tidak ada sehingga modelnya gagal dibuka.
 :::
 
 ## Bila Ada yang Gagal
@@ -366,13 +366,13 @@ Gejalanya menyesatkan: katalog tetap menampilkan modelnya, karena barisnya masih
 | `Test Connection` gagal | Nilai `POSTGIS_*` pada datastore berbeda dari `.env`, atau datastore dibuat sebelum PostGIS aktif |
 | Unggahan berhasil tetapi layer tidak muncul | Layer belum diterbitkan. Periksa `Data > Layers` pada GeoServer |
 | Halaman `https://SUBDOMAIN/geoserver/web` berputar tanpa henti | `proxy_redirect` belum ada pada `nginx.conf`. Periksa halaman [Penambahan Subdomain](/hari-4/praktik-11/subdomain) |
-| Unggah model 3D gagal, atau berkasnya tidak muncul di `data/models` | Pemilik folder `data` bukan uid 1001. Kerjakan Tahap 8 |
-| Model 3D yang dulu ada kini tidak dapat dibuka | Berkasnya hilang karena ditulis ke dalam container, bukan ke volume. Kerjakan Tahap 8 |
-| `Unexpected token '<', "<html> ..." is not valid JSON` saat menyimpan data | Nginx menolak unggahannya dan membalas halaman HTML, bukan JSON. Periksa `client_max_body_size` pada `nginx.conf` seperti pada Tahap 4 halaman Konfigurasi Project, lalu buat ulang container `nginx` dengan `sudo docker compose up -d --force-recreate nginx`. Memuat ulang saja tidak cukup, karena berkas yang di-mount satu per satu mengikuti inode lama setelah `git pull` menggantinya |
-| `Berkas melebihi batas 1024 MB` padahal berkasnya lebih kecil | Batas pada route lebih kecil daripada `client_max_body_size`. Samakan keduanya seperti pada Tahap 4 halaman Konfigurasi Project |
-| Unggahan berhenti di tengah pada berkas besar | `client_body_timeout`, `proxy_send_timeout`, atau `proxy_read_timeout` masih pada nilai bawaan 60 detik. Kerjakan Tahap 4 halaman Konfigurasi Project |
-| Bilah kemajuan berhenti di 100 persen dan lama tidak berubah | Bukan macet. Setelah pengiriman selesai, server masih menulis berkasnya ke disk dan menyimpan barisnya ke database. Keterangan pada dialog berganti menjadi "Server sedang menyimpan berkas" selama tahap itu |
-| Disk VM hampir penuh setelah beberapa kali unggah | Model tersimpan di `data/models` dan tidak ikut terhapus saat baris katalognya dihapus. Periksa dengan `du -sh /opt/webgis/app/data/models`, lalu hapus berkas yang tidak dipakai |
+| Unggah model 3D gagal, atau filenya tidak muncul di `data/models` | Pemilik folder `data` bukan uid 1001. Kerjakan Tahap 8 |
+| Model 3D yang dulu ada kini tidak dapat dibuka | Filenya hilang karena ditulis ke dalam container, bukan ke volume. Kerjakan Tahap 8 |
+| `Unexpected token '<', "<html> ..." is not valid JSON` saat menyimpan data | Nginx menolak unggahannya dan membalas halaman HTML, bukan JSON. Periksa `client_max_body_size` pada `nginx.conf` seperti pada Tahap 4 halaman Konfigurasi Project, lalu buat ulang container `nginx` dengan `sudo docker compose up -d --force-recreate nginx`. Memuat ulang saja tidak cukup, karena file yang di-mount satu per satu mengikuti inode lama setelah `git pull` menggantinya |
+| `File melebihi batas 1024 MB` padahal filenya lebih kecil | Batas pada route lebih kecil daripada `client_max_body_size`. Samakan keduanya seperti pada Tahap 4 halaman Konfigurasi Project |
+| Unggahan berhenti di tengah pada file besar | `client_body_timeout`, `proxy_send_timeout`, atau `proxy_read_timeout` masih pada nilai bawaan 60 detik. Kerjakan Tahap 4 halaman Konfigurasi Project |
+| Bilah kemajuan berhenti di 100 persen dan lama tidak berubah | Bukan macet. Setelah pengiriman selesai, server masih menulis filenya ke disk dan menyimpan barisnya ke database. Keterangan pada dialog berganti menjadi "Server sedang menyimpan file" selama tahap itu |
+| Disk VM hampir penuh setelah beberapa kali unggah | Model tersimpan di `data/models` dan tidak ikut terhapus saat baris katalognya dihapus. Periksa dengan `du -sh /opt/webgis/app/data/models`, lalu hapus file yang tidak dipakai |
 
 ## Hasil Akhir
 

@@ -24,13 +24,13 @@ Fork `https://github.com/dhanyyudi/personal-geoportal-peserta` di akun GitHub An
 
 Kelima butir itu dikerjakan pada Tahap 2 dan Tahap 8 sampai 9 halaman Konfigurasi Project.
 
-### 3. Berkas .env sudah terisi
+### 3. File .env sudah terisi
 
-`.env` di laptop sudah diisi pada [Tahap 5 halaman Konfigurasi Project](/hari-4/praktik-11/konfigurasi-project#tahap-5-isi-berkas-env). Yang perlu Anda siapkan di sini adalah nilai untuk `.env` di VM, yang merupakan berkas terpisah.
+`.env` di laptop sudah diisi pada [Tahap 5 halaman Konfigurasi Project](/hari-4/praktik-11/konfigurasi-project#tahap-5-isi-file-env). Yang perlu Anda siapkan di sini adalah nilai untuk `.env` di VM, yang merupakan file terpisah.
 
 Enam variabel berikut wajib ada. Tanpa salah satunya, login di VM tidak bekerja.
 
-Enam ini baru syarat agar login berjalan. Pemeriksa pada [Tahap 18 halaman Menyiapkan Aplikasi di VM](/hari-4/praktik-11/aplikasi-di-vm#tahap-18-isi-berkas-env) juga memeriksa lima variabel GeoServer dan PostGIS, dan kelimanya baru diisi di sana karena datastore-nya belum ada sebelum GeoServer berjalan. Jadi wajar bila baru sebagian yang terisi sekarang.
+Enam ini baru syarat agar login berjalan. Pemeriksa pada [Tahap 18 halaman Menyiapkan Aplikasi di VM](/hari-4/praktik-11/aplikasi-di-vm#tahap-18-isi-file-env) juga memeriksa lima variabel GeoServer dan PostGIS, dan kelimanya baru diisi di sana karena datastore-nya belum ada sebelum GeoServer berjalan. Jadi wajar bila baru sebagian yang terisi sekarang.
 
 | Variabel | Isi |
 |---|---|
@@ -41,9 +41,9 @@ Enam ini baru syarat agar login berjalan. Pemeriksa pada [Tahap 18 halaman Menyi
 | `ADMIN_CONTACT_EMAIL` | Email Anda sendiri |
 | `JWT_EXPIRES_IN` | `1h`, sudah terisi di `.env.example` |
 
-Tiga nilai yang berbeda antara laptop dan VM adalah `NEXTAUTH_URL`, `BASE_URL`, dan `NEXT_PUBLIC_URL_BASE_PATH`, karena ketiganya memuat alamat aplikasi. Nilainya diisi pada [Tahap 18 halaman Menyiapkan Aplikasi di VM](/hari-4/praktik-11/aplikasi-di-vm#tahap-18-isi-berkas-env).
+Tiga nilai yang berbeda antara laptop dan VM adalah `NEXTAUTH_URL`, `BASE_URL`, dan `NEXT_PUBLIC_URL_BASE_PATH`, karena ketiganya memuat alamat aplikasi. Nilainya diisi pada [Tahap 18 halaman Menyiapkan Aplikasi di VM](/hari-4/praktik-11/aplikasi-di-vm#tahap-18-isi-file-env).
 
-Berkas `.env` di laptop tidak ikut ter-commit, dan tidak ikut tersalin ke VM. Berkas di VM dibuat langsung di sana.
+File `.env` di laptop tidak ikut ter-commit, dan tidak ikut tersalin ke VM. File di VM dibuat langsung di sana.
 
 ### 4. Akses Google Cloud dari koordinator
 
@@ -73,7 +73,7 @@ Repositori sumber dapat diperbarui selama pelatihan, misalnya karena ada perbaik
 
 Di GitHub Desktop: klik **Fetch origin**. Bila muncul tombol **Pull origin** dengan angka, klik tombol itu. Angka itu jumlah perubahan yang belum masuk ke fork Anda.
 
-Bila muncul konflik, artinya Anda dan sumber mengubah berkas yang sama. Cara tercepat ada di bagian bawah halaman ini.
+Bila muncul konflik, artinya Anda dan sumber mengubah file yang sama. Cara tercepat ada di bagian bawah halaman ini.
 
 ### Perubahan belum sampai ke VM
 
@@ -108,11 +108,11 @@ git pull
 2. Menarik image baru dari Artifact Registry
 3. Menjalankan `docker compose up -d`, lalu memuat ulang nginx
 
-Artinya image aplikasi diperbarui, tetapi **berkas konfigurasi di VM tidak.** Bila `docker-compose.yml` atau `nginx.conf` berubah di repositori, perubahan itu harus ditarik sendiri dengan `git pull` di atas.
+Artinya image aplikasi diperbarui, tetapi **file konfigurasi di VM tidak.** Bila `docker-compose.yml` atau `nginx.conf` berubah di repositori, perubahan itu harus ditarik sendiri dengan `git pull` di atas.
 :::
 
 ::: tip Bila ragu, fork ulang saja
-Cara paling sederhana dan paling kecil risikonya. Salin `.env` ke luar folder lebih dahulu, karena berkas itu berisi kredensial Anda dan tidak boleh hilang:
+Cara paling sederhana dan paling kecil risikonya. Salin `.env` ke luar folder lebih dahulu, karena file itu berisi kredensial Anda dan tidak boleh hilang:
 
 ```bash
 cp .env ~/env-simpanan
@@ -130,7 +130,7 @@ Selama Anda belum punya perubahan sendiri yang perlu disimpan, cara ini lebih ce
 
 Empat peserta memakai satu project Google Cloud bersama. Karena itu sebagian nilai harus berbeda antar peserta, dan sebagian justru harus sama.
 
-Nilai unik itu **tidak ada di berkas repositori Anda**. Seluruhnya diatur pada trigger Cloud Build sebagai substitution variable, sehingga tidak ada berkas yang perlu diedit di laptop.
+Nilai unik itu **tidak ada di file repositori Anda**. Seluruhnya diatur pada trigger Cloud Build sebagai substitution variable, sehingga tidak ada file yang perlu diedit di laptop.
 
 | Nilai | Unik per peserta? | Diatur di mana |
 |---|---|---|
@@ -180,7 +180,7 @@ Isi `PROJECT_ID` dan `NAMA_PESERTA` dengan nilai dari tabel itu. Keduanya harus 
 :::
 
 ::: tip Blok ini tidak perlu diketikkembali
-[Kit Identitas Peserta](/hari-4/praktik-11/kit-identitas) menyusun blok di bawah lengkap dengan nilai Anda, lalu menyimpannya di peramban. Setelah itu nilai yang sama dapat disalin lagi kapan saja, termasuk ketika Cloud Shell menutup sesinya di tengah pekerjaan.
+[Kit Identitas Peserta](/hari-4/praktik-11/kit-identitas) menyusun blok di bawah lengkap dengan nilai Anda, lalu menyimpannya di browser. Setelah itu nilai yang sama dapat disalin lagi kapan saja, termasuk ketika Cloud Shell menutup sesinya di tengah pekerjaan.
 
 Blok di halaman ini tetap ditampilkan, karena isinya yang menjelaskan dari mana setiap nama resource berasal.
 :::
@@ -234,11 +234,11 @@ gcloud config set project "$PROJECT_ID" >/dev/null
 echo "Siap. VM_NAME=$VM_NAME  SUBDOMAIN=$SUBDOMAIN"
 ```
 
-`NAMA_PESERTA` hanya boleh huruf kecil dan angka, 3 sampai 12 karakter. Nama VM, Service Account, dan subdomain menolak karakter di luar itu, dan pesan galatnya menyebut nama resource, bukan nama variabel, sehingga sulit dilacak bila lolos sampai ke perintah `gcloud`.
+`NAMA_PESERTA` hanya boleh huruf kecil dan angka, 3 sampai 12 karakter. Nama VM, Service Account, dan subdomain menolak karakter di luar itu, dan pesan errornya menyebut nama resource, bukan nama variabel, sehingga sulit dilacak bila lolos sampai ke perintah `gcloud`.
 
 Batas teknisnya 27 karakter, berasal dari nama Service Account `cb-<nama>` yang dibatasi 30 karakter. Angka 12 diambil jauh di bawah itu supaya nama resource tetap pendek pada daftar.
 
-Baris `gcloud config set project` wajib ada. Banyak perintah pada tahap berikutnya tidak menyebut `--project`, misalnya `gcloud compute instances create` dan `gcloud iam service-accounts create`. Tanpa baris itu, perintah tersebut memakai project yang aktif di Cloud Shell, yang belum tentu project Anda. Resource pun dibuat di project kelompok lain, dan karena perintahnya berhasil, tidak ada pesan galat yang memberitahu. VM baru ditemukan pada tahap berikutnya ketika alamatnya tidak muncul di project yang benar.
+Baris `gcloud config set project` wajib ada. Banyak perintah pada tahap berikutnya tidak menyebut `--project`, misalnya `gcloud compute instances create` dan `gcloud iam service-accounts create`. Tanpa baris itu, perintah tersebut memakai project yang aktif di Cloud Shell, yang belum tentu project Anda. Resource pun dibuat di project kelompok lain, dan karena perintahnya berhasil, tidak ada pesan error yang memberitahu. VM baru ditemukan pada tahap berikutnya ketika alamatnya tidak muncul di project yang benar.
 
 Blok ini hanya menetapkan variabel. Aman dijalankan berkali-kali.
 

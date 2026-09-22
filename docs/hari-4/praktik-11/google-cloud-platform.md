@@ -29,7 +29,7 @@ Bila ada yang belum muncul, hentikan tahap ini dan lapor ke koordinator. Peserta
 Ketiganya tidak dipakai di mana pun pada pelatihan ini.
 
 - **Cloud DNS** dan **Cloud Domains** tidak dipakai karena subdomain diatur penyelenggara melalui Cloudflare
-- **Secret Manager** tidak dipakai karena kata sandi dan token aplikasi disimpan pada berkas `.env` di VM
+- **Secret Manager** tidak dipakai karena kata sandi dan token aplikasi disimpan pada file `.env` di VM
 
 Bila ketiganya belum aktif, abaikan saja. Tidak ada tahap yang membutuhkannya.
 :::

@@ -1,8 +1,8 @@
-# Pemantauan Sistem dan Container
+# Monitoring Sistem dan Container
 
-Halaman ini melanjutkan [Pencadangan Data dan Konfigurasi](/hari-4/praktik-12/pencadangan). Kalau pencadangan menjawab pertanyaan "bagaimana kalau datanya hilang", pemantauan menjawab pertanyaan yang lebih sering muncul: "apakah geoportal saya masih hidup".
+Halaman ini melanjutkan [Backup Data dan Konfigurasi](/hari-4/praktik-12/pencadangan). Kalau backup menjawab pertanyaan "bagaimana kalau datanya hilang", monitoring menjawab pertanyaan yang lebih sering muncul: "apakah geoportal saya masih hidup".
 
-Ada dua cara memantaunya, dan keduanya dipakai. Yang pertama memeriksa dari dalam VM, dan itu yang Anda lakukan saat sedang mengerjakan sesuatu. Yang kedua memeriksa dari luar secara berkala, dan itu yang bekerja saat Anda tidur.
+Portal perlu diperiksa dari dua sisi. Dari dalam VM, yang Anda pakai saat sedang mengerjakan sesuatu. Dan dari luar secara berkala, yang tetap bekerja saat Anda tidur.
 
 ## Tahap 1. Periksa dari dalam VM
 
@@ -47,7 +47,7 @@ curl -sS -o /dev/null -w "portal %{http_code}\n" "https://${SUBDOMAIN}/portal"
 curl -sS -o /dev/null -w "geoserver %{http_code}\n" "https://${SUBDOMAIN}/geoserver/web"
 ```
 
-Hasil yang benar adalah `200` untuk portal dan `302` untuk GeoServer. Angka `302` bukan galat: GeoServer mengalihkan `/geoserver/web` ke bentuk kanoniknya.
+Hasil yang benar adalah `200` untuk portal dan `302` untuk GeoServer. Angka `302` bukan error: GeoServer mengalihkan `/geoserver/web` ke bentuk kanoniknya.
 
 ::: warning Alamat IP tidak dipakai lagi setelah subdomain aktif
 Setelah Praktik 11 selesai, aplikasi hanya melayani permintaan yang datang lewat `https://SUBDOMAIN`. Memeriksa lewat `http://IP_EKSTERNAL_VM/portal` akan membalas pengalihan, bukan halaman.
@@ -77,13 +77,13 @@ GeoServer tetap butuh waktu sekitar 47 detik sebelum siap melayani. Jangan menyi
 Server startup in [...] milliseconds
 ```
 
-Sebelum baris itu muncul, `/geoserver/web` masih membalas galat dan itu wajar.
+Sebelum baris itu muncul, `/geoserver/web` masih membalas error dan itu wajar.
 
-## Tahap 5. Pantau otomatis dengan uptime check
+## Tahap 5. Monitor otomatis dengan uptime check
 
 <p class="dijalankan dijalankan--cloud">Dijalankan di: <strong>Cloud Shell</strong></p>
 
-Sampai sini pemantauan masih menuntut Anda membuka Cloud Shell lebih dahulu. Uptime check membalik arahnya: Google yang memeriksa portal Anda secara berkala, dan mengirim email begitu portalnya tidak menjawab.
+Sampai sini monitoring masih menuntut Anda membuka Cloud Shell lebih dahulu. Uptime check membalik arahnya: Google yang memeriksa portal Anda secara berkala, dan mengirim email begitu portalnya tidak menjawab.
 
 ::: warning Project ini dipakai bersama peserta lain
 Satu project kelompok dipakai oleh beberapa peserta. Uptime check dan alert policy yang Anda buat akan terlihat oleh mereka, dan sebaliknya.
@@ -268,11 +268,11 @@ Untuk kuota, satu endpoint dengan interval satu menit dan tiga lokasi berarti se
 |---|---|
 | `docker compose ps` tidak menampilkan tiga container | Ada container yang berhenti. Jalankan `sudo docker compose logs --tail=50 NAMA_SERVICE` untuk melihat sebabnya |
 | Portal tidak terjangkau padahal ketiga container `running` | Periksa sertifikat TLS dan konfigurasi Nginx. Halaman [Penambahan Subdomain](/hari-4/praktik-11/subdomain) memuat pemeriksaannya |
-| `/geoserver/web` membalas galat padahal container hidup | GeoServer belum selesai boot. Tunggu sampai `Server startup in [...] milliseconds` muncul di lognya |
+| `/geoserver/web` membalas error padahal container hidup | GeoServer belum selesai boot. Tunggu sampai `Server startup in [...] milliseconds` muncul di lognya |
 | Uptime check tidak pernah memicu email | Saluran emailnya belum diverifikasi, atau notifikasi pembukaan belum dicentang pada policy. Periksa `gcloud alpha monitoring channels list` |
 | Portal mati tetapi tidak ada email | Buka **Monitoring > Alerting**, pilih **Show closed alerts**, dan periksa rentang waktunya. Pastikan juga filter policy menunjuk check ID milik Anda |
 | Incident berbunyi terus dan tidak dapat ditutup | Kondisi policy diubah selagi incident masih terbuka, dan itu bug Cloud Monitoring `183505672`. Buat kondisi bersih lebih dahulu, lalu nilai ulang hasilnya |
-| Pemantauan peserta lain ikut berubah | Check dan policy di project ini terlihat oleh semua peserta. Pastikan Anda memilih resource milik sendiri sebelum mengubah apa pun |
+| Monitoring peserta lain ikut berubah | Check dan policy di project ini terlihat oleh semua peserta. Pastikan Anda memilih resource milik sendiri sebelum mengubah apa pun |
 
 ## Rujukan
 

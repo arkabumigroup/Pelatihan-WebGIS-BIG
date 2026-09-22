@@ -223,11 +223,11 @@ export default defineConfig({
         },
         { text: 'Gaussian Splatting', link: '/hari-4/gaussian-splatting' },
         {
-          text: 'Praktik 12 - Pencadangan dan Pemantauan',
+          text: 'Praktik 12 - Backup dan Monitoring',
           collapsed: true,
           items: [
-            { text: '12.1 Pencadangan Data dan Konfigurasi', link: '/hari-4/praktik-12/pencadangan' },
-            { text: '12.2 Pemantauan Sistem dan Container', link: '/hari-4/praktik-12/pemantauan' }
+            { text: '12.1 Backup Data dan Konfigurasi', link: '/hari-4/praktik-12/pencadangan' },
+            { text: '12.2 Monitoring Sistem dan Container', link: '/hari-4/praktik-12/pemantauan' }
           ]
         }
       ])

@@ -1,36 +1,36 @@
-# Pencadangan Data dan Konfigurasi
+# Backup Data dan Konfigurasi
 
-Halaman ini melanjutkan Praktik 11. Setelah geoportal berjalan, ada dua hal yang perlu dijaga, dan keduanya hanya ada di VM: data GeoServer dan berkas `.env`.
+Halaman ini melanjutkan Praktik 11. Setelah geoportal berjalan, ada dua hal yang perlu dijaga, dan keduanya hanya ada di VM: data GeoServer dan file `.env`.
 
 Seluruh pekerjaan di sini memakai VM dan project kelompok yang sama seperti Praktik 11, jadi variabel `PROJECT_ID`, `NAMA_PESERTA`, `VM_NAME`, dan `ZONE` masih dipakai. Kalau sesi Cloud Shell Anda sudah tertutup, jalankan ulang blok identitas pada [Persiapan Repositori dan Identitas](/hari-4/praktik-11/persiapan-repositori) Tahap 2 lebih dahulu.
 
-## Apa yang perlu dicadangkan
+## Apa yang perlu di-backup
 
-Tiga hal, dan hanya dua di antaranya berada di VM.
+Sebagian pekerjaan Anda sudah aman di GitHub. Yang belum punya salinan sama sekali hanya dua, dan keduanya cuma ada di VM.
 
-| Yang dicadangkan | Letaknya | Keadaan |
+| Yang di-backup | Letaknya | Keadaan |
 |---|---|---|
-| `docker-compose.yml`, `nginx.conf`, `cloudbuild.yaml`, `robots.js`, `sitemap.js` | fork Anda di GitHub | tercadang sendiri setiap push |
-| Folder `geoserver-data` | `/opt/webgis/app/geoserver-data` di VM | belum tercadang |
-| Berkas `.env` | `/opt/webgis/app/.env` di VM | belum tercadang |
+| `docker-compose.yml`, `nginx.conf`, `cloudbuild.yaml`, `robots.js`, `sitemap.js` | fork Anda di GitHub | ter-backup sendiri setiap push |
+| Folder `geoserver-data` | `/opt/webgis/app/geoserver-data` di VM | belum ada salinannya |
+| File `.env` | `/opt/webgis/app/.env` di VM | belum ada salinannya |
 
-Berkas konfigurasi tidak perlu dipikirkan lagi. Setiap `git push` menyimpannya di GitHub, dan itu salah satu gunanya memakai repositori sejak Praktik 11.
+File konfigurasi tidak perlu dipikirkan lagi. Setiap `git push` menyimpannya di GitHub, dan itu salah satu gunanya memakai repositori sejak Praktik 11.
 
-Dua yang tersisa justru yang paling merepotkan kalau hilang. `geoserver-data` memuat seluruh workspace, datastore, dan layer yang Anda buat di GeoServer. Berkas `.env` memuat kata sandi basis data, kata sandi GeoServer, dan kunci penanda tangan token.
+Dua yang tersisa justru yang paling sulit dibangun ulang kalau hilang. `geoserver-data` memuat seluruh workspace, datastore, dan layer yang Anda buat di GeoServer. File `.env` memuat kata sandi basis data, kata sandi GeoServer, dan kunci penanda tangan token.
 
 ::: danger Folder geoserver-data yang kosong tidak membuat GeoServer gagal
-Kalau folder `geoserver-data` hilang, image kartoza akan membuatkan data directory bawaan yang baru saat container dinyalakan. GeoServer tetap menyala dan tidak menampilkan satu pun pesan galat.
+Kalau folder `geoserver-data` hilang, image kartoza akan membuatkan data directory bawaan yang baru saat container dinyalakan. GeoServer tetap menyala dan tidak menampilkan satu pun pesan error.
 
 Yang terjadi adalah seluruh workspace, datastore, dan layer Anda lenyap. Geoportal tetap dapat dibuka, tetapi katalog 2D kosong dan peta tidak lagi menampilkan layer apa pun.
 
-Jadi folder kosong bukan tanda kerusakan, melainkan tanda data yang belum dipulihkan. Tanpa pencadangan, satu-satunya jalan adalah membuat ulang seluruh layer dari awal.
+Jadi folder kosong bukan tanda kerusakan, melainkan tanda data yang belum dipulihkan. Tanpa backup, satu-satunya jalan adalah membuat ulang seluruh layer dari awal.
 :::
 
 ## Tahap 1. Periksa layanan Cloud Storage
 
 <p class="dijalankan dijalankan--cloud">Dijalankan di: <strong>Cloud Shell</strong></p>
 
-Pencadangan disimpan di Cloud Storage, dan layanannya harus menyala di project Anda. Peserta tidak punya izin menyalakannya, jadi periksa lebih dahulu.
+Backup disimpan di Cloud Storage, dan layanannya harus menyala di project Anda. Peserta tidak punya izin menyalakannya, jadi periksa lebih dahulu.
 
 ```bash
 gcloud services list --enabled --project="$PROJECT_ID" \
@@ -42,7 +42,7 @@ Hasilnya harus memuat tepat satu baris, yaitu `storage.googleapis.com`. Bila bar
 
 Tanda `=` pada filter itu penting. Tanda `:` yang sering dipakai pada contoh di internet melakukan pencocokan sebagian, sehingga ikut menampilkan `bigquerystorage.googleapis.com`, dan Google sudah memberi peringatan bahwa perilakunya akan berubah.
 
-## Tahap 2. Buat bucket pencadangan
+## Tahap 2. Buat bucket backup
 
 <p class="dijalankan dijalankan--cloud">Dijalankan di: <strong>Cloud Shell</strong></p>
 
@@ -66,7 +66,7 @@ Harga penyimpanannya praktis nol. Arsip folder `geoserver-data` pada satu VM pel
 Kalau perintahnya gagal dengan pesan bahwa nama sudah dipakai, tambahkan satu kata di belakangnya, misalnya `cadangan-webgis-${NAMA_PESERTA}-${PROJECT_ID}-a`, lalu jalankan ulang. Nama bucket dipakai bersama seluruh pengguna Google Cloud di dunia, bukan hanya di project Anda.
 :::
 
-## Tahap 3. Jadwalkan pencadangan harian
+## Tahap 3. Jadwalkan backup harian
 
 <p class="dijalankan dijalankan--server">Dijalankan di: <strong>Terminal VM</strong></p>
 
@@ -95,9 +95,9 @@ EOF
 sudo chmod +x /etc/cron.daily/cadangkan-webgis
 ```
 
-Perhatikan tanda `\` di depan `$(date +%F)` dan `$STAMP`. Heredoc tanpa kutip mengembangkan variabel saat perintah dijalankan, sehingga `$BUCKET` terisi nama bucket Anda sementara kedua yang lain harus tetap tertulis apa adanya di dalam berkas. Tanpa tanda itu, tanggal dan nama berkasnya ikut terisi sekarang juga dan skripnya mencadangkan ke nama yang sama setiap hari.
+Perhatikan tanda `\` di depan `$(date +%F)` dan `$STAMP`. Heredoc tanpa kutip mengembangkan variabel saat perintah dijalankan, sehingga `$BUCKET` terisi nama bucket Anda sementara kedua yang lain harus tetap tertulis apa adanya di dalam file. Tanpa tanda itu, tanggal dan nama filenya ikut terisi sekarang juga dan skripnya membuat backup ke nama yang sama setiap hari.
 
-Isi berkasnya dapat diperiksa dengan:
+Isi filenya dapat diperiksa dengan:
 
 ```bash
 cat /etc/cron.daily/cadangkan-webgis
@@ -107,9 +107,9 @@ Empat baris terakhirnya harus sama persis dengan yang tertulis di atas, lengkap 
 
 ### Kapan skripnya menyala
 
-Ubuntu menjalankan seluruh isi `/etc/cron.daily` lewat systemd timer sekitar pukul 06.25, dan hanya kalau VM sedang menyala. Karena VM pelatihan biasanya hanya hidup beberapa hari, pencadangan otomatis ini menyala paling banyak dua atau tiga kali.
+Ubuntu menjalankan seluruh isi `/etc/cron.daily` lewat systemd timer sekitar pukul 06.25, dan hanya kalau VM sedang menyala. Karena VM pelatihan biasanya hanya hidup beberapa hari, backup otomatis ini menyala paling banyak dua atau tiga kali.
 
-Nilai sesungguhnya ada pada prosedurnya, bukan pada banyaknya riwayat. Yang penting Anda tahu caranya, dan tahu bahwa hasilnya bisa dipulihkan.
+Karena itu, jangan menilai backupnya dari banyaknya arsip. Yang menentukan cuma satu: apakah arsipnya benar-benar bisa dipulihkan.
 
 ### Identitas yang dipakai skripnya
 
@@ -127,14 +127,14 @@ Angka di depan alamat itu adalah nomor project Anda, jadi nilainya berbeda antar
 sudo gcloud config list account
 ```
 
-## Tahap 4. Buktikan pencadangannya bekerja
+## Tahap 4. Buktikan backupnya bekerja
 
 <p class="dijalankan dijalankan--server">Dijalankan di: <strong>Terminal VM</strong></p>
 
 Menjalankan skripnya sekali sekarang lebih baik daripada menunggu pukul 06.25 besok, karena hasilnya langsung terlihat.
 
 ```bash
-sudo /etc/cron.daily/cadangkan-webgis && echo "skrip selesai tanpa galat"
+sudo /etc/cron.daily/cadangkan-webgis && echo "skrip selesai tanpa error"
 ```
 
 Lalu periksa isi bucket, kembali di Cloud Shell:
@@ -147,17 +147,17 @@ BUCKET="cadangan-webgis-${NAMA_PESERTA}-${PROJECT_ID}"
 gcloud storage ls -l "gs://${BUCKET}/"
 ```
 
-Satu berkas dengan nama `geoserver-data-YYYY-MM-DD.tar.gz` harus muncul, dengan ukuran beberapa megabita.
+Satu file dengan nama `geoserver-data-YYYY-MM-DD.tar.gz` harus muncul, dengan ukuran beberapa megabita.
 
-Nama berkasnya memakai tanggal, jadi pencadangan di hari yang sama menimpa arsip sebelumnya. Itu memang yang diinginkan: satu arsip per hari, bukan menumpuk belasan arsip yang tidak pernah dibuka.
+Nama filenya memakai tanggal, jadi backup di hari yang sama menimpa arsip sebelumnya. Itu memang yang diinginkan: satu arsip per hari, bukan menumpuk belasan arsip yang tidak pernah dibuka.
 
 ## Tahap 5. Pulihkan dari arsip
 
 <p class="dijalankan dijalankan--server">Dijalankan di: <strong>Terminal VM</strong></p>
 
-Tahap ini membuktikan arsipnya benar-benar dapat dipakai. Tanpa pernah mencoba memulihkan, Anda hanya percaya bahwa pencadangannya bekerja.
+Tahap ini membuktikan arsipnya benar-benar dapat dipakai. Tanpa pernah mencoba memulihkan, Anda hanya percaya bahwa backupnya bekerja.
 
-Sesuaikan `ARCHIVE` dengan nama berkas yang muncul pada Tahap 4.
+Sesuaikan `ARCHIVE` dengan nama file yang muncul pada Tahap 4.
 
 ```bash
 BUCKET="cadangan-webgis-nama01-geoportal-kelompok-a-xxxxx"
@@ -171,13 +171,13 @@ sudo tar -xzf /tmp/$ARCHIVE
 sudo docker compose up -d --force-recreate geoserver
 ```
 
-Tiga hal yang perlu diperhatikan pada blok itu.
+Tiga hal pada blok itu mudah terlewat, dan ketiganya membuat pemulihannya gagal.
 
 **Ekstrak selalu dijalankan dari `/opt/webgis/app`.** Arsipnya memuat jalur `geoserver-data/...` di dalamnya, jadi tempat mengekstraknya menentukan ke mana isinya mendarat.
 
 **`--force-recreate` diperlukan.** Tanpa itu Compose hanya menyalakan kembali container lama beserta mount yang sudah ada, sehingga folder hasil pemulihan tidak terbaca.
 
-**Kepemilikan berkas biasanya sudah benar tanpa langkah tambahan.** `tar` yang dijalankan sebagai root mempertahankan kepemilikan yang tersimpan di dalam arsip, dan arsipnya dibuat dari folder yang sama. Bila GeoServer menolak menulis ke data directory-nya setelah pemulihan, samakan kepemilikannya dengan folder yang sedang dipakai container:
+**Kepemilikan file biasanya sudah benar tanpa langkah tambahan.** `tar` yang dijalankan sebagai root mempertahankan kepemilikan yang tersimpan di dalam arsip, dan arsipnya dibuat dari folder yang sama. Bila GeoServer menolak menulis ke data directory-nya setelah pemulihan, samakan kepemilikannya dengan folder yang sedang dipakai container:
 
 ```bash
 sudo chown -R --reference=/opt/webgis/app/geoserver-data /opt/webgis/app/geoserver-data
@@ -198,11 +198,11 @@ Bila keduanya membalas `200` dan `302`, layanannya sudah hidup. Untuk memastikan
 
 Prosedur pada halaman ini sudah pernah dijalankan sampai tuntas pada satu VM: arsip dibuat, diunggah ke bucket, dijadwalkan lewat cron, lalu dipulihkan sampai layernya terbaca kembali.
 
-## Tahap 6. Cadangkan berkas .env
+## Tahap 6. Backup file .env
 
 <p class="dijalankan dijalankan--cloud">Dijalankan di: <strong>Cloud Shell</strong></p>
 
-Berkas `.env` sengaja tidak ikut ke bucket karena memuat kata sandi dan kunci rahasia. Salin manual ke laptop:
+File `.env` sengaja tidak ikut ke bucket karena memuat kata sandi dan kunci rahasia. Salin manual ke laptop:
 
 ```bash
 gcloud compute scp \
@@ -211,10 +211,10 @@ gcloud compute scp \
   "$VM_NAME:/opt/webgis/app/.env" "env-${NAMA_PESERTA}.txt"
 ```
 
-Simpan berkas itu di pengelola kata sandi atau tempat aman lain di laptop Anda.
+Simpan file itu di pengelola kata sandi atau tempat aman lain di laptop Anda.
 
 ::: danger Jangan simpan .env di Git
-Berkas `.env` sudah tercantum pada `.gitignore` repositori, dan itu memang disengaja. Jangan menghapus baris itu, jangan memaksa `git add -f`, dan jangan menempelkan isinya ke laporan, tangkapan layar, atau obrolan grup.
+File `.env` sudah tercantum pada `.gitignore` repositori, dan itu memang disengaja. Jangan menghapus baris itu, jangan memaksa `git add -f`, dan jangan menempelkan isinya ke laporan, tangkapan layar, atau obrolan grup.
 
 Isinya adalah kunci penanda tangan token, kata sandi basis data Supabase, dan kata sandi admin GeoServer. Siapa pun yang membacanya dapat masuk ke portal Anda sebagai admin.
 :::
@@ -231,7 +231,7 @@ BUCKET="cadangan-webgis-${NAMA_PESERTA}-${PROJECT_ID}"
 gcloud storage rm --recursive "gs://${BUCKET}"
 ```
 
-Perintah itu menghapus bucket beserta seluruh arsip di dalamnya, jadi pastikan berkas `.env` sudah Anda salin dan tidak ada arsip yang masih dibutuhkan.
+Perintah itu menghapus bucket beserta seluruh arsip di dalamnya, jadi pastikan file `.env` sudah Anda salin dan tidak ada arsip yang masih dibutuhkan.
 
 ## Bila Ada yang Gagal
 
@@ -240,6 +240,6 @@ Perintah itu menghapus bucket beserta seluruh arsip di dalamnya, jadi pastikan b
 | `storage.googleapis.com` tidak muncul pada Tahap 1 | Layanan Cloud Storage belum menyala di project. Peserta tidak punya izin menyalakannya, jadi lapor ke koordinator |
 | `The requested bucket name is not available` | Nama bucket sudah dipakai orang lain di seluruh dunia. Tambahkan satu kata di belakangnya, lalu ulangi Tahap 2 |
 | `AccessDeniedException` saat mengunggah arsip | Nama bucket pada skrip tidak sama dengan yang dibuat di Tahap 2, atau bucketnya sudah terhapus. Periksa juga identitas yang dipakai dengan `sudo gcloud config list account` |
-| Skripnya berjalan tetapi tidak ada arsip di bucket | Periksa hasil `cat /etc/cron.daily/cadangkan-webgis`. Bila tertulis tanggal yang sudah terisi di dalam berkasnya, tanda `\` di depan `$` terlewat saat menempel |
+| Skripnya berjalan tetapi tidak ada arsip di bucket | Periksa hasil `cat /etc/cron.daily/cadangkan-webgis`. Bila tertulis tanggal yang sudah terisi di dalam filenya, tanda `\` di depan `$` terlewat saat menempel |
 | Layer tidak kembali setelah pemulihan | Folder diekstrak bukan dari `/opt/webgis/app`, atau container GeoServer tidak dibuat ulang dengan `--force-recreate` |
 | `permission denied` saat mengekstrak arsip | Perintah `tar` dijalankan tanpa `sudo` |
