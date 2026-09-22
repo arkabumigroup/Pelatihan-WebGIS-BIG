@@ -210,14 +210,15 @@ export default defineConfig({
           collapsed: true,
           items: [
             { text: '11.1 Peserta dan Project', link: '/hari-4/praktik-11/peserta-project' },
-            { text: '11.2 Konfigurasi Project', link: '/hari-4/praktik-11/konfigurasi-project' },
-            { text: '11.3 Skema Database', link: '/hari-4/praktik-11/skema-database' },
-            { text: '11.4 Persiapan Repositori', link: '/hari-4/praktik-11/persiapan-repositori' },
-            { text: '11.5 Menyiapkan Project dan VM', link: '/hari-4/praktik-11/google-cloud-platform' },
-            { text: '11.6 Menyiapkan Aplikasi di VM', link: '/hari-4/praktik-11/aplikasi-di-vm' },
-            { text: '11.7 Otomatisasi Cloud Build', link: '/hari-4/praktik-11/cloud-build' },
-            { text: '11.8 Penambahan Subdomain', link: '/hari-4/praktik-11/subdomain' },
-            { text: '11.9 Menyiapkan GeoServer di VM', link: '/hari-4/praktik-11/siapkan-geoserver-vm' }
+            { text: '11.2 Kit Identitas Peserta', link: '/hari-4/praktik-11/kit-identitas' },
+            { text: '11.3 Konfigurasi Project', link: '/hari-4/praktik-11/konfigurasi-project' },
+            { text: '11.4 Skema Database', link: '/hari-4/praktik-11/skema-database' },
+            { text: '11.5 Persiapan Repositori', link: '/hari-4/praktik-11/persiapan-repositori' },
+            { text: '11.6 Menyiapkan Project dan VM', link: '/hari-4/praktik-11/google-cloud-platform' },
+            { text: '11.7 Menyiapkan Aplikasi di VM', link: '/hari-4/praktik-11/aplikasi-di-vm' },
+            { text: '11.8 Otomatisasi Cloud Build', link: '/hari-4/praktik-11/cloud-build' },
+            { text: '11.9 Penambahan Subdomain', link: '/hari-4/praktik-11/subdomain' },
+            { text: '11.10 Menyiapkan GeoServer di VM', link: '/hari-4/praktik-11/siapkan-geoserver-vm' }
           ]
         },
         { text: 'Gaussian Splatting', link: '/hari-4/gaussian-splatting' }

@@ -177,6 +177,12 @@ Sebelum menempel blok di bawah, cari nama atau email Anda pada halaman [Peserta 
 Isi `PROJECT_ID` dan `NAMA_PESERTA` dengan nilai dari tabel itu. Keduanya harus sama persis.
 :::
 
+::: tip Blok ini tidak perlu diketikkembali
+[Kit Identitas Peserta](/hari-4/praktik-11/kit-identitas) menyusun blok di bawah lengkap dengan nilai Anda, lalu menyimpannya di peramban. Setelah itu nilai yang sama dapat disalin lagi kapan saja, termasuk ketika Cloud Shell menutup sesinya di tengah pekerjaan.
+
+Blok di halaman ini tetap ditampilkan, karena isinya yang menjelaskan dari mana setiap nama resource berasal.
+:::
+
 **Gunakan Nama Peserta dari tabel, jangan mengarang sendiri.** Nama itu sudah disusun pendek, 3 sampai 8 karakter, satu kata, dan dipastikan tidak sama dengan peserta lain.
 
 Bila Anda tidak tercantum di tabel dan memilih nama sendiri, panjangnya boleh sampai 12 karakter. Gunakan huruf kecil dan angka saja, tanpa spasi dan tanpa tanda hubung.
