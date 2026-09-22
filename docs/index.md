@@ -5,7 +5,7 @@ layout: home
 hero:
   name: "Materi Pelatihan WebGIS Tingkat Dasar Hingga Lanjutan"
   text: ""
-  tagline: "Pelatihan WebGIS tinggat dasar hingga lanjutan yang diselenggarakan oleh Arkabumi dan PPKIG BIG"
+  tagline: "Sebelas praktik dalam empat hari, disusun mengikuti susunan acara, mulai dari dasar GIS sampai aplikasi yang terbit di server."
   actions:
     - theme: brand
       text: Materi Pelatihan
@@ -16,7 +16,7 @@ hero:
 
 ---
 
-## Sebelas praktik dalam empat hari
+## Susunan praktik per hari
 
 Setiap praktik memuat satu atau beberapa halaman, sesuai banyaknya modul pada praktik itu. Urutannya mengikuti susunan acara, dan setiap halaman dapat dibuka sendiri tanpa menunggu praktik sebelumnya selesai.
 
