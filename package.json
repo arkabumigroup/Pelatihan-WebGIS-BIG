@@ -7,10 +7,11 @@
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs",
-    "export-pdf": "press-export-pdf export docs",
-    "export-pdf:semua": "press-export-pdf export docs -c docs/.vitepress/vitepress-pdf-semua.config.mjs"
+    "export-pdf": "press-export-pdf export docs && node scripts/nomori-pdf.mjs pdf/Panduan-Deployment-WebGIS-BIG.pdf \"Panduan Deployment WebGIS BIG\"",
+    "export-pdf:semua": "press-export-pdf export docs -c docs/.vitepress/vitepress-pdf-semua.config.mjs && node scripts/nomori-pdf.mjs pdf/Pelatihan-WebGIS-BIG.pdf \"Pelatihan WebGIS BIG\""
   },
   "devDependencies": {
+    "pdf-lib": "^1.17.1",
     "vite-plugin-vitepress-auto-sidebar": "^1.7.1",
     "vitepress": "^1.0.0",
     "vitepress-export-pdf": "^1.0.0",
