@@ -219,7 +219,8 @@ export default defineConfig({
             { text: '11.8 Penambahan Subdomain', link: '/hari-4/praktik-11/subdomain' },
             { text: '11.9 Menyiapkan GeoServer di VM', link: '/hari-4/praktik-11/siapkan-geoserver-vm' }
           ]
-        }
+        },
+        { text: 'Gaussian Splatting', link: '/hari-4/gaussian-splatting' }
       ])
     ],
   }
