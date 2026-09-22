@@ -38,4 +38,4 @@ Geoportal berjalan di alamat `http://IP_EKSTERNAL_VM/portal` setelah tahap aplik
 
 ## Sesi Lain pada Hari 4
 
-Susunan acara pelatihan juga mencantumkan sesi penyempurnaan WebGIS, implementasi data Gaussian Splatting, serta review alur WebGIS dan diskusi. Ketiganya disampaikan langsung oleh instruktur dan belum punya halaman materi di repositori ini.
+Susunan acara pelatihan juga mencantumkan sesi penyempurnaan WebGIS, implementasi data Gaussian Splatting, serta review alur WebGIS dan diskusi. Ketiganya dipandu langsung oleh instruktur. Untuk Gaussian Splatting, bahan pendampingnya sudah tersedia pada halaman [Gaussian Splatting](/hari-4/gaussian-splatting), sedangkan dua sesi lainnya belum punya halaman materi di repositori ini.
