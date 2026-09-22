@@ -63,15 +63,61 @@
     line-height: 1.45;
   }
 
+  /* Kotak kode di layar berpadding lega karena di dalamnya ada tombol salin.
+     Di kertas tombol itu tidak ada, sehingga paddingnya hanya menyisakan
+     ruang kosong di tengah halaman. */
+  div[class*='language-'] pre {
+    padding: 5pt 7pt !important;
+    margin: 0 !important;
+  }
+
   div[class*='language-'] > span.lang,
   div[class*='language-'] > button.copy {
     display: none !important;
   }
 
+  /* Chip kode sebaris. Di layar kotaknya membantu memisahkan perintah dari
+     kalimat di sekitarnya. Di kertas, halaman yang penuh kotak kecil terbaca
+     ramai dan justru mengaburkan mana yang perintah dan mana yang bukan.
+     Kotaknya karena itu dihapus, dan pemisahannya cukup lewat latar abu
+     sangat muda. */
   :not(pre) > code {
-    border: 1px solid #dcdee2 !important;
-    padding: 0 3px;
-    font-size: 9.5pt;
+    border: none !important;
+    background: #f1f2f4 !important;
+    padding: 0.5pt 2.5pt !important;
+    font-size: 9pt;
+  }
+
+  /* Lencana tempat menjalankan. Di layar lencananya berlatar pekat supaya
+     tempatnya terbaca sekilas sebelum perintahnya disalin. Di kertas blok
+     tinta sepekat itu hanya membebani halaman, sedangkan keterangannya sudah
+     dibawa oleh teks lencananya sendiri.
+
+     Warnanya karena itu dipindahkan ke garis tepi kiri. Pembedaannya antar
+     empat tempat tetap ada, tetapi teksnya menjadi gelap di atas kertas
+     putih, sehingga kontrasnya jauh di atas ambang WCAG AA. */
+  .dijalankan {
+    background: #fff !important;
+    color: #111 !important;
+    border: 0.5pt solid #9aa1ab !important;
+    border-left: 2.5pt solid var(--pelatihan-tinta) !important;
+    border-radius: 2pt !important;
+    box-shadow: none !important;
+    padding: 2pt 6pt !important;
+    margin: 5pt 0 8pt !important;
+    font-size: 9pt;
+  }
+
+  .dijalankan--cloud {
+    border-left-color: var(--pelatihan-sky) !important;
+  }
+
+  .dijalankan--server {
+    border-left-color: var(--pelatihan-navy) !important;
+  }
+
+  .dijalankan--layanan {
+    border-left-color: var(--pelatihan-oranye) !important;
   }
 
   /* Judul tidak boleh menggantung sendirian di dasar halaman. */
