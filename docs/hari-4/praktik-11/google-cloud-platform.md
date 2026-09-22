@@ -172,7 +172,7 @@ Yang perlu dilaporkan hanya dua nilai:
 | Yang dilaporkan | Contoh | Diambil dari |
 |---|---|---|
 | Subdomain | `dhanypedia.webgisbig.com` | `$SUBDOMAIN` |
-| Alamat IP statis | `34.101.xx.xx` | `$STATIC_IP` |
+| Alamat IP statis | `34.101.xx.xx` | Perintah di bawah, dari `$STATIC_IP_NAME` |
 
 Cetak keduanya, lalu kirim ke penyelenggara:
 
