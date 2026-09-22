@@ -193,6 +193,21 @@ Nama Peserta menjadi dasar penamaan seluruh resource Anda: nama VM, nama Service
 
 Tempel blok berikut di Cloud Shell. Ubah hanya dua baris pertama.
 
+::: tip Blok ini dijalankan di bash, bukan di PowerShell
+Blok ini hampir seluruhnya sintaksis bash, dan hanya satu barisnya perintah `gcloud`. Karena itu yang menentukan bukan gcloud CLI-nya, melainkan shell tempat blok itu ditempel.
+
+| Tempat | Dapat ditempel apa adanya |
+|---|---|
+| Cloud Shell | Ya, sudah bash |
+| Terminal laptop, macOS atau Linux | Ya |
+| Windows, WSL atau Git Bash | Ya |
+| Windows, PowerShell atau Command Prompt | **Tidak** |
+
+Di PowerShell, `NAMA_PESERTA="nama01"` bukan penetapan variabel melainkan kesalahan sintaksis, dan `${ZONE%-*}` tidak dikenal.
+
+**Dua hal yang berlaku di laptop, tidak di Cloud Shell.** Baris `gcloud config set project` mengubah project aktif untuk seluruh sesi terminal itu, sehingga tab terminal lain yang sudah terbuka ikut terpengaruh. Dan `set -euo pipefail` berlaku sampai terminalnya ditutup: menyebut variabel yang belum diisi akan menghentikan sesi, dan pemulihannya dengan membuka terminal baru.
+:::
+
 ```bash
 PROJECT_ID="geoportal-kelompok-a-xxxxx"     # dari tabel peserta
 NAMA_PESERTA="nama01"                       # dari kolom Nama Peserta
