@@ -485,9 +485,33 @@
    memakai warna identitas sebagai latar, dan dipakai sekali supaya tetap
    menjadi penanda, bukan kebiasaan.
    --------------------------------------------------------------------- */
+/* Padding mendatar hero dihapus, karena kotak hero sudah dipusatkan sendiri
+   oleh .container di bawah ini.
+   Padding 144px 64px 64px berasal dari VitePress, dan 64px mendatarnya itu
+   mempersempit kotak hero 128px pada setiap lebar layar. Akibatnya tepi kiri
+   dan kanan kotak hero tidak pernah jatuh pada garis yang sama dengan panel isi
+   di bawahnya. Spesifisitasnya sama-sama dua kelas, sehingga selectornya perlu
+   ditulis lengkap agar aturan di sini yang dipakai.
+
+   Padding atas 144px dipertahankan: itu ruang untuk navbar yang melayang di
+   atas hero, dan angkanya berasal dari VitePress. */
+.VPHero.VPHomeHero {
+  padding: 144px 0 64px;
+}
+
+/* Kotak hero dipusatkan pada halaman, bukan ditempel ke kiri.
+   Sebelumnya margin kirinya 8px dan margin kanannya 0, sehingga pada jendela
+   1440px kotaknya berjarak 72px dari tepi kiri tetapi 216px dari tepi kanan.
+   Penyebabnya `margin: auto` tidak pernah dipasang, sedangkan lebarnya dibatasi
+   max-width 1152px. Di bawah 1152px selisihnya tidak terlihat, jadi baru
+   ketahuan pada layar lebar.
+
+   Nilai 8px pada sumbu tegak tetap dipertahankan: itu jarak kotak dari tepi
+   atas, bukan bagian dari pemusatan. */
 .VPHero .container {
   padding: 32px;
-  margin: 8px 0 24px 8px;
+  width: 100%;
+  margin: 8px auto 24px;
 }
 
 .VPHero .name .clip {
@@ -575,10 +599,16 @@
   align-items: center;
 }
 
+/* Logo lembaga. Lebarnya diikuti rasio aslinya, jadi tingginya ditetapkan dan
+   lebarnya mengikuti. Namun tinggi itu harus boleh menyusut pada layar sempit:
+   logo aslinya 308px, sedangkan pada jendela 320px panel isi beranda hanya
+   menyisakan 240px setelah padding. Tanpa batas di bawah, halamannya jadi dapat
+   digulir mendatar dan seluruh isi bergeser saat digulir ke samping. */
 .logo-row img {
   display: block;
   height: 56px;
   width: auto;
+  max-width: 100%;
   object-fit: contain;
 }
 
@@ -797,18 +827,34 @@
 /* Isi beranda diberi permukaan kertas, sama seperti halaman baca, supaya
    tidak ada teks yang duduk langsung di atas latar semesta. */
 /* Isi beranda dirender VitePress sebagai .vp-doc di dalam .VPHome, bukan di
-   dalam .VPDoc seperti halaman biasa, sehingga selectornya berbeda. */
+   dalam .VPDoc seperti halaman biasa, sehingga selectornya berbeda.
+
+   Lebar dan pemusatannya disamakan dengan kotak hero di atasnya. Sebelumnya
+   panel ini memakai lebar bawaan VitePress 1280px dengan margin 80px, sehingga
+   tepi kirinya 80px sedangkan tepi kiri kotak hero 144px. Dua kotak bertumpuk
+   yang tepinya berbeda 64px terbaca sebagai tidak sengaja, terutama karena
+   keduanya sama-sama bergaris tebal dan berbayang. */
 .VPHome > .vp-doc {
   background-color: var(--pelatihan-kertas);
   border: var(--pelatihan-tebal) solid var(--pelatihan-garis);
   border-radius: var(--pelatihan-radius);
   box-shadow: var(--pelatihan-bayangan-jauh-besar) var(--pelatihan-bayangan-jauh-besar) 0 var(--pelatihan-bayangan);
+  max-width: 1152px;
   padding: 32px 40px;
-  margin-bottom: 48px;
+  margin: 0 auto 48px;
 }
 
 /* Indeks praktik: satu kartu per hari. Kartunya berbaris sendiri saat layar
-   sempit, jadi tidak ada yang terpotong. */
+   sempit, jadi tidak ada yang terpotong.
+
+   auto-fit, bukan auto-fill. Dengan auto-fill, jalur kosong ikut dihitung
+   sebagai kolom, sehingga pada jendela 1440px terbentuk lima kolom selebar
+   251px dan kolom kelima kosong di kanan. auto-fit membuang jalur kosong itu,
+   sehingga empat kartu mengisi barisnya dengan lebar 283px.
+
+   Baris terakhir yang tidak penuh tetap melebarkan kartunya, dan itu memang
+   yang diinginkan di sini: kartu Hari 4 berisi satu pranala, dan kartu yang
+   lebih pendek dari tetangganya membuat barisnya terlihat pincang. */
 .hari-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -870,11 +916,15 @@
 }
 
 /* Logo lembaga dibuat untuk latar terang. Di latar gelap, gambarnya diberi
-   pelat terang supaya tetap terbaca. */
+   pelat terang supaya tetap terbaca.
+
+   Box-sizing bawaan dipakai, bukan content-box. Dengan content-box, padding
+   12px pada tiap sisi ditambahkan di luar batas max-width 100%, sehingga
+   pelatnya 24px lebih lebar dari wadahnya dan halaman kembali dapat digulir
+   mendatar pada layar 320px. */
 .dark .logo-row img {
   background-color: #f4f1ea;
   border: var(--pelatihan-tebal) solid var(--pelatihan-garis);
   border-radius: var(--pelatihan-radius);
   padding: 8px 12px;
-  box-sizing: content-box;
 }
