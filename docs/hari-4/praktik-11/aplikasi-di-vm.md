@@ -293,14 +293,14 @@ Bila `.env` disalin dari laptop, `GEOSERVER_ADMIN_PASSWORD` dan `GEOSERVER_PASSW
 grep -E '^(GEOSERVER_ADMIN_PASSWORD|GEOSERVER_PASSWORD)=' .env
 ```
 
-Bila keduanya masih kosong, buat kata sandi baru:
+Bila keduanya masih kosong, buat satu nilai baru di [Kit Identitas Peserta](/hari-4/praktik-11/kit-identitas), pada baris `GEOSERVER_PASSWORD`. Panjangnya 32 karakter heksadesimal, misalnya `950fde2bdd9c36f81316a2e416117195`. Isi kedua baris dengan nilai yang sama.
+
+Nilai itu juga dapat dibuat langsung di terminal VM:
 
 ```bash
 GEOSERVER_PASSWORD="$(openssl rand -hex 16)"
 echo "$GEOSERVER_PASSWORD"
 ```
-
-Hasilnya 32 karakter heksadesimal, misalnya `950fde2bdd9c36f81316a2e416117195`. Isi kedua baris dengan nilai yang sama.
 
 Keduanya harus sama, karena satu dipakai container GeoServer untuk membuat akun admin, dan satu lagi dipakai aplikasi untuk login ke REST API GeoServer. Bila berbeda, unggahan layer gagal dengan pesan kosong.
 

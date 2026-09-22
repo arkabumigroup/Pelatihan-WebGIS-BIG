@@ -3,6 +3,8 @@ import mediumZoom from 'medium-zoom'
 import { onMounted, watch, nextTick, h } from 'vue'
 import { useRoute } from 'vitepress'
 import TabelPeserta from './components/TabelPeserta.vue'
+import KitIdentitas from './components/KitIdentitas.vue'
+import PanelAcak from './components/PanelAcak.vue'
 import './custom.css'
 import './semesta.css'
 import './latar-peta.css'
@@ -89,6 +91,8 @@ export default {
   // tanpa penjelasan.
   enhanceApp({ app }) {
     app.component('TabelPeserta', TabelPeserta)
+    app.component('KitIdentitas', KitIdentitas)
+    app.component('PanelAcak', PanelAcak)
   },
 
   // Kaki halaman ditambahkan lewat slot layout-bottom, satu-satunya slot

@@ -274,12 +274,14 @@ Buka `.env`, lalu isi lima nilai berikut.
 | Variabel | Dari mana |
 |---|---|
 | `DATABASE_URL` | Tombol **Connect** di dashboard Supabase, pilih ORM/Prisma, lalu salin. Lihat catatan di bawah |
-| `JWT_SECRET` | Hasil perintah acak |
-| `NEXTAUTH_SECRET` | Hasil perintah acak, harus berbeda dari di atas |
+| `JWT_SECRET` | Tombol **Buat nilai acak** pada [Kit Identitas Peserta](/hari-4/praktik-11/kit-identitas) |
+| `NEXTAUTH_SECRET` | Tombol yang sama, pada baris berikutnya. Nilainya sudah dipastikan berbeda |
 | `NEXTAUTH_URL` | `http://localhost:3000/portal` untuk sekarang |
 | `ADMIN_CONTACT_EMAIL` | Email Anda sendiri |
 
-Perintah untuk membuat dua nilai acak:
+Dua nilai acak itu dibuat di [Kit Identitas Peserta](/hari-4/praktik-11/kit-identitas), satu halaman dengan identitas peserta. Nilainya tersimpan di peramban Anda, jadi tetap sama setelah halaman dimuat ulang dan dapat dibuka lagi kapan saja tanpa membuat yang baru.
+
+Bila Anda lebih suka terminal, keduanya juga dapat dibuat dengan:
 
 ```bash
 # macOS atau Linux

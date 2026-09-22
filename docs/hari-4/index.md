@@ -8,21 +8,22 @@ Halaman-halaman Praktik 11 adalah satu rangkaian yang dikerjakan berurutan. Berk
 
 | Tahap | Isi |
 |---|---|
-| 11.1 sampai 11.4 | Menyiapkan konfigurasi proyek, skema basis data, repositori, dan identitas peserta |
-| 11.5 sampai 11.7 | Membuat Virtual Machine, menjalankan aplikasi di dalamnya, dan mengotomatiskan build |
-| 11.8 sampai 11.9 | Mengarahkan subdomain, menerbitkan sertifikat, dan menyiapkan GeoServer di VM |
+| 11.1 sampai 11.5 | Menyiapkan identitas peserta, konfigurasi proyek, skema basis data, dan repositori |
+| 11.6 sampai 11.8 | Membuat Virtual Machine, menjalankan aplikasi di dalamnya, dan mengotomatiskan build |
+| 11.9 sampai 11.10 | Mengarahkan subdomain, menerbitkan sertifikat, dan menyiapkan GeoServer di VM |
 
 ## Praktik 11 - Deployment Project
 
 1. [Peserta dan Project](/hari-4/praktik-11/peserta-project) - memetakan peserta ke project Google Cloud.
-2. [Konfigurasi Project](/hari-4/praktik-11/konfigurasi-project) - menyiapkan `docker-compose.yml`, `nginx.conf`, `.env.example`, dan pemeriksa konfigurasi di repositori proyek.
-3. [Skema Database](/hari-4/praktik-11/skema-database) - berkas SQL yang membuat tabel, lengkap dengan isinya.
-4. [Persiapan Repositori](/hari-4/praktik-11/persiapan-repositori) - mengirim perubahan ke fork, menyelaraskan fork yang tertinggal, dan menetapkan identitas peserta yang menurunkan nama seluruh resource.
-5. [Menyiapkan Project dan VM](/hari-4/praktik-11/google-cloud-platform) - memeriksa API, membuat service account, VM, dan IP statis di Cloud Shell.
-6. [Menyiapkan Aplikasi di VM](/hari-4/praktik-11/aplikasi-di-vm) - memasang Docker dan gcloud, meng-clone repositori, mengisi `.env`, lalu membangun dan mendorong image aplikasi.
-7. [Otomatisasi Cloud Build](/hari-4/praktik-11/cloud-build) - menghubungkan repositori GitHub ke Cloud Build, membuat trigger, lalu memverifikasi hasilnya.
-8. [Penambahan Subdomain](/hari-4/praktik-11/subdomain) - mengarahkan subdomain ke IP statis VM dan menerbitkan sertifikat Let's Encrypt.
-9. [Menyiapkan GeoServer di VM](/hari-4/praktik-11/siapkan-geoserver-vm) - membuat workspace, datastore, dan mengunggah layer dari Geoportal.
+2. [Kit Identitas Peserta](/hari-4/praktik-11/kit-identitas) - menghitung seluruh nama resource dari identitas peserta, menyimpannya di peramban, dan membuat nilai rahasia yang dibutuhkan.
+3. [Konfigurasi Project](/hari-4/praktik-11/konfigurasi-project) - menyiapkan `docker-compose.yml`, `nginx.conf`, `.env.example`, dan pemeriksa konfigurasi di repositori proyek.
+4. [Skema Database](/hari-4/praktik-11/skema-database) - berkas SQL yang membuat tabel, lengkap dengan isinya.
+5. [Persiapan Repositori](/hari-4/praktik-11/persiapan-repositori) - mengirim perubahan ke fork, menyelaraskan fork yang tertinggal, dan menetapkan identitas peserta yang menurunkan nama seluruh resource.
+6. [Menyiapkan Project dan VM](/hari-4/praktik-11/google-cloud-platform) - memeriksa API, membuat service account, VM, dan IP statis di Cloud Shell.
+7. [Menyiapkan Aplikasi di VM](/hari-4/praktik-11/aplikasi-di-vm) - memasang Docker dan gcloud, meng-clone repositori, mengisi `.env`, lalu membangun dan mendorong image aplikasi.
+8. [Otomatisasi Cloud Build](/hari-4/praktik-11/cloud-build) - menghubungkan repositori GitHub ke Cloud Build, membuat trigger, lalu memverifikasi hasilnya.
+9. [Penambahan Subdomain](/hari-4/praktik-11/subdomain) - mengarahkan subdomain ke IP statis VM dan menerbitkan sertifikat Let's Encrypt.
+10. [Menyiapkan GeoServer di VM](/hari-4/praktik-11/siapkan-geoserver-vm) - membuat workspace, datastore, dan mengunggah layer dari Geoportal.
 
 ## Yang Perlu Disiapkan Peserta
 
