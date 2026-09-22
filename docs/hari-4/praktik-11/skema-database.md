@@ -101,7 +101,7 @@ CREATE TABLE IF NOT EXISTS katalog_data_2d (
     wfs_url     text,
     author      uuid,
     -- Alias layer untuk legenda peta. Boleh kosong, dan bila kosong aplikasi
-    -- memakai layer_name.
+    -- memakai layer_name. Ditambahkan setelah aplikasi memakainya.
     layer_alias varchar(150),
 
     CONSTRAINT katalog_data_2d_layer_name_key UNIQUE (layer_name),
@@ -167,6 +167,9 @@ COMMIT;
 
 -- Periksa setelah COMMIT: ketiga tabel harus punya primary key, dan katalog_data_2d
 -- harus punya foreign key (contype 'f') ke users.
+
+-- Mengaktifkan Row Level Security dikerjakan sesaat setelah berkas ini selesai,
+-- dengan perintah yang ada pada halaman Skema Database di modul pelatihan.
 ```
 
 File ini hanya membuat tabel. Mengaktifkan Row Level Security dikerjakan pada langkah berikutnya, sesaat setelah tabelnya ada.
