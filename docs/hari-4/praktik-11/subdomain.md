@@ -4,6 +4,8 @@ Halaman ini melanjutkan [Otomatisasi Cloud Build](/hari-4/praktik-11/cloud-build
 
 Urutannya penting: record DNS harus sudah mengarah ke VM sebelum Certbot dijalankan. Let's Encrypt memverifikasi kepemilikan domain dengan mengakses alamat tersebut dari internet, sehingga sertifikat tidak akan terbit selama alamatnya belum bisa dijangkau.
 
+<PilihShell />
+
 ## Prasyarat
 
 - Seluruh tahap pada halaman [Persiapan Repositori dan Identitas](/hari-4/praktik-11/persiapan-repositori), [Menyiapkan Project dan VM](/hari-4/praktik-11/google-cloud-platform), [Menyiapkan Aplikasi di VM](/hari-4/praktik-11/aplikasi-di-vm), dan [Otomatisasi Cloud Build](/hari-4/praktik-11/cloud-build) sudah selesai, dan variabel `PROJECT_ID`, `ZONE`, `VM_NAME`, serta `SUBDOMAIN` masih tersedia di Cloud Shell.
@@ -54,10 +56,27 @@ Kirim kedua nilai itu ke penyelenggara, lalu lanjutkan. Selama record belum dita
 
 <p class="dijalankan dijalankan--cloud">Dijalankan di: <strong>Cloud Shell</strong></p>
 
+<div class="shell-versi" data-shell="cloud">
+
 ```bash
 dig +short "$SUBDOMAIN"
 dig +short "$SUBDOMAIN" @1.1.1.1
 ```
+
+</div>
+<div class="shell-versi" data-shell="local">
+
+```bash
+# macOS dan Linux
+dig +short "$SUBDOMAIN"
+dig +short "$SUBDOMAIN" @1.1.1.1
+
+# Windows
+nslookup "$SUBDOMAIN"
+nslookup "$SUBDOMAIN" 1.1.1.1
+```
+
+</div>
 
 Keduanya harus mengembalikan alamat IP statis VM. Bila resolver publik (`@1.1.1.1`) sudah benar tetapi resolver lokal belum, tunggu propagasi DNS beberapa menit. Bila keduanya masih kosong, record belum tersimpan atau nama subdomainnya salah ketik.
 
@@ -67,9 +86,22 @@ Keduanya harus mengembalikan alamat IP statis VM. Bila resolver publik (`@1.1.1.
 
 Lakukan sebelum memasang HTTPS, supaya bila ada masalah DNS atau Nginx, penyebabnya masih mudah dipisahkan.
 
+<div class="shell-versi" data-shell="cloud">
+
 ```bash
 curl -sSIL --max-redirs 3 "http://${SUBDOMAIN}/portal"
 ```
+
+</div>
+<div class="shell-versi" data-shell="local">
+
+```bash
+# Di Windows tulis curl.exe, karena PowerShell menafsirkan `curl` sebagai
+# alias Invoke-WebRequest yang opsinya berbeda.
+curl -IL --max-redirs 3 "http://${SUBDOMAIN}/portal"
+```
+
+</div>
 
 ## Bagian B. Menerbitkan Sertifikat
 
@@ -132,9 +164,21 @@ Pastikan `nginx_proxy` berstatus running dan port 443 sudah terpublikasikan. Pad
 
 <p class="dijalankan dijalankan--cloud">Dijalankan di: <strong>Cloud Shell</strong></p>
 
+<div class="shell-versi" data-shell="cloud">
+
 ```bash
 curl -sS -o /dev/null -w "acme %{http_code}\n" "http://${SUBDOMAIN}/.well-known/acme-challenge/uji"
 ```
+
+</div>
+<div class="shell-versi" data-shell="local">
+
+```bash
+# Yang diperiksa hanya kode balasannya, 404 berarti benar.
+curl  -o /dev/null -w "acme %{http_code}\n" "http://${SUBDOMAIN}/.well-known/acme-challenge/uji"
+```
+
+</div>
 
 Balasan `404` adalah hasil yang diharapkan, karena berkas `uji` memang belum ada. Yang sedang diuji adalah apakah permintaan itu sampai ke direktori `certbot-webroot`, bukan diteruskan ke aplikasi Next.js.
 
@@ -325,9 +369,21 @@ Karena itu berkas di atas menetapkan variabel `$alihkan` lebih dahulu, lalu meng
 
 <p class="dijalankan dijalankan--cloud">Dijalankan di: <strong>Cloud Shell</strong></p>
 
+<div class="shell-versi" data-shell="cloud">
+
 ```bash
 curl -sSIL --max-redirs 3 "https://${SUBDOMAIN}/portal"
 ```
+
+</div>
+<div class="shell-versi" data-shell="local">
+
+```bash
+# Di Windows tulis curl.exe, bukan curl.
+curl IL --max-redirs 3 "https://${SUBDOMAIN}/portal"
+```
+
+</div>
 
 Balasan yang diharapkan adalah `HTTP/2 200`. Bila muncul peringatan sertifikat, periksa bahwa `ssl_certificate` menunjuk ke direktori `/etc/letsencrypt/live/$SUBDOMAIN/`, bukan ke direktori lain.
 

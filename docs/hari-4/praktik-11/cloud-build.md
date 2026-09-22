@@ -2,6 +2,8 @@
 
 Halaman terakhir Deployment Project. Setelah selesai, setiap push ke branch `main` akan membangun dan men-deploy aplikasi tanpa masuk ke VM.
 
+<PilihShell />
+
 ## Menyiapkan Trigger Cloud Build
 
 ### Tahap 24. Periksa Dockerfile dan cloudbuild.yaml
@@ -175,8 +177,23 @@ EXTERNAL_IP="$(gcloud compute instances describe "$VM_NAME" \
   --format='get(networkInterfaces[0].accessConfigs[0].natIP)')"
 
 echo "http://${EXTERNAL_IP}/geoserver/web"
+```
+
+<div class="shell-versi" data-shell="cloud">
+
+```bash
 curl -sSIL --max-redirs 3 "http://${EXTERNAL_IP}/geoserver/web"
 ```
+
+</div>
+<div class="shell-versi" data-shell="local">
+
+```bash
+# Di Windows tulis curl.exe, bukan curl.
+curl -IL --max-redirs 3 "http://${EXTERNAL_IP}/geoserver/web"
+```
+
+</div>
 
 ### Tahap 32. Buka Geoportal
 
@@ -188,8 +205,23 @@ EXTERNAL_IP="$(gcloud compute instances describe "$VM_NAME" \
   --format='get(networkInterfaces[0].accessConfigs[0].natIP)')"
 
 echo "http://${EXTERNAL_IP}/portal"
+```
+
+<div class="shell-versi" data-shell="cloud">
+
+```bash
 curl -sSIL --max-redirs 3 "http://${EXTERNAL_IP}/portal"
 ```
+
+</div>
+<div class="shell-versi" data-shell="local">
+
+```bash
+# Di Windows tulis curl.exe, bukan curl.
+curl -IL --max-redirs 3 "http://${EXTERNAL_IP}/portal"
+```
+
+</div>
 
 Buka alamat `http://IP_EKSTERNAL_VM/portal` di browser. Tulis `http://` secara eksplisit, karena sebagian browser mengubahnya menjadi `https://` lebih dahulu dan sertifikatnya belum ada pada tahap ini.
 

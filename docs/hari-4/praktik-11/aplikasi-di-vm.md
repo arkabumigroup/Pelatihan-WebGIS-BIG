@@ -2,6 +2,8 @@
 
 Seluruh tahap di halaman ini dijalankan di dalam VM, bukan di Cloud Shell.
 
+<PilihShell />
+
 ## Memasang Perkakas dan Menyiapkan Aplikasi
 
 ### Tahap 10. Masuk ke VM
