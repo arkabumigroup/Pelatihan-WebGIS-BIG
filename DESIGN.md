@@ -46,6 +46,23 @@ cara yang sama, dan variasi tata letak di sini akan mengurangi keterbacaan,
 bukan menambah karakter. Yang dinaikkan adalah ENERGY pada kulitnya, bukan
 susunan halamannya.
 
+**Satu pengecualian: hero beranda.** Beranda adalah halaman yang dibuka peserta
+sebelum tahu apa pun tentang pelatihan ini, bukan halaman petunjuk teknis.
+RHYTHM 1 berlaku untuk halaman petunjuk, sehingga beranda boleh berbeda.
+
+Isi hero beranda ditengahkan di dalam kotaknya: judul, tagline, dan kedua tombol.
+Alasannya terukur. Kotak hero selebar 1152px dan isinya hanya memakai 576px,
+sehingga separuh kanan kotak kosong. Teks yang menempel di kiri pada kotak yang
+sudah berada di tengah halaman terbaca sebagai tata letak yang belum selesai,
+bukan sebagai pilihan. Setelah ditengahkan, judul navy menjadi satu-satunya
+fokus layar itu, dan posisinya menjawab "di mana saya" sebelum peserta membaca
+satu baris pun.
+
+Batasnya dijaga: pemusatan ini **hanya** untuk hero beranda. Judul bagian di
+bawahnya, seluruh halaman praktik, dan halaman materi tetap menempel kiri.
+Menengahkan seluruh isi dokumen akan memperlambat pembaca yang sedang mencari
+satu perintah di halaman panjang, dan itulah yang dicegah RHYTHM 1.
+
 **Yang berubah, dan mengapa.** Arah sebelumnya memakai ENERGY 1 dan MOTION 1
 dengan alasan bahwa halaman ini dibaca sambil bekerja. Alasan itu masih berlaku,
 sehingga RHYTHM tidak dinaikkan dan tidak ada animasi gulir. Yang dikoreksi

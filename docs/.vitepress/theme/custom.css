@@ -514,6 +514,52 @@
   margin: 8px auto 24px;
 }
 
+/* Isi hero ditengahkan, dan ini satu-satunya tempat di situs yang begitu.
+   Alasannya ada pada DESIGN.md bagian Dials: beranda bukan halaman petunjuk
+   teknis, sehingga RHYTHM 1 yang berlaku untuk halaman praktik tidak mengikatnya.
+
+   Angka 1152px pada kotak hero menyisakan ruang yang tidak terpakai bila isinya
+   menempel kiri: isinya hanya 576px, jadi separuh kanan kotak kosong. Kotak yang
+   sudah berada di tengah halaman dengan isi yang menempel di tepinya terbaca
+   sebagai tata letak yang belum selesai.
+
+   Judulnya sudah berupa inline-block sejak aturan .clip di bawah, sehingga
+   text-align: center pada wadahnya cukup untuk memindahkannya tanpa mengubah
+   bentuk blok navy-nya. */
+.VPHero .main {
+  text-align: center;
+}
+
+/* Kedua tombol aksi ikut ke tengah, karena keduanya satu kelompok ajakan dengan
+   judul di atasnya. Diatur lewat justify-content, bukan text-align, karena
+   wadahnya flex dari VitePress. */
+.VPHero .actions {
+  justify-content: center;
+}
+
+/* Judul dan tagline dibatasi lebarnya lalu ditengahkan sebagai blok.
+
+   Batasnya dari VitePress, dan angkanya 576px. Angka itu berasal dari tata
+   letak dua kolom dengan gambar di kanan, yang tidak dipakai di sini. Dibiarkan
+   pada 576px, judulnya pecah menjadi empat baris di dalam kotak selebar 1152px,
+   dan setelah ditengahkan bentuknya menjadi kolom sempit yang mengambang di
+   tengah bidang luas. Batasnya dilonggarkan supaya pemenggalan barisnya jatuh
+   di tempat yang wajar, dengan lebar maksimum 720px agar barisnya tidak
+   memanjang sampai sulit diikuti mata. */
+.VPHero .name,
+.VPHero .tagline {
+  max-width: 720px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Kedua tombol aksi ikut ke tengah, karena keduanya satu kelompok ajakan dengan
+   judul di atasnya. Diatur lewat justify-content, bukan text-align, karena
+   wadahnya flex dari VitePress. */
+.VPHero .actions {
+  justify-content: center;
+}
+
 .VPHero .name .clip {
   background: var(--pelatihan-navy);
   -webkit-background-clip: border-box;
