@@ -122,6 +122,8 @@ gcloud monitoring uptime create "portal-${VM_NAME}" \
 
 `--period=1` berarti **satu menit**, bukan satu detik. Tiga region dipakai supaya gangguan jaringan di satu lokasi Google tidak langsung dianggap portal Anda mati.
 
+Jumlah region itu juga bukan pilihan bebas. Cloud Monitoring menolak perintahnya dengan `selected_regions must include at least three locations` bila Anda mengurangi daftarnya, jadi biarkan ketiganya.
+
 Salin segmen terakhir kolom `name` dari hasilnya, atau dari daftar di atas, ke variabel berikut:
 
 ```bash
@@ -227,6 +229,33 @@ Catat keempat hal itu untuk pengujian Anda sendiri. Angka pada tabel di atas ber
 VM `e2-medium` yang menyala terus menagih sekitar 37 dolar per bulan dari kredit Anda. Setelah pelatihan selesai, hentikan atau hapus VM-nya dari Console.
 
 Uptime check boleh dibiarkan hidup karena biayanya praktis nol, tetapi ia akan mengirim email peringatan terus-menerus selama VM-nya mati. Jadi hentikan juga check-nya, atau hapus sekalian.
+:::
+
+### Menghapus uptime check
+
+Perintah `gcloud monitoring uptime delete` menerima nama check, dan ada satu jebakan di sini.
+
+Menghapusnya memakai **nama tampilan** yang Anda tulis sendiri, misalnya `uji-peserta-praktik12`, akan dilaporkan berhasil dengan pesan `Deleted uptime check`. Tetapi check-nya sebenarnya masih ada, masih berjalan, dan masih mengirim email. Pesan berhasilnya menyesatkan.
+
+Yang benar adalah memakai **nama resource lengkapnya**, yang memuat kode acak di belakangnya:
+
+```bash
+NAMA_CHECK="$(gcloud monitoring uptime list-configs --project="$PROJECT_ID" \
+  --format='value(name)')"
+
+echo "$NAMA_CHECK"
+gcloud monitoring uptime delete "$NAMA_CHECK" --project="$PROJECT_ID"
+```
+
+Setelah itu, pastikan daftarnya benar-benar kosong:
+
+```bash
+gcloud monitoring uptime list-configs --project="$PROJECT_ID" \
+  --format="table(displayName,name)"
+```
+
+::: warning Menghapus project tidak selalu cukup
+Kalau VM dihapus tetapi uptime check-nya ditinggalkan, pemeriksaannya akan terus gagal dan Anda akan menerima email peringatan berulang tanpa tahu sebabnya. Periksa daftar di atas sekali lagi sebelum meninggalkan project.
 :::
 
 Untuk mengurangi peringatan akibat gangguan jaringan sesaat, retest dapat diubah menjadi dua menit setelah pengujian awal selesai. Bila diubah, ulangi Tahap 7 supaya Anda tahu konfigurasi barunya juga bekerja.

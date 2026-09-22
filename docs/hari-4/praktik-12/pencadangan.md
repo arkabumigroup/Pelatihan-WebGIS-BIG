@@ -34,11 +34,13 @@ Pencadangan disimpan di Cloud Storage, dan layanannya harus menyala di project A
 
 ```bash
 gcloud services list --enabled --project="$PROJECT_ID" \
-  --filter="config.name:storage.googleapis.com" \
+  --filter="config.name=storage.googleapis.com" \
   --format="table(config.name:label=LAYANAN)"
 ```
 
-Hasilnya harus memuat `storage.googleapis.com`. Bila barisnya kosong, lapor ke koordinator dan jangan melanjutkan tahap ini.
+Hasilnya harus memuat tepat satu baris, yaitu `storage.googleapis.com`. Bila barisnya kosong, lapor ke koordinator dan jangan melanjutkan tahap ini.
+
+Tanda `=` pada filter itu penting. Tanda `:` yang sering dipakai pada contoh di internet melakukan pencocokan sebagian, sehingga ikut menampilkan `bigquerystorage.googleapis.com`, dan Google sudah memberi peringatan bahwa perilakunya akan berubah.
 
 ## Tahap 2. Buat bucket pencadangan
 
