@@ -518,7 +518,7 @@ Setelah selesai, image itu muncul pada halaman Artifact Registry. Halaman `katal
 
 <p class="dijalankan dijalankan--server">Dijalankan di: <strong>Terminal VM</strong></p>
 
-Jalankan kedua container itu lebih dahulu, tanpa `nextjs`, memakai `--no-deps`. Image `nextjs` belum dibangun pada tahap ini, dan tanpa `--no-deps` compose akan mencoba menariknya.
+Jalankan kedua container itu lebih dahulu, tanpa `nextjs`, memakai `--no-deps`. `NEXTJS_IMAGE` di `.env` masih berisi placeholder `nginx:1.27-alpine`, dan Cloud Build yang menggantinya pada deploy pertama. Tanpa `--no-deps`, compose akan menjalankan image placeholder itu sebagai container `nextjs`, yang mendengarkan port 80 dan bukan 3000, sehingga `/portal` tetap tidak menjawab.
 
 ```bash
 cd /opt/webgis/app
@@ -527,6 +527,21 @@ docker compose ps
 ```
 
 Kedua barisnya harus berstatus `Up`. GeoServer tetap menampilkan `Up` sejak awal, tetapi **layanannya baru siap sekitar satu menit kemudian**, karena proses Java di dalamnya masih memuat. Pada menit pertama, alamat `/geoserver/web` belum menjawab. Itu wajar dan bukan tanda gagal.
+
+::: warning Portal Anda belum dapat dibuka di tahap ini
+`http://IP_VM/geoserver/web` sudah menjawab, tetapi `http://IP_VM/portal` masih membalas `502 Bad Gateway`. Itu wajar, dan bukan tanda ada yang salah.
+
+`nginx.conf` meneruskan `/portal` ke `http://nextjs:3000`, sedangkan container `nextjs` memang belum ada, sehingga nama service itu tidak dapat di-resolve oleh DNS internal Docker. Container `nextjs` baru menyala pada deploy pertama di [Otomatisasi Cloud Build](/hari-4/praktik-11/cloud-build), yang mengisi `NEXTJS_IMAGE` di `.env` dengan image hasil build Anda.
+
+Periksa dengan:
+
+```bash
+docker compose ps
+docker compose logs nginx 2>&1 | grep -i nextjs | tail -3
+```
+
+`docker compose ps` hanya akan memuat `geoserver_app` dan `nginx_proxy`, dan log nginx menyebut `nextjs` gagal di-resolve. Bila `/geoserver/web` ikut membalas 502, barulah ada masalah lain, karena alamat itu tidak melewati `nextjs`.
+:::
 
 ### Tahap 23. Keluar dari VM
 
@@ -540,4 +555,4 @@ Berlaku peringatan yang sama seperti pada [Tahap 13](#tahap-13-tambahkan-user-ke
 
 ---
 
-Lanjutkan ke [Otomatisasi Cloud Build](/hari-4/praktik-11/cloud-build).
+Lanjutkan ke [Otomatisasi Cloud Build](/hari-4/praktik-11/cloud-build). Portal Anda baru dapat dibuka setelah deploy pertama pada halaman itu selesai.
