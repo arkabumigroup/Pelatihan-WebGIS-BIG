@@ -360,6 +360,14 @@ Blok di bawah sengaja tidak diberi tombol salin, supaya nilainya dibaca lebih da
 
 </div>
 
+<div class="bila-terisi">
+
+::: tip Nilai di blok bawah sudah diisi dari kit Anda
+Bagian yang ditandai merah sudah memakai Project ID dan Nama Peserta Anda, jadi bloknya dapat langsung ditempel. Bagian bergaris bawah titik-titik masih harus Anda ganti sendiri. Penjelasan penandaannya ada di [Kit Identitas Peserta](/hari-4/praktik-11/kit-identitas#setelah-kit-diisi).
+:::
+
+</div>
+
 `IMAGE_NAME` diturunkan dari `NAMA_PESERTA` supaya tidak bisa berbeda.
 
 <div class="tanpa-salin">

@@ -21,6 +21,23 @@ Daftar namanya memuat peserta **batch 1 dan batch 2**, masing-masing 41 orang. S
 
 <KitIdentitas :judul="''" />
 
+## Setelah Kit Diisi
+
+Identitas yang tersimpan di sini dipakai halaman lain. Begitu nama peserta dan Project ID terisi, blok kode di seluruh modul yang masih memuat bentuk contoh akan terisi sendiri dengan nilai Anda ketika halamannya dibuka. Peserta yang belum mengisi kit tidak melihat perubahan apa pun.
+
+Nilai yang berubah dan nilai yang masih harus diganti dibedakan lewat penandaan merah di dalam blok kode:
+
+| Penanda | Artinya |
+|---|---|
+| Merah, garis bawah penuh | Nilai milik Anda, terisi dari halaman ini. Bagian inilah yang berbeda dari bentuk contohnya. |
+| Merah, garis bawah titik-titik | Masih bentuk contoh, dan harus Anda ganti sendiri. Misalnya `IP_EKSTERNAL_VM`, alamat email pada bagian sertifikat, dan nama uptime check. |
+
+Nilai tanpa penandaan apa pun sama untuk semua peserta, misalnya `katalog-images` dan `asia-southeast2-b`.
+
+Bila Anda menekan **Hapus data tersimpan**, pengisian otomatisnya berhenti dan bentuk contohnya muncul kembali. Halaman yang sedang terbuka perlu dimuat ulang sekali untuk itu.
+
+File PDF tidak ikut terisi, karena satu PDF dipakai seluruh peserta.
+
 ## Yang Disimpan, dan di Mana
 
 Halaman ini menyimpan dua kelompok nilai.

@@ -464,15 +464,36 @@ html.kit-terisi .bila-belum-terisi {
   display: none;
 }
 
-/* Nilai contoh di dalam blok kode yang harus diganti peserta sendiri.
-   Warnanya memakai merah yang sama dengan blok peringatan danger, dan
-   kontrasnya 7,46:1 pada latar terang serta 7,16:1 pada latar gelap. Garis
-   bawah dipakai supaya penandaannya tidak hanya bergantung pada warna. */
-.vp-doc div[class*="language-"] .harus-diganti {
+/* Keterangan yang hanya berlaku setelah identitas peserta terisi. Kebalikan
+   dari aturan di atas, dan dipasang oleh kelas yang sama. */
+.bila-terisi {
+  display: none;
+}
+
+html.kit-terisi .bila-terisi {
+  display: block;
+}
+
+/* Bagian blok kode yang berbeda dari contoh. Keduanya merah, karena keduanya
+   perlu terlihat, dan warnanya memakai merah yang sama dengan blok peringatan
+   danger. Kontrasnya 7,46:1 pada latar terang serta 7,16:1 pada latar gelap.
+   Garis bawah dipakai supaya penandaannya tidak hanya bergantung pada warna,
+   dan bentuk garisnya yang membedakan kedua keadaan. */
+.vp-doc div[class*="language-"] .harus-diganti,
+.vp-doc div[class*="language-"] .dari-kit {
   color: var(--pelatihan-status-danger);
   font-weight: 700;
-  text-decoration: underline dotted;
   text-underline-offset: 2px;
+}
+
+/* Masih bentuk contoh, dan harus diganti sendiri. */
+.vp-doc div[class*="language-"] .harus-diganti {
+  text-decoration: underline dotted;
+}
+
+/* Sudah terisi dari Kit Identitas Peserta, jadi bagian inilah yang berubah. */
+.vp-doc div[class*="language-"] .dari-kit {
+  text-decoration: underline solid;
 }
 
 /* ---------------------------------------------------------------------
