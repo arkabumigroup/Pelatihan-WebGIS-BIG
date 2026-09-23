@@ -105,15 +105,18 @@ Satu akun Supabase dibatasi dua project aktif. Jadi satu akun untuk satu peserta
 
 Tabel database dibuat lewat **SQL Editor**, bukan dibuat manual satu per satu. SQL Editor adalah halaman di dalam dashboard Supabase untuk menjalankan perintah SQL, dan bentuknya seperti terminal khusus database.
 
-Tiga file perlu dijalankan, berurutan:
+Empat hal perlu dikerjakan, berurutan:
 
-| # | File | Yang dilakukan |
+| # | Yang dijalankan | Yang dilakukan |
 |---|---|---|
-| 1 | `01-schema.sql` | Membuat tiga tabel: `users`, `katalog_data_2d`, dan `katalog_data_3d` |
-| 2 | `02-seed-super-admin.sql` | Membuat satu akun super admin untuk login pertama |
-| 3 | `03-periksa.sql` | Memeriksa hasilnya, hanya membaca |
+| 1 | Ekstensi PostGIS | Mengaktifkan PostGIS di schema `public` dan membuat schema `gis` |
+| 2 | `01-schema.sql` | Membuat tiga tabel: `users`, `katalog_data_2d`, dan `katalog_data_3d` |
+| 3 | `02-seed-super-admin.sql` | Membuat satu akun super admin untuk login pertama |
+| 4 | `03-periksa.sql` | Memeriksa hasilnya, hanya membaca |
 
-**Isi ketiga file itu ditampilkan lengkap pada halaman [Skema Database](/hari-4/praktik-11/skema-database)**, supaya dapat disalin langsung tanpa membuka file di laptop.
+Langkah 1 wajib karena project Supabase yang baru dibuat belum memuat PostGIS sama sekali. Tanpa itu, unggahan layer pertama nanti gagal dengan `type "geometry" does not exist`.
+
+**Ketiga file SQL itu ditampilkan lengkap pada halaman [Skema Database](/hari-4/praktik-11/skema-database)**, begitu juga langkah PostGIS-nya, supaya dapat disalin langsung tanpa membuka file di laptop.
 
 Halaman itu juga memuat cara membuka SQL Editor, urutan pengerjaan, dan langkah membuat akun super admin.
 

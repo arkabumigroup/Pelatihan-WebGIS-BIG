@@ -15,7 +15,7 @@ Bila Cloud Shell sudah berganti, jalankan ulang blok **Tahap 2** pada halaman [P
 
 ## Tahap 1. Pastikan PostGIS dan schema gis ada
 
-Keduanya dibuat di SQL Editor Supabase, dan keduanya wajib ada.
+Keduanya sudah dibuat pada langkah 1 halaman [Skema Database](/hari-4/praktik-11/skema-database). Tahap ini memastikan keduanya masih ada, karena GeoServer bergantung penuh pada keduanya.
 
 <p class="dijalankan dijalankan--layanan">Dijalankan di: <strong>SQL Editor Supabase</strong></p>
 
@@ -26,6 +26,8 @@ CREATE EXTENSION IF NOT EXISTS postgis WITH SCHEMA public;
 -- Schema gis menampung tabel spasial yang dibuat aplikasi
 CREATE SCHEMA IF NOT EXISTS gis;
 ```
+
+Keduanya memakai `IF NOT EXISTS`, jadi aman dijalankan ulang walaupun sudah ada.
 
 Periksa hasilnya:
 
