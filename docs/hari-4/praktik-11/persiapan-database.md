@@ -95,7 +95,7 @@ Empat hal perlu dikerjakan, berurutan:
 
 Langkah 1 wajib karena project Supabase yang baru dibuat belum memuat PostGIS sama sekali. Tanpa itu, unggahan layer pertama nanti gagal dengan `type "geometry" does not exist`.
 
-**Ketiga file SQL itu ditampilkan lengkap pada halaman [Skema Database](/hari-4/praktik-11/skema-database)**, begitu juga langkah PostGIS-nya, supaya dapat disalin langsung tanpa membuka file di laptop.
+**Ketiga file SQL itu ditampilkan lengkap pada halaman [Menjalankan Berkas SQL](/hari-4/praktik-11/menjalankan-skema)**, begitu juga langkah PostGIS-nya, supaya dapat disalin langsung tanpa membuka file di laptop.
 
 Halaman itu juga memuat cara membuka SQL Editor, urutan pengerjaan, dan langkah membuat akun super admin.
 
@@ -105,7 +105,7 @@ Akun super admin dibuat oleh `02-seed-super-admin.sql`. File itu berupa template
 
 Ringkasnya: buat hash kata sandi beserta kata sandinya, lalu isi hash itu beserta email Anda ke dalam file, lalu jalankan lewat SQL Editor. Hash-nya dapat dibuat dengan dua cara: tombol pada langkah 3 [Kit Identitas Peserta](/hari-4/praktik-11/kit-identitas), atau perintah `node scripts/hash-password.mjs` di root folder proyek.
 
-Langkah lengkapnya ada pada halaman [Skema Database](/hari-4/praktik-11/skema-database).
+Langkah lengkapnya ada pada halaman [Menjalankan Berkas SQL](/hari-4/praktik-11/menjalankan-skema).
 
 ::: warning Peserta yang mendaftar sendiri tidak menjadi super admin
 Halaman `/register` pada aplikasi selalu menghasilkan peran `viewer` dan status belum aktif. Itu memang disengaja, supaya tidak ada yang bisa menaikkan perannya sendiri.
