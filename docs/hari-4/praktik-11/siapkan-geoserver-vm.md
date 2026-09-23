@@ -38,7 +38,6 @@ SELECT schema_name FROM information_schema.schemata
 WHERE schema_name IN ('public', 'gis', 'extensions')
 ORDER BY schema_name;
 ```
-
 Yang diharapkan:
 
 ```text
@@ -59,10 +58,44 @@ Keduanya dipakai untuk hal berbeda, dan keduanya diperlukan.
 | `public` | Extension PostGIS, tempat tipe `geometry` berada |
 | `gis` | Tabel spasial yang dibuat aplikasi saat layer diunggah |
 
-Aplikasi menghubungi database dengan `search_path=gis,public,extensions`, sehingga tipe `geometry` ditemukan dari `public` dan tabelnya dibuat di `gis`.
+Kode aplikasi menulis nama tabelnya lengkap dengan schema, yaitu `"gis"."nama_tabel"`. Jadi tabelnya masuk ke `gis` bukan karena `search_path`, melainkan karena memang ditulis begitu.
 
-Bila PostGIS tidak ada di salah satu schema itu, unggahan layer gagal dengan pesan `type "geometry" does not exist`.
+Yang bergantung pada `search_path` justru tipe `geometry`-nya, karena kode itu menulis `GEOMETRY(Geometry, 4326)` tanpa awalan schema. Pada Supabase, pooler menetapkan `search_path` sendiri pada tingkat koneksi, dan nilai yang berlaku adalah `"$user", public, extensions`. Perhatikan bahwa `gis` tidak ada di situ, sedangkan `public` ada.
+
+Itulah sebabnya PostGIS harus berada di `public`, bukan di `gis`. Bila PostGIS dipasang di `gis`, tipe `geometry` tidak ditemukan pada jalur yang berlaku, dan pembuatan tabelnya gagal dengan `type "geometry" does not exist`.
 :::
+
+## Tahap 1b. Uji koneksi dari VM
+
+Pemeriksaan di atas dikerjakan di SQL Editor Supabase, jadi hasilnya belum membuktikan bahwa VM Anda dapat menjangkau database itu. Uji koneksinya di sini, sebelum workspace dan datastore dibuat, supaya masalah alamat atau kata sandi ketahuan sekarang dan bukan nanti.
+
+<p class="dijalankan dijalankan--server">Dijalankan di: <strong>Terminal VM</strong></p>
+
+```bash
+cd /opt/webgis/app
+set -a; . ./.env; set +a
+
+sudo -H docker run --rm -e PGPASSWORD="$POSTGIS_PASSWORD" postgres:16-alpine \
+  psql -h "$POSTGIS_HOST" -p "$POSTGIS_PORT" -U "$POSTGIS_USER" -d "$POSTGIS_DB" \
+  -tAc "SELECT postgis_version()"
+```
+
+Perintah itu memakai nilai yang sama persis dengan yang nanti diisi ke datastore, dan menjalankannya dari VM. Image `postgres:16-alpine` diunduh sekali di awal, jadi perintah pertama memang terasa lebih lama.
+
+Yang diharapkan, satu baris berisi versi PostGIS:
+
+```text
+3.3 USE_GEOS=1 USE_PROJ=1 USE_STATS=1
+```
+
+Angka versinya boleh berbeda. Yang penting keluarannya satu baris dan bukan pesan error.
+
+| Error | Penyebab yang paling sering |
+|---|---|
+| `could not translate host name` | `POSTGIS_HOST` salah ketik, atau masih memakai bentuk koneksi langsung `db.<ref>.supabase.co` |
+| `password authentication failed` | `POSTGIS_PASSWORD` berbeda dari kata sandi database, atau karakter khususnya belum ditulis dalam bentuk persen |
+| `Tenant or user not found` | `POSTGIS_USER` belum memakai bentuk `postgres.<project-ref>` |
+| `Connection refused` atau waktu habis | Port bukan `5432`, atau keluarganya salah. Untuk pooler, pakai port `5432`, bukan `6543` |
 
 ## Tahap 2. Atur alamat publik GeoServer
 

@@ -122,9 +122,11 @@ Ganti `[YOUR-PASSWORD]` dengan kata sandi database yang Anda buat pada langkah 4
     | `public` | Extension PostGIS, tempat tipe `geometry` berada |
     | `gis` | Tabel spasial yang dibuat aplikasi saat layer diunggah |
 
-    Bila PostGIS dipasang di `gis`, aplikasi masih bekerja karena `gis` ada pada `search_path`-nya, tetapi GeoServer dapat gagal menemukan fungsinya. Susunan yang dipakai sepanjang pelatihan ini adalah PostGIS di `public` dan tabel di `gis`, dan itulah yang diuji.
+    Susunan yang dipakai sepanjang pelatihan ini adalah PostGIS di `public` dan tabel di `gis`, dan itulah yang diuji.
 
-    Bila PostGIS belum ada di salah satu schema itu, unggahan layer gagal dengan pesan `type "geometry" does not exist`.
+    Pilihan schema pada langkah di atas **tidak boleh diubah menjadi `gis`**. Kode aplikasi menulis nama tabelnya lengkap dengan schema, yaitu `"gis"."nama_tabel"`, tetapi tipe `geometry`-nya ditulis tanpa awalan schema. Artinya tipe itu dicari lewat `search_path`, dan pada Supabase pooler menetapkan jalurnya sendiri pada tingkat koneksi. Jalur yang berlaku adalah `"$user", public, extensions`: `public` ada di situ, `gis` tidak.
+
+    Jadi bila PostGIS dipasang di `gis`, tipe `geometry` tidak ditemukan, dan unggahan layer gagal dengan `type "geometry" does not exist`. GeoServer juga tidak dapat menemukan fungsi `postgis_lib_version()` yang dipakainya untuk mengenali datastore.
     :::
     
 ![image.png](cloud-postgresql/image%2012.png)
