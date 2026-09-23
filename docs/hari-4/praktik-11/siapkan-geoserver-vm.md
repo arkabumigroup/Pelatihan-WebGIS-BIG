@@ -274,6 +274,19 @@ Stores > Add new Store > PostGIS
 
 **Seluruh nilai diambil dari `.env`, jangan dikarang.** Untuk Supabase, `POSTGIS_HOST` berbentuk `aws-0-<region>.pooler.supabase.com`, dan `POSTGIS_USER` berbentuk `postgres.<project-ref>`. Keduanya berbeda dari susunan PostgreSQL lokal.
 
+::: warning Kolom schema diisi gis, dan extension-nya tetap di public
+Dua schema terlibat di sini, dan perannya berbeda. Keduanya benar sekaligus: **tabelnya dibaca dari `gis`, fungsinya diambil dari `public`**.
+
+| Schema | Isinya | Diisi di mana |
+|---|---|---|
+| `gis` | Tabel layer, dibuat aplikasi saat Anda mengunggah | Kolom `schema` pada datastore ini |
+| `public` | Extension PostGIS: tipe `geometry` beserta fungsinya | Menu Extensions Supabase, pada langkah 1 halaman [Skema Database](/hari-4/praktik-11/skema-database) |
+
+Kolom `schema` di sini **wajib diisi `gis`**, karena di sanalah tabel layernya berada. Bila diisi `public`, GeoServer hanya menemukan tabel katalog dan `spatial_ref_sys`, lalu tidak ada satu pun layer yang dapat diterbitkan.
+
+Sebaliknya, extension PostGIS **wajib berada di `public`**, bukan di `gis`. Tipe dan fungsi PostGIS dipanggil tanpa awalan schema, sehingga dicari lewat jalur pencarian. Pada koneksi Supabase, jalur yang berlaku adalah `"$user", public, extensions`: `public` ada di situ, `gis` tidak.
+:::
+
 Menampilkan nilainya:
 
 ```bash
