@@ -7,6 +7,7 @@ import KitIdentitas from './components/KitIdentitas.vue'
 import PanelAcak from './components/PanelAcak.vue'
 import PilihanCari from './components/PilihanCari.vue'
 import PilihShell from './components/PilihShell.vue'
+import { isiOtomatis } from './isi-otomatis.js'
 import './custom.css'
 import './semesta.css'
 import './latar-peta.css'
@@ -141,6 +142,7 @@ export default {
       initZoom()
       beriIkonAksi()
       pasangGayaLogo()
+      isiOtomatis()
     })
 
     watch(
@@ -148,6 +150,7 @@ export default {
       () => nextTick(() => {
         initZoom()
         beriIkonAksi()
+        isiOtomatis()
       })
     )
   },

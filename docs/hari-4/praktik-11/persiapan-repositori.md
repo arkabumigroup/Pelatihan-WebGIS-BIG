@@ -191,7 +191,7 @@ Kalau Anda tidak menghendaki nama yang disarankan itu, Anda boleh membuat nama s
 
 Nama Peserta menjadi dasar penamaan seluruh resource Anda: nama VM, nama Service Account, nama trigger, dan subdomain. Karena itu nama yang sudah dipakai peserta lain akan menggagalkan pekerjaan Anda di tengah jalan, dan pada saat itu sebagian resource mungkin sudah terlanjur dibuat.
 
-Tempel blok berikut di Cloud Shell. Ubah hanya dua baris pertama.
+Tempel blok berikut di Cloud Shell. Bila Anda belum mengisi [Kit Identitas Peserta](/hari-4/praktik-11/kit-identitas), ubah dua baris pertama lebih dahulu.
 
 ::: tip Blok ini dijalankan di bash, bukan di PowerShell
 Blok ini hampir seluruhnya sintaksis bash, dan hanya satu barisnya perintah `gcloud`. Karena itu yang menentukan bukan gcloud CLI-nya, melainkan shell tempat blok itu ditempel.
