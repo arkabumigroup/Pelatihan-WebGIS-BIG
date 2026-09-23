@@ -131,9 +131,38 @@ Kolomnya sudah dicocokkan dengan kode aplikasi, jadi jangan mengubah nama atau t
 
 ## Gambaran Relasi Antar Tabel
 
-Diagram berikut menunjukkan ketiga tabel beserta kolomnya dan hubungan di antaranya. Bentuknya mengikuti notasi ERD standar, sehingga dapat dibandingkan dengan rancangan database lain.
+Diagram berikut menunjukkan ketiga tabel beserta hubungan di antaranya. Bentuknya mengikuti notasi ERD standar, sehingga dapat dibandingkan dengan rancangan database lain.
 
 ![Diagram relasi tabel database: users, katalog_data_2d, dan katalog_data_3d. Tabel users menyimpan akun pengguna dengan kunci utama user_id. Tabel katalog_data_2d menyimpan metadata layer peta 2D, dan katalog_data_3d menyimpan metadata model 3D. Keduanya menunjuk ke users lewat kolom author.](erd-skema-database.webp)
+
+### Daftar kolom yang sebenarnya
+
+**Pakai daftar ini untuk nama dan tipe kolom**, bukan tulisan di dalam diagram. Diagramnya berguna untuk melihat hubungan antar tabel, sedangkan daftar berikut yang dibuat `01-schema.sql` dan diharapkan kode aplikasi. Beberapa keterangan pada diagram masih memakai nama lama, yaitu `nama` untuk kedua kolom yang sekarang bernama `name` dan `model_name`.
+
+| Tabel | Kolom | Tipe dan aturan |
+|---|---|---|
+| `users` | `user_id` | `uuid`, primary key |
+| | `name` | `varchar(100)`, wajib |
+| | `email` | `varchar(150)`, wajib, unik |
+| | `password` | `varchar(255)`, wajib, berisi hash bcrypt |
+| | `role` | `varchar(20)`, wajib, `viewer` atau `admin` atau `super_admin` |
+| | `is_active` | `boolean`, wajib, bawaan `false` |
+| | `created_at` | `timestamptz`, wajib, bawaan `now()` |
+| `katalog_data_2d` | `data_2d_id` | `uuid`, primary key |
+| | `layer_name` | `varchar(255)`, wajib, unik |
+| | `akses` | `varchar(20)`, wajib, `public` atau `private` |
+| | `is_editable` | `boolean`, wajib |
+| | `wms_url`, `wfs_url` | `text`, boleh kosong |
+| | `author` | `uuid`, menunjuk ke `users.user_id`, boleh kosong |
+| | `layer_alias` | `varchar(150)`, boleh kosong, dipakai untuk legenda |
+| `katalog_data_3d` | `data_3d_id` | `uuid`, primary key |
+| | `author` | `uuid`, menunjuk ke `users.user_id`, boleh kosong |
+| | `model_name` | `varchar(150)`, wajib |
+| | `akses` | `varchar(20)`, wajib, `public` atau `private` |
+| | `url` | `text`, boleh kosong |
+| | `latitude`, `longitude` | `double precision`, boleh kosong, dibatasi rentangnya |
+| | `heading`, `pitch`, `roll`, `scale` | `integer`, boleh kosong |
+| | `tipe_file` | `varchar(10)`, wajib, `glb` atau `ply` atau `gltf`, bawaan `glb` |
 
 ### Cara membaca diagram
 

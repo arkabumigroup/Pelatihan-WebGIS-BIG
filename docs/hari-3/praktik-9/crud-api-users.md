@@ -204,7 +204,7 @@ export async function GET(request) {
 
 ![Route list](crud-api-users/image12.png)
 
-Respons 200 memuat `message` dan `data`, yaitu daftar user dengan field `user_id`, `nama`, `email`, `role`, dan `is_active`. Galat saat query dijawab status 500.
+Respons 200 memuat `message` dan `data`, yaitu daftar user dengan field `user_id`, `name`, `email`, `role`, dan `is_active`. Galat saat query dijawab status 500.
 
 ### src/app/api/users/create/route.js
 
