@@ -12,7 +12,7 @@ Ringkasnya, empat hal berikut harus sudah benar.
 
 ### 1. Repositori sudah di-fork dan di-clone
 
-Fork `https://github.com/dhanyyudi/personal-geoportal-peserta` di akun GitHub Anda, lalu clone fork itu ke laptop. Dikerjakan pada Tahap 1 halaman [Persiapan Repositori dan Database](/hari-4/praktik-11/persiapan-database).
+Fork [github.com/dhanyyudi/personal-geoportal-peserta](https://github.com/dhanyyudi/personal-geoportal-peserta) di akun GitHub Anda, lalu clone fork itu ke laptop. Dikerjakan pada Tahap 1 halaman [Persiapan Repositori dan Database](/hari-4/praktik-11/persiapan-database).
 
 ### 2. Database Supabase sudah siap, dan login sudah terbukti
 
@@ -56,7 +56,7 @@ Deployment Project bekerja pada fork repositori peserta di akun GitHub Anda send
 
 | | Repositori |
 |---|---|
-| Sumber, yang di-fork | `https://github.com/dhanyyudi/personal-geoportal-peserta` |
+| Sumber, yang di-fork | [github.com/dhanyyudi/personal-geoportal-peserta](https://github.com/dhanyyudi/personal-geoportal-peserta) |
 | Fork Anda | `https://github.com/<username-anda>/personal-geoportal-peserta` |
 
 Fork dan clone repositori itu dikerjakan pada halaman [Persiapan Repositori dan Database](/hari-4/praktik-11/persiapan-database), Tahap 1. Pastikan tahap itu sudah selesai sebelum melanjutkan.
