@@ -143,7 +143,7 @@ Buka `https://SUBDOMAIN/geoserver/web`, lalu masuk dengan:
 
 GeoServer memakai filter CSRF yang menolak formulir yang `Origin`-nya tidak dikenal. Karena permintaan melewati nginx, GeoServer melihat alamat publik Anda, bukan `localhost`, dan alamat itu belum ada pada daftar izin bawaannya.
 
-Gejalanya muncul saat membuat workspace atau datastore:
+Errornya muncul saat membuat workspace atau datastore:
 
 ```text
 HTTP Status 400 - Bad Request
@@ -161,7 +161,7 @@ Perbaikannya adalah satu variabel pada service `geoserver` di `docker-compose.ym
 ::: danger Namanya tanpa awalan GEOSERVER_
 Image kartoza membaca variabel bernama `CSRF_WHITELIST`, lalu meneruskannya ke GeoServer sebagai `-DGEOSERVER_CSRF_WHITELIST`. Namanya memang berbeda di kedua sisi, dan di situlah kesalahannya biasa terjadi.
 
-Bila Anda menulisnya dengan awalan, yaitu `GEOSERVER_CSRF_WHITELIST`, compose tetap menerima barisnya, container tetap menyala, dan GeoServer tetap berjalan. Yang terjadi hanya nilainya kosong, sehingga whitelist tidak terpasang dan gejalanya kembali seperti semula.
+Bila Anda menulisnya dengan awalan, yaitu `GEOSERVER_CSRF_WHITELIST`, compose tetap menerima barisnya, container tetap menyala, dan GeoServer tetap berjalan. Yang terjadi hanya nilainya kosong, sehingga whitelist tidak terpasang dan errornya kembali seperti semula.
 
 Periksa dengan perintah ini, dan pastikan ada nilai di belakang tanda sama dengan:
 
@@ -200,7 +200,7 @@ Jangan membetulkannya langsung di VM. Salinan git di sana menjadi kotor, dan `gi
 ::: tip Alamat IP tidak termasuk daftar izin
 Whitelist itu memuat `webgisbig.com` beserta subdomainnya, **tetapi tidak memuat alamat IP VM**.
 
-Mencoba membuat workspace lewat `https://IP_VM/geoserver/web` akan gagal dengan `400` yang sama. Itu tidak menghalangi, karena tahap ini dikerjakan setelah HTTPS aktif sehingga browsernya memakai alamat domain. Namun bila Anda memakai alamat IP, gejalanya akan membingungkan tanpa keterangan ini.
+Mencoba membuat workspace lewat `https://IP_VM/geoserver/web` akan gagal dengan `400` yang sama. Itu tidak menghalangi, karena tahap ini dikerjakan setelah HTTPS aktif sehingga browsernya memakai alamat domain. Namun bila Anda memakai alamat IP, errornya akan membingungkan tanpa keterangan ini.
 :::
 
 ## Tahap 4. Buat workspace
@@ -352,12 +352,12 @@ Filenya harus muncul, dengan pemilik `1001`.
 ::: danger Tanpa folder ini, model 3D hilang pada setiap deploy
 File yang ditulis ke dalam container, bukan ke volume, akan hilang setiap kali container dibuat ulang. Cloud Build menjalankan `docker compose up -d` pada setiap push ke branch `main`, sehingga setiap deploy menghapus seluruh model yang pernah diunggah.
 
-Gejalanya menyesatkan: katalog tetap menampilkan modelnya, karena barisnya masih ada di Supabase, tetapi filenya sudah tidak ada sehingga modelnya gagal dibuka.
+Errornya menyesatkan: katalog tetap menampilkan modelnya, karena barisnya masih ada di Supabase, tetapi filenya sudah tidak ada sehingga modelnya gagal dibuka.
 :::
 
 ## Bila Ada yang Gagal
 
-| Gejala | Penyebab yang paling sering |
+| Error | Penyebab yang paling sering |
 |---|---|
 | `Invalid username/password combination`, padahal kata sandi benar | Formulir login masih memakai `http://`. Kerjakan Tahap 2 |
 | `type "geometry" does not exist` | PostGIS belum terpasang, atau tidak berada di `public` maupun `gis` |

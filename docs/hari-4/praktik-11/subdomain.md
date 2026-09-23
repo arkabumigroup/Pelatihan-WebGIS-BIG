@@ -443,7 +443,7 @@ Keempatnya harus menampilkan alamat `https://`, tanpa garis miring di akhir.
 | `NEXT_PUBLIC_URL_BASE_PATH` | Alamat file model 3D | File model diminta lewat HTTP, diblokir browser sebagai mixed content, sehingga model tidak muncul di pratinjau |
 | `GEOSERVER_PUBLIC_URL` | Alamat WMS dan WFS yang **disimpan ke database** | Kolom `wms_url` dan `wfs_url` berisi alamat IP, sehingga layer tidak dapat dibuka dari katalog maupun dari QGIS |
 
-Dua variabel terakhir mudah terlewat, karena keduanya tidak menggagalkan login. Gejalanya baru muncul saat model 3D dibuka atau layer 2D dipanggil.
+Dua variabel terakhir mudah terlewat, karena keduanya tidak menggagalkan login. Errornya baru muncul saat model 3D dibuka atau layer 2D dipanggil.
 
 Nyalakan ulang container supaya nilai barunya terbaca:
 
@@ -504,7 +504,7 @@ The ACME server believes peserta@latihan.local is an invalid email address.
 
 Yang membuatnya sulit terlihat: server uji Let's Encrypt menerima alamat apa pun, sehingga `--dry-run` pada Tahap 9a menyatakan berhasil. Penolakan baru muncul saat penerbitan sungguhan. Ganti `EMAIL` dengan alamat berdomain nyata, lalu ulangi Tahap 9.
 
-| Gejala | Penyebab yang paling sering |
+| Error | Penyebab yang paling sering |
 |---|---|
 | Certbot gagal dengan `Invalid response ... 404` | Blok `location ^~ /.well-known/acme-challenge/` belum ada di `nginx.conf`, atau volume `certbot-webroot` belum terpasang. |
 | `nginx: [emerg] cannot load certificate` | Volume `/etc/letsencrypt:/etc/letsencrypt:ro` belum ada pada service `nginx`. |

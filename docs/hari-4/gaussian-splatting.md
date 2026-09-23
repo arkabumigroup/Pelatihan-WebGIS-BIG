@@ -14,7 +14,7 @@ Portal hanya menerima dua format, yaitu `.glb` untuk model 3D biasa dan `.ply` u
 |---|---|---|
 | `monas.glb` | 0,3 MB | Model 3D biasa, paling ringan untuk latihan upload |
 | `gedung_sate.glb` | 11,5 MB | Model 3D biasa yang lebih besar |
-| `gedung-3d.ply` | 58,0 MB | Satu-satunya Gaussian Splat di folder itu, dan kualitasnya rendah. Gunanya untuk menunjukkan gejala splat nyasar |
+| `gedung-3d.ply` | 58,0 MB | Satu-satunya Gaussian Splat di folder itu, dan kualitasnya rendah. Gunanya untuk menunjukkan bagaimana splat nyasar terlihat |
 | `Pertamina Tower.rar` | 638 MB | Foto drone mentah, bahan kalau Anda ingin membuat splat sendiri |
 
 Tiga file lain di folder itu bukan bahan latihan Gaussian Splatting: `.env.example` dipakai pada [Konfigurasi Project](/hari-4/praktik-11/konfigurasi-project), sedangkan `app.zip` dan `lib.zip` adalah arsip pendukung.
@@ -51,7 +51,7 @@ Yang perlu diperhatikan justru waktu uploadnya. File 600 MB pada koneksi 10 Mbps
 
 Portal menerima file sampai **1 GB**. Batas itu diatur `client_max_body_size` pada `nginx.conf`, dan file yang melewatinya ditolak hampir seketika, karena Nginx memeriksa `Content-Length` sebelum membaca badannya.
 
-Sebelum batas itu dinaikkan, bawaannya 100 MB, dan file yang melewatinya ditolak dengan gejala yang menyesatkan: portal membalas halaman HTML, dan browser melaporkannya sebagai
+Sebelum batas itu dinaikkan, bawaannya 100 MB, dan file yang melewatinya ditolak dengan error yang menyesatkan: portal membalas halaman HTML, dan browser melaporkannya sebagai
 
 ```text
 Unexpected token '<', "<html> ..." is not valid JSON
@@ -119,7 +119,7 @@ Bila setelah itu modelnya tetap terlihat seperti serpihan berduri, penyebabnya f
 
 File `gedung-3d.ply` pada folder pelatihan berasal dari rekonstruksi yang kualitasnya rendah. Separuh splatnya berkumpul dalam kotak 6,9 kali 4,4 kali 7,6 satuan, sedangkan kotak penuhnya 388 kali 175 kali 391 satuan. Enam puluh enam persen splatnya juga lebih lonjong dari 20 kali.
 
-File itu tetap dapat dipakai untuk menunjukkan gejalanya, dan berguna justru karena itu: peserta bisa melihat sendiri bagaimana splat nyasar membuat model tampil mengecil. Untuk latihan upload yang hasilnya bagus, unduh file lain dari [SuperSplat](#mengunduh-file-ply-dari-supersplat).
+File itu tetap dapat dipakai untuk menunjukkan masalahnya, dan berguna justru karena itu: peserta bisa melihat sendiri bagaimana splat nyasar membuat model tampil mengecil. Untuk latihan upload yang hasilnya bagus, unduh file lain dari [SuperSplat](#mengunduh-file-ply-dari-supersplat).
 
 ---
 

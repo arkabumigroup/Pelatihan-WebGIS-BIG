@@ -6,7 +6,7 @@ Halaman ini menyimpan identitas peserta di browser, lalu membuat seluruh nama re
 
 Variabel shell pada blok Tahap 2 hanya bertahan selama sesi Cloud Shell terbuka. Cloud Shell menutup sesinya sendiri setelah menganggur sekitar dua puluh menit, sedangkan pelatihan ini berlangsung berjam-jam. Setiap kali sesinya berganti, kedua nilai dari tabel peserta harus dicari dan diketik kembali.
 
-Kegagalan yang muncul saat itu tidak menunjuk ke penyebabnya. Halaman [Persiapan Repositori](/hari-4/praktik-11/persiapan-repositori#bila-cloud-shell-tertutup-di-tengah-jalan) mencatat dua gejalanya:
+Kegagalan yang muncul saat itu tidak menunjuk ke penyebabnya. Halaman [Persiapan Repositori](/hari-4/praktik-11/persiapan-repositori#bila-cloud-shell-tertutup-di-tengah-jalan) mencatat dua errornya:
 
 ```text
 ERROR: (gcloud.compute.instances.describe) could not parse resource []

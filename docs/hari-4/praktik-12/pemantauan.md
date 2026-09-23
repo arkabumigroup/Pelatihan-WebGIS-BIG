@@ -133,7 +133,7 @@ export CHECK_ID="uji-portal-xxxxxxxxxxx"
 ::: tip Yang dibuktikan uptime check, dan yang tidak
 Uptime check memeriksa apakah `https://DOMAIN/portal` membalas kode sukses. Itu membuktikan Nginx dan aplikasi Next.js hidup.
 
-Yang belum tentu terbukti adalah GeoServer dan basis data. Next.js yang mati menghasilkan `502` lewat Nginx dan akan terdeteksi, sedangkan GeoServer atau Supabase yang mati belum tentu mengubah balasan `/portal`.
+Yang belum tentu terbukti adalah GeoServer dan database. Next.js yang mati menghasilkan `502` lewat Nginx dan akan terdeteksi, sedangkan GeoServer atau Supabase yang mati belum tentu mengubah balasan `/portal`.
 :::
 
 ## Tahap 6. Buat saluran email dan alert policy
@@ -264,7 +264,7 @@ Untuk kuota, satu endpoint dengan interval satu menit dan tiga lokasi berarti se
 
 ## Bila Ada yang Gagal
 
-| Gejala | Penyebab yang paling sering |
+| Error | Penyebab yang paling sering |
 |---|---|
 | `docker compose ps` tidak menampilkan tiga container | Ada container yang berhenti. Jalankan `sudo docker compose logs --tail=50 NAMA_SERVICE` untuk melihat sebabnya |
 | Portal tidak terjangkau padahal ketiga container `running` | Periksa sertifikat TLS dan konfigurasi Nginx. Halaman [Penambahan Subdomain](/hari-4/praktik-11/subdomain) memuat pemeriksaannya |

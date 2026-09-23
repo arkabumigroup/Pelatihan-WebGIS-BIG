@@ -279,7 +279,7 @@ Empat nilai berikut berbeda dari yang di laptop, karena alamat aplikasi dan alam
 | `NEXT_PUBLIC_URL_BASE_PATH` | `http://IP_EKSTERNAL_VM/portal` |
 | `GEOSERVER_PUBLIC_URL` | `http://IP_EKSTERNAL_VM/geoserver`, tanpa slash di akhir |
 
-Slash di akhir membuat alamat tidak cocok dengan `basePath` pada `next.config.mjs`, dan gejalanya login berhasil di API tetapi gagal di browser.
+Slash di akhir membuat alamat tidak cocok dengan `basePath` pada `next.config.mjs`, dan akibatnya, login berhasil di API tetapi gagal di browser.
 
 `GEOSERVER_PUBLIC_URL` adalah alamat GeoServer yang dapat dijangkau dari browser Anda. Nilai itu disimpan ke kolom `wms_url` dan `wfs_url` pada katalog, dan dipakai Anda untuk membuka layer di QGIS atau aplikasi lain. Nginx sudah mem-proxy `/geoserver/`, sehingga port 8080 tidak perlu dibuka.
 
@@ -454,7 +454,7 @@ tidak diperlukan lagi.
 Memakai `sudo` justru **menggagalkan** perintah ini. `gcloud auth
 configure-docker` menulis kredensial ke konfigurasi Docker milik **akun Anda**,
 sedangkan `sudo docker push` berjalan sebagai **root** dan membaca konfigurasi
-milik root, yang kosong. Gejalanya:
+milik root, yang kosong. Errornya:
 
 ```text
 error from registry: Unauthenticated request. Unauthenticated requests do not

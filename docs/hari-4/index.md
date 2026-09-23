@@ -10,7 +10,7 @@ Praktik 12 dikerjakan setelah Praktik 11 selesai sepenuhnya, karena yang di-back
 
 | Tahap | Isi |
 |---|---|
-| 11.1 sampai 11.5 | Menyiapkan identitas peserta, konfigurasi proyek, skema basis data, dan repositori |
+| 11.1 sampai 11.5 | Menyiapkan identitas peserta, konfigurasi proyek, skema database, dan repositori |
 | 11.6 sampai 11.8 | Membuat Virtual Machine, menjalankan aplikasi di dalamnya, dan mengotomatiskan build |
 | 11.9 sampai 11.10 | Mengarahkan subdomain, menerbitkan sertifikat, dan menyiapkan GeoServer di VM |
 
@@ -44,7 +44,7 @@ Praktik ini merawat geoportal yang sudah berjalan. Isinya dikerjakan pada VM dan
 
 ## Hasil Akhir Hari 4
 
-Geoportal berjalan di alamat `http://IP_EKSTERNAL_VM/portal` setelah tahap aplikasi selesai, lalu berubah menjadi `https://SUBDOMAIN/portal` setelah tahap subdomain dan sertifikat selesai. Pada titik itu aplikasi, basis data, dan GeoServer sudah dapat diakses dari internet.
+Geoportal berjalan di alamat `http://IP_EKSTERNAL_VM/portal` setelah tahap aplikasi selesai, lalu berubah menjadi `https://SUBDOMAIN/portal` setelah tahap subdomain dan sertifikat selesai. Pada titik itu aplikasi, database, dan GeoServer sudah dapat diakses dari internet.
 
 Setelah Praktik 12, data GeoServer dan berkas `.env` sudah punya salinannya, dan portal Anda akan mengirim email begitu layanannya tidak menjawab.
 

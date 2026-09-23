@@ -143,7 +143,7 @@ Token Cesium Ion dipakai komponen peta 3D, dan komponen itu berjalan di browser.
 
 Karena `.dockerignore` mengecualikan file `.env` dari build context, nilai yang ada di `.env` VM **tidak ikut** ke dalam build. Nilainya harus dikirim sebagai build argument, dan itulah yang dilakukan `cloudbuild.yaml` dengan `${_CESIUM_ION_TOKEN}`.
 
-Akibat bila variabel ini kosong: build tetap berhasil dan situs tetap tampil, tetapi peta 3D gagal memuat aset 3D Tiles dari Cesium Ion. Peta dasar dan terrain tetap muncul, karena keduanya memakai sumber sendiri, sehingga gejalanya mudah disalahartikan sebagai model yang rusak.
+Akibat bila variabel ini kosong: build tetap berhasil dan situs tetap tampil, tetapi peta 3D gagal memuat aset 3D Tiles dari Cesium Ion. Peta dasar dan terrain tetap muncul, karena keduanya memakai sumber sendiri, sehingga errornya mudah disalahartikan sebagai model yang rusak.
 :::
 
 ### Tahap 29. Jalankan trigger dan pantau hasilnya
@@ -227,7 +227,7 @@ Buka alamat `http://IP_EKSTERNAL_VM/portal` di browser. Tulis `http://` secara e
 
 ## Bila Ada yang Gagal
 
-| Gejala | Penyebab yang paling sering |
+| Error | Penyebab yang paling sering |
 |---|---|
 | `ALREADY_EXISTS` saat membuat Service Account | Identitas peserta sama dengan peserta lain. Jalankan kembali blok identitas peserta pada [Tahap 2 halaman Persiapan Repositori](/hari-4/praktik-11/persiapan-repositori#tahap-2-tetapkan-identitas-peserta) dan laporkan ke koordinator. |
 | `host not found in upstream "nextjs"` | `nginx.conf` belum memakai pola `resolver` dengan `proxy_pass` variabel. Ambil file dari halaman Konfigurasi Project. |
