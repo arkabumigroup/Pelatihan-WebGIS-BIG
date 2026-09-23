@@ -30,7 +30,7 @@ Jadi folder kosong bukan tanda kerusakan, melainkan tanda data yang belum dipuli
 
 <p class="dijalankan dijalankan--cloud">Dijalankan di: <strong>Cloud Shell</strong></p>
 
-Backup disimpan di Cloud Storage, dan layanannya harus menyala di project Anda. Peserta tidak punya izin menyalakannya, jadi periksa lebih dahulu.
+Backup disimpan di Cloud Storage, dan layanannya harus menyala di project Anda. Periksa lebih dahulu, karena seluruh perintah pada tahap berikutnya bergantung padanya.
 
 ```bash
 gcloud services list --enabled --project="$PROJECT_ID" \
@@ -38,7 +38,13 @@ gcloud services list --enabled --project="$PROJECT_ID" \
   --format="table(config.name:label=LAYANAN)"
 ```
 
-Hasilnya harus memuat tepat satu baris, yaitu `storage.googleapis.com`. Bila barisnya kosong, lapor ke koordinator dan jangan melanjutkan tahap ini.
+Hasilnya harus memuat tepat satu baris, yaitu `storage.googleapis.com`. Bila barisnya kosong, nyalakan lebih dahulu:
+
+```bash
+gcloud services enable storage.googleapis.com --project="$PROJECT_ID"
+```
+
+Peran yang Anda pegang sudah memuat `serviceusage.services.enable`, jadi perintah itu dapat dijalankan sendiri. Setelah selesai, ulangi pemeriksaan di atas sampai barisnya muncul. Bila perintah itu ditolak, barulah lapor ke koordinator.
 
 Tanda `=` pada filter itu penting. Tanda `:` yang sering dipakai pada contoh di internet melakukan pencocokan sebagian, sehingga ikut menampilkan `bigquerystorage.googleapis.com`, dan Google sudah memberi peringatan bahwa perilakunya akan berubah.
 
@@ -237,7 +243,7 @@ Perintah itu menghapus bucket beserta seluruh arsip di dalamnya, jadi pastikan f
 
 | Error | Penyebab yang paling sering |
 |---|---|
-| `storage.googleapis.com` tidak muncul pada Tahap 1 | Layanan Cloud Storage belum menyala di project. Peserta tidak punya izin menyalakannya, jadi lapor ke koordinator |
+| `storage.googleapis.com` tidak muncul pada Tahap 1 | Layanan Cloud Storage belum menyala di project. Nyalakan dengan `gcloud services enable storage.googleapis.com --project="$PROJECT_ID"`, lalu ulangi pemeriksaannya |
 | `The requested bucket name is not available` | Nama bucket sudah dipakai orang lain di seluruh dunia. Tambahkan satu kata di belakangnya, lalu ulangi Tahap 2 |
 | `AccessDeniedException` saat mengunggah arsip | Nama bucket pada skrip tidak sama dengan yang dibuat di Tahap 2, atau bucketnya sudah terhapus. Periksa juga identitas yang dipakai dengan `sudo gcloud config list account` |
 | Skripnya berjalan tetapi tidak ada arsip di bucket | Periksa hasil `cat /etc/cron.daily/cadangkan-webgis`. Bila tertulis tanggal yang sudah terisi di dalam filenya, tanda `\` di depan `$` terlewat saat menempel |
