@@ -9,7 +9,7 @@ Urutannya penting: record DNS harus sudah mengarah ke VM sebelum Certbot dijalan
 ## Prasyarat
 
 - Seluruh tahap pada halaman [Persiapan Repositori dan Identitas](/hari-4/praktik-11/persiapan-repositori), [Menyiapkan Project dan VM](/hari-4/praktik-11/google-cloud-platform), [Menyiapkan Aplikasi di VM](/hari-4/praktik-11/aplikasi-di-vm), dan [Otomatisasi Cloud Build](/hari-4/praktik-11/cloud-build) sudah selesai, dan variabel `PROJECT_ID`, `ZONE`, `VM_NAME`, serta `SUBDOMAIN` masih tersedia di Cloud Shell.
-- Bila sesi Cloud Shell sudah berganti, jalankan kembali blok Tahap 2 halaman sebelumnya lebih dahulu.
+- Bila sesi Cloud Shell sudah berganti, setel ulang variabelnya dengan blok di [awal Bagian B](#bagian-b-menerbitkan-sertifikat), atau jalankan kembali blok identitas peserta pada halaman sebelumnya.
 - Subdomain sudah ditetapkan penyelenggara. Pola yang dipakai adalah `<nama-peserta>.webgisbig.com`, memakai nilai dari kolom Nama Peserta pada tabel peserta.
 - Record DNS ditambahkan penyelenggara. Siapkan subdomain dan alamat IP statis VM untuk dilaporkan pada Tahap 3.
 
@@ -104,6 +104,40 @@ curl -IL --max-redirs 3 "http://${SUBDOMAIN}/portal"
 </div>
 
 ## Bagian B. Menerbitkan Sertifikat
+
+Bagian ini mengubah alamat portal dari `http://` menjadi `https://`. Sebelum menjalankan tahapannya, ada dua hal yang perlu diketahui: apa yang sebenarnya dikerjakan alat di bawah, dan variabel sesi mana yang harus disetel ulang.
+
+**HTTP mengirim semuanya sebagai teks biasa.** Isi formulir dan kata sandi login melewati setiap jaringan di antaranya, dan siapa pun yang berada di jalur itu dapat membacanya. HTTPS membungkus lalu lintas itu dengan TLS, sehingga isinya terenkripsi di sepanjang jalan. Portal ini punya halaman login, jadi perbedaannya bukan soal kenyamanan.
+
+**Supaya dapat memakai HTTPS, server harus punya sertifikat.** Sertifikat itu sepasang berkas: satu publik dan satu rahasia. Yang publik diperlihatkan ke browser dan memuat nama domain beserta kunci publik server. Yang rahasia tetap tinggal di VM dan tidak pernah dikirim ke mana pun. Browser mempercayai sertifikat itu hanya bila ditandatangani lembaga yang sudah ada di daftar kepercayaannya.
+
+**Sertifikat buatan sendiri karena itu tidak cukup.** Server dapat membuat sertifikatnya sendiri, dan lalu lintasnya tetap terenkripsi, tetapi tidak ada browser yang mengenali penandatangannya. Yang muncul halaman peringatan, bukan gembok. Sertifikat harus ditandatangani **Certificate Authority**, dan lembaga itu mau menandatangani hanya setelah terbukti bahwa Anda memang menguasai domainnya.
+
+**Let's Encrypt adalah Certificate Authority yang gratis dan otomatis.** Sertifikatnya berlaku **90 hari**, jauh lebih singkat daripada sertifikat berbayar yang berlaku setahun. Masa berlaku pendek itu disengaja, supaya sertifikat yang bocor cepat tidak berguna, dan sebagai gantinya perpanjangan harus berjalan sendiri. Itulah yang dikerjakan Tahap 12.
+
+**Certbot adalah program yang berbicara kepada Let's Encrypt untuk Anda.** Pekerjaannya berurutan: membuat pasangan kunci, membuktikan bahwa domainnya milik Anda, meminta tanda tangan, lalu menyimpan hasilnya di `/etc/letsencrypt/live/<domain>/`. Percakapannya memakai protokol bernama ACME, dan seluruhnya berjalan tanpa formulir maupun akun.
+
+**Pembuktian pemilikannya lewat berkas di domain Anda sendiri.** Certbot meminta satu token acak kepada Let's Encrypt, menuliskannya sebagai berkas di `certbot-webroot`, lalu Let's Encrypt mengambil berkas itu dari internet di alamat `http://<domain>/.well-known/acme-challenge/<token>`. Bila isinya cocok, domainnya terbukti milik Anda. Dua hal mengikuti dari situ: domainnya harus sudah menunjuk ke VM Anda supaya permintaannya sampai ke tempat yang benar, dan port 80 harus tetap terbuka karena pemeriksaannya sengaja dilakukan lewat HTTP.
+
+Karena itulah direktori `certbot-webroot` dipasang ke dalam container Nginx, dan Tahap 8 memeriksa alamat itu lebih dahulu. Balasan `404` di sana berarti permintaannya sudah sampai ke direktori yang benar, bukan diteruskan ke aplikasi.
+
+**Setel ulang variabel sesi lebih dahulu.** Bagian ini memakai `VM_NAME`, `ZONE`, dan `SUBDOMAIN` di Cloud Shell. Ketiganya disetel pada blok identitas peserta dan pada [Tahap 2 Bagian A](#tahap-2-tentukan-nama-subdomain), tetapi variabel shell tidak bertahan melewati pergantian sesi. Record DNS pada Bagian A ditambahkan penyelenggara, sehingga bagian ini sering baru dikerjakan setelah jeda, sedangkan Cloud Shell menutup sesinya setelah satu jam.
+
+Setel ulang ketiganya, lalu tempel blok ini:
+
+```bash
+SUBDOMAIN="nama01.webgisbig.com"
+VM_NAME="webgis-nama01"
+ZONE="asia-southeast2-b"
+```
+
+Periksa ketiganya sudah terisi sebelum melanjutkan:
+
+```bash
+for v in VM_NAME ZONE SUBDOMAIN; do printf '%-10s %s\n' "$v" "${!v}"; done
+```
+
+Harus menampilkan tiga nilai, bukan baris kosong. Bila salah satunya kosong, perintah SSH pada tahap berikutnya gagal dengan pesan yang tidak menyebut penyebabnya.
 
 ### Tahap 6. Pasang Certbot dan siapkan direktori
 
@@ -506,6 +540,7 @@ Yang membuatnya sulit terlihat: server uji Let's Encrypt menerima alamat apa pun
 
 | Error | Penyebab yang paling sering |
 |---|---|
+| Perintah SSH gagal, atau `certbot` mengeluh tidak ada domain | Variabel `VM_NAME`, `ZONE`, atau `SUBDOMAIN` kosong karena sesi Cloud Shell sudah berganti. Setel ulang dengan blok di [awal Bagian B](#bagian-b-menerbitkan-sertifikat). |
 | Certbot gagal dengan `Invalid response ... 404` | Blok `location ^~ /.well-known/acme-challenge/` belum ada di `nginx.conf`, atau volume `certbot-webroot` belum terpasang. |
 | `nginx: [emerg] cannot load certificate` | Volume `/etc/letsencrypt:/etc/letsencrypt:ro` belum ada pada service `nginx`. |
 | HTTPS tidak terjangkau, HTTP normal | Port `443:443` belum dipublikasikan pada service `nginx`. |
