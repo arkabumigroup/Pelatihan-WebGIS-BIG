@@ -399,7 +399,7 @@ function bersihkan() {
 }
 
 /* Kolom Batch dan Kelompok isinya satu karakter, jadi lebarnya tidak perlu
-   ikut melebar. Tanpa batas ini, keduanya memakan ruang kolom Nama. */
+   ikut melebar. Tanpa batas ini, keduanya menghabiskan ruang kolom Nama. */
 .tp-kolom-pendek {
   width: 84px;
 }

@@ -230,7 +230,7 @@ git pull --ff-only
 sudo docker compose up -d --force-recreate geoserver
 ```
 
-Jangan membetulkannya langsung di VM. Salinan git di sana menjadi kotor, dan `git pull --ff-only` pada halaman Penambahan Subdomain akan menolak berjalan.
+Jangan membetulkannya langsung di VM. Salinan git di sana akan memuat perubahan yang belum di-commit, dan `git pull --ff-only` pada halaman Penambahan Subdomain akan menolak berjalan.
 
 ::: tip Alamat IP tidak termasuk daftar izin
 Whitelist itu memuat `webgisbig.com` beserta subdomainnya, **tetapi tidak memuat alamat IP VM**.

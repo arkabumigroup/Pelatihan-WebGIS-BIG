@@ -7,7 +7,7 @@ File aslinya juga ada di folder `sql/` pada repositori Anda, dan isinya sama. Bi
 ## Project ini baru, jadi PostGIS belum ada
 
 ::: warning Project Supabase di Hari 4 berbeda dari Hari 3
-Pada [Konfigurasi Project](/hari-4/praktik-11/konfigurasi-project) Anda membuat **project Supabase baru**, bukan memakai yang sudah ada di Hari 3. Project baru lahir kosong: extension PostGIS belum aktif dan schema `gis` belum dibuat.
+Pada [Konfigurasi Project](/hari-4/praktik-11/konfigurasi-project) Anda membuat **project Supabase baru**, bukan memakai yang sudah ada di Hari 3. Project baru dibuat dalam keadaan kosong: extension PostGIS belum aktif dan schema `gis` belum dibuat.
 
 Keduanya dikerjakan di sini, pada langkah 1 di bawah, supaya database Anda sudah lengkap sebelum halaman ini selesai. Kalau ditunda, unggahan layer pertama akan gagal dengan `type "geometry" does not exist`, dan pesan itu tidak menyebutkan bahwa penyebabnya adalah extension yang belum pernah diaktifkan.
 :::
@@ -400,7 +400,7 @@ Email dan kata sandi itulah yang dipakai untuk masuk ke portal.
 ::: warning Peserta yang mendaftar sendiri tidak menjadi super admin
 Halaman `/register` pada aplikasi selalu menghasilkan peran `viewer` dan status belum aktif. Itu memang disengaja, supaya tidak ada yang bisa menaikkan perannya sendiri.
 
-Akun super admin hanya bisa lahir dari `02-seed-super-admin.sql`. Jadi file itu wajib dijalankan, bukan pilihan.
+Akun super admin hanya bisa dibuat oleh `02-seed-super-admin.sql`. Jadi file itu wajib dijalankan, bukan pilihan.
 :::
 
 ## 03-periksa.sql

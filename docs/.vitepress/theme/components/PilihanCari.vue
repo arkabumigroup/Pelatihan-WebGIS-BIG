@@ -89,7 +89,7 @@ function buka() {
 }
 
 // Menutup selalu mengembalikan fokus ke pemicunya. Tanpa itu, pengguna papan
-// ketik yang menekan Escape kehilangan tempatnya dan fokusnya jatuh ke awal
+// ketik yang menekan Escape kehilangan tempatnya dan fokusnya kembali ke awal
 // halaman, sehingga harus menelusuri ulang dari atas.
 function tutup() {
   if (!terbuka.value) return

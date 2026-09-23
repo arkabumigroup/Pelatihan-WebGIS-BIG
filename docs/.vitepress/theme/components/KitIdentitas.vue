@@ -1062,7 +1062,7 @@ onMounted(() => {
 
 /* Lebar tetap pada kolom pendek membuat kolom Nilai mendapat sisa lebarnya.
    Kolom Variabel juga dibatasi, karena nama variabel terpanjang
-   (GEOSERVER_ADMIN_PASSWORD) akan memakan seluruh lebar tabel pada layar
+   (GEOSERVER_ADMIN_PASSWORD) akan menghabiskan seluruh lebar tabel pada layar
    sempit bila tidak dibatasi. */
 .ki-kolom-variabel {
   width: 30%;

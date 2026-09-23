@@ -37,7 +37,7 @@ WARNING: Disk size: '30 GB' is larger than image size: '10 GB'.
 You might need to resize the root repartition
 ```
 
-Biasanya partisinya sudah tumbuh sendiri saat boot pertama. Perlu dipastikan, bukan diasumsikan, karena Docker akan kehabisan ruang bila partisinya masih 10 GB.
+Biasanya partisinya sudah diperluas sendiri saat boot pertama. Perlu dipastikan, bukan diasumsikan, karena Docker akan kehabisan ruang bila partisinya masih 10 GB.
 
 Jalankan di dalam VM:
 
@@ -316,7 +316,7 @@ Keduanya harus sama, karena satu dipakai container GeoServer untuk membuat akun 
 
 Saat login ke antarmuka GeoServer nanti, gunakan username `admin` dan kata sandi hasil `GEOSERVER_PASSWORD`.
 
-### Tahap 19. Bangun image aplikasi
+### Tahap 19. Build image aplikasi
 
 <p class="dijalankan dijalankan--server">Dijalankan di: <strong>Terminal VM</strong></p>
 
@@ -347,7 +347,7 @@ for v in PROJECT_ID REPOSITORY IMAGE_NAME; do printf '%-12s %s\n' "$v" "${!v}"; 
 
 Harus menampilkan tiga nilai, bukan baris kosong.
 
-#### Bangun image
+#### Build image
 
 ```bash
 cd /opt/webgis/app

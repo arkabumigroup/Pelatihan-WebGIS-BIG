@@ -107,7 +107,7 @@ Empat baris terakhirnya harus sama persis dengan yang tertulis di atas, lengkap 
 
 ### Kapan skripnya menyala
 
-Ubuntu menjalankan seluruh isi `/etc/cron.daily` lewat systemd timer sekitar pukul 06.25, dan hanya kalau VM sedang menyala. Karena VM pelatihan biasanya hanya hidup beberapa hari, backup otomatis ini menyala paling banyak dua atau tiga kali.
+Ubuntu menjalankan seluruh isi `/etc/cron.daily` lewat systemd timer sekitar pukul 06.25, dan hanya kalau VM sedang menyala. Karena VM pelatihan biasanya hanya menyala beberapa hari, backup otomatis ini menyala paling banyak dua atau tiga kali.
 
 Karena itu, jangan menilai backupnya dari banyaknya arsip. Yang menentukan cuma satu: apakah arsipnya benar-benar bisa dipulihkan.
 
@@ -194,7 +194,7 @@ curl -sS -o /dev/null -w "portal %{http_code}\n" "https://${SUBDOMAIN}/portal"
 curl -sS -o /dev/null -w "geoserver %{http_code}\n" "https://${SUBDOMAIN}/geoserver/web"
 ```
 
-Bila keduanya membalas `200` dan `302`, layanannya sudah hidup. Untuk memastikan layernya benar-benar kembali, buka antarmuka GeoServer pada `https://SUBDOMAIN/geoserver/web` lalu periksa **Data > Layers**. Jumlah layernya harus sama dengan sebelum pemulihan.
+Bila keduanya membalas `200` dan `302`, layanannya sudah berjalan. Untuk memastikan layernya benar-benar kembali, buka antarmuka GeoServer pada `https://SUBDOMAIN/geoserver/web` lalu periksa **Data > Layers**. Jumlah layernya harus sama dengan sebelum pemulihan.
 
 Prosedur pada halaman ini sudah pernah dijalankan sampai tuntas pada satu VM: arsip dibuat, diunggah ke bucket, dijadwalkan lewat cron, lalu dipulihkan sampai layernya terbaca kembali.
 

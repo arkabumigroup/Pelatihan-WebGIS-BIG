@@ -14,7 +14,7 @@ Masuk ke VM lebih dahulu dari Cloud Shell:
 gcloud compute ssh "$VM_NAME" --zone="$ZONE" --tunnel-through-iap
 ```
 
-Satu perintah berikut menjawab hampir semua pertanyaan tentang kesehatan VM:
+Satu perintah berikut menjawab hampir semua pertanyaan tentang kondisi VM:
 
 ```bash
 cd /opt/webgis/app && sudo docker compose ps && sudo docker stats --no-stream && df -h / && free -m
@@ -22,7 +22,7 @@ cd /opt/webgis/app && sudo docker compose ps && sudo docker stats --no-stream &&
 
 Cara membaca hasilnya:
 
-| Yang dibaca | Nilai sehat | Bila menyimpang |
+| Yang dibaca | Nilai normal | Bila menyimpang |
 |---|---|---|
 | `docker compose ps` | tiga container berstatus `running`: `nextjs`, `geoserver`, `nginx` | periksa log container yang berhenti, halaman ini bagian [Membaca log](#membaca-log) |
 | Memori GeoServer pada `docker stats` | jauh di bawah batas 2048 MiB, acuan terukur 882 MiB | turunkan `MAXIMUM_MEMORY` pada `docker-compose.yml`, lalu buat ulang container `geoserver` |
@@ -131,9 +131,9 @@ export CHECK_ID="uji-portal-xxxxxxxxxxx"
 ```
 
 ::: tip Yang dibuktikan uptime check, dan yang tidak
-Uptime check memeriksa apakah `https://DOMAIN/portal` membalas kode sukses. Itu membuktikan Nginx dan aplikasi Next.js hidup.
+Uptime check memeriksa apakah `https://DOMAIN/portal` membalas kode sukses. Itu membuktikan Nginx dan aplikasi Next.js berjalan.
 
-Yang belum tentu terbukti adalah GeoServer dan database. Next.js yang mati menghasilkan `502` lewat Nginx dan akan terdeteksi, sedangkan GeoServer atau Supabase yang mati belum tentu mengubah balasan `/portal`.
+Yang belum tentu terbukti adalah GeoServer dan database. Next.js yang berhenti menghasilkan `502` lewat Nginx dan akan terdeteksi, sedangkan GeoServer atau Supabase yang mati belum tentu mengubah balasan `/portal`.
 :::
 
 ## Tahap 6. Buat saluran email dan alert policy
@@ -168,9 +168,9 @@ Selanjutnya buat alert policy. Cara paling mudah adalah lewat Console, karena fo
 | Notification | Email saat **open dan closure** |
 | Status | **Enabled** |
 
-`REDUCE_COUNT_FALSE` menghitung berapa lokasi yang gagal. Dengan tiga lokasi, sehat semua bernilai 0 dan gagal semua bernilai 3. Threshold `> 1` berarti minimal dua lokasi gagal, sehingga gangguan di satu lokasi Google saja belum memicu email.
+`REDUCE_COUNT_FALSE` menghitung berapa lokasi yang gagal. Dengan tiga lokasi, normal semua bernilai 0 dan gagal semua bernilai 3. Threshold `> 1` berarti minimal dua lokasi gagal, sehingga gangguan di satu lokasi Google saja belum memicu email.
 
-Pastikan notifikasi pembukaan **dan penutupan** dicentang keduanya. Tanpa yang kedua, Anda akan diberi tahu saat portalnya mati, tetapi tidak diberi tahu saat portalnya hidup lagi.
+Pastikan notifikasi pembukaan **dan penutupan** dicentang keduanya. Tanpa yang kedua, Anda akan diberi tahu saat portalnya tidak dapat diakses, tetapi tidak diberi tahu saat portalnya dapat diakses lagi.
 
 ::: danger Tutup dulu incident yang terbuka sebelum mengubah kondisi policy
 Ini bukan saran gaya kerja. Cloud Monitoring memiliki bug yang diakui Google pada issue tracker `183505672`: incident yang sedang terbuka ketika kondisinya diubah akan terus berbunyi memakai konfigurasi lama, muncul sebagai peringatan palsu, dan tidak dapat ditutup manual. Incident seperti itu baru menutup sendiri setelah tujuh hari.
@@ -228,7 +228,7 @@ Catat keempat hal itu untuk pengujian Anda sendiri. Angka pada tabel di atas ber
 ::: tip Jangan lupa mematikan VM di akhir pelatihan
 VM `e2-medium` yang menyala terus menagih sekitar 37 dolar per bulan dari kredit Anda. Setelah pelatihan selesai, hentikan atau hapus VM-nya dari Console.
 
-Uptime check boleh dibiarkan hidup karena biayanya praktis nol, tetapi ia akan mengirim email peringatan terus-menerus selama VM-nya mati. Jadi hentikan juga check-nya, atau hapus sekalian.
+Uptime check boleh dibiarkan aktif karena biayanya praktis nol, tetapi ia akan mengirim email peringatan terus-menerus selama VM-nya mati. Jadi hentikan juga check-nya, atau hapus sekalian.
 :::
 
 ### Menghapus uptime check
@@ -268,9 +268,9 @@ Untuk kuota, satu endpoint dengan interval satu menit dan tiga lokasi berarti se
 |---|---|
 | `docker compose ps` tidak menampilkan tiga container | Ada container yang berhenti. Jalankan `sudo docker compose logs --tail=50 NAMA_SERVICE` untuk melihat sebabnya |
 | Portal tidak terjangkau padahal ketiga container `running` | Periksa sertifikat TLS dan konfigurasi Nginx. Halaman [Penambahan Subdomain](/hari-4/praktik-11/subdomain) memuat pemeriksaannya |
-| `/geoserver/web` membalas error padahal container hidup | GeoServer belum selesai boot. Tunggu sampai `Server startup in [...] milliseconds` muncul di lognya |
+| `/geoserver/web` membalas error padahal container berjalan | GeoServer belum selesai boot. Tunggu sampai `Server startup in [...] milliseconds` muncul di lognya |
 | Uptime check tidak pernah memicu email | Saluran emailnya belum diverifikasi, atau notifikasi pembukaan belum dicentang pada policy. Periksa `gcloud alpha monitoring channels list` |
-| Portal mati tetapi tidak ada email | Buka **Monitoring > Alerting**, pilih **Show closed alerts**, dan periksa rentang waktunya. Pastikan juga filter policy menunjuk check ID milik Anda |
+| Portal tidak dapat diakses tetapi tidak ada email | Buka **Monitoring > Alerting**, pilih **Show closed alerts**, dan periksa rentang waktunya. Pastikan juga filter policy menunjuk check ID milik Anda |
 | Incident berbunyi terus dan tidak dapat ditutup | Kondisi policy diubah selagi incident masih terbuka, dan itu bug Cloud Monitoring `183505672`. Buat kondisi bersih lebih dahulu, lalu nilai ulang hasilnya |
 | Monitoring peserta lain ikut berubah | Check dan policy di project ini terlihat oleh semua peserta. Pastikan Anda memilih resource milik sendiri sebelum mengubah apa pun |
 

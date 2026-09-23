@@ -19,7 +19,7 @@ Empat layanan itu adalah yang benar-benar dipakai:
 | Layanan | Dipakai untuk |
 |---|---|
 | `compute.googleapis.com` | VM, alamat IP statis, firewall |
-| `cloudbuild.googleapis.com` | Membangun image dari setiap push |
+| `cloudbuild.googleapis.com` | Membuat image dari setiap push |
 | `artifactregistry.googleapis.com` | Menyimpan image aplikasi |
 | `iap.googleapis.com` | Masuk ke VM lewat `--tunnel-through-iap` |
 
@@ -118,7 +118,7 @@ Perintah itu menampilkan peringatan yang aman diabaikan:
 WARNING: Disk size: '30 GB' is larger than image size: '10 GB'.
 ```
 
-Ukuran disk tetap dipakai, dan pertumbuhannya diperiksa pada [Tahap 10 halaman Menyiapkan Aplikasi di VM](/hari-4/praktik-11/aplikasi-di-vm#tahap-10-masuk-ke-vm).
+Ukuran disk tetap dipakai, dan perluasannya diperiksa pada [Tahap 10 halaman Menyiapkan Aplikasi di VM](/hari-4/praktik-11/aplikasi-di-vm#tahap-10-masuk-ke-vm).
 
 ### Tahap 8. Periksa VM dan firewall
 
