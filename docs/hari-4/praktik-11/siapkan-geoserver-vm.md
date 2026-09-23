@@ -246,12 +246,20 @@ Mencoba membuat workspace lewat `https://IP_VM/geoserver/web` akan gagal dengan 
 Data > Workspaces > Add new workspace
 ```
 
-| Kolom | Nilai |
-|---|---|
-| Name | `geoportal` |
-| Namespace URI | `https://SUBDOMAIN/geoserver/geoportal` |
+| Kolom | Nilai | Catatan |
+|---|---|---|
+| Name | `geoportal` | Harus sama persis dengan `GEOSERVER_WORKSPACE` pada `.env` |
+| Namespace URI | `https://SUBDOMAIN/geoserver/geoportal` | Ganti `SUBDOMAIN` dengan subdomain Anda |
 
-Nama `geoportal` harus sama persis dengan `GEOSERVER_WORKSPACE` pada `.env`.
+Isi kedua kolomnya, lalu klik **Submit**. Kolom lain di formulir itu tidak perlu diubah.
+
+::: tip Namespace URI hanya penanda, bukan alamat yang dibuka
+Isinya tidak pernah dipanggil siapa pun, jadi tidak perlu dapat dibuka di browser dan tidak perlu cocok dengan alamat sungguhan. GeoServer memakainya untuk membedakan satu workspace dari workspace lain. Aplikasi Anda juga tidak membacanya.
+
+Isi dengan subdomain Anda supaya mudah dikenali, dan jangan dikosongkan.
+
+Yang menentukan nama layer justru kolom **Name**, karena layer Anda nanti bernama `geoportal:nama_tabel`. Nama itulah yang harus sama persis dengan `GEOSERVER_WORKSPACE` pada `.env`. Bila berbeda, aplikasi mencari workspace yang tidak ada, dan unggahan layer gagal.
+:::
 
 ## Tahap 5. Buat datastore PostGIS
 
@@ -261,7 +269,9 @@ Nama `geoportal` harus sama persis dengan `GEOSERVER_WORKSPACE` pada `.env`.
 Stores > Add new Store > PostGIS
 ```
 
-| Kolom | Nilai |
+Tabel berikut memakai nama kolom yang tertulis pada formulir GeoServer. Isi kedelapan baris pertama, lalu **Save**.
+
+| Kolom pada formulir | Nilai |
 |---|---|
 | Workspace | `geoportal` |
 | Data Source Name | `postgis_geoportal` |
@@ -270,7 +280,10 @@ Stores > Add new Store > PostGIS
 | database | Isi `POSTGIS_DB` pada `.env` |
 | schema | `gis` |
 | user | Isi `POSTGIS_USER` pada `.env` |
-| password | Isi `POSTGIS_PASSWORD` pada `.env` |
+| Kata sandi (`passwd`) | Isi `POSTGIS_PASSWORD` pada `.env` |
+| `namespace` | Biarkan sesuai bawaan, yaitu `geoportal` |
+
+Baris terakhir jarang perlu disentuh. Kolom `namespace` pada datastore sudah terisi sendiri dari workspace yang dipilih, sehingga layer Anda otomatis masuk ke namespace `geoportal`.
 
 **Seluruh nilai diambil dari `.env`, jangan dikarang.** Untuk Supabase, `POSTGIS_HOST` berbentuk `aws-0-<region>.pooler.supabase.com`, dan `POSTGIS_USER` berbentuk `postgres.<project-ref>`. Keduanya berbeda dari susunan PostgreSQL lokal.
 
@@ -312,6 +325,36 @@ Harus menjawab **`Connection successful`**.
 GeoServer menyimpan kegagalan koneksi pertamanya. Memperbaiki database saja tidak cukup, karena datastore tetap memakai hasil pemeriksaan yang lama.
 
 Hapus datastore itu, lalu buat ulang dengan nilai yang sudah benar.
+:::
+
+## Tahap 6b. Periksa kecocokan dengan .env
+
+<p class="dijalankan dijalankan--cloud">Dijalankan di: <strong>Cloud Shell</strong></p>
+
+Enam nilai di GeoServer harus sama persis dengan `.env`. Kerjakan pemeriksaan ini sebelum mengunggah layer, karena bila salah satunya berbeda, gejalanya bermacam-macam dan tidak selalu menyebut penyebabnya: unggahan layer gagal dengan `Could not find datastore`, portal tampil tanpa satu pun layer 2D, atau GeoServer membalas `401`.
+
+| Di GeoServer | Variabel `.env` | Nilainya |
+|---|---|---|
+| Name workspace, Tahap 4 | `GEOSERVER_WORKSPACE` | `geoportal` |
+| Data Source Name, Tahap 5 | `GEOSERVER_POSTGIS_DATASTORE` | `postgis_geoportal` |
+| Kolom `schema` pada datastore, Tahap 5 | `POSTGIS_SCHEMA` | `gis` |
+| host, port, database, user, kata sandi pada datastore | `POSTGIS_HOST`, `POSTGIS_PORT`, `POSTGIS_DB`, `POSTGIS_USER`, `POSTGIS_PASSWORD` | sama, kelimanya |
+| Kata sandi admin, Tahap 3 | `GEOSERVER_ADMIN_PASSWORD` dan `GEOSERVER_PASSWORD` | sama, keduanya |
+| Alamat internal, tidak diisi di GeoServer | `GEOSERVER_URL` | `http://geoserver:8080/geoserver` |
+
+Periksa nilainya di VM:
+
+```bash
+cd /opt/webgis/app
+grep -E '^(GEOSERVER_|POSTGIS_)' .env
+```
+
+Bandingkan hasilnya dengan tabel di atas satu per satu. Yang paling sering terlewat adalah `GEOSERVER_POSTGIS_DATASTORE`, karena variabel itu sengaja dibiarkan kosong di laptop dan baru diisi di VM.
+
+::: warning `GEOSERVER_PUBLIC_URL` tidak dibaca aplikasi
+`GEOSERVER_PUBLIC_URL` tetap diminta pada [Tahap 18 halaman Menyiapkan Aplikasi di VM](/hari-4/praktik-11/aplikasi-di-vm#tahap-18-isi-file-env) dan diganti ke alamat HTTPS pada [Tahap 13 halaman Penambahan Subdomain](/hari-4/praktik-11/subdomain#tahap-13-ubah-alamat-aplikasi-di-env), tetapi **tidak ada satu pun kode aplikasi yang membacanya**. Layer 2D tidak lagi disajikan langsung dari GeoServer, melainkan lewat proxy milik aplikasi sendiri di `/portal/api/katalog-data-2d/proxy`, dan proxy itu memakai `GEOSERVER_URL` dari dalam jaringan Docker.
+
+Akibatnya, membiarkan `GEOSERVER_PUBLIC_URL` kosong atau salah tidak menggagalkan unggahan layer. Yang benar-benar menentukan portal dapat terhubung ke GeoServer adalah enam nilai pada tabel di atas.
 :::
 
 ## Tahap 7. Unggah layer dari Geoportal
