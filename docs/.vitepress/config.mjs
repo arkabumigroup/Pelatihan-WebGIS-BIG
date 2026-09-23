@@ -221,7 +221,14 @@ export default defineConfig({
                 { text: 'Uji dan Jalankan Portal', link: '/hari-4/praktik-11/uji-dan-jalankan' }
               ]
             },
-            { text: '11.4 Skema Database', link: '/hari-4/praktik-11/skema-database' },
+            {
+              text: '11.4 Skema Database',
+              link: '/hari-4/praktik-11/skema-database',
+              items: [
+                { text: 'Menjalankan Berkas SQL', link: '/hari-4/praktik-11/menjalankan-skema' },
+                { text: 'Bila Ada Masalah', link: '/hari-4/praktik-11/masalah-skema' }
+              ]
+            },
             { text: '11.5 Persiapan Repositori', link: '/hari-4/praktik-11/persiapan-repositori' },
             { text: '11.6 Menyiapkan Project dan VM', link: '/hari-4/praktik-11/google-cloud-platform' },
             { text: '11.7 Menyiapkan Aplikasi di VM', link: '/hari-4/praktik-11/aplikasi-di-vm' },
