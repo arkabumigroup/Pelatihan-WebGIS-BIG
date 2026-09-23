@@ -15,15 +15,15 @@
     });
     ```
 
-![](styling-layer/image1.png)
+![Baris iconSize berisi ukuran 25 dan 41 yang disorot di dalam konfigurasi L.Icon pada Geojson.jsx](styling-layer/image1.png)
 
 2. Selanjutnya tambahkan fungsi untuk mengatur mengatur ukuran titik sebenarnya pada peta sehingga titik sebenarnya berada pada posisi center marker. Gunakan fungsi i**conAnchor** kemudian tambahkan ukurannya.
     
-![](styling-layer/image2.png)
+![Baris iconAnchor berisi ukuran 12 dan 41 yang baru ditambahkan di bawah iconSize pada markerIcon](styling-layer/image2.png)
     
 3. Kemudian tambahkan fungsi berupa **popupAnchor** untuk menampilkan posisi popup terhadap marker.
     
-![](styling-layer/image3.png)
+![Baris popupAnchor berisi nilai 1 dan -34 yang disorot sebagai penutup konfigurasi markerIcon](styling-layer/image3.png)
     
 4. Kemudian buat fungsi dibawah variabel markerIcon yang akan digunakan untuk mengatur styling jika data geojson dalam bentuk polygon dengan cara membuat **function getPolygonstyle** serta tambahkan parameter **feature** untuk mengambil tampilan layer.
 
@@ -42,27 +42,27 @@
       }
     ```
 
-![](styling-layer/image4.png)
+![Fungsi getPolygonStyle dengan parameter feature yang disorot di bawah variabel markerIcon](styling-layer/image4.png)
 
 5. Selanjutnya dalam fungsi tersebut, tambahkan variabel untuk mengambil informasi berupa kategori yang akan dijadikan parameter untuk melakukan styling.
     
-![image.png](styling-layer/image.png)
+![Fungsi getPolygonStyle dengan parameter feature dan variabel kategori yang mengambil feature.properties.kategori](styling-layer/image.png)
     
 6. Tahap berikutnya buat kondisi kategori menggunakan fungsi **if** kemudian tentukan parameter yang digunakan pada kategorinya, seperti pada script ini mengambil layer dengan kategori **landmark**.
     
-![image.png](styling-layer/image%201.png)
+![Geojson.jsx dengan kondisi if kategori sama dengan Landmark di dalam getPolygonStyle yang masih kosong dan disorot kuning](styling-layer/image%201.png)
     
 7. Selanjutnya pada fungsi kondisional **if** tersebut buat fungsi **return** yang akan mengembalikan layer sesuai dengan styling yang akan dibuat nantinya.
     
-![](styling-layer/image7.png)
+![Kondisi if kategori sama dengan Landmark dengan blok return yang masih kosong](styling-layer/image7.png)
     
 8. Selanjutnya didalam **return** buat fungsi untuk warna dengan **color**, kemudian tambahkan fungsi untuk mengatur ketebalan garis dengan **weight**, kemudian tambahkan fungsi untuk mengatur warna bagian dalam dengan **fillColor** serta transparansi warna dengan **fillOpacity**.
     
-![image.png](styling-layer/image%202.png)
+![Blok return Landmark berisi color red, weight 3, fillColor orange, dan fillOpacity 0.5 yang disorot kuning](styling-layer/image%202.png)
     
 9. Selanjutnya buat kondisi untuk layer jika memiliki kategori berupa pemerintahan dengan fungsi kondisional **if**.
     
-![image.png](styling-layer/image%203.png)
+![Kondisi if kategori sama dengan Pemerintahan dengan blok return berisi color blue, weight 3, fillColor lightblue, dan fillOpacity 0.5](styling-layer/image%203.png)
     
 10. Kemudian buat fungsi **return** jika layer tidak terdapat dalam dua kategori tersebut, styling layernya akan dibuat menjadi warna abu-abu.
 
@@ -76,7 +76,7 @@
     }
     ```
 
-![](styling-layer/image10.png)
+![Blok return berwarna abu-abu yang disorot di bawah dua kondisi kategori pada getPolygonStyle](styling-layer/image10.png)
 
 11. Selanjutnya pada fungsi c**onst geojsonLayer** yang sudah ada sebelumnya, tambahkan fungsi style dan buat return berupa **getPolygonsStyle** untuk mengambil styling yang telah dibuat.
 
@@ -85,11 +85,11 @@
       style: getPolygonStyle,
     ```
 
-![](styling-layer/image11.png)
+![Opsi style dan return getPolygonStyle yang disorot di dalam L.geoJSON pada fungsi addGeoJson](styling-layer/image11.png)
 
 12. Hasil akhir dari styling geojson layer yaitu sebagai berikut ini.
     
-![](styling-layer/image12.png)
+![Poligon Monas bergaris merah dengan popup Kategori Landmark pada peta localhost:3000/peta-latihan-5](styling-layer/image12.png)
     
 
 ## **Styling Layer KML**
@@ -111,16 +111,16 @@
     });
     ```
 
-![image.png](styling-layer/image%204.png)
+![Blok then kmlText dengan parser DOMParser dan kmlLayer.eachLayer yang badannya masih kosong dan disorot kuning](styling-layer/image%204.png)
 
 2. Selanjutnya buat kondisional **if** untuk menganalisis apakah layer bisa diberi style atau tidak.
     
-![image.png](styling-layer/image%205.png)
+![Kondisi if layer.setStyle dengan badan kosong yang disorot kuning di dalam kmlLayer.eachLayer pada Kml.jsx](styling-layer/image%205.png)
     
 3. Tahap berikutnya jika file dapat diberikan style, maka buat variabel fungsi untuk warna dengan **color**, kemudian tambahkan fungsi untuk mengatur ketebalan garis dengan **weight**, kemudian tambahkan fungsi untuk mengatur warna bagian dalam dengan **fillColor** serta transparansi warna dengan **fillOpacity**.
     
-![image.png](styling-layer/image%206.png)
+![Pemanggilan layer.setStyle berisi color blue, weight 3, fillColor blue, dan fillOpacity 0.5 yang disorot kuning](styling-layer/image%206.png)
     
 4. Hasil tampilan styling layer kml dengan menggunakan warna biru sebagai warna stylenya dapat dilihat pada gambar berikut ini.
     
-![image.png](styling-layer/image%207.png)
+![Peta Jakarta pada localhost:3000/peta-latihan-5 dengan garis poligon KML berwarna biru di atas basemap jalan](styling-layer/image%207.png)

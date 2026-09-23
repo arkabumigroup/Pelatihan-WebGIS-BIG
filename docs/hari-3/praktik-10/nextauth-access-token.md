@@ -11,9 +11,9 @@
     
     jika sudah akan ada next-auth di package.json
     
-![](nextauth-access-token/image15.png)
+![Struktur project personal-geoportal di VS Code dengan terminal menjalankan npm install next-auth](nextauth-access-token/image15.png)
     
-![](nextauth-access-token/image27.png)
+![package.json yang memuat jsonwebtoken dan next-auth pada bagian dependencies](nextauth-access-token/image27.png)
     
 2. Tambahkan variabel berikut ini di file .env
     
@@ -23,116 +23,116 @@
     JWT_EXPIRES_IN=1h 
     ```
 
-![](nextauth-access-token/image25.png)
+![Isi berkas .env dengan DATABASE_URL, JWT_SECRET, JWT_EXPIRES_IN, dan NEXTAUTH_SECRET](nextauth-access-token/image25.png)
 
 3. Buat kolom baru di table users bernama role kemudian isi kolom tersebut, kemudian npx prisma db pull dan npx prisma generate.
     
-![image.png](nextauth-access-token/image.png)
+![Dialog Table column di pgAdmin saat menambahkan kolom role bertipe varchar pada tabel users](nextauth-access-token/image.png)
     
-![](nextauth-access-token/image13.png)
+![Hasil npx prisma db pull dan npx prisma generate di terminal](nextauth-access-token/image13.png)
     
-![](nextauth-access-token/image6.png)
+![Tabel users di editor database dengan kolom role bernilai super_admin](nextauth-access-token/image6.png)
     
 4. Buat function untuk verifikasi credential, buat file verifyCredentials.js di folder lib/auth, kemudian masukan kode berikut ini lalu save
     
-![image.png](nextauth-access-token/image%201.png)
+![Isi verifyCredentials.js yang memverifikasi password dengan bcrypt dan mengembalikan role user](nextauth-access-token/image%201.png)
     
 5. Selanjutnya buat function signAccessToken dan verifyAccessToken di dalam file jwt.js yang dibuat di dalam folder lib/auth. Function signAccessToken berfungsi untuk membuat access token, sedangkan function verifyAccessToken berfungsi untuk verifikasi apakah token valid
     
-![image.png](nextauth-access-token/image%202.png)
+![Isi jwt.js berisi function signAccessToken dan verifyAccessToken dari library jsonwebtoken](nextauth-access-token/image%202.png)
     
 6. Sekarang ubah API Login supaya responsenya memberikan access token
     
-![image.png](nextauth-access-token/image%203.png)
+![Function POST di route.js API login yang mengembalikan access_token pada response](nextauth-access-token/image%203.png)
     
 7. Jalankan project dengan npm run dev, kemudian test API login dengan postman, pastikan sekarang API anda memberikan access_token di responnya
     
-![image.png](nextauth-access-token/image%204.png)
+![Hasil uji API login di Postman yang menampilkan access_token dan data user role super_admin](nextauth-access-token/image%204.png)
     
 8. Buat function untuk hirarki roles. Buat file role.js di folder lib/auth/ lalu masukan kode berikut
     
-![image.png](nextauth-access-token/image%205.png)
+![Isi roles.js yang mendefinisikan ROLE_LEVELS dan function hasRequiredRole](nextauth-access-token/image%205.png)
     
 9. Buat function untuk verifikasi bearer token. Buat file verifyBearerToken.js di dalam folder lib/auth/. Berikut kode verifyBearerToken.js
     
-![image.png](nextauth-access-token/image%206.png)
+![Isi verifyBearerToken.js dengan function getBearerToken dan requireAuth beserta pengecekan minRole](nextauth-access-token/image%206.png)
     
 10. Sekarang jika ada pengecekan hak akses role cukup memanggil function requireAuth yang ada di file verifyBearerToken.js. Berikut contoh penggunaannya di API list user yang mana list user hanya bisa diakses oleh role super_admin.
     
-![image.png](nextauth-access-token/image%207.png)
+![Pemakaian requireAuth dengan minRole super_admin pada API list user](nextauth-access-token/image%207.png)
     
 11. Pergi ke postman kemudian lakukan login super admin untuk mendapatkan access_token lalu gunakan token itu di authorization bearer token dan akses localhost:3000/portal/api/users/list
     
-![image.png](nextauth-access-token/image%208.png)
+![Menu Set as variable pada access_token di response login Postman](nextauth-access-token/image%208.png)
     
-![](nextauth-access-token/image19.png)
+![Request GET portal/api/users/list dengan Bearer Token berisi variabel access_token di Postman](nextauth-access-token/image19.png)
     
 
 ## **Konfigurasi NextAuth**
 
 1. Tambahkan variable berikut ini di file .env
     
-![image.png](nextauth-access-token/image%209.png)
+![Isi berkas .env dengan JWT_SECRET, JWT_EXPIRES_IN, NEXTAUTH_SECRET, dan NEXTAUTH_URL ke localhost](nextauth-access-token/image%209.png)
     
 2. Buat folder src/app/api/auth/[...nextauth], lalu di dalamnya buat file route.js. Masukan kode berikut di dalam file tersebut
     
-![image.png](nextauth-access-token/image%2010.png)
+![Isi route.js dengan authOptions, providers Credentials, dan callback jwt yang menyisipkan accessToken](nextauth-access-token/image%2010.png)
     
-![](nextauth-access-token/image31.png)
+![Lanjutan route.js berisi callback session, pages signIn ke login, dan handler NextAuth untuk GET serta POST](nextauth-access-token/image31.png)
     
 3. Selanjutnya buat file providers.js di folder src/app dan isikan kode berikut, kode ini memberikan kita component session yang mana component ini memberi aplikasi kita informasi jika ingin mengakses semua fungsi Autentikasi ada di dalam API portal/api/auth
     
-![image.png](nextauth-access-token/image%2011.png)
+![Isi providers.js yang membungkus aplikasi dengan SessionProvider berbasePath portal/api/auth](nextauth-access-token/image%2011.png)
     
 4. Lalu setelah session providers dibuat bungkus seluruh aplikasi kita dengan session providers. Dengan membungkus seluruh aplikasi kita dengan session provider maka session akan bisa dikenali di seluruh halaman web kita.
     
-![image.png](nextauth-access-token/image%2012.png)
+![layout.js yang mengimpor Providers dan membungkus children dengan SessionProvider](nextauth-access-token/image%2012.png)
     
 5. Karena session sudah dibuat di web kita, maka di form login tidak perlu lagi mengakses API login, kita cukup menggunakan fungsi singIn dari NextAuth. Pergi ke halaman LoginForm.jsx, kemudian perbarui function handle submit menjadi seperti ini. Jangan lupa import signIn function dari next-auth/react
     
-![image.png](nextauth-access-token/image%2013.png)
+![handleSubmit di LoginForm.jsx yang memanggil signIn geoportal-credential lalu router.push ke halaman internal](nextauth-access-token/image%2013.png)
     
 6. Coba lagi login dari halaman login setelah login anda akan menemukan data session anda di network browser
     
-![image.png](nextauth-access-token/image%2014.png)
+![Tab Network browser menampilkan response session berisi accessToken, email, id, dan role super_admin](nextauth-access-token/image%2014.png)
     
 7. Buat halaman internal. Di halaman internal buat button logout agar kita bisa logout. Saat button logout di klik kita bisa cek di network tab session kita sudah dihapus
     
-![image.png](nextauth-access-token/image%2015.png)
+![Isi page.js halaman internal dengan Button Logout yang memanggil signOut](nextauth-access-token/image%2015.png)
     
-![](nextauth-access-token/image28.png)
+![Preview response session di tab Network berisi objek kosong tanpa properti setelah logout](nextauth-access-token/image28.png)
     
 8. Di form login kita melakukan route.push ke halaman /internal. Halaman ini tidak akan bisa diakses jika user belum login, tapi nyatanya saat ini halaman bisa langsung diakses tanpa login. Oleh karena itu kita harus melakukan proteksi halaman private dengan middleware. Buat file proxy.js di dalam folder src/
     
-![image.png](nextauth-access-token/image%2016.png)
+![Isi proxy.js yang membaca token dengan getToken dan mengalihkan ke login lewat matcher halaman internal](nextauth-access-token/image%2016.png)
     
 9. Saat anda sudah logout, akses kembali halaman /internal maka anda akan redirect ke halaman login karena untuk bisa ke halaman ini harus login terlebih dahulu.
     
-![image.png](nextauth-access-token/image%2017.png)
+![Halaman Masuk di localhost dengan kolom Email dan Password serta tombol Login setelah diarahkan dari halaman internal](nextauth-access-token/image%2017.png)
     
 10. Pergi ke VM buka folder app kemudian nano .env. Ubah file .env di VM anda menjadi seperti yang ada di local. Sesuaikan isi isi variabelnya menjadi variabel production.
     
-![image.png](nextauth-access-token/image%2018.png)
+![Masuk ke folder app di VM lalu menjalankan nano .env pada terminal latihan-web-gis](nextauth-access-token/image%2018.png)
     
-![](nextauth-access-token/image18.png)
+![Isi .env production di editor nano berisi DATABASE_URL, JWT_SECRET, NEXTAUTH_SECRET, dan NEXTAUTH_URL domain matiur-geoportal](nextauth-access-token/image18.png)
     
 11. Sesuaikan juga table users yang ada di Supabase karena ada perubahan di schema.prisma yaitu penambahan kolom role di table users
     
-![image.png](nextauth-access-token/image%2019.png)
+![Model users di schema.prisma dengan kolom role bertipe String yang ditandai](nextauth-access-token/image%2019.png)
     
-![](nextauth-access-token/image29.png)
+![Tabel users di pgAdmin dengan dialog Table column untuk menambahkan kolom role](nextauth-access-token/image29.png)
     
 12. Setelah memastikan komponen production kita siap menerima update lakukan git push
     
-![image.png](nextauth-access-token/image%2020.png)
+![Perintah git add, git commit, dan git push pada terminal PowerShell di folder personal-geoportal](nextauth-access-token/image%2020.png)
     
 13. Tunggu proses CICD nya selesai lalu kunjungi halaman /internal maka anda akan di redirect ke halaman login
     
-![image.png](nextauth-access-token/image%2021.png)
+![Halaman Build details Cloud Build dengan status Successful dan tiga langkah build beserta log deployment](nextauth-access-token/image%2021.png)
     
-![](nextauth-access-token/image16.png)
+![Address bar browser menampilkan saran alamat matiur-geoportal.com/portal/internal](nextauth-access-token/image16.png)
     
-![](nextauth-access-token/image22.png)
+![Halaman login matiur-geoportal.com dengan callbackUrl portal/internal setelah halaman internal diakses](nextauth-access-token/image22.png)
 
 ## Berkas Konfigurasi NextAuth
 

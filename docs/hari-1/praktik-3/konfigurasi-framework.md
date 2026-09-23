@@ -6,22 +6,22 @@
 
 1. Buat **folder baru** yang akan digunakan sebagai tempat penyimpanan project, kemudian buka **Virtual Studio Code**, lalu **pilih folder** tersebut dengan cara **klik file,** kemudian **klik open folder**, lalu **pilih folder** yang telah dibuat.
     
-![](konfigurasi-framework/image9.png)
+![Dialog Open Folder di VS Code dengan folder frontend-webgis terpilih](konfigurasi-framework/image9.png)
     
 2. Selanjutnya setelah memilih folder yang akan menjadi tersebut, berikut ini merupakan halaman awal folder dan project yang akan dirancang dan dibangun.
     
-![](konfigurasi-framework/image18.png)
+![Tampilan awal VS Code untuk folder frontend-webgis dengan halaman Welcome dan terminal PowerShell](konfigurasi-framework/image18.png)
     
 
 ## **Konfigurasi Framework Next.JS**
 
 1. Buka tautan [**https://nextjs.org/**](https://nextjs.org/) untuk melihat dokumentasi framework yang akan digunakan oleh penguna.
     
-![](konfigurasi-framework/image16.png)
+![Halaman utama nextjs.org dengan judul The React Framework for the Web](konfigurasi-framework/image16.png)
     
 2. Tahapan berikutnya untuk melakukan konfigurasi framework dalam perancangan dan pembangunan WebGIS, maka **buka virtual studio code** kemudian **klik terminal** untuk menjalankan perintah konfigurasi framework.
     
-![](konfigurasi-framework/image19.png)
+![Menu Terminal di bilah menu VS Code yang sedang diklik](konfigurasi-framework/image19.png)
     
 3. Selanjutnya pada bagian terminal lakukan konfigurasi Next.js dengan menginput perintah berikut ini **npx create-next-app@latest** kemudian **klik enter**. Selanjutnya input nama project yang akan dirancang oleh penggguna.
 
@@ -29,7 +29,7 @@
     npx create-next-app@latest
     ```
 
-![](konfigurasi-framework/image22.png)
+![Terminal menjalankan npx create-next-app@latest dan mengisi nama project webgis-latihan](konfigurasi-framework/image22.png)
 
 4. Tahapan berikutnya lakukan konfigurasi next.js pada terminal dengan konfigurasi sebagai berikut.
 
@@ -61,48 +61,48 @@
 
     Bila jawaban Anda berbeda dari tabel di atas, langkah pada materi berikutnya bisa gagal. Yang paling sering menggagalkan adalah `src/` directory dan App Router.
     
-![](konfigurasi-framework/image5.png)
+![Ringkasan jawaban konfigurasi Next.js pada terminal sebelum instalasi dimulai](konfigurasi-framework/image5.png)
     
 5. Selanjutnya tunggu hingga proses konfigurasi dan instalasi framework Next.js selesai, berikut merupakan hasil konfigurasi yang telah selesai.
     
-![](konfigurasi-framework/image1.png)
+![Terminal menampilkan proses instalasi dependensi Next.js hingga pesan Success](konfigurasi-framework/image1.png)
     
 6. Hasil dari konfigurasi framework Next.js pada Virtual Studio Code akan menampilkan folder-folder yang menjadi tempat perancangan dan pembangunan WebGIS.
     
-![](konfigurasi-framework/image20.png)
+![Panel Explorer VS Code berisi struktur folder project webgis-latihan](konfigurasi-framework/image20.png)
     
 7. Tahapan berikutnya buka folder yang telah dibuat sebelumnya dengan nama **folder webgis-latihan** dengan cara **klik file**, kemudian **klik open folder**, lalu pilih folder tersebut. Selanjutnya untuk menjalakan web yang telah dikonfigurasi dengan next js dilakukan dengan cara pada **terminal** ketik **npm run dev**.
     
-![](konfigurasi-framework/image17.png)
+![Terminal menjalankan npm run dev dengan alamat lokal http://localhost:3000](konfigurasi-framework/image17.png)
     
 8. Untuk melihat dan menjalankan web tersebut, buka **browser** yang terdapat dalam perangkat pengguna kemudian masukan url lokal yang terdapat pada **terminal** yaitu [**http://localhost:3000/**](http://localhost:3000/) maka hasilnya dapat dilihat sebagai berikut.
     
-![](konfigurasi-framework/image14.png)
+![Halaman default Next.js di browser pada alamat localhost:3000](konfigurasi-framework/image14.png)
     
 
 ## **Konfigurasi Project dengan Repository Github**
 
 1. Buka **web github** melalui tautan berikut ini [**https://github.com/**](https://github.com/) apabila belum memiliki akun maka dapat melakukan registrasi untuk melakukan pembuatan akun github terlebih dahulu.
     
-![](konfigurasi-framework/image8.png)
+![Halaman beranda github.com dengan tombol Sign up for GitHub](konfigurasi-framework/image8.png)
     
 2. Selanjutnya setelah login pada github, untuk membuat repository baru sebagai tempat penyimpanan project pada github dengan melakukan **klik tombol new**.
 3. Selanjutnya pada halaman new, buat halaman baru dengan menginput nama project yang akan dibuat pada github kemudian klik **create repository**.
     
-![](konfigurasi-framework/image10.png)
+![Halaman New repository GitHub dengan nama webgis-latihan yang sudah tersedia](konfigurasi-framework/image10.png)
     
 4. Setelah repositori baru dibuat, halaman berikutnya menampilkan beberapa perintah pengunggahan. Perintah itu **tidak perlu disalin**, karena pengunggahan dikerjakan lewat GitHub Desktop.
     
-![](konfigurasi-framework/image7.png)
+![Halaman repositori webgis-latihan yang baru dibuat dengan Quick setup dan perintah Git](konfigurasi-framework/image7.png)
     
 5. Buka GitHub Desktop, lalu pilih **File > Add local repository**. Arahkan ke folder proyek Anda, kemudian klik **Add repository**.
 
-![](konfigurasi-framework/image4.png)
+![Menu klik kanan pada folder webgis-latihan di File Explorer Windows](konfigurasi-framework/image4.png)
     
 6. GitHub Desktop akan menawarkan **create a repository** bila foldernya belum terlacak. Ikuti tawaran itu, lalu klik **Publish repository** pada bilah atas. Hilangkan centang **Keep this code private** bila repositori ingin dibuka untuk umum.
 7. Hasil dari project yang telah diunggah pada github maka hasilnya akan menjadi seperti berikut.
     
-![](konfigurasi-framework/image13.png)
+![Halaman repositori webgis-latihan di GitHub setelah commit pertama terunggah](konfigurasi-framework/image13.png)
     
 
 ## **Cloning Project Github**
@@ -111,7 +111,7 @@ Cloning dikerjakan lewat GitHub Desktop.
 
 1. Buka GitHub Desktop, lalu pilih **File > Clone repository**.
 
-![](konfigurasi-framework/image2.png)
+![Menu tombol Code di repositori personal-geoportal dengan pilihan Clone dan Open with GitHub Desktop](konfigurasi-framework/image2.png)
     
 2. Pilih tab **GitHub.com**, lalu pilih repositori yang ingin disalin. Tentukan folder tujuan, kemudian klik **Clone**.
 
@@ -122,7 +122,7 @@ Cloning dikerjakan lewat GitHub Desktop.
     npm run dev
     ```
 
-![](konfigurasi-framework/image12.png)
+![Terminal menjalankan npm install dan npm run dev pada folder personal-geoportal](konfigurasi-framework/image12.png)
 
 ## **Mengirim Perubahan dan Mengambil Hasil Perubahan Web**
 
