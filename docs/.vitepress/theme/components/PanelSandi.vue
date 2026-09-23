@@ -163,20 +163,48 @@ async function hitungHash(sandiUntukHash, ganti) {
 // sebabnya.
 function mintaKonfirmasi() {
   if (siap.value) {
+    sandiTertunda.value = ''
     konfirmasi.value = true
     return
   }
   hitung()
 }
 
-// Kata sandi pilihan sendiri, untuk browser yang tidak menyediakan sumber
-// acak. Nilainya tidak disimpan sampai hash-nya berhasil dihitung, sehingga
-// tidak ada kata sandi setengah jadi yang tertinggal di penyimpanan.
+// Kata sandi pilihan sendiri. Selalu tersedia, bukan hanya saat sumber acak
+// tidak ada, karena sebagian peserta lebih memilih kata sandi yang mudah
+// mereka ingat daripada rangkaian acak sepanjang 32 karakter.
+//
+// Nilainya tidak disimpan sampai hash-nya berhasil dihitung, sehingga tidak
+// ada kata sandi setengah jadi yang tertinggal di penyimpanan.
 const sandiManual = ref('')
 
+// Kata sandi manual yang menunggu konfirmasi. Terisi hanya bila peserta
+// mengganti kata sandi yang sudah ada dengan pilihannya sendiri.
+const sandiTertunda = ref('')
+
 function hitungManual() {
-  hitung(sandiManual.value.trim())
+  const nilai = sandiManual.value.trim()
+  if (nilai.length < 8) return
+  if (sandi.value) {
+    sandiTertunda.value = nilai
+    konfirmasi.value = true
+    return
+  }
+  hitung(nilai)
   sandiManual.value = ''
+}
+
+// Dipanggil tombol pada kotak konfirmasi. Memakai kata sandi manual yang
+// sedang menunggu bila ada, dan membuat yang acak bila tidak.
+function gantiSandi() {
+  hitung(sandiTertunda.value || undefined)
+  sandiTertunda.value = ''
+  sandiManual.value = ''
+}
+
+function batalGanti() {
+  konfirmasi.value = false
+  sandiTertunda.value = ''
 }
 
 async function salin(teks, tanda) {
@@ -389,16 +417,21 @@ onBeforeUnmount(() => {
 
       <div v-if="konfirmasi" class="ps-konfirmasi">
         <p>
-          Kata sandi lama akan hilang dan tidak dapat dikembalikan. Bila akun
-          super adminnya sudah dibuat, kata sandi di database harus diganti
-          lebih dahulu lewat SQL Editor; tanpa itu, login gagal tanpa pesan yang
-          menyebut sebabnya.
+          <template v-if="sandiTertunda">
+            Kata sandi di atas akan diganti dengan kata sandi pilihan Anda.
+          </template>
+          <template v-else>
+            Kata sandi lama akan hilang dan diganti dengan yang baru.
+          </template>
+          Kata sandi lama tidak dapat dikembalikan. Bila akun super adminnya
+          sudah dibuat, kata sandi di database harus diganti lebih dahulu lewat
+          SQL Editor; tanpa itu, login gagal tanpa pesan yang menyebut sebabnya.
         </p>
         <div class="ps-aksi">
-          <button type="button" class="ps-tombol ps-tombol--bahaya" @click="hitung()">
-            Ya, buat yang baru
+          <button type="button" class="ps-tombol ps-tombol--bahaya" @click="gantiSandi()">
+            {{ sandiTertunda ? 'Ya, pakai kata sandi saya' : 'Ya, buat yang baru' }}
           </button>
-          <button type="button" class="ps-tombol" @click="konfirmasi = false">Batal</button>
+          <button type="button" class="ps-tombol" @click="batalGanti()">Batal</button>
         </div>
       </div>
 
@@ -422,12 +455,12 @@ onBeforeUnmount(() => {
       <span class="ps-ket">Sekitar setengah detik, karena bcrypt memang lambat</span>
     </div>
 
-    <!-- Jalan lain bila tombol di atas gagal, misalnya pada browser tanpa
-         sumber acak yang layak. Kata sandinya dihitung dengan cara yang sama,
-         jadi hash yang dihasilkan tetap dapat diverifikasi aplikasi. -->
-    <div v-if="!siap" class="ps-manual">
+    <!-- Kata sandi pilihan sendiri selalu tersedia, bukan hanya saat tombol
+         di atas gagal. Sebagian peserta lebih memilih kata sandi yang mudah
+         mereka ingat daripada rangkaian acak sepanjang 32 karakter. -->
+    <div class="ps-manual">
       <label class="ps-label">
-        <span>Atau pakai kata sandi Anda sendiri</span>
+        <span>{{ siap ? 'Ganti dengan kata sandi Anda sendiri' : 'Pakai kata sandi Anda sendiri' }}</span>
         <input
           v-model="sandiManual"
           type="password"
