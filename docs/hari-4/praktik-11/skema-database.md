@@ -56,6 +56,14 @@ Ada dua schema yang terlibat, dan keduanya punya peran berbeda:
 2. Ketik `postgis` pada kolom pencarian, lalu aktifkan extension bernama `postgis` saja.
 3. Saat muncul pilihan schema, **pilih `public`**. Jangan membuat schema baru, dan jangan memilih `gis`.
 
+::: danger Di sini beda dari PostgreSQL lokal Hari 2, dan bedanya menentukan
+Pada [Basis Data Lokal](/hari-2/praktik-6/basis-data-lokal) PostGIS dipasang ke schema `gis`, lalu jalur pencariannya diarahkan ke sana dengan `ALTER DATABASE geoportal SET search_path TO gis, public;`. **Dua langkah itu satu paket.** Yang membuat pemasangan di `gis` sah adalah perintah `ALTER DATABASE` sesudahnya.
+
+Di Supabase, perintah `ALTER DATABASE` itu **tidak berpengaruh**. Pooler menetapkan jalur pencarian pada tingkat koneksi dan menimpa nilai tingkat database, sehingga perintahnya berjalan tanpa error tetapi tidak mengubah apa pun. Artinya langkah kedua Ari tidak tersedia di sini.
+
+Karena itu jalurnya tidak dapat dipindahkan ke PostGIS, dan PostGIS-lah yang harus diletakkan di jalur yang sudah ada, yaitu `public`. Kalau Anda memakai schema `gis` seperti di Hari 2, pembuatan tabel layer nanti gagal dengan `type "geometry" does not exist`.
+:::
+
 Padanan SQL-nya, bila Anda lebih suka menempelkannya di SQL Editor:
 
 ```sql
