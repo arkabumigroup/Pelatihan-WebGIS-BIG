@@ -447,6 +447,15 @@
   background-color: var(--pelatihan-permukaan);
 }
 
+/* Blok contoh yang nilainya wajib diganti sendiri tidak diberi tombol salin.
+   Isinya sengaja memakai bentuk placeholder yang sama dengan blok di halaman
+   lain, sehingga menyalinnya sekali klik menghasilkan perintah yang menunjuk
+   project atau nama peserta milik orang lain. Tanpa tombol salin, nilainya
+   harus diketik, dan itu memaksa nilainya dibaca lebih dahulu. */
+.vp-doc .tanpa-salin div[class*="language-"] > button.copy {
+  display: none;
+}
+
 /* ---------------------------------------------------------------------
    Blok peringatan
    Tingkat bahaya ditandai garis tepi kiri yang tebal, bukan latar berwarna
