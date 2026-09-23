@@ -147,10 +147,27 @@ function potong(nilai) {
   if (!nilai) return []
   return nilai.match(/.{1,8}/g) || []
 }
+
+// Memblok kotak nilainya lalu menekan Ctrl+C menghasilkan pemisah antar blok,
+// karena flex item diperlakukan browser sebagai blok. Pemisah itu membuat
+// nilainya tidak dapat dipakai, dan tidak terlihat bahwa ada yang salah.
+// Handler ini mengganti isi papan klip dengan nilai aslinya, sehingga cara
+// menyalin mana pun menghasilkan satu rangkaian utuh.
+function salinBersih(peristiwa, nilai) {
+  if (!peristiwa.clipboardData || !nilai) return
+  peristiwa.clipboardData.setData('text/plain', nilai)
+  peristiwa.preventDefault()
+}
 </script>
 
 <template>
   <div class="pr">
+    <p class="pr-catatan-atas">
+      Nilai ditampilkan dalam blok delapan karakter supaya mudah diperiksa.
+      Jarak antar blok itu hanya tampilan: isinya <strong>tidak memuat
+      spasi</strong>, dan menyalinnya dengan cara apa pun menghasilkan satu
+      rangkaian utuh.
+    </p>
     <div
       v-for="b in paket"
       :key="kunci(b)"
@@ -166,7 +183,11 @@ function potong(nilai) {
         {{ jenis(b).untuk }}. Diisikan pada <a :href="b.tautan">{{ b.tempat }}</a>.
       </p>
 
-      <output v-if="isian[kunci(b)]" class="pr-nilai">
+      <output
+        v-if="isian[kunci(b)]"
+        class="pr-nilai"
+        @copy="salinBersih($event, isian[kunci(b)])"
+      >
         <span v-for="(bagian, i) in potong(isian[kunci(b)])" :key="i" class="pr-bagian">{{ bagian }}</span>
       </output>
       <p v-else class="pr-kosong">Belum dibuat.</p>
@@ -234,6 +255,18 @@ function potong(nilai) {
 </template>
 
 <style scoped>
+/* Keterangan sekali di atas seluruh baris, bukan diulang pada tiap nilai,
+   karena kebingungan yang dicegahnya sama untuk semuanya. */
+.pr-catatan-atas {
+  margin: 0 0 14px;
+  padding: 10px 12px;
+  border-left: 4px solid var(--pelatihan-garis, #111111);
+  background: var(--vp-c-bg-soft);
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--vp-c-text-2);
+}
+
 .pr-baris {
   padding: 14px;
   margin: 0 0 14px;
