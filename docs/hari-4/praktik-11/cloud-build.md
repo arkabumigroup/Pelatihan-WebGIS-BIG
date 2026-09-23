@@ -41,7 +41,7 @@ substitutions:
   # _IMAGE_NAME, _VM_NAME, _VM_ZONE, _VM_APP_DIR, dan _CESIUM_ION_TOKEN sengaja
   # tidak diberi nilai bawaan. Semuanya wajib diisi pada substitution variable
   # trigger. Tanpa nilai bawaan, build berhenti dengan pesan yang jelas daripada
-  # diam-diam memakai satu nama image bersama dan menimpa image milik peserta
+  # diam-diam memakai satu nama image bersama dan menimpa image milik asisten
   # lain di Artifact Registry.
 
 steps:
