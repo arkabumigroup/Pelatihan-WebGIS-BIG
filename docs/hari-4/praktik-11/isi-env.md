@@ -28,6 +28,14 @@ Buka `.env`, lalu isi lima nilai berikut.
 | `NEXTAUTH_URL` | `http://localhost:3000/portal` untuk sekarang |
 | `ADMIN_CONTACT_EMAIL` | Email Anda sendiri |
 
+::: tip Bungkus setiap nilai dengan tanda kutip ganda
+Tulis `NAMA_VARIABEL="nilainya"`, bukan `NAMA_VARIABEL=nilainya`.
+
+Berkas `.env` ini bukan hanya dibaca aplikasi. Pada [Tahap 1b halaman Menyiapkan GeoServer](/hari-4/praktik-11/siapkan-geoserver-vm#tahap-1b-uji-koneksi-dari-vm) isinya dimuat ke dalam shell dengan `. ./.env`, dan perintah itu **menjalankan berkasnya sebagai kode shell**. Nilai yang tidak dikutip dan memuat spasi, `#`, `$`, atau `&` akan terpotong atau dibaca sebagai perintah lain, sehingga variabelnya terisi keliru tanpa pesan error yang menjelaskan sebabnya.
+
+Tanda kutipnya juga tidak mengganggu aplikasi maupun Docker Compose, karena keduanya membuang kutip yang mengapit nilai.
+:::
+
 Dua nilai acak itu dibuat di [Kit Identitas Peserta](/hari-4/praktik-11/kit-identitas), satu halaman dengan identitas peserta. Nilainya tersimpan di browser Anda, jadi tetap sama setelah halaman dimuat ulang dan dapat dibuka lagi kapan saja tanpa membuat yang baru.
 
 Bila Anda lebih suka terminal, keduanya juga dapat dibuat dengan:
