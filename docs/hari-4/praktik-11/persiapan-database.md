@@ -10,7 +10,7 @@ Halaman ini memeriksa file yang sudah ada di repositori, jadi repositori itu har
 
 ### Fork repositori
 
-1. Buka `https://github.com/dhanyyudi/personal-geoportal-peserta` pada browser.
+1. Buka [github.com/dhanyyudi/personal-geoportal-peserta](https://github.com/dhanyyudi/personal-geoportal-peserta) pada browser.
 2. Pilih **Fork**, lalu pilih akun GitHub Anda sebagai tujuan.
 3. Biarkan nama fork apa adanya, yaitu `personal-geoportal-peserta`, supaya seluruh contoh perintah pada halaman ini cocok.
 4. Pastikan branch default fork adalah `main`.
