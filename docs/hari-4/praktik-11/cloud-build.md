@@ -80,7 +80,7 @@ options:
   logging: CLOUD_LOGGING_ONLY
 ```
 
-Periksa kembali pemeriksa YAML pada [Tahap 8 halaman Konfigurasi Project](/hari-4/praktik-11/konfigurasi-project#tahap-8-uji-seluruh-file-di-laptop). Seluruh file sudah ada di fork Anda, jadi keluaran yang diharapkan adalah:
+Periksa kembali pemeriksa YAML pada [Tahap 8 halaman Uji dan Jalankan Portal](/hari-4/praktik-11/uji-dan-jalankan#tahap-8-uji-seluruh-file-di-laptop). Seluruh file sudah ada di fork Anda, jadi keluaran yang diharapkan adalah:
 
 ```
 OK   docker-compose.yml -> services, networks
@@ -94,7 +94,7 @@ OK   cloudbuild.yaml -> substitutions, steps, images, options
 
 Tidak ada yang perlu di-commit pada tahap ini. `Dockerfile`, `.dockerignore`, `cloudbuild.yaml`, dan `next.config.mjs` sudah ikut ketika Anda mem-fork repositori, dan sudah ada di fork Anda. Daftar **Changes** pada GitHub Desktop memang akan kosong, dan itu memang seharusnya.
 
-Yang perlu diperiksa hanya satu: pastikan `.env` juga tidak muncul di daftar itu. File tersebut berisi kredensial Anda dan tidak boleh ikut terkirim. Bila `.env` muncul di sana, kembali ke [Tahap 10 halaman Konfigurasi Project](/hari-4/praktik-11/konfigurasi-project#tahap-10-pastikan-file-env-tidak-ikut-ter-commit).
+Yang perlu diperiksa hanya satu: pastikan `.env` juga tidak muncul di daftar itu. File tersebut berisi kredensial Anda dan tidak boleh ikut terkirim. Bila `.env` muncul di sana, kembali ke [Tahap 10 halaman Uji dan Jalankan Portal](/hari-4/praktik-11/uji-dan-jalankan#tahap-10-pastikan-file-env-tidak-ikut-ter-commit).
 
 Build pertama tidak dijalankan oleh push, melainkan oleh tombol **Run** pada [Tahap 29](#tahap-29-jalankan-trigger-dan-pantau-hasilnya). Setelah trigger tersambung, setiap push ke branch `main` barulah menjalankan build sendiri.
 

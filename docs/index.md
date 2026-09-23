@@ -72,7 +72,7 @@ Setiap praktik memuat satu atau beberapa halaman, sesuai banyaknya modul pada pr
 
 ## Sebelum mulai
 
-Pasang seluruh perkakas pada halaman [Instalasi Aplikasi](/hari-1/persiapan/instalasi-aplikasi), lalu siapkan database Supabase pada [Konfigurasi Project](/hari-4/praktik-11/konfigurasi-project). Keduanya dipakai sejak praktik pertama.
+Pasang seluruh perkakas pada halaman [Instalasi Aplikasi](/hari-1/persiapan/instalasi-aplikasi), lalu siapkan database Supabase pada [Persiapan Repositori dan Database](/hari-4/praktik-11/persiapan-database). Keduanya dipakai sejak praktik pertama.
 
 Bila Anda belum tahu harus mulai dari mana, buka [Materi Pelatihan](/materi-pelatihan) untuk melihat susunan lengkapnya beserta status tiap sesi.
 
