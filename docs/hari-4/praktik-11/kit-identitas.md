@@ -25,12 +25,14 @@ Daftar namanya memuat peserta **batch 1 dan batch 2**, masing-masing 41 orang. S
 
 Identitas yang tersimpan di sini dipakai halaman lain. Begitu nama peserta dan Project ID terisi, blok kode di seluruh modul yang masih memuat bentuk contoh akan terisi sendiri dengan nilai Anda ketika halamannya dibuka. Peserta yang belum mengisi kit tidak melihat perubahan apa pun.
 
-Nilai yang berubah dan nilai yang masih harus diganti dibedakan lewat penandaan merah di dalam blok kode:
+Nilai yang berubah dan nilai yang masih harus diganti dibedakan lewat penandaan merah:
 
 | Penanda | Artinya |
 |---|---|
 | Merah, garis bawah penuh | Nilai milik Anda, terisi dari halaman ini. Bagian inilah yang berbeda dari bentuk contohnya. |
-| Merah, garis bawah titik-titik | Masih bentuk contoh, dan harus Anda ganti sendiri. Misalnya `IP_EKSTERNAL_VM`, alamat email pada bagian sertifikat, dan nama uptime check. |
+| Merah, garis bawah titik-titik | Masih bentuk contoh, dan harus Anda ganti sendiri. |
+
+Penandaan itu muncul di dua tempat. Di dalam blok kode, seluruh nilai yang bukan milik Anda ditandai. Di dalam kalimat dan tabel, hanya nilai yang benar-benar harus Anda ganti yang ditandai, misalnya `IP_EKSTERNAL_VM`, `SUBDOMAIN`, `PARTICIPANT_ID`, `USERNAME_GITHUB_PESERTA`, `[YOUR-PASSWORD]`, dan alamat email pada bagian sertifikat. Nama variabel shell seperti `$SUBDOMAIN` sengaja tidak ditandai, karena itu memang dipakai apa adanya.
 
 Nilai tanpa penandaan apa pun sama untuk semua peserta, misalnya `katalog-images` dan `asia-southeast2-b`.
 

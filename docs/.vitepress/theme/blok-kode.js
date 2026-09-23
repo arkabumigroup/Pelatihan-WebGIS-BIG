@@ -49,6 +49,11 @@ const HARUS_DIGANTI = [
   '<ISI_EMAIL',
   '<ISI_HASH',
   'IP_EKSTERNAL_VM',
+  'USERNAME_GITHUB_PESERTA',
+  'HASH_DARI_LANGKAH_1',
+  'EMAIL_DARI_LANGKAH_2',
+  'EMAIL_ANDA',
+  '[YOUR-PASSWORD]',
   'alamat-email-anda@contoh.com',
   'nama01@example.com',
   // Akhiran contoh pada nama uptime check. Bagian depannya terisi dari kit,
@@ -60,8 +65,26 @@ const HARUS_DIGANTI = [
   'nama01',
 ]
 
+// Nilai yang muncul di dalam kode sebaris pada kalimat dan tabel. Keduanya
+// juga nama variabel shell yang sah, sehingga tidak boleh ditandai di dalam
+// blok kode: pada blok, `SUBDOMAIN` dan `PARTICIPANT_ID` adalah nama variabel
+// yang memang dipakai apa adanya, sedangkan pada prosa keduanya berarti "isi
+// dengan milik Anda".
+const HARUS_DIGANTI_SEBARIS = ['SUBDOMAIN', 'PARTICIPANT_ID']
+
 const escapePola = (teks) => teks.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 const POLA_GANTI = new RegExp(HARUS_DIGANTI.map(escapePola).join('|'), 'g')
+const POLA_SEBARIS = new RegExp(
+  HARUS_DIGANTI.concat(HARUS_DIGANTI_SEBARIS).map(escapePola).join('|'),
+  'g'
+)
+
+// Pada kode sebaris, `$SUBDOMAIN` dan `${PARTICIPANT_ID}` adalah variabel shell
+// yang sah, jadi yang didahului tanda dolar tidak ikut ditandai.
+const bukanVariabelShell = (cocok, asal) => {
+  const sebelum = asal[cocok.index - 1]
+  return sebelum !== '$' && sebelum !== '{'
+}
 
 function bacaSimpanan() {
   try {
@@ -113,7 +136,10 @@ function sudahDitandai(simpul) {
 // Dipakai dua kali: sekali untuk mengisi nilai dari kit, sekali untuk menandai
 // nilai yang tersisa. Menambahkan span tidak mengubah textContent bloknya,
 // sehingga teks yang disalin tombol salin tetap sama.
-function bungkusCocok(simpul, pola, kelas, ambilTeks) {
+//
+// `boleh` menyaring potongan yang tidak ingin ditandai tanpa mengubah posisi
+// pencariannya pada teks asal.
+function bungkusCocok(simpul, pola, kelas, ambilTeks, boleh) {
   const asal = simpul.nodeValue
   const potongan = document.createDocumentFragment()
   let akhir = 0
@@ -122,6 +148,14 @@ function bungkusCocok(simpul, pola, kelas, ambilTeks) {
 
   pola.lastIndex = 0
   while ((cocok = pola.exec(asal)) !== null) {
+    if (boleh && !boleh(cocok, asal)) {
+      // Bagian yang ditolak tetap disalin apa adanya ke keluaran.
+      potongan.appendChild(document.createTextNode(asal.slice(akhir, cocok.index)))
+      potongan.appendChild(document.createTextNode(cocok[0]))
+      akhir = cocok.index + cocok[0].length
+      ada = true
+      continue
+    }
     ada = true
     if (cocok.index > akhir) {
       potongan.appendChild(document.createTextNode(asal.slice(akhir, cocok.index)))
@@ -153,10 +187,14 @@ function isiBlok(blok, identitas) {
   return berubah
 }
 
-function tandaiBlok(blok) {
+// `sebaris` menandai kode di dalam kalimat dan tabel, yang memakai daftar
+// tambahan dan tidak boleh menyentuh nama variabel shell.
+function tandaiBlok(blok, sebaris = false) {
+  const pola = sebaris ? POLA_SEBARIS : POLA_GANTI
+  const saring = sebaris ? bukanVariabelShell : undefined
   for (const simpul of simpulTeks(blok)) {
     if (sudahDitandai(simpul)) continue
-    bungkusCocok(simpul, POLA_GANTI, 'harus-diganti', (cocok) => cocok[0])
+    bungkusCocok(simpul, pola, 'harus-diganti', (cocok) => cocok[0], saring)
   }
 }
 
@@ -189,5 +227,13 @@ export function siapkanBlokKode() {
   // Penandaan berjalan setelah pengisian. Nilai identitas yang sudah terisi
   // karena itu tidak ikut ditandai sebagai "harus diganti", sedangkan bentuk
   // contoh yang tersisa ditandai karena memang harus diganti.
-  daftarBlok.forEach(tandaiBlok)
+  daftarBlok.forEach((blok) => tandaiBlok(blok))
+
+  // Kode sebaris di dalam kalimat dan tabel ikut ditandai, karena peserta juga
+  // dapat menyalin nilai dari sana, misalnya `https://SUBDOMAIN/geoserver/web`.
+  // Pemilihnya hanya mencocokkan <code> yang tidak berada di dalam <pre>,
+  // sehingga blok kode tidak diproses dua kali.
+  document
+    .querySelectorAll('.vp-doc :not(pre) > code')
+    .forEach((kode) => tandaiBlok(kode, true))
 }

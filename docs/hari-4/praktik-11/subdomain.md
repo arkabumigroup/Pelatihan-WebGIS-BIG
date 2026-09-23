@@ -44,13 +44,25 @@ Pelaporan ini sudah dikerjakan lebih awal, pada [Tahap 9 halaman Menyiapkan Proj
 
 Bila Anda melewatinya, lakukan sekarang:
 
+Cetak keduanya, lalu isikan ke formulir:
+
 ```bash
 echo "Subdomain : $SUBDOMAIN"
 echo "IP statis : $(gcloud compute addresses describe "$STATIC_IP_NAME" \
   --region="$VM_REGION" --project="$PROJECT_ID" --format='value(address)')"
 ```
 
-Kirim kedua nilai itu ke penyelenggara, lalu lanjutkan. Selama record belum ditambahkan, `dig` pada Tahap 4 akan mengembalikan kosong. Itu wajar, bukan tanda ada yang salah pada VM Anda.
+::: tip Isikan ke formulir ini
+**[Formulir pelaporan IP dan subdomain](https://forms.gle/djDAdjoAnaKSW4iR6)**
+
+Formulirnya meminta dua hal: alamat IP eksternal VM Anda, dan subdomain yang Anda inginkan tanpa `webgisbig.com` di belakangnya, paling banyak 8 karakter. Contoh: diisi `nama01` akan menjadi `nama01.webgisbig.com`.
+
+Isi formulirnya **sekarang, bukan nanti.** Record DNS-nya ditambahkan penyelenggara dari jawaban formulir ini, dan propagasinya perlu waktu. Diisikan sekarang, propagasinya berjalan sementara Anda mengerjakan tahap berikutnya.
+:::
+
+Kedua nilai itu juga dilaporkan pada [Tahap 9b halaman Menyiapkan Project dan VM](/hari-4/praktik-11/google-cloud-platform#tahap-9b-laporkan-alamat-ip-dan-subdomain-ke-penyelenggara). Bila Anda sudah mengisinya di sana, tahap ini tidak perlu diulang.
+
+Selama record belum ditambahkan, `dig` pada Tahap 4 akan mengembalikan kosong. Itu wajar, bukan tanda ada yang salah pada VM Anda.
 
 ### Tahap 4. Periksa resolusi DNS
 
