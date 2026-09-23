@@ -205,14 +205,12 @@ Blok ini hampir seluruhnya sintaksis bash, dan hanya satu barisnya perintah `gcl
 
 Di PowerShell, `NAMA_PESERTA="nama01"` bukan penetapan variabel melainkan kesalahan sintaksis, dan `${ZONE%-*}` tidak dikenal.
 
-**Dua hal yang berlaku di laptop, tidak di Cloud Shell.** Baris `gcloud config set project` mengubah project aktif untuk seluruh sesi terminal itu, sehingga tab terminal lain yang sudah terbuka ikut terpengaruh. Dan `set -euo pipefail` berlaku sampai terminalnya ditutup: menyebut variabel yang belum diisi akan menghentikan sesi, dan pemulihannya dengan membuka terminal baru.
+**Satu hal yang perlu diketahui bila blok ini dipakai di laptop.** Baris `gcloud config set project` mengubah project aktif untuk seluruh sesi terminal itu, sehingga tab terminal lain yang sudah terbuka ikut terpengaruh. Di Cloud Shell hal itu tidak menjadi masalah, karena sesinya memang milik Anda sendiri.
 :::
 
 ```bash
 PROJECT_ID="geoportal-kelompok-a-xxxxx"     # dari tabel peserta
 NAMA_PESERTA="nama01"                       # dari kolom Nama Peserta
-
-set -euo pipefail
 
 PARTICIPANT_ID="$NAMA_PESERTA"
 ZONE="asia-southeast2-b"
@@ -231,8 +229,21 @@ SUBDOMAIN="${PARTICIPANT_ID}.webgisbig.com"
 VM_REGION="${ZONE%-*}"
 
 gcloud config set project "$PROJECT_ID" >/dev/null
-echo "Siap. VM_NAME=$VM_NAME  SUBDOMAIN=$SUBDOMAIN"
+
+if [ -z "$PROJECT_ID" ] || [ -z "$NAMA_PESERTA" ]; then
+  echo "PERHATIAN: PROJECT_ID dan NAMA_PESERTA belum diisi. Isi dua baris pertama, lalu tempel ulang blok ini."
+else
+  echo "Siap. VM_NAME=$VM_NAME  SUBDOMAIN=$SUBDOMAIN"
+fi
 ```
+
+::: danger Jangan menambahkan set -e di blok ini
+Blok ini ditempel ke terminal **interaktif** Cloud Shell, dan `set -e` di terminal interaktif membuat shell **langsung keluar** begitu ada satu perintah yang gagal. Bukan hanya perintahnya yang berhenti, melainkan seluruh sesi Cloud Shell beserta variabel di dalamnya.
+
+Perintah yang gagal itu biasa terjadi saat pelatihan: membuat Service Account yang sudah ada, membuat VM yang namanya sudah terpakai, atau salah mengetik nama resource. Semuanya membalas error, dan tanpa `set -e` Anda cukup membaca errornya lalu mencoba lagi.
+
+`set -euo pipefail` memang berguna, tetapi tempatnya di dalam berkas skrip, bukan di terminal yang Anda pakai bekerja.
+:::
 
 `NAMA_PESERTA` hanya boleh huruf kecil dan angka, 3 sampai 12 karakter. Nama VM, Service Account, dan subdomain menolak karakter di luar itu, dan pesan errornya menyebut nama resource, bukan nama variabel, sehingga sulit dilacak bila lolos sampai ke perintah `gcloud`.
 

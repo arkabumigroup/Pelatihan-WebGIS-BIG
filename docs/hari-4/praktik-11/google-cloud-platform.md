@@ -89,6 +89,18 @@ Repository ini dibuat koordinator dan dipakai seluruh peserta. Peserta hanya mem
 
 <p class="dijalankan dijalankan--cloud">Dijalankan di: <strong>Cloud Shell</strong></p>
 
+::: warning Kembali dari Console? Periksa sesinya dulu
+Meninggalkan terminal Cloud Shell selama 40 menit memutus sesinya, dan seluruh variabel identitas ikut hilang. Membuka Console, membaca modul, atau berdiskusi di sela-selanya sudah cukup untuk itu.
+
+Jalankan baris ini sebelum melanjutkan:
+
+```bash
+echo "PROJECT_ID=$PROJECT_ID  VM_NAME=$VM_NAME  ZONE=$ZONE"
+```
+
+Bila ada yang kosong, salin ulang blok identitas dari [Kit Identitas Peserta](/hari-4/praktik-11/kit-identitas) dan tempel ke terminal. Tanpa itu, perintah di bawah akan gagal dengan pesan yang tidak menyebut sebabnya.
+:::
+
 VM peserta memakai Service Account default project. Alamatnya berbentuk `<nomor-project>-compute@developer.gserviceaccount.com`, dan **nilainya sama untuk semua peserta** karena hanya bergantung pada nomor project. Itu memang begitu, dan bukan tanda ada yang salah.
 
 ```bash
@@ -141,6 +153,14 @@ Ukuran disk tetap dipakai, dan perluasannya diperiksa pada [Tahap 10 halaman Men
 ### Tahap 8. Periksa VM dan firewall
 
 <p class="dijalankan dijalankan--cloud">Dijalankan di: <strong>Cloud Shell</strong></p>
+
+::: warning Periksa sesinya lagi
+Sama seperti pada Tahap 6, periksa variabelnya sebelum melanjutkan, karena Anda baru kembali dari Console:
+
+```bash
+echo "PROJECT_ID=$PROJECT_ID  VM_NAME=$VM_NAME  ZONE=$ZONE"
+```
+:::
 
 ```bash
 gcloud compute firewall-rules list \
