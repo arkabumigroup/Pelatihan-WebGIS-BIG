@@ -121,9 +121,16 @@ const terisi = computed(
 const bentrok = ref(false)
 const memeriksa = ref(false)
 
+// Hasil pemeriksaan yang ditampilkan ke peserta. Sebelumnya hanya `bentrok`
+// yang disimpan, sehingga nama yang belum dipakai tidak menghasilkan pesan
+// apa pun: tombolnya ditekan, layarnya tidak berubah, dan peserta tidak tahu
+// apakah pemeriksaannya berjalan, gagal, atau memang aman.
+const hasilPeriksa = ref(null) // null | 'bebas' | 'gagal'
+
 async function periksaBentrok() {
   if (!terisi.value) return
   memeriksa.value = true
+  hasilPeriksa.value = null
   const project = projectId.value.trim()
   const akun = `projects/${project}/serviceAccounts/cb-${pesertaId.value}@${project}.iam.gserviceaccount.com`
   try {
@@ -135,10 +142,12 @@ async function periksaBentrok() {
       { method: 'GET' }
     )
     bentrok.value = respon.status !== 404
+    hasilPeriksa.value = bentrok.value ? null : 'bebas'
   } catch (e) {
     // Tidak ada jawaban berarti tidak dapat dipastikan. Pemeriksaannya
     // diserahkan ke perintah `gcloud` pada Tahap 2.
     bentrok.value = false
+    hasilPeriksa.value = 'gagal'
   } finally {
     memeriksa.value = false
   }
@@ -410,6 +419,7 @@ function lupakan() {
   modeManual.value = false
   waktuSimpan.value = 0
   bentrok.value = false
+  hasilPeriksa.value = null
   for (const kunci in nilaiAcak.value) nilaiAcak.value[kunci] = ''
   try {
     localStorage.removeItem(KUNCI_SIMPAN)
@@ -528,6 +538,7 @@ let sedangMemulihkan = false
 // balik ke isian. Dengan begitu tidak ada perubahan yang berputar.
 watch([pesertaId, projectId], () => {
   bentrok.value = false
+  hasilPeriksa.value = null
   if (terisi.value && !sedangMemulihkan) simpan()
 })
 
@@ -625,18 +636,29 @@ onMounted(() => {
         Cloud Build Anda men-deploy ke VM orang itu.
       </p>
 
-      <p v-else-if="terisi" class="ki-catatan">
-        Nilai di bawah sudah siap. Periksa sekali lagi sebelum disalin.
-        <button
-          v-if="projectId"
-          type="button"
-          class="ki-tautan ki-tautan--dalam"
-          :disabled="memeriksa"
-          @click="periksaBentrok"
-        >
-          {{ memeriksa ? 'Memeriksa...' : 'Periksa nama ini belum dipakai' }}
-        </button>
-      </p>
+      <template v-else-if="terisi">
+        <p class="ki-catatan">
+          Nilai di bawah sudah siap. Periksa sekali lagi sebelum disalin.
+          <button
+            v-if="projectId"
+            type="button"
+            class="ki-tautan ki-tautan--dalam"
+            :disabled="memeriksa"
+            @click="periksaBentrok"
+          >
+            {{ memeriksa ? 'Memeriksa...' : 'Periksa nama ini belum dipakai' }}
+          </button>
+        </p>
+        <p v-if="hasilPeriksa === 'bebas'" class="ki-aman" role="status">
+          Nama <strong>{{ pesertaId }}</strong> belum dipakai di project itu.
+          Aman dilanjutkan.
+        </p>
+        <p v-else-if="hasilPeriksa === 'gagal'" class="ki-catatan" role="status">
+          Pemeriksaannya tidak dapat diselesaikan dari browser ini, jadi belum
+          dapat dipastikan. Pastikan lewat perintah <code>gcloud</code> pada
+          Tahap 2 halaman Persiapan Repositori.
+        </p>
+      </template>
     </section>
 
     <!-- Langkah 2. Blok siap tempel. -->
@@ -884,6 +906,13 @@ onMounted(() => {
   font-size: 13px;
   line-height: 1.6;
   color: var(--vp-c-text-2);
+}
+
+.ki-aman {
+  margin: 12px 0 0;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--pelatihan-status-tip, #1f6f43);
 }
 
 .ki-galat {
