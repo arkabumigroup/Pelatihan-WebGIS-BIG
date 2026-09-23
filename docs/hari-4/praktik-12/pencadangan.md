@@ -60,7 +60,7 @@ echo "Nama bucket Anda: ${BUCKET}"
 
 Catat nama bucket yang tercetak, karena dipakai pada tahap berikutnya.
 
-Harga penyimpanannya praktis nol. Arsip folder `geoserver-data` pada satu VM pelatihan terukur 3,2 MB, dan arsip untuk satu layer kecil pernah terukur 60 KB. Angka itu bertambah seiring banyaknya layer yang Anda buat, tetapi tetap jauh di bawah satu megabita selama pelatihan.
+Harga penyimpanannya praktis nol. Folder `geoserver-data` pada satu VM pelatihan berukuran 3,2 MB, dan arsipnya setelah dimampatkan tinggal 126 KB. Isi folder itu sebagian besar berkas XML dan teks, jadi pemampatannya memang rapat. Angka itu bertambah seiring banyaknya layer yang Anda buat, tetapi tetap jauh di bawah satu megabita selama pelatihan.
 
 ::: warning Nama bucket harus unik di seluruh dunia
 Kalau perintahnya gagal dengan pesan bahwa nama sudah dipakai, tambahkan satu kata di belakangnya, misalnya `cadangan-webgis-${NAMA_PESERTA}-${PROJECT_ID}-a`, lalu jalankan ulang. Nama bucket dipakai bersama seluruh pengguna Google Cloud di dunia, bukan hanya di project Anda.
@@ -103,13 +103,13 @@ Isi filenya dapat diperiksa dengan:
 cat /etc/cron.daily/cadangkan-webgis
 ```
 
-Empat baris terakhirnya harus sama persis dengan yang tertulis di atas, lengkap dengan tanda `$`-nya.
+Yang perlu Anda pastikan cuma satu: `$(date +%F)`, `$STAMP`, dan `$BUCKET` harus masih tertulis apa adanya, bukan sudah terisi nilai saat perintah dijalankan.
 
 ### Kapan skripnya menyala
 
-Ubuntu menjalankan seluruh isi `/etc/cron.daily` lewat systemd timer sekitar pukul 06.25, dan hanya kalau VM sedang menyala. Karena VM pelatihan biasanya hanya menyala beberapa hari, backup otomatis ini menyala paling banyak dua atau tiga kali.
+Ubuntu menjalankan seluruh isi `/etc/cron.daily` lewat layanan `cron` pada pukul 06.25, dan hanya kalau VM sedang menyala. Jam itu mengikuti zona waktu VM, dan VM pelatihan memakai UTC, jadi skripnya menyala pukul 06.25 UTC atau 13.25 WIB. Zona waktunya dapat dipastikan dengan `timedatectl`.
 
-Karena itu, jangan menilai backupnya dari banyaknya arsip. Yang menentukan cuma satu: apakah arsipnya benar-benar bisa dipulihkan.
+Karena VM pelatihan biasanya hanya menyala beberapa hari, backup otomatis ini menyala paling banyak dua atau tiga kali. Jangan menilai backupnya dari banyaknya arsip. Yang menentukan cuma satu: apakah arsipnya benar-benar bisa dipulihkan.
 
 ### Identitas yang dipakai skripnya
 
@@ -131,7 +131,7 @@ sudo gcloud config list account
 
 <p class="dijalankan dijalankan--server">Dijalankan di: <strong>Terminal VM</strong></p>
 
-Menjalankan skripnya sekali sekarang lebih baik daripada menunggu pukul 06.25 besok, karena hasilnya langsung terlihat.
+Menjalankan skripnya sekali sekarang lebih baik daripada menunggu pukul 13.25 WIB besok, karena hasilnya langsung terlihat.
 
 ```bash
 sudo /etc/cron.daily/cadangkan-webgis && echo "skrip selesai tanpa error"
@@ -147,7 +147,7 @@ BUCKET="cadangan-webgis-${NAMA_PESERTA}-${PROJECT_ID}"
 gcloud storage ls -l "gs://${BUCKET}/"
 ```
 
-Satu file dengan nama `geoserver-data-YYYY-MM-DD.tar.gz` harus muncul, dengan ukuran beberapa megabita.
+Satu file dengan nama `geoserver-data-YYYY-MM-DD.tar.gz` harus muncul, dengan ukuran ratusan kilobita. Ukurannya jauh lebih kecil daripada folder aslinya, dan itu wajar karena isinya dimampatkan.
 
 Nama filenya memakai tanggal, jadi backup di hari yang sama menimpa arsip sebelumnya. Itu memang yang diinginkan: satu arsip per hari, bukan menumpuk belasan arsip yang tidak pernah dibuka.
 
@@ -196,7 +196,7 @@ curl -sS -o /dev/null -w "geoserver %{http_code}\n" "https://${SUBDOMAIN}/geoser
 
 Bila keduanya membalas `200` dan `302`, layanannya sudah berjalan. Untuk memastikan layernya benar-benar kembali, buka antarmuka GeoServer pada `https://SUBDOMAIN/geoserver/web` lalu periksa **Data > Layers**. Jumlah layernya harus sama dengan sebelum pemulihan.
 
-Prosedur pada halaman ini sudah pernah dijalankan sampai tuntas pada satu VM: arsip dibuat, diunggah ke bucket, dijadwalkan lewat cron, lalu dipulihkan sampai layernya terbaca kembali.
+Prosedur pada halaman ini sudah dijalankan sampai tuntas pada 23 September 2026 di VM pelatihan: arsip 126 KB dibuat dalam 4 detik, diunggah ke bucket, folder datanya sengaja dipindahkan supaya GeoServer kehilangan seluruh layer, lalu dipulihkan dari arsip itu sampai layer `keretaa_c40729ba` terbaca kembali.
 
 ## Tahap 6. Backup file .env
 

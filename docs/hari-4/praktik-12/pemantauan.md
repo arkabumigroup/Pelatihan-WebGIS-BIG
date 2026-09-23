@@ -24,11 +24,20 @@ Cara membaca hasilnya:
 
 | Yang dibaca | Nilai normal | Bila menyimpang |
 |---|---|---|
-| `docker compose ps` | tiga container berstatus `running`: `nextjs`, `geoserver`, `nginx` | periksa log container yang berhenti, halaman ini bagian [Membaca log](#membaca-log) |
-| Memori GeoServer pada `docker stats` | jauh di bawah batas 2048 MiB, acuan terukur 882 MiB | turunkan `MAXIMUM_MEMORY` pada `docker-compose.yml`, lalu buat ulang container `geoserver` |
+| `docker compose ps` | tiga container berstatus `running`, bernama `nextjs_portal`, `geoserver_app`, dan `nginx_proxy` | periksa log container yang berhenti, halaman ini bagian [Membaca log](#membaca-log) |
+| Memori GeoServer pada `docker stats` | di bawah batas 2048 MiB, acuan terukur 1,2 GiB pada VM yang sudah menyala dua hari | turunkan `MAXIMUM_MEMORY` pada `docker-compose.yml`, lalu buat ulang container `geoserver` |
 | Memori tersedia pada `free -m` | di atas 300 MB | hentikan container yang tidak sedang dipakai, atau turunkan heap GeoServer |
 | Pemakaian disk `/` pada `df -h` | di bawah 80% | hapus model 3D yang tidak dipakai, lalu periksa ukuran `data` dan `geoserver-data` |
-| `OOMKilled` pada ketiga container | `false` | cari dulu pemakai memori yang sebenarnya sebelum mengubah konfigurasi apa pun |
+| Nilai `OOMKilled` pada ketiga container | `false` | cari dulu pemakai memori yang sebenarnya sebelum mengubah konfigurasi apa pun |
+
+Satu baris terakhir itu tidak terbaca dari perintah di atas, karena `docker compose ps` tidak menampilkan `OOMKilled`. Nilainya diperiksa terpisah:
+
+```bash
+cd /opt/webgis/app && for c in nextjs_portal geoserver_app nginx_proxy; do
+  echo -n "$c: "
+  sudo docker inspect -f "{{.State.OOMKilled}}" $c
+done
+```
 
 Angka acuan pada tabel itu berasal dari VM pelatihan berukuran `e2-medium`: memori total 3913 MB, terpakai 1897 MB, tersedia 1766 MB, dan disk 29 GB dengan 19 GB masih kosong. Angka itu bukan target, melainkan pembanding supaya Anda tahu apa yang wajar.
 
@@ -71,7 +80,7 @@ Tambahkan `-f` di belakang `logs` untuk mengikuti log secara langsung. Tekan `Ct
 
 Ketiga service pada `docker-compose.yml` memakai `restart: unless-stopped`, jadi container menyala sendiri setiap kali VM di-boot. Anda tidak perlu menjalankan `docker compose up` secara manual setelah VM dinyalakan.
 
-GeoServer tetap butuh waktu sekitar 47 detik sebelum siap melayani. Jangan menyimpulkan ada kerusakan sebelum baris berikut muncul di lognya:
+GeoServer tetap butuh waktu sekitar satu menit sebelum siap melayani. Pada tiga pengukuran di VM pelatihan, baris penandanya baru muncul pada detik ke-51, ke-54, dan ke-63, jadi tunggu selama itu sebelum menyimpulkan ada kerusakan. Yang ditunggu adalah baris berikut di lognya:
 
 ```text
 Server startup in [...] milliseconds
@@ -124,11 +133,13 @@ gcloud monitoring uptime create "portal-${VM_NAME}" \
 
 Jumlah region itu juga bukan pilihan bebas. Cloud Monitoring menolak perintahnya dengan `selected_regions must include at least three locations` bila Anda mengurangi daftarnya, jadi biarkan ketiganya.
 
-Salin segmen terakhir kolom `name` dari hasilnya, atau dari daftar di atas, ke variabel berikut:
+Salin segmen terakhir kolom `name` dari hasilnya, atau dari daftar di atas:
 
 ```bash
-export CHECK_ID="uji-portal-xxxxxxxxxxx"
+export CHECK_ID="portal-webgis-nama01-AbCdEf12345"
 ```
+
+Nilai itu tidak dipakai lagi oleh perintah mana pun di halaman ini. Gunanya untuk mencocokkan check milik Anda saat memilih resource di Console pada tahap berikutnya, karena project ini dipakai bersama peserta lain.
 
 ::: tip Yang dibuktikan uptime check, dan yang tidak
 Uptime check memeriksa apakah `https://DOMAIN/portal` membalas kode sukses. Itu membuktikan Nginx dan aplikasi Next.js berjalan.
@@ -150,7 +161,7 @@ CHANNEL="$(gcloud alpha monitoring channels create \
 echo "$CHANNEL"
 ```
 
-Setelah perintah itu, buka kotak masuk alamat tersebut dan selesaikan verifikasi bila Google memintanya. Saluran yang belum diverifikasi tidak akan mengirim apa pun.
+Pastikan alamat emailnya benar, karena salah ketik berarti peringatannya tidak pernah sampai. Pada pengujian di halaman ini, saluran berjenis `email` langsung dapat mengirim tanpa langkah verifikasi tambahan.
 
 Selanjutnya buat alert policy. Cara paling mudah adalah lewat Console, karena formulirnya menampilkan pilihan yang harus dicocokkan:
 
@@ -170,7 +181,7 @@ Selanjutnya buat alert policy. Cara paling mudah adalah lewat Console, karena fo
 
 `REDUCE_COUNT_FALSE` menghitung berapa lokasi yang gagal. Dengan tiga lokasi, normal semua bernilai 0 dan gagal semua bernilai 3. Threshold `> 1` berarti minimal dua lokasi gagal, sehingga gangguan di satu lokasi Google saja belum memicu email.
 
-Pastikan notifikasi pembukaan **dan penutupan** dicentang keduanya. Tanpa yang kedua, Anda akan diberi tahu saat portalnya tidak dapat diakses, tetapi tidak diberi tahu saat portalnya dapat diakses lagi.
+Yang perlu Anda pastikan adalah kedua emailnya sampai: **Alert firing** saat portal tidak dapat diakses, dan **Alert recovered** saat portalnya kembali. Pada pengujian di halaman ini keduanya masuk tanpa pengaturan tambahan. Kalau yang kedua tidak pernah datang, saluran emailnya yang perlu diperiksa.
 
 ::: danger Tutup dulu incident yang terbuka sebelum mengubah kondisi policy
 Ini bukan saran gaya kerja. Cloud Monitoring memiliki bug yang diakui Google pada issue tracker `183505672`: incident yang sedang terbuka ketika kondisinya diubah akan terus berbunyi memakai konfigurasi lama, muncul sebagai peringatan palsu, dan tidak dapat ditutup manual. Incident seperti itu baru menutup sendiri setelah tujuh hari.
@@ -197,7 +208,7 @@ curl --silent --show-error --output /dev/null --write-out 'HTTP %{http_code}\n' 
 
 `HTTP 000` adalah hasil yang diharapkan, artinya koneksinya gagal. Kalau masih `200`, tunggu sebentar lalu ulangi sebelum menyalahkan policy-nya.
 
-Sekarang tunggu. Pada pengujian yang pernah dilakukan, Nginx dihentikan pukul 11:48:02 WIB, incident terbuka sekitar pukul 11:50, dan email **Alert firing** masuk setelahnya. Jadi sediakan waktu sekitar sepuluh menit, dan jangan menutup incident secara manual selagi diuji.
+Sekarang tunggu. Pada pengujian 23 September 2026, Nginx dihentikan pukul 18:35:53 WIB dan incident terbuka pukul 18:39:13 WIB, jadi perlu waktu sekitar tiga setengah menit. Email **Alert firing** masuk tidak lama setelah incident itu terbuka. Sediakan waktu sekitar sepuluh menit, dan jangan menutup incident secara manual selagi diuji.
 
 Setelah emailnya masuk, atau setelah sepuluh menit bila belum masuk, hidupkan kembali:
 
@@ -216,41 +227,51 @@ Tunggu sampai `HTTP 200` kembali, lalu periksa email **Alert recovered** untuk i
 
 | Yang dicatat | Contoh pada pengujian |
 |---|---|
-| Jam Nginx dimatikan | 11:48:02 WIB |
-| Jam incident terbuka | sekitar 11:50 WIB |
-| Jam Nginx dinyalakan kembali | setelah email firing masuk |
-| Durasi incident pada email | 8 menit 42 detik |
+| Jam Nginx dimatikan | 18:35:53 WIB |
+| Jam incident terbuka | 18:39:13 WIB |
+| Jam Nginx dinyalakan kembali | 18:39:49 WIB |
+| Durasi incident pada email | 2 menit 38 detik |
 
-Catat keempat hal itu untuk pengujian Anda sendiri. Angka pada tabel di atas berasal dari pengujian pada 13 September 2026, dan dipakai sebagai pembanding wajar, bukan sebagai target.
+Catat keempat hal itu untuk pengujian Anda sendiri. Angka pada tabel di atas berasal dari pengujian pada 23 September 2026, dan dipakai sebagai pembanding wajar, bukan sebagai target.
+
+Durasi incident tidak tetap, karena bergantung pada berapa lama Anda membiarkan Nginx mati. Pada pengujian di atas Nginx mati selama 3 menit 56 detik, dan incidentnya tercatat 2 menit 38 detik. Kalau Anda menunggu sampai sepuluh menit, durasinya juga akan mendekati sepuluh menit.
 
 ## Tahap 8. Setelah pengujian selesai
 
 ::: tip Jangan lupa mematikan VM di akhir pelatihan
 VM `e2-medium` yang menyala terus menagih sekitar 37 dolar per bulan dari kredit Anda. Setelah pelatihan selesai, hentikan atau hapus VM-nya dari Console.
 
-Uptime check boleh dibiarkan aktif karena biayanya praktis nol, tetapi ia akan mengirim email peringatan terus-menerus selama VM-nya mati. Jadi hentikan juga check-nya, atau hapus sekalian.
+Uptime check boleh dibiarkan aktif karena eksekusinya gratis sampai satu juta per bulan per project, sedangkan satu check dengan tiga lokasi hanya memakai sekitar 129.600 eksekusi. Yang berbayar justru alert policy-nya, yaitu 1,50 dolar per bulan untuk setiap kondisi sejak Januari 2025.
+
+Selama VM-nya mati, check itu akan mengirim email peringatan terus-menerus, jadi hentikan juga check-nya atau hapus sekalian.
 :::
 
 ### Menghapus uptime check
 
-Perintah `gcloud monitoring uptime delete` menerima nama check, dan ada satu jebakan di sini.
+Perintah `gcloud monitoring uptime delete` menerima nama check, dan ada dua jebakan di sini.
 
-Menghapusnya memakai **nama tampilan** yang Anda tulis sendiri, misalnya `uji-peserta-praktik12`, akan dilaporkan berhasil dengan pesan `Deleted uptime check`. Tetapi check-nya sebenarnya masih ada, masih berjalan, dan masih mengirim email. Pesan berhasilnya menyesatkan.
+Yang pertama, perintahnya menanyakan konfirmasi sebelum menghapus. Di Cloud Shell pertanyaan itu muncul dan cukup dijawab dengan menekan Enter.
 
-Yang benar adalah memakai **nama resource lengkapnya**, yang memuat kode acak di belakangnya:
+Yang kedua dan lebih berbahaya: menghapusnya memakai **nama tampilan** yang Anda tulis sendiri, misalnya `portal-webgis-dhanypedia`, akan dilaporkan berhasil dengan pesan `Deleted uptime check or synthetic monitor [...]`. Tetapi check-nya sebenarnya masih ada, masih berjalan, dan masih mengirim email. Pesan berhasilnya menyesatkan.
+
+Yang benar adalah memakai **nama resource lengkapnya**, yang memuat kode acak di belakangnya. Karena project ini dipakai bersama peserta lain, saring dulu supaya yang terambil hanya check milik Anda:
 
 ```bash
 NAMA_CHECK="$(gcloud monitoring uptime list-configs --project="$PROJECT_ID" \
+  --filter="displayName=portal-${VM_NAME}" \
   --format='value(name)')"
 
 echo "$NAMA_CHECK"
 gcloud monitoring uptime delete "$NAMA_CHECK" --project="$PROJECT_ID"
 ```
 
-Setelah itu, pastikan daftarnya benar-benar kosong:
+Tanpa `--filter` itu, perintahnya mengambil seluruh check di project, termasuk milik peserta lain, lalu menghapusnya sekaligus.
+
+Setelah itu, pastikan check Anda benar-benar hilang. Daftar berikut hanya menampilkan check milik Anda, jadi hasilnya harus kosong walaupun peserta lain masih punya check:
 
 ```bash
 gcloud monitoring uptime list-configs --project="$PROJECT_ID" \
+  --filter="displayName=portal-${VM_NAME}" \
   --format="table(displayName,name)"
 ```
 
@@ -260,7 +281,7 @@ Kalau VM dihapus tetapi uptime check-nya ditinggalkan, pemeriksaannya akan terus
 
 Untuk mengurangi peringatan akibat gangguan jaringan sesaat, retest dapat diubah menjadi dua menit setelah pengujian awal selesai. Bila diubah, ulangi Tahap 7 supaya Anda tahu konfigurasi barunya juga bekerja.
 
-Untuk kuota, satu endpoint dengan interval satu menit dan tiga lokasi berarti sekitar 129.600 pemeriksaan per 30 hari. Angka itu berguna untuk memperkirakan, bukan sebagai bukti jumlah yang benar-benar ditagihkan. Periksa [harga Cloud Monitoring](https://cloud.google.com/products/observability/pricing#pricing-for-uptime-check-execution) bila Anda menambah banyak check.
+Untuk perkiraan, satu endpoint dengan interval satu menit dan tiga lokasi berarti sekitar 129.600 pemeriksaan per 30 hari, dan itu masih jauh di bawah jatah gratis satu juta eksekusi per project. Angka itu berguna untuk memperkirakan, bukan sebagai bukti jumlah yang benar-benar ditagihkan. Periksa [harga Cloud Monitoring](https://cloud.google.com/products/observability/pricing#pricing-for-uptime-check-execution) bila Anda menambah banyak check, atau menambah kondisi pada alert policy.
 
 ## Bila Ada yang Gagal
 
