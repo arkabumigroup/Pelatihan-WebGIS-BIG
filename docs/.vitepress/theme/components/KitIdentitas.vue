@@ -224,12 +224,15 @@ const baris = computed(() =>
 // Blok siap tempel. Bentuknya sengaja sama persis dengan blok Tahap 2 pada
 // halaman Persiapan Repositori, termasuk urutan barisnya, supaya peserta yang
 // sudah menjalankan blok itu dari materi tidak menemukan bentuk yang berbeda.
+//
+// Tanpa `set -euo pipefail`, sama seperti blok di halaman itu. Blok ini
+// ditempel ke terminal interaktif Cloud Shell, dan `set -e` di terminal
+// interaktif menutup seluruh sesi begitu ada satu perintah yang gagal,
+// misalnya saat membuat resource yang ternyata sudah ada.
 const blok = computed(() => {
   const v = nilai.value
   return `PROJECT_ID="${v.PROJECT_ID}"
 NAMA_PESERTA="${v.NAMA_PESERTA}"
-
-set -euo pipefail
 
 PARTICIPANT_ID="$NAMA_PESERTA"
 ZONE="${v.ZONE}"
