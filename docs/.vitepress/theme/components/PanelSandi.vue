@@ -207,6 +207,20 @@ function batalGanti() {
   sandiTertunda.value = ''
 }
 
+// Memblok kotak nilainya lalu menekan Ctrl+C menghasilkan pemisah antar blok,
+// karena flex item diperlakukan browser sebagai blok. Pada hash, pemisah itu
+// merusak berkas SQL tempatnya ditempel, dan tidak terlihat bahwa ada yang
+// salah. Handler ini mengganti isi papan klip dengan nilai aslinya.
+//
+// Pada kata sandi yang sedang disamarkan, handler ini sengaja tidak dipasang:
+// yang terlihat hanya titik-titik, dan menyalinnya tidak boleh mengeluarkan
+// kata sandi yang justru sedang disembunyikan dari layar kelas.
+function salinBersih(peristiwa, nilai) {
+  if (!peristiwa.clipboardData || !nilai) return
+  peristiwa.clipboardData.setData('text/plain', nilai)
+  peristiwa.preventDefault()
+}
+
 async function salin(teks, tanda) {
   const berhasil = await salinTeks(teks)
   if (!berhasil) {
@@ -350,7 +364,11 @@ onBeforeUnmount(() => {
       <div class="ps-kotak">
         <div class="ps-baris">
           <span class="ps-tanda">Kata sandi</span>
-          <output class="ps-nilai" aria-label="Kata sandi super admin">
+          <output
+            class="ps-nilai"
+            aria-label="Kata sandi super admin"
+            @copy="tampilSandi ? salinBersih($event, sandi) : null"
+          >
             <template v-if="tampilSandi">
               <span v-for="(bagian, i) in potongan" :key="i" class="ps-bagian">{{ bagian }}</span>
             </template>
@@ -375,7 +393,11 @@ onBeforeUnmount(() => {
       <div v-if="hash" class="ps-kotak">
         <div class="ps-baris">
           <span class="ps-tanda">Hash untuk <code>&lt;ISI_HASH_DI_SINI&gt;</code></span>
-          <output class="ps-nilai" aria-label="Hash bcrypt kata sandi super admin">
+          <output
+            class="ps-nilai"
+            aria-label="Hash bcrypt kata sandi super admin"
+            @copy="salinBersih($event, hash)"
+          >
             <span v-for="(bagian, i) in potonganHash" :key="i" class="ps-bagian">{{ bagian }}</span>
           </output>
         </div>
