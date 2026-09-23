@@ -90,4 +90,4 @@ Kembali ke [Persiapan Repositori](/hari-4/praktik-11/persiapan-repositori) dan l
 
 Bila Cloud Shell menutup sesinya lagi di tengah pekerjaan, buka halaman ini dan salin bloknya sekali lagi. Tidak ada nilai yang perlu dicari ulang di tabel peserta.
 
-Kata sandi super admin dipakai pada [Tahap 2 halaman Konfigurasi Project](/hari-4/praktik-11/konfigurasi-project#buat-akun-super-admin). Yang ditempel ke `sql/02-seed-super-admin.sql` adalah hash-nya, bukan kata sandinya, dan kata sandi itu sendiri dipakai untuk masuk ke portal pada [Tahap 8](/hari-4/praktik-11/konfigurasi-project#tahap-8-uji-seluruh-file-di-laptop).
+Kata sandi super admin dipakai pada [Tahap 2 halaman Persiapan Repositori dan Database](/hari-4/praktik-11/persiapan-database#buat-akun-super-admin). Yang ditempel ke `sql/02-seed-super-admin.sql` adalah hash-nya, bukan kata sandinya, dan kata sandi itu sendiri dipakai untuk masuk ke portal pada [Tahap 8](/hari-4/praktik-11/uji-dan-jalankan#tahap-8-uji-seluruh-file-di-laptop).

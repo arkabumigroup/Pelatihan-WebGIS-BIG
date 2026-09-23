@@ -6,13 +6,13 @@ Halaman ini menyiapkan dua hal sebelum menyentuh Google Cloud: repositori yang a
 
 ## Prasyarat
 
-Halaman ini melanjutkan pekerjaan dari halaman [Konfigurasi Project](/hari-4/praktik-11/konfigurasi-project). Tahap 1 sampai 10 di sana harus sudah selesai, karena halaman ini memindahkan aplikasi yang sudah terbukti berjalan di laptop.
+Halaman ini melanjutkan pekerjaan dari halaman [Konfigurasi Project](/hari-4/praktik-11/konfigurasi-project). Keempat bagiannya harus sudah selesai, karena halaman ini memindahkan aplikasi yang sudah terbukti berjalan di laptop.
 
 Ringkasnya, empat hal berikut harus sudah benar.
 
 ### 1. Repositori sudah di-fork dan di-clone
 
-Fork `https://github.com/dhanyyudi/personal-geoportal-peserta` di akun GitHub Anda, lalu clone fork itu ke laptop. Dikerjakan pada Tahap 1 halaman Konfigurasi Project.
+Fork `https://github.com/dhanyyudi/personal-geoportal-peserta` di akun GitHub Anda, lalu clone fork itu ke laptop. Dikerjakan pada Tahap 1 halaman [Persiapan Repositori dan Database](/hari-4/praktik-11/persiapan-database).
 
 ### 2. Database Supabase sudah siap, dan login sudah terbukti
 
@@ -22,11 +22,11 @@ Fork `https://github.com/dhanyyudi/personal-geoportal-peserta` di akun GitHub An
 - `node scripts/uji-database.mjs` melaporkan `13 lulus, 0 gagal`.
 - Portal sudah berjalan di laptop dengan `npm run dev`, dan Anda berhasil login.
 
-Kelima butir itu dikerjakan pada Tahap 2 dan Tahap 8 sampai 9 halaman Konfigurasi Project.
+Kelima butir itu dikerjakan pada Tahap 2 halaman [Persiapan Repositori dan Database](/hari-4/praktik-11/persiapan-database), lalu Tahap 8 sampai 9 halaman [Uji dan Jalankan Portal](/hari-4/praktik-11/uji-dan-jalankan).
 
 ### 3. File .env sudah terisi
 
-`.env` di laptop sudah diisi pada [Tahap 5 halaman Konfigurasi Project](/hari-4/praktik-11/konfigurasi-project#tahap-5-isi-file-env). Yang perlu Anda siapkan di sini adalah nilai untuk `.env` di VM, yang merupakan file terpisah.
+`.env` di laptop sudah diisi pada [Tahap 5 halaman Isi File .env](/hari-4/praktik-11/isi-env#tahap-5-isi-file-env). Yang perlu Anda siapkan di sini adalah nilai untuk `.env` di VM, yang merupakan file terpisah.
 
 Enam variabel berikut wajib ada. Tanpa salah satunya, login di VM tidak bekerja.
 
@@ -59,7 +59,7 @@ Deployment Project bekerja pada fork repositori peserta di akun GitHub Anda send
 | Sumber, yang di-fork | `https://github.com/dhanyyudi/personal-geoportal-peserta` |
 | Fork Anda | `https://github.com/<username-anda>/personal-geoportal-peserta` |
 
-Fork dan clone repositori itu dikerjakan pada halaman [Konfigurasi Project](/hari-4/praktik-11/konfigurasi-project), Tahap 1. Pastikan tahap itu sudah selesai sebelum melanjutkan.
+Fork dan clone repositori itu dikerjakan pada halaman [Persiapan Repositori dan Database](/hari-4/praktik-11/persiapan-database), Tahap 1. Pastikan tahap itu sudah selesai sebelum melanjutkan.
 
 ### Mengirim perubahan
 

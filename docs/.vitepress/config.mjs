@@ -211,7 +211,16 @@ export default defineConfig({
           items: [
             { text: '11.1 Peserta dan Project', link: '/hari-4/praktik-11/peserta-project' },
             { text: '11.2 Kit Identitas Peserta', link: '/hari-4/praktik-11/kit-identitas' },
-            { text: '11.3 Konfigurasi Project', link: '/hari-4/praktik-11/konfigurasi-project' },
+            {
+              text: '11.3 Konfigurasi Project',
+              link: '/hari-4/praktik-11/konfigurasi-project',
+              items: [
+                { text: 'Persiapan Repositori dan Database', link: '/hari-4/praktik-11/persiapan-database' },
+                { text: 'Periksa File Konfigurasi', link: '/hari-4/praktik-11/periksa-konfigurasi' },
+                { text: 'Isi File .env', link: '/hari-4/praktik-11/isi-env' },
+                { text: 'Uji dan Jalankan Portal', link: '/hari-4/praktik-11/uji-dan-jalankan' }
+              ]
+            },
             { text: '11.4 Skema Database', link: '/hari-4/praktik-11/skema-database' },
             { text: '11.5 Persiapan Repositori', link: '/hari-4/praktik-11/persiapan-repositori' },
             { text: '11.6 Menyiapkan Project dan VM', link: '/hari-4/praktik-11/google-cloud-platform' },

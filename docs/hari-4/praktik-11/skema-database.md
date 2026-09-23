@@ -2,12 +2,12 @@
 
 Halaman ini memuat file SQL yang membuat dan memeriksa tabel database. Isinya ditampilkan lengkap supaya dapat disalin langsung dari sini.
 
-File aslinya juga ada di folder `sql/` pada repositori Anda, dan isinya sama. Bila Anda sudah menjalankan [Tahap 1 hingga 2 pada halaman Konfigurasi Project](/hari-4/praktik-11/konfigurasi-project), file itu sudah ada di laptop Anda.
+File aslinya juga ada di folder `sql/` pada repositori Anda, dan isinya sama. Bila Anda sudah menjalankan [Tahap 1 hingga 2 pada halaman Persiapan Repositori dan Database](/hari-4/praktik-11/persiapan-database), file itu sudah ada di laptop Anda.
 
 ## Project ini baru, jadi PostGIS belum ada
 
 ::: warning Project Supabase di Hari 4 berbeda dari Hari 3
-Pada [Konfigurasi Project](/hari-4/praktik-11/konfigurasi-project) Anda membuat **project Supabase baru**, bukan memakai yang sudah ada di Hari 3. Project baru dibuat dalam keadaan kosong: extension PostGIS belum aktif dan schema `gis` belum dibuat.
+Pada [Persiapan Repositori dan Database](/hari-4/praktik-11/persiapan-database) Anda membuat **project Supabase baru**, bukan memakai yang sudah ada di Hari 3. Project baru dibuat dalam keadaan kosong: extension PostGIS belum aktif dan schema `gis` belum dibuat.
 
 Keduanya dikerjakan di sini, pada langkah 1 di bawah, supaya database Anda sudah lengkap sebelum halaman ini selesai. Kalau ditunda, unggahan layer pertama akan gagal dengan `type "geometry" does not exist`, dan pesan itu tidak menyebutkan bahwa penyebabnya adalah extension yang belum pernah diaktifkan.
 :::
@@ -607,7 +607,7 @@ Yang dapat dilakukan adalah menggantinya, dan itulah yang dikerjakan bagian ini.
 
 Periksa berurutan:
 
-1. **`DATABASE_URL` salah.** Pesan errornya menyebut `Can't reach database server`. Periksa bagian catatan tentang `DATABASE_URL` pada [Tahap 5 halaman Konfigurasi Project](/hari-4/praktik-11/konfigurasi-project).
+1. **`DATABASE_URL` salah.** Pesan errornya menyebut `Can't reach database server`. Periksa bagian catatan tentang `DATABASE_URL` pada [Tahap 5 halaman Isi File .env](/hari-4/praktik-11/isi-env).
 2. **Tabel belum ada.** Jalankan `03-periksa.sql`. Hasilnya harus menampilkan tiga tabel.
 3. **Akun belum aktif.** Jalankan di SQL Editor:
 
