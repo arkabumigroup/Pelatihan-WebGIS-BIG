@@ -3,13 +3,17 @@
 //
 // Kit Identitas menyimpan nama peserta dan Project ID di browser. Halaman lain
 // membaca simpanan yang sama, lalu menggantikan bentuk contoh pada blok kode
-// dengan nilai peserta itu ketika halamannya dibuka. Peserta yang belum mengisi
-// kit tidak melihat perubahan apa pun, dan bentuk contohnya justru ditandai
-// merah supaya terlihat harus diganti.
+// dengan nilai peserta itu ketika halamannya dibuka.
+//
+// Keduanya ditandai merah, karena keduanya adalah bagian yang berbeda dari
+// contoh. Bedanya ada pada garis bawah. Nilai yang terisi dari kit ditandai
+// garis bawah penuh, sehingga peserta dapat melihat bagian mana yang berubah.
+// Nilai yang masih berbentuk contoh ditandai garis bawah titik-titik, karena
+// masih harus diganti sendiri. Keterangannya ada di halaman Kit Identitas.
 //
 // Ekspor PDF tetap memakai bentuk contoh, karena ekspornya berjalan di browser
-// yang bersih dan satu PDF dipakai seluruh peserta. Penandaannya tetap muncul
-// di PDF, karena penandaan tidak bergantung pada identitas.
+// yang bersih dan satu PDF dipakai seluruh peserta. Penandaan nilai yang harus
+// diganti tetap muncul di PDF, karena tidak bergantung pada identitas.
 
 const KUNCI_SIMPAN = 'webgisbig.kit-identitas.v1'
 const NAMA_COOKIE = 'webgisbig_kit'
@@ -58,9 +62,6 @@ const HARUS_DIGANTI = [
 
 const escapePola = (teks) => teks.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 const POLA_GANTI = new RegExp(HARUS_DIGANTI.map(escapePola).join('|'), 'g')
-// Salinan tanpa bendera g, karena `test` pada pola berg bendera menyimpan
-// posisi terakhir dan akan melewati potongan pada pemanggilan berikutnya.
-const ADA_GANTI = new RegExp(POLA_GANTI.source)
 
 function bacaSimpanan() {
   try {
@@ -99,47 +100,63 @@ function simpulTeks(blok) {
   return simpul
 }
 
+// Simpul yang sudah pernah diproses dilewati. Tanpa ini, penandaan dapat
+// menumpuk di dalam penanda yang sudah ada bila fungsinya dijalankan lagi.
+function sudahDitandai(simpul) {
+  const kelas = simpul.parentElement?.classList
+  return Boolean(
+    kelas && (kelas.contains('dari-kit') || kelas.contains('harus-diganti'))
+  )
+}
+
+// Mengganti setiap potongan yang cocok pada satu simpul teks dengan satu span.
+// Dipakai dua kali: sekali untuk mengisi nilai dari kit, sekali untuk menandai
+// nilai yang tersisa. Menambahkan span tidak mengubah textContent bloknya,
+// sehingga teks yang disalin tombol salin tetap sama.
+function bungkusCocok(simpul, pola, kelas, ambilTeks) {
+  const asal = simpul.nodeValue
+  const potongan = document.createDocumentFragment()
+  let akhir = 0
+  let ada = false
+  let cocok
+
+  pola.lastIndex = 0
+  while ((cocok = pola.exec(asal)) !== null) {
+    ada = true
+    if (cocok.index > akhir) {
+      potongan.appendChild(document.createTextNode(asal.slice(akhir, cocok.index)))
+    }
+    const tanda = document.createElement('span')
+    tanda.className = kelas
+    tanda.textContent = ambilTeks(cocok)
+    potongan.appendChild(tanda)
+    akhir = cocok.index + cocok[0].length
+  }
+
+  if (!ada) return
+  if (akhir < asal.length) {
+    potongan.appendChild(document.createTextNode(asal.slice(akhir)))
+  }
+  simpul.parentNode.replaceChild(potongan, simpul)
+}
+
 function isiBlok(blok, identitas) {
   let berubah = false
-  for (const n of simpulTeks(blok)) {
-    const baru = n.nodeValue.replace(POLA_ISI, (cocok) =>
-      BENTUK[cocok] === 'project' ? identitas.project : identitas.nama
+  for (const simpul of simpulTeks(blok)) {
+    if (sudahDitandai(simpul)) continue
+    const sebelum = simpul.nodeValue
+    bungkusCocok(simpul, POLA_ISI, 'dari-kit', (cocok) =>
+      BENTUK[cocok[1]] === 'project' ? identitas.project : identitas.nama
     )
-    if (baru !== n.nodeValue) {
-      n.nodeValue = baru
-      berubah = true
-    }
+    if (simpul.nodeValue !== sebelum) berubah = true
   }
   return berubah
 }
 
 function tandaiBlok(blok) {
-  for (const n of simpulTeks(blok)) {
-    // Isi yang sudah ditandai dilewati, supaya penandaan tidak menumpuk bila
-    // fungsi ini dijalankan lagi pada halaman yang sama.
-    if (n.parentElement?.classList.contains('harus-diganti')) continue
-
-    const teks = n.nodeValue
-    if (!ADA_GANTI.test(teks)) continue
-
-    POLA_GANTI.lastIndex = 0
-    const potongan = document.createDocumentFragment()
-    let akhir = 0
-    let cocok
-    while ((cocok = POLA_GANTI.exec(teks)) !== null) {
-      if (cocok.index > akhir) {
-        potongan.appendChild(document.createTextNode(teks.slice(akhir, cocok.index)))
-      }
-      const tanda = document.createElement('span')
-      tanda.className = 'harus-diganti'
-      tanda.textContent = cocok[0]
-      potongan.appendChild(tanda)
-      akhir = cocok.index + cocok[0].length
-    }
-    if (akhir < teks.length) {
-      potongan.appendChild(document.createTextNode(teks.slice(akhir)))
-    }
-    n.parentNode.replaceChild(potongan, n)
+  for (const simpul of simpulTeks(blok)) {
+    if (sudahDitandai(simpul)) continue
+    bungkusCocok(simpul, POLA_GANTI, 'harus-diganti', (cocok) => cocok[0])
   }
 }
 
@@ -170,7 +187,7 @@ export function siapkanBlokKode() {
   isiIdentitas(daftarBlok)
 
   // Penandaan berjalan setelah pengisian. Nilai identitas yang sudah terisi
-  // karena itu tidak ikut ditandai, sedangkan bentuk contoh yang tersisa
-  // ditandai karena memang harus diganti.
+  // karena itu tidak ikut ditandai sebagai "harus diganti", sedangkan bentuk
+  // contoh yang tersisa ditandai karena memang harus diganti.
   daftarBlok.forEach(tandaiBlok)
 }
