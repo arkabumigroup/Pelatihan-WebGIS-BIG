@@ -135,9 +135,9 @@ Diagram berikut menunjukkan ketiga tabel beserta hubungan di antaranya. Bentukny
 
 ![Diagram relasi tabel database: users, katalog_data_2d, dan katalog_data_3d. Tabel users menyimpan akun pengguna dengan kunci utama user_id. Tabel katalog_data_2d menyimpan metadata layer peta 2D, dan katalog_data_3d menyimpan metadata model 3D. Keduanya menunjuk ke users lewat kolom author.](erd-skema-database.webp)
 
-### Daftar kolom yang sebenarnya
+### Daftar kolom
 
-**Pakai daftar ini untuk nama dan tipe kolom**, bukan tulisan di dalam diagram. Diagramnya berguna untuk melihat hubungan antar tabel, sedangkan daftar berikut yang dibuat `01-schema.sql` dan diharapkan kode aplikasi. Beberapa keterangan pada diagram masih memakai nama lama, yaitu `nama` untuk kedua kolom yang sekarang bernama `name` dan `model_name`.
+Daftar berikut isinya sama dengan diagram di atas, ditulis sebagai teks. Dipakai bila Anda ingin menyalin nama kolomnya, membacanya dengan pembaca layar, atau mencari satu nama tertentu tanpa menyusuri gambar.
 
 | Tabel | Kolom | Tipe dan aturan |
 |---|---|---|
