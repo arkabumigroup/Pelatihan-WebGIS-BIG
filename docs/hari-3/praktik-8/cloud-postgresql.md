@@ -4,27 +4,27 @@
 
 1. Buka Supabase [https://supabase.com/](https://supabase.com/)
     
-![image.png](cloud-postgresql/image.png)
+![Beranda Supabase dengan judul Build in a weekend, Scale to millions dan tombol Start your project](cloud-postgresql/image.png)
     
 2. SignUp untuk register akun baru jika belum punya
     
-![image.png](cloud-postgresql/image%201.png)
+![Formulir Get started untuk membuat akun Supabase dengan opsi GitHub, ChatGPT, kolom email dan password](cloud-postgresql/image%201.png)
     
 3. Setelah verifikasi email akan diminta untuk membuat organization, pilih type personal dan plan free
     
-![image.png](cloud-postgresql/image%202.png)
+![Formulir Create a new organization dengan kolom Name terisi Matur, Type Personal, dan Plan Free](cloud-postgresql/image%202.png)
     
 4. Setelah membuat organization akan muncul tampilan pembuatan project, biarkan semua pilihan default, buat database password dan simpan password tersebut
     
-![image.png](cloud-postgresql/image%203.png)
+![Formulir Create a new project dengan project name, database password, region Asia-Pacific, dan opsi Security](cloud-postgresql/image%203.png)
     
 5. Berikut adalah tampilan awal jika project sudah dibuat
     
-![image.png](cloud-postgresql/image%204.png)
+![Halaman Project Overview Supabase dengan tombol Connect dilingkari di kanan atas dan status Healthy](cloud-postgresql/image%204.png)
     
 6. Klik Connect pada menu di sebelah atas, maka detail connection untuk melakukan koneksi ke database ini akan muncul, pilih bagian ORM Third-party library
     
-![image.png](cloud-postgresql/image%205.png)
+![Dialog Connect to your project dengan tab ORM, pilihan Prisma, dan tab .env.local berisi DATABASE_URL](cloud-postgresql/image%205.png)
     
 7. Di bagian env local ada variabel bernama `DATABASE_URL`. Variabel itu berisi informasi koneksi ke database. Simpan nama user dan host yang terlihat di sana.
     
@@ -76,29 +76,29 @@ Ganti `[YOUR-PASSWORD]` dengan kata sandi database yang Anda buat pada langkah 4
     
 8. Buka Dbeaver kemudian buat New Database Connection ke database yang sudah dibuat dengan connection detail yang ada di project supabase
     
-![image.png](cloud-postgresql/image%206.png)
+![Menu Database DBeaver dengan daftar driver termasuk PostgreSQL dan pilihan New Database Connection](cloud-postgresql/image%206.png)
     
 9. Isikan detail koneksi dengan host dan nama user yang sudah kita simpan dari supabase, masukan juga Password yang sudah kita buat di awal pembuatan project. Lalu klik test connection
     
-![image.png](cloud-postgresql/image%207.png)
+![Dialog Connection Settings DBeaver dengan host pooler Supabase, port 5432, database postgres, dan user postgres beserta project ref](cloud-postgresql/image%207.png)
     
 10. Database sudah terhubung menggunakan Dbeaver
     
-![image.png](cloud-postgresql/image%208.png)
+![Dialog Connection test DBeaver yang menyatakan Connected 589 ms ke PostgreSQL 17.6 lewat driver JDBC 42.7.2](cloud-postgresql/image%208.png)
     
-![](cloud-postgresql/image8.png)
+![Struktur database postgres di DBeaver dengan daftar schema termasuk public yang tersorot](cloud-postgresql/image8.png)
     
 11. Kembali ke web supabase di halaman overview project, klik Database yang ada di Menu sebelah kiri
     
-![image.png](cloud-postgresql/image%209.png)
+![Menu Database Supabase dengan pilihan Extensions dilingkari di grup Database Management](cloud-postgresql/image%209.png)
     
 12. Setelah itu klik Extensions
     
-![image.png](cloud-postgresql/image%2010.png)
+![Halaman Database Extensions Supabase dengan hasil pencarian postgis dan tombol enabled dilingkari](cloud-postgresql/image%2010.png)
     
 13. Cari extension postgis dengan mengetik postgis di kolom pencarian kemudian enable extension bernama postgis saja
     
-![image.png](cloud-postgresql/image%2011.png)
+![Dialog Enable postgis dengan daftar pilihan schema tempat extension dipasang](cloud-postgresql/image%2011.png)
     
 14. Setelah klik enable akan ada pilihan untuk memilih schema. **Pilih `public`, jangan membuat schema baru.**
 
@@ -129,11 +129,11 @@ Ganti `[YOUR-PASSWORD]` dengan kata sandi database yang Anda buat pada langkah 4
     Jadi bila PostGIS dipasang di `gis`, tipe `geometry` tidak ditemukan, dan unggahan layer gagal dengan `type "geometry" does not exist`. GeoServer juga tidak dapat menemukan fungsi `postgis_lib_version()` yang dipakainya untuk mengenali datastore.
     :::
     
-![image.png](cloud-postgresql/image%2012.png)
+![Pilihan schema pada dialog Enable postgis dengan opsi Create a new schema postgis dilingkari](cloud-postgresql/image%2012.png)
     
 15. Jika berhasil klik Schema Visualizer kemudian ganti schema menjadi gis maka tampilan akan seperti ini
     
-![image.png](cloud-postgresql/image%2013.png)
+![Schema Visualizer Supabase pada schema gis yang menampilkan tabel spatial_ref_sys berisi srid, auth_name, auth_srid, srtext, dan proj4text](cloud-postgresql/image%2013.png)
     
 
 ## **Membuat Tabel dengan SQL Editor**
@@ -239,15 +239,15 @@ Akun super admin hanya bisa lahir dari `02-seed-super-admin.sql`. Jadi berkas it
 
 1. Buka QGIS kemudian buat koneksi database baru
     
-![image.png](cloud-postgresql/image%2014.png)
+![Hasil pencarian aplikasi yang menampilkan QGIS Desktop 3.22.12 sebagai Best match](cloud-postgresql/image%2014.png)
     
 2. Kemudian masukkan credential dari Supabase anda
     
-![](cloud-postgresql/image3.png)
+![Jendela Create a New PostGIS Connection di QGIS dengan host pooler 5432 dan user postgres beserta project ref](cloud-postgresql/image3.png)
     
 3. Credential Supabase yang anda gunakan bukanlah super user seperti saat anda menggunakan PostgreSQL lokal, oleh karena itu perlu pengaturan tambahan dari Supabase. Buka Supabase kemudian pergi ke SQL Editor
     
-![image.png](cloud-postgresql/image%2015.png)
+![Menu sidebar Supabase dengan pilihan SQL Editor dilingkari di bawah Project Overview dan Table Editor](cloud-postgresql/image%2015.png)
     
 4. Jalankan perintah berikut di SQL Editor
     
@@ -288,8 +288,8 @@ Akun super admin hanya bisa lahir dari `02-seed-super-admin.sql`. Jadi berkas it
     GRANT EXECUTE ON FUNCTION public.addgeometrycolumn TO PUBLIC, postgres, anon, authenticated, service_role;
     ```
 
-![](cloud-postgresql/image20.png)
+![SQL Editor Supabase berisi skrip pembuatan fungsi addgeometrycolumn di schema public dan gis beserta GRANT EXECUTE](cloud-postgresql/image20.png)
 
 5. Buat layer baru sama seperti di local database
     
-![image.png](cloud-postgresql/image%2016.png)
+![Dialog New Table DBeaver untuk schema gis dan tabel halte_transjakarta dengan kolom id, nama, type, geometry type Point, serta CRS EPSG 4326](cloud-postgresql/image%2016.png)
