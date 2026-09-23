@@ -140,19 +140,12 @@ const jumlahTerisi = computed(
   () => props.paket.filter((b) => props.isian[kunci(b)]).length
 )
 
-// Nilai dipecah menjadi blok delapan karakter supaya 64 karakter dapat
-// diperiksa mata tanpa dihitung satu per satu. Yang disalin dan disimpan tetap
-// satu kesatuan tanpa spasi.
-function potong(nilai) {
-  if (!nilai) return []
-  return nilai.match(/.{1,8}/g) || []
-}
-
-// Memblok kotak nilainya lalu menekan Ctrl+C menghasilkan pemisah antar blok,
-// karena flex item diperlakukan browser sebagai blok. Pemisah itu membuat
-// nilainya tidak dapat dipakai, dan tidak terlihat bahwa ada yang salah.
-// Handler ini mengganti isi papan klip dengan nilai aslinya, sehingga cara
-// menyalin mana pun menghasilkan satu rangkaian utuh.
+// Nilai tidak dikelompokkan saat ditampilkan: yang terlihat harus persis sama
+// dengan yang tersalin, supaya tidak ada yang menduga nilainya memuat spasi.
+//
+// Handler ini tetap dipertahankan sebagai pengaman. Nilai di sini adalah
+// kredensial, dan salah salin tidak terlihat sebagai kesalahan: hasilnya masih
+// berupa rangkaian panjang yang wajar, hanya sudah berubah isinya.
 function salinBersih(peristiwa, nilai) {
   if (!peristiwa.clipboardData || !nilai) return
   peristiwa.clipboardData.setData('text/plain', nilai)
@@ -162,12 +155,6 @@ function salinBersih(peristiwa, nilai) {
 
 <template>
   <div class="pr">
-    <p class="pr-catatan-atas">
-      Nilai ditampilkan dalam blok delapan karakter supaya mudah diperiksa.
-      Jarak antar blok itu hanya tampilan: isinya <strong>tidak memuat
-      spasi</strong>, dan menyalinnya dengan cara apa pun menghasilkan satu
-      rangkaian utuh.
-    </p>
     <div
       v-for="b in paket"
       :key="kunci(b)"
@@ -187,9 +174,7 @@ function salinBersih(peristiwa, nilai) {
         v-if="isian[kunci(b)]"
         class="pr-nilai"
         @copy="salinBersih($event, isian[kunci(b)])"
-      >
-        <span v-for="(bagian, i) in potong(isian[kunci(b)])" :key="i" class="pr-bagian">{{ bagian }}</span>
-      </output>
+      >{{ isian[kunci(b)] }}</output>
       <p v-else class="pr-kosong">Belum dibuat.</p>
 
       <!-- Konfirmasi hanya muncul pada nilai yang sudah ada, karena hanya
@@ -255,18 +240,6 @@ function salinBersih(peristiwa, nilai) {
 </template>
 
 <style scoped>
-/* Keterangan sekali di atas seluruh baris, bukan diulang pada tiap nilai,
-   karena kebingungan yang dicegahnya sama untuk semuanya. */
-.pr-catatan-atas {
-  margin: 0 0 14px;
-  padding: 10px 12px;
-  border-left: 4px solid var(--pelatihan-garis, #111111);
-  background: var(--vp-c-bg-soft);
-  font-size: 12.5px;
-  line-height: 1.6;
-  color: var(--vp-c-text-2);
-}
-
 .pr-baris {
   padding: 14px;
   margin: 0 0 14px;
@@ -308,26 +281,24 @@ function salinBersih(peristiwa, nilai) {
   color: var(--vp-c-text-2);
 }
 
-/* Nilai dipecah menjadi blok delapan karakter, sehingga 64 karakter selesai
-   dibaca dalam dua baris pendek alih-alih satu baris panjang yang sulit
-   diperiksa. */
+/* Nilai ditampilkan apa adanya, tanpa dikelompokkan, supaya yang terlihat
+   persis sama dengan yang tersalin. Sebelumnya nilai dipecah menjadi blok
+   delapan karakter, dan jarak antar blok itu terbaca sebagai spasi sehingga
+   peserta menduga nilainya memuat spasi. Pemenggalan baris kini diserahkan
+   ke browser pada batas lebar kotak. */
 .pr-nilai {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px 8px;
+  display: block;
   padding: 10px 12px;
   border: 1px solid var(--vp-c-divider);
   border-radius: var(--pelatihan-radius, 3px);
   background: var(--vp-c-bg);
   cursor: text;
   user-select: all;
-}
-
-.pr-bagian {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 13px;
   line-height: 1.5;
   color: var(--vp-c-text-1);
+  overflow-wrap: anywhere;
 }
 
 .pr-kosong {
