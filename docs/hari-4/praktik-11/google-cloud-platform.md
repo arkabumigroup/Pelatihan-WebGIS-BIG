@@ -212,13 +212,21 @@ Yang perlu dilaporkan hanya dua nilai:
 | Subdomain | `dhanypedia.webgisbig.com` | `$SUBDOMAIN` |
 | Alamat IP statis | `34.101.xx.xx` | Perintah di bawah, dari `$STATIC_IP_NAME` |
 
-Cetak keduanya, lalu kirim ke penyelenggara:
+Cetak keduanya, lalu isikan ke formulir:
 
 ```bash
 echo "Subdomain : $SUBDOMAIN"
 echo "IP statis : $(gcloud compute addresses describe "$STATIC_IP_NAME" \
   --region="$VM_REGION" --project="$PROJECT_ID" --format='value(address)')"
 ```
+
+::: tip Isikan ke formulir ini
+**[Formulir pelaporan IP dan subdomain](https://forms.gle/djDAdjoAnaKSW4iR6)**
+
+Formulirnya meminta dua hal: alamat IP eksternal VM Anda, dan subdomain yang Anda inginkan tanpa `webgisbig.com` di belakangnya, paling banyak 8 karakter. Contoh: diisi `nama01` akan menjadi `nama01.webgisbig.com`.
+
+Isi formulirnya sebelum melanjutkan ke Tahap 10. Record DNS-nya ditambahkan penyelenggara dari jawaban formulir ini, dan propagasinya perlu waktu. Diisikan sekarang, propagasinya berjalan sementara Anda mengerjakan tahap berikutnya.
+:::
 
 ## Bila ada yang gagal di halaman ini
 
