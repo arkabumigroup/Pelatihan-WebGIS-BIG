@@ -804,12 +804,7 @@ onMounted(() => {
         menjadi milik Anda sendiri dan bagian mana yang dipakai bersama.
       </p>
 
-      <PetaDeployment v-if="terisi" :nilai="nilai" />
-
-      <p v-else class="ki-antar">
-        Pilih nama peserta dan isi Project ID pada langkah 1 lebih dahulu.
-        Sesudah itu petanya muncul di sini dengan nilai Anda sendiri.
-      </p>
+      <PetaDeployment :nilai="nilai" />
     </section>
 
     <!-- Keadaan tersimpan. Ditampilkan hanya bila ada catatan yang dipulihkan. -->
