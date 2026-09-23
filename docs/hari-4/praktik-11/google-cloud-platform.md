@@ -14,7 +14,7 @@ Jalankan ini lebih dahulu, sebelum tahap mana pun di bawah:
 echo "PROJECT_ID=$PROJECT_ID  NAMA_PESERTA=$NAMA_PESERTA  ZONE=$ZONE"
 ```
 
-Keempat nilainya harus terisi. Bila ada yang kosong, salin ulang blok identitas dari [Kit Identitas Peserta](/hari-4/praktik-11/kit-identitas) atau dari [Tahap 2 halaman Persiapan Repositori](/hari-4/praktik-11/persiapan-repositori#tahap-2-tetapkan-identitas-peserta), lalu tempel ke terminal. Tidak ada yang perlu dicari ulang di tabel peserta.
+Ketiga nilainya harus terisi. Bila ada yang kosong, salin ulang blok identitas dari [Kit Identitas Peserta](/hari-4/praktik-11/kit-identitas) atau dari [Tahap 2 halaman Persiapan Repositori](/hari-4/praktik-11/persiapan-repositori#tahap-2-tetapkan-identitas-peserta), lalu tempel ke terminal. Tidak ada yang perlu dicari ulang di tabel peserta.
 
 ::: tip Jalankan ulang pemeriksaan ini kapan saja
 Setiap kali Cloud Shell terasa lambat, terminal kembali ke prompt kosong tanpa penjelasan, atau Anda baru kembali dari istirahat, jalankan baris `echo` di atas sekali lagi. Memeriksanya jauh lebih cepat daripada menelusuri error yang muncul belakangan.

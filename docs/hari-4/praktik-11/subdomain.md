@@ -25,7 +25,7 @@ gcloud compute addresses describe "$STATIC_IP_NAME" \
   --format="table(name,address,status)"
 ```
 
-Status harus `RESERVED`, dan alamat yang tampil harus sama dengan IP eksternal VM. Record A yang menunjuk ke IP dinamis akan rusak begitu VM dimatikan dan dinyalakan kembali.
+Statusnya `IN_USE` atau `RESERVED`, keduanya berarti alamatnya statis, dan alamat yang tampil harus sama dengan IP eksternal VM. Record A yang menunjuk ke IP dinamis akan rusak begitu VM dimatikan dan dinyalakan kembali.
 
 ### Tahap 2. Tentukan nama subdomain
 
@@ -475,7 +475,7 @@ Keempatnya harus menampilkan alamat `https://`, tanpa garis miring di akhir.
 | `NEXTAUTH_URL` | Alamat callback login | Login gagal setelah HTTPS aktif |
 | `BASE_URL` | Alamat yang dipakai server | Sama, login dan pengalihan gagal |
 | `NEXT_PUBLIC_URL_BASE_PATH` | Alamat file model 3D | File model diminta lewat HTTP, diblokir browser sebagai mixed content, sehingga model tidak muncul di pratinjau |
-| `GEOSERVER_PUBLIC_URL` | Alamat WMS dan WFS yang **disimpan ke database** | Kolom `wms_url` dan `wfs_url` berisi alamat IP, sehingga layer tidak dapat dibuka dari katalog maupun dari QGIS |
+| `GEOSERVER_PUBLIC_URL` | Catatan alamat publik GeoServer. **Tidak dibaca aplikasi** | Membiarkannya di alamat lama tidak menghalangi layer tampil, karena `wms_url` kini menunjuk proxy milik aplikasi sendiri |
 
 Dua variabel terakhir mudah terlewat, karena keduanya tidak menggagalkan login. Errornya baru muncul saat model 3D dibuka atau layer 2D dipanggil.
 
@@ -486,7 +486,7 @@ cd /opt/webgis/app && sudo docker compose up -d
 ```
 
 ::: warning Layer yang sudah dibuat tetap memakai alamat lama
-`GEOSERVER_PUBLIC_URL` dan `NEXT_PUBLIC_URL_BASE_PATH` disalin ke database **saat layer dibuat**, bukan dibaca ulang setiap kali dibuka.
+`NEXT_PUBLIC_URL_BASE_PATH` disalin ke database **saat layer dibuat**, bukan dibaca ulang setiap kali dibuka. `GEOSERVER_PUBLIC_URL` tidak dibaca aplikasi sama sekali.
 
 Artinya layer yang dibuat sebelum Tahap 13 masih menyimpan alamat IP, walaupun `.env` sudah diperbaiki. Perbaiki barisnya di SQL Editor Supabase. Ganti `IP_EKSTERNAL_VM` dengan alamat IP statis VM Anda dari [Tahap 9 halaman Menyiapkan Project dan VM](/hari-4/praktik-11/google-cloud-platform#tahap-9-buat-ip-statis), dan `nama01.webgisbig.com` dengan subdomain Anda:
 

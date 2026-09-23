@@ -109,7 +109,7 @@ Isi filenya dapat diperiksa dengan:
 cat /etc/cron.daily/cadangkan-webgis
 ```
 
-Yang perlu Anda pastikan cuma satu: `$(date +%F)`, `$STAMP`, dan `$BUCKET` harus masih tertulis apa adanya, bukan sudah terisi nilai saat perintah dijalankan.
+Yang perlu Anda pastikan: `$(date +%F)` dan `$STAMP` harus masih tertulis apa adanya, sedangkan `$BUCKET` justru harus sudah terisi nama bucket Anda.
 
 ### Kapan skripnya menyala
 

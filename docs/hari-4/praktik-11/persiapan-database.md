@@ -95,7 +95,7 @@ Empat hal perlu dikerjakan, berurutan:
 
 Langkah 1 wajib karena project Supabase yang baru dibuat belum memuat PostGIS sama sekali. Tanpa itu, unggahan layer pertama nanti gagal dengan `type "geometry" does not exist`.
 
-**Ketiga file SQL itu ditampilkan lengkap pada halaman [Menjalankan Berkas SQL](/hari-4/praktik-11/menjalankan-skema)**, begitu juga langkah PostGIS-nya, supaya dapat disalin langsung tanpa membuka file di laptop.
+**Ketiga file SQL itu ditampilkan lengkap pada halaman [Menjalankan Berkas SQL](/hari-4/praktik-11/menjalankan-skema)**, sedangkan langkah PostGIS-nya ada pada halaman [Skema Database](/hari-4/praktik-11/skema-database), supaya dapat disalin langsung tanpa membuka file di laptop.
 
 Halaman itu juga memuat cara membuka SQL Editor, urutan pengerjaan, dan langkah membuat akun super admin.
 

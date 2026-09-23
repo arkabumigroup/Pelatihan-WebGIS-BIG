@@ -2,7 +2,7 @@
 
 Hari keempat memindahkan aplikasi dari laptop ke server yang dapat diakses publik. Pekerjaannya ada pada Praktik 11 dan Praktik 12, mulai dari menyiapkan konfigurasi dan repositori, membuat Virtual Machine di Google Cloud, menjalankan aplikasi di dalamnya, sampai subdomain dan HTTPS aktif, lalu membuat backup datanya dan memantau layanannya.
 
-Halaman-halaman Praktik 11 adalah satu rangkaian yang dikerjakan berurutan. File yang dibuat pada tahap awal dipakai pada tahap berikutnya, dan konfigurasi Nginx yang dibuat di awal baru berguna setelah sertifikat pada tahap subdomain terbit.
+Halaman-halaman Praktik 11 adalah satu rangkaian yang dikerjakan berurutan. File yang dibuat pada tahap awal dipakai pada tahap berikutnya, dan konfigurasi Nginx yang dibuat di awal sudah terpakai sejak tahap aplikasi, sedangkan blok HTTPS-nya baru berguna setelah sertifikat pada tahap subdomain terbit.
 
 Praktik 12 dikerjakan setelah Praktik 11 selesai sepenuhnya, karena yang di-backup dan dimonitor adalah aplikasi yang sudah berjalan.
 
@@ -46,7 +46,7 @@ Praktik ini merawat geoportal yang sudah berjalan. Isinya dikerjakan pada VM dan
 
 Geoportal berjalan di alamat `http://IP_EKSTERNAL_VM/portal` setelah tahap aplikasi selesai, lalu berubah menjadi `https://SUBDOMAIN/portal` setelah tahap subdomain dan sertifikat selesai. Pada titik itu aplikasi, database, dan GeoServer sudah dapat diakses dari internet.
 
-Setelah Praktik 12, data GeoServer dan file `.env` sudah punya salinannya, dan portal Anda akan mengirim email begitu layanannya tidak menjawab.
+Setelah Praktik 12, data GeoServer dan file `.env` sudah punya salinannya, dan Anda akan menerima email begitu portalnya tidak menjawab.
 
 ## Sesi Lain pada Hari 4
 

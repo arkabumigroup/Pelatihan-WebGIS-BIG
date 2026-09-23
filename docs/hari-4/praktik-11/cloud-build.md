@@ -136,10 +136,10 @@ Tambahkan lima variabel berikut pada trigger. Ganti `PARTICIPANT_ID` dengan iden
 | `_IMAGE_NAME` | `nextjs-PARTICIPANT_ID` |
 | `_CESIUM_ION_TOKEN` | Token Cesium Ion Anda, dari [ion.cesium.com/tokens](https://ion.cesium.com/tokens) |
 
-Bagian `PARTICIPANT_ID` pada dua nilai pertama dan terakhir itulah yang membuat trigger peserta A tidak pernah menyentuh VM peserta B.
+Bagian `PARTICIPANT_ID` pada `_VM_NAME` dan `_IMAGE_NAME` itulah yang membuat trigger peserta A tidak pernah menyentuh VM peserta B.
 
 ::: warning Mengapa `_CESIUM_ION_TOKEN` harus ada di trigger, bukan hanya di `.env`
-Token Cesium Ion dipakai komponen peta 3D, dan komponen itu berjalan di browser. NextJS **menanam** nilai `NEXT_PUBLIC_*` ke dalam file hasil build, bukan membacanya saat aplikasi berjalan.
+Token Cesium Ion dipakai komponen peta 3D, dan komponen itu berjalan di browser. Next.js **menanam** nilai `NEXT_PUBLIC_*` ke dalam file hasil build, bukan membacanya saat aplikasi berjalan.
 
 Karena `.dockerignore` mengecualikan file `.env` dari build context, nilai yang ada di `.env` VM **tidak ikut** ke dalam build. Nilainya harus dikirim sebagai build argument, dan itulah yang dilakukan `cloudbuild.yaml` dengan `${_CESIUM_ION_TOKEN}`.
 

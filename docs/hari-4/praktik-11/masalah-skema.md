@@ -28,7 +28,7 @@ Saat menjalankan `03-periksa.sql`, bagian **2. Jumlah constraint per tabel** men
 | `katalog_data_2d` | 4 | 8 |
 | `katalog_data_3d` | 6 | 8 |
 
-Sebabnya, sejak PostgreSQL 18 batasan `NOT NULL` ikut tercatat di `pg_constraint` dengan kode `n`. Pada versi sebelumnya, `NOT NULL` disimpan di `pg_attribute` dan tidak muncul pada query itu. Karena itu kolom `not_null` bernilai `0` di Supabase.
+Sebabnya, sejak PostgreSQL 18 batasan `NOT NULL` ikut tercatat di `pg_constraint` dengan kode `n`. Pada versi sebelumnya, `NOT NULL` disimpan di `pg_attribute` dan tidak muncul pada query itu. Karena itu kolom `jumlah` pada bagian 2 `03-periksa.sql` lebih kecil di Supabase, sedangkan `unique_`, `foreign_key`, dan `check_` bernilai sama di kedua versi.
 
 Yang perlu Anda pastikan bukan angkanya, melainkan:
 
@@ -87,7 +87,7 @@ Buka kembali halaman login, dan masuk memakai kata sandi yang baru.
 
 ### Bila akun super admin tidak ada
 
-Berarti `02-seed-super-admin.sql` belum pernah dijalankan. Buka file itu, ganti kedua penandanya, lalu jalankan seluruh isinya di SQL Editor. Langkahnya ada pada bagian [Membuat Akun Super Admin](#membuat-akun-super-admin) di halaman ini.
+Berarti `02-seed-super-admin.sql` belum pernah dijalankan. Buka file itu, ganti kedua penandanya, lalu jalankan seluruh isinya di SQL Editor. Langkahnya ada pada bagian [Membuat Akun Super Admin](/hari-4/praktik-11/menjalankan-skema#membuat-akun-super-admin) di halaman Menjalankan Berkas SQL.
 
 ### Bila muncul "Akun anda belum di aktivasi"
 

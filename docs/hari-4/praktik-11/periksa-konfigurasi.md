@@ -68,7 +68,7 @@ networks:
 Dua hal pada service `nginx` yang mudah terlewat, dan keduanya membuat HTTPS tidak terjangkau bila dihilangkan:
 
 - Port `443:443` harus dipublikasikan. Tanpa itu Nginx mendengarkan di dalam container, tetapi host tidak meneruskan trafik ke sana.
-- Volume `/etc/letsencrypt` menunjuk lokasi di VM, bukan di repository. Tanpa itu, `nginx -t` gagal dengan pesan file sertifikat tidak ditemukan meskipun sertifikatnya ada.
+- Volume `/etc/letsencrypt` menunjuk lokasi di VM, bukan di repositori. Tanpa itu, `nginx -t` gagal dengan pesan file sertifikat tidak ditemukan meskipun sertifikatnya ada.
 
 ## Tahap 4. Periksa nginx.conf
 

@@ -451,7 +451,7 @@ Errornya menyesatkan: katalog tetap menampilkan modelnya, karena barisnya masih 
 | Error | Penyebab yang paling sering |
 |---|---|
 | `Invalid username/password combination`, padahal kata sandi benar | Formulir login masih memakai `http://`. Kerjakan Tahap 2 |
-| `type "geometry" does not exist` | PostGIS belum terpasang, atau tidak berada di `public` maupun `gis` |
+| `type "geometry" does not exist` | PostGIS belum terpasang, atau tidak berada di schema `public` |
 | `schema "gis" does not exist` | Schema `gis` belum dibuat. Kerjakan Tahap 1 |
 | `Could not find datastore` | Nama datastore tidak sama dengan `GEOSERVER_POSTGIS_DATASTORE` pada `.env` |
 | `Test Connection` gagal | Nilai `POSTGIS_*` pada datastore berbeda dari `.env`, atau datastore dibuat sebelum PostGIS aktif |
