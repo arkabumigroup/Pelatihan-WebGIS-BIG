@@ -516,6 +516,8 @@ Kedua barisnya harus berstatus `Up`. GeoServer tetap menampilkan `Up` sejak awal
 exit
 ```
 
+Berlaku peringatan yang sama seperti pada [Tahap 13](#tahap-13-tambahkan-user-ke-grup-docker): pastikan promptnya masih memuat nama VM sebelum mengetik `exit`. Bila yang terlihat sudah prompt Cloud Shell, berarti Anda memang sudah keluar, dan mengetik `exit` di sana akan menutup seluruh sesi Cloud Shell.
+
 ---
 
 Lanjutkan ke [Otomatisasi Cloud Build](/hari-4/praktik-11/cloud-build).

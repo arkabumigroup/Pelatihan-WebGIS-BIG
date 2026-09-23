@@ -173,7 +173,7 @@ gcloud storage cp "gs://${BUCKET}/${ARCHIVE}" /tmp/
 
 cd /opt/webgis/app
 sudo docker compose stop geoserver
-sudo tar -xzf /tmp/$ARCHIVE
+sudo tar -xzf "/tmp/$ARCHIVE"
 sudo docker compose up -d --force-recreate geoserver
 ```
 

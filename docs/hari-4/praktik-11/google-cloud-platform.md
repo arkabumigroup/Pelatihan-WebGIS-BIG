@@ -235,7 +235,13 @@ gcloud compute instances list --project="$PROJECT_ID" \
 
 **`ALREADY_EXISTS`**
 
-Resource yang Anda buat sudah ada, dan biasanya itu memang buatan koordinator. Lihat kembali tabel pembagian resource pada halaman [Persiapan Repositori](/hari-4/praktik-11/persiapan-repositori).
+Resource yang Anda buat sudah ada. Ada dua kemungkinan, dan keduanya tidak perlu dikhawatirkan.
+
+**Yang pertama, Anda sendiri yang membuatnya lebih dahulu.** Ini yang paling sering terjadi. Peserta yang mengulang halaman ini, entah karena sesi Cloud Shell-nya putus atau karena mengulang latihan, akan menemui pesan ini pada Service Account, VM, IP statis, atau uptime check. **Artinya pembuatannya berhasil pada percobaan sebelumnya**, jadi lanjutkan saja ke tahap berikutnya. Tidak ada yang perlu dihapus dan tidak ada yang perlu dilaporkan.
+
+**Yang kedua, koordinator yang membuatnya.** Itu berlaku untuk Artifact Registry, firewall rule, dan network tag. Lihat tabel pembagian resource pada halaman [Persiapan Repositori](/hari-4/praktik-11/persiapan-repositori) untuk memastikan mana yang memang bukan milik peserta.
+
+Bedakan keduanya dari namanya. Nama Service Account, VM, IP statis, dan uptime check memuat Nama Peserta Anda. Nama Artifact Registry, firewall rule, dan network tag sama untuk semua peserta.
 
 **`Failed to lookup instance` saat masuk ke VM**
 
