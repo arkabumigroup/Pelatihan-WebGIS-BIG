@@ -308,7 +308,7 @@ RUN adduser --system --uid 1001 nextjs
 USER nextjs
 ```
 
-Bila folder `data` belum ada, Docker membuatnya sendiri sebagai `root:root` dengan mode `755`, sama seperti yang terjadi pada folder `tls` di halaman Subdomain. Pada mode itu, uid 1001 bukan pemiliknya dan hanya memperoleh hak baca, sehingga penulisan file ditolak.
+Bila folder `data` belum ada, Docker membuatnya sendiri sebagai `root:root` dengan mode `755`, sama seperti yang terjadi pada folder `tls` di halaman Subdomain. Pada mode itu, uid 1001 bukan pemiliknya dan hanya mendapat hak baca, sehingga penulisan file ditolak.
 
 ### Membuat dan menyesuaikan pemiliknya
 

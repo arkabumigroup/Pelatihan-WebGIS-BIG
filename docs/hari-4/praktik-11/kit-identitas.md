@@ -1,6 +1,6 @@
 # Kit Identitas Peserta
 
-Halaman ini menyimpan identitas peserta di browser, lalu membangkitkan seluruh nama resource dan nilai rahasia yang diturunkan darinya. Isinya menggantikan blok yang harus diketik pada [Tahap 2 halaman Persiapan Repositori](/hari-4/praktik-11/persiapan-repositori#tahap-2-tetapkan-identitas-peserta). Langkah 3 di sini juga dapat dipakai sebagai ganti perintah `node scripts/hash-password.mjs` yang membuat hash kata sandi super admin; keduanya sama-sama sah, dan [halaman Skema Database](/hari-4/praktik-11/skema-database#membuat-akun-super-admin) menyebut keduanya sebagai dua pilihan.
+Halaman ini menyimpan identitas peserta di browser, lalu membuat seluruh nama resource dan nilai rahasia yang diturunkan darinya. Isinya menggantikan blok yang harus diketik pada [Tahap 2 halaman Persiapan Repositori](/hari-4/praktik-11/persiapan-repositori#tahap-2-tetapkan-identitas-peserta). Langkah 3 di sini juga dapat dipakai sebagai ganti perintah `node scripts/hash-password.mjs` yang membuat hash kata sandi super admin; keduanya sama-sama sah, dan [halaman Skema Database](/hari-4/praktik-11/skema-database#membuat-akun-super-admin) menyebut keduanya sebagai dua pilihan.
 
 ## Masalah yang Dipecahkan
 
