@@ -131,7 +131,7 @@ Langkah lengkapnya ada pada halaman [Skema Database](/hari-4/praktik-11/skema-da
 ::: warning Peserta yang mendaftar sendiri tidak menjadi super admin
 Halaman `/register` pada aplikasi selalu menghasilkan peran `viewer` dan status belum aktif. Itu memang disengaja, supaya tidak ada yang bisa menaikkan perannya sendiri.
 
-Akun super admin hanya bisa lahir dari `02-seed-super-admin.sql`. Jadi file itu wajib dijalankan, bukan pilihan.
+Akun super admin hanya bisa dibuat oleh `02-seed-super-admin.sql`. Jadi file itu wajib dijalankan, bukan pilihan.
 :::
 
 ## File yang Diperiksa
@@ -242,7 +242,7 @@ Bagian yang harus ada, beserta alasannya:
 | `location /geoserver/` | Meneruskan permintaan GeoServer, dengan `Host` dikirim apa adanya supaya GeoServer tahu alamat publiknya |
 | `location = /robots.txt` dan `= /sitemap.xml` | Next.js menyajikannya di bawah `/portal`, sedangkan mesin pencari memintanya di akar domain |
 | `location /` | Meneruskan sisanya ke container `nextjs` |
-| `proxy_request_buffering off;` | Nginx tidak lagi menulis seluruh badan permintaan ke file sementara sebelum meneruskannya ke aplikasi. Tanpa baris ini file 1 GB ditulis dua kali ke disk, dan bilah kemajuan di browser melesat ke 100 persen lebih dahulu karena Nginx menerimanya jauh lebih cepat daripada aplikasi memakainya |
+| `proxy_request_buffering off;` | Nginx tidak lagi menulis seluruh badan permintaan ke file sementara sebelum meneruskannya ke aplikasi. Tanpa baris ini file 1 GB ditulis dua kali ke disk, dan bilah kemajuan di browser langsung mencapai 100 persen lebih dahulu karena Nginx menerimanya jauh lebih cepat daripada aplikasi memakainya |
 | `proxy_send_timeout 1800s;` | Batas 60 detik bawaan Nginx terlewati saat mengirim badan permintaan besar ke aplikasi |
 | `proxy_read_timeout 1800s;` | Batas yang sama terlewati saat menunggu aplikasi menulis filenya ke disk dan menyimpan barisnya ke database |
 
@@ -692,7 +692,7 @@ Periksa apakah skema database sudah benar dan alur login bekerja:
 node scripts/uji-database.mjs
 ```
 
-Skrip itu memeriksa **tiga belas** hal sekaligus. Data ujinya dihapus kembali di akhir, jadi database Anda tidak ditinggalkan dalam keadaan kotor.
+Skrip itu memeriksa **tiga belas** hal sekaligus. Data ujinya dihapus kembali di akhir, jadi database Anda tidak ditinggalkan dengan data uji di dalamnya.
 
 Keluaran yang diharapkan, tiga belas baris `LULUS` tanpa satu pun `GAGAL`:
 
