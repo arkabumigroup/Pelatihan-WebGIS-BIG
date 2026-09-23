@@ -456,6 +456,14 @@
   display: none;
 }
 
+/* Peringatan yang hanya berlaku sebelum identitas peserta terisi. Kelas
+   `kit-terisi` dipasang pada elemen html oleh isi-otomatis.js begitu Kit
+   Identitas sudah memuat nama peserta dan Project ID, karena blok di bawahnya
+   tidak lagi berisi bentuk contoh. */
+html.kit-terisi .bila-belum-terisi {
+  display: none;
+}
+
 /* ---------------------------------------------------------------------
    Blok peringatan
    Tingkat bahaya ditandai garis tepi kiri yang tebal, bukan latar berwarna

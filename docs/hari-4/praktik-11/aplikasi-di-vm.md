@@ -348,6 +348,8 @@ Blok [Tahap 2 halaman Persiapan Repositori](/hari-4/praktik-11/persiapan-reposit
 asia-southeast2-docker.pkg.dev////:latest
 ```
 
+<div class="bila-belum-terisi">
+
 ::: danger Dua nilai di blok bawah hanya contoh, jangan disalin apa adanya
 `geoportal-kelompok-a-xxxxx` dan `nama01` bukan nilai Anda. Peserta yang membiarkannya baru tahu kesalahannya di Tahap 21, saat push-nya ditolak karena project itu tidak ada, dan image di Artifact Registry-nya bernama `nextjs-nama01`.
 
@@ -356,13 +358,15 @@ Buka [Kit Identitas Peserta](/hari-4/praktik-11/kit-identitas), pilih nama Anda,
 Blok di bawah sengaja tidak diberi tombol salin, supaya nilainya dibaca lebih dahulu.
 :::
 
-Hanya dua baris pertama yang Anda ubah, dan `IMAGE_NAME` diturunkan dari `NAMA_PESERTA` supaya tidak bisa berbeda.
+</div>
+
+`IMAGE_NAME` diturunkan dari `NAMA_PESERTA` supaya tidak bisa berbeda.
 
 <div class="tanpa-salin">
 
 ```bash
-PROJECT_ID="geoportal-kelompok-a-xxxxx"     # ganti dengan Project ID Anda
-NAMA_PESERTA="nama01"                       # ganti dengan Nama Peserta Anda
+PROJECT_ID="geoportal-kelompok-a-xxxxx"     # Project ID Anda
+NAMA_PESERTA="nama01"                       # Nama Peserta Anda
 REPOSITORY="katalog-images"                 # sama untuk semua peserta
 IMAGE_NAME="nextjs-${NAMA_PESERTA}"
 ```
@@ -464,9 +468,13 @@ di Cloud Shell, sebagai Anda.
 
 Bila Anda membuka sesi SSH baru sejak Tahap 19, setel ulang ketiga variabel itu. Variabel shell tidak bertahan antar sesi.
 
+<div class="bila-belum-terisi">
+
 ::: warning Nilainya tetap milik Anda, bukan contoh di blok bawah
 `nama01` dan `geoportal-kelompok-a-xxxxx` di sini juga hanya contoh. Pakai `PROJECT_ID` dan `IMAGE_NAME` dari [Kit Identitas Peserta](/hari-4/praktik-11/kit-identitas) Anda.
 :::
+
+</div>
 
 <div class="tanpa-salin">
 
