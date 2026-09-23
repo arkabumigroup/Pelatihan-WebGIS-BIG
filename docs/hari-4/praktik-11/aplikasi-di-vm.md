@@ -124,6 +124,24 @@ exit
 
 Perintah `exit` menutup sesi SSH dan mengembalikan terminal ke Cloud Shell. Ini perlu dilakukan supaya keanggotaan grup docker berlaku pada sesi berikutnya.
 
+::: warning Perhatikan prompt sebelum mengetik exit
+`exit` menutup **apa pun yang sedang Anda masuki**. Kalau dijalankan di dalam VM, yang tertutup sesi SSH-nya. Tetapi kalau sesi SSH sudah tertutup lebih dahulu, entah karena Anda sudah keluar atau karena koneksinya terputus, `exit` yang sama akan **menutup seluruh sesi Cloud Shell** beserta variabel identitas Anda.
+
+Promptnya membedakan keduanya. Di dalam VM, promptnya memuat nama VM:
+
+```text
+nama-anda@webgis-nama01:/opt/webgis/app$
+```
+
+Di Cloud Shell, promptnya tidak memuat nama VM:
+
+```text
+nama-anda@cloudshell:~$
+```
+
+Pastikan yang terlihat adalah prompt VM sebelum mengetik `exit`. Bila yang terlihat sudah prompt Cloud Shell, berarti Anda memang sudah keluar dan tidak perlu mengetik apa pun.
+:::
+
 ::: tip Sejak tahap berikutnya, perintah docker tidak lagi perlu sudo
 Tahap 12 sampai 13 masih memakai `sudo docker`, karena akun Anda belum masuk grup `docker`.
 
