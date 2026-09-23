@@ -19,6 +19,7 @@ import { kelompokPeserta } from '../data/peserta'
 // halaman ini yang memakainya. Komponen yang dipakai satu tempat lebih jelas
 // dibaca bersama pemakainya.
 import PanelSandi from './PanelSandi.vue'
+import PetaDeployment from './PetaDeployment.vue'
 
 const props = defineProps({
   // Judul halaman yang memuat alat ini. Dipakai sebagai tingkat judul bagian,
@@ -789,6 +790,26 @@ onMounted(() => {
           </tbody>
         </table>
       </div>
+    </section>
+
+    <!-- Langkah 6. Peta deployment. Ditaruh paling akhir, bukan di tengah,
+         supaya nomor langkah 3 sampai 5 yang dirujuk dari halaman Skema
+         Database dan dari berkas SQL di repositori peserta tidak bergeser. -->
+    <section class="ki-bagian">
+      <component :is="tingkatJudul" class="ki-judul">6. Peta deployment Anda</component>
+
+      <p class="ki-antar">
+        Langkah ini tidak menghasilkan nilai baru. Isinya menunjukkan ke mana
+        nilai yang sudah Anda miliki pergi, supaya terlihat bagian mana yang
+        menjadi milik Anda sendiri dan bagian mana yang dipakai bersama.
+      </p>
+
+      <PetaDeployment v-if="terisi" :nilai="nilai" />
+
+      <p v-else class="ki-antar">
+        Pilih nama peserta dan isi Project ID pada langkah 1 lebih dahulu.
+        Sesudah itu petanya muncul di sini dengan nilai Anda sendiri.
+      </p>
     </section>
 
     <!-- Keadaan tersimpan. Ditampilkan hanya bila ada catatan yang dipulihkan. -->
