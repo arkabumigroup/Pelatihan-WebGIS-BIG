@@ -2,7 +2,7 @@
 
 Hari keempat memindahkan aplikasi dari laptop ke server yang dapat diakses publik. Pekerjaannya ada pada Praktik 11 dan Praktik 12, mulai dari menyiapkan konfigurasi dan repositori, membuat Virtual Machine di Google Cloud, menjalankan aplikasi di dalamnya, sampai subdomain dan HTTPS aktif, lalu membuat backup datanya dan memantau layanannya.
 
-Halaman-halaman Praktik 11 adalah satu rangkaian yang dikerjakan berurutan. Berkas yang dibuat pada tahap awal dipakai pada tahap berikutnya, dan konfigurasi Nginx yang dibuat di awal baru berguna setelah sertifikat pada tahap subdomain terbit.
+Halaman-halaman Praktik 11 adalah satu rangkaian yang dikerjakan berurutan. File yang dibuat pada tahap awal dipakai pada tahap berikutnya, dan konfigurasi Nginx yang dibuat di awal baru berguna setelah sertifikat pada tahap subdomain terbit.
 
 Praktik 12 dikerjakan setelah Praktik 11 selesai sepenuhnya, karena yang di-backup dan dimonitor adalah aplikasi yang sudah berjalan.
 
@@ -17,9 +17,9 @@ Praktik 12 dikerjakan setelah Praktik 11 selesai sepenuhnya, karena yang di-back
 ## Praktik 11 - Deployment Project
 
 1. [Peserta dan Project](/hari-4/praktik-11/peserta-project) - memetakan peserta ke project Google Cloud.
-2. [Kit Identitas Peserta](/hari-4/praktik-11/kit-identitas) - menghitung seluruh nama resource dari identitas peserta, menyimpannya di peramban, membuat nilai rahasia yang dibutuhkan, dan membuat kata sandi super admin beserta hash bcrypt-nya.
+2. [Kit Identitas Peserta](/hari-4/praktik-11/kit-identitas) - menghitung seluruh nama resource dari identitas peserta, menyimpannya di browser, membuat nilai rahasia yang dibutuhkan, dan membuat kata sandi super admin beserta hash bcrypt-nya.
 3. [Konfigurasi Project](/hari-4/praktik-11/konfigurasi-project) - menyiapkan `docker-compose.yml`, `nginx.conf`, `.env.example`, dan pemeriksa konfigurasi di repositori proyek. Terbagi menjadi empat bagian: [persiapan repositori dan database](/hari-4/praktik-11/persiapan-database), [periksa file konfigurasi](/hari-4/praktik-11/periksa-konfigurasi), [isi file `.env`](/hari-4/praktik-11/isi-env), lalu [uji dan jalankan portal](/hari-4/praktik-11/uji-dan-jalankan).
-4. [Skema Database](/hari-4/praktik-11/skema-database) - berkas SQL yang membuat tabel, lengkap dengan isinya.
+4. [Skema Database](/hari-4/praktik-11/skema-database) - file SQL yang membuat tabel, lengkap dengan isinya.
 5. [Persiapan Repositori](/hari-4/praktik-11/persiapan-repositori) - mengirim perubahan ke fork, menyelaraskan fork yang tertinggal, dan menetapkan identitas peserta yang menurunkan nama seluruh resource.
 6. [Menyiapkan Project dan VM](/hari-4/praktik-11/google-cloud-platform) - memeriksa API, membuat service account, VM, dan IP statis di Cloud Shell.
 7. [Menyiapkan Aplikasi di VM](/hari-4/praktik-11/aplikasi-di-vm) - memasang Docker dan gcloud, meng-clone repositori, mengisi `.env`, lalu membangun dan mendorong image aplikasi.
@@ -37,16 +37,16 @@ Praktik ini merawat geoportal yang sudah berjalan. Isinya dikerjakan pada VM dan
 ## Yang Perlu Disiapkan Peserta
 
 - Akses ke project Google Cloud dari koordinator, beserta identitas peserta untuk `PARTICIPANT_ID`. Datanya ada pada [Peserta dan Project](/hari-4/praktik-11/peserta-project).
-- Akun GitHub berisi fork repositori proyek. Berkas `cloudbuild.yaml` dan pemeriksa konfigurasi diambil dari sana.
+- Akun GitHub berisi fork repositori proyek. File `cloudbuild.yaml` dan pemeriksa konfigurasi diambil dari sana.
 - Domain dari penyelenggara beserta subdomain yang sudah ditetapkan, dipakai pada [Penambahan Subdomain](/hari-4/praktik-11/subdomain).
-- Berkas `.env.example` dari instruktur, dipakai pada [Konfigurasi Project](/hari-4/praktik-11/konfigurasi-project).
+- File `.env.example` dari instruktur, dipakai pada [Konfigurasi Project](/hari-4/praktik-11/konfigurasi-project).
 - Aplikasi dari Hari 3 yang sudah berjalan di laptop, karena yang dipindahkan adalah aplikasi itu.
 
 ## Hasil Akhir Hari 4
 
 Geoportal berjalan di alamat `http://IP_EKSTERNAL_VM/portal` setelah tahap aplikasi selesai, lalu berubah menjadi `https://SUBDOMAIN/portal` setelah tahap subdomain dan sertifikat selesai. Pada titik itu aplikasi, database, dan GeoServer sudah dapat diakses dari internet.
 
-Setelah Praktik 12, data GeoServer dan berkas `.env` sudah punya salinannya, dan portal Anda akan mengirim email begitu layanannya tidak menjawab.
+Setelah Praktik 12, data GeoServer dan file `.env` sudah punya salinannya, dan portal Anda akan mengirim email begitu layanannya tidak menjawab.
 
 ## Sesi Lain pada Hari 4
 

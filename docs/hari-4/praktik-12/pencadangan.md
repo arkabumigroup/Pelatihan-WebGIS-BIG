@@ -60,7 +60,7 @@ echo "Nama bucket Anda: ${BUCKET}"
 
 Catat nama bucket yang tercetak, karena dipakai pada tahap berikutnya.
 
-Harga penyimpanannya praktis nol. Folder `geoserver-data` pada satu VM pelatihan berukuran 3,2 MB, dan arsipnya setelah dimampatkan tinggal 126 KB. Isi folder itu sebagian besar berkas XML dan teks, jadi pemampatannya memang rapat. Angka itu bertambah seiring banyaknya layer yang Anda buat, tetapi tetap jauh di bawah satu megabita selama pelatihan.
+Harga penyimpanannya praktis nol. Folder `geoserver-data` pada satu VM pelatihan berukuran 3,2 MB, dan arsipnya setelah dimampatkan tinggal 126 KB. Isi folder itu sebagian besar file XML dan teks, jadi pemampatannya memang rapat. Angka itu bertambah seiring banyaknya layer yang Anda buat, tetapi tetap jauh di bawah satu megabita selama pelatihan.
 
 ::: warning Nama bucket harus unik di seluruh dunia
 Kalau perintahnya gagal dengan pesan bahwa nama sudah dipakai, tambahkan satu kata di belakangnya, misalnya `cadangan-webgis-${NAMA_PESERTA}-${PROJECT_ID}-a`, lalu jalankan ulang. Nama bucket dipakai bersama seluruh pengguna Google Cloud di dunia, bukan hanya di project Anda.
