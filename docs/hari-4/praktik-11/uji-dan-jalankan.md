@@ -110,7 +110,7 @@ HASIL UJI DATABASE
 Baris terakhir harus berbunyi `13 lulus, 0 gagal`. Bila ada yang gagal, keluarannya menyebut bagian mana yang belum siap.
 
 ::: tip Angka 13, bukan 12
-Salah satu dari ketiga belas pemeriksaan itu memastikan database **menolak** peran di luar `admin` dan `viewer`, supaya peran asing tidak dapat masuk tanpa disadari.
+Salah satu dari ketiga belas pemeriksaan itu memastikan database **menolak** peran di luar `viewer`, `admin`, dan `super_admin`, supaya peran asing tidak dapat masuk tanpa disadari.
 :::
 
 ## Tahap 9. Jalankan portal di laptop
