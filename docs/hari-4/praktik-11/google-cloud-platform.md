@@ -2,6 +2,24 @@
 
 Dijalankan di Cloud Shell. Identitas peserta dari halaman sebelumnya sudah dipakai di sini, jadi halaman ini mengandaikan blok Tahap 2 sudah pernah dijalankan pada sesi Cloud Shell yang sama.
 
+## Periksa dulu sesinya
+
+<p class="dijalankan dijalankan--cloud">Dijalankan di: <strong>Cloud Shell</strong></p>
+
+Cloud Shell memutus sesinya setelah sekitar 40 menit tanpa aktivitas, dan itu terhitung sejak ketikan terakhir di terminalnya. Membaca halaman ini, berdiskusi, atau menunggu instruktur tetap terhitung menganggur. Sesi yang sudah putus kehilangan seluruh variabel identitas, dan perintah pada halaman ini akan gagal dengan pesan yang tidak menyebut sebabnya.
+
+Jalankan ini lebih dahulu, sebelum tahap mana pun di bawah:
+
+```bash
+echo "PROJECT_ID=$PROJECT_ID  NAMA_PESERTA=$NAMA_PESERTA  ZONE=$ZONE"
+```
+
+Keempat nilainya harus terisi. Bila ada yang kosong, salin ulang blok identitas dari [Kit Identitas Peserta](/hari-4/praktik-11/kit-identitas) atau dari [Tahap 2 halaman Persiapan Repositori](/hari-4/praktik-11/persiapan-repositori#tahap-2-tetapkan-identitas-peserta), lalu tempel ke terminal. Tidak ada yang perlu dicari ulang di tabel peserta.
+
+::: tip Jalankan ulang pemeriksaan ini kapan saja
+Setiap kali Cloud Shell terasa lambat, terminal kembali ke prompt kosong tanpa penjelasan, atau Anda baru kembali dari istirahat, jalankan baris `echo` di atas sekali lagi. Memeriksanya jauh lebih cepat daripada menelusuri error yang muncul belakangan.
+:::
+
 ## Membuat Service Account, VM, dan IP Statis
 
 ### Tahap 3. Periksa API yang dibutuhkan
