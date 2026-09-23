@@ -601,7 +601,7 @@ onMounted(() => {
       </p>
 
       <button v-if="!modeManual" type="button" class="ki-tautan" @click="modeManual = true">
-        Nama saya tidak ada di daftar
+        Pakai nama sendiri
       </button>
 
       <div v-if="modeManual" class="ki-isian ki-isian--manual">

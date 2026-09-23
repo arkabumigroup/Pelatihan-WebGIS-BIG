@@ -179,15 +179,15 @@ Sebelum menempel blok di bawah, cari nama atau email Anda pada halaman [Peserta 
 Isi `PROJECT_ID` dan `NAMA_PESERTA` dengan nilai dari tabel itu. Keduanya harus sama persis.
 :::
 
-::: tip Blok ini tidak perlu diketikkembali
+::: tip Blok ini tidak perlu diketik kembali
 [Kit Identitas Peserta](/hari-4/praktik-11/kit-identitas) menyusun blok di bawah lengkap dengan nilai Anda, lalu menyimpannya di browser. Setelah itu nilai yang sama dapat disalin lagi kapan saja, termasuk ketika Cloud Shell menutup sesinya di tengah pekerjaan.
 
 Blok di halaman ini tetap ditampilkan, karena isinya yang menjelaskan dari mana setiap nama resource berasal.
 :::
 
-**Gunakan Nama Peserta dari tabel, jangan mengarang sendiri.** Nama itu sudah disusun pendek, paling banyak 12 karakter, satu kata, dan dipastikan tidak sama dengan peserta lain di kedua batch. Sebagian besar panjangnya 4 sampai 10 karakter.
+**Pakai Nama Peserta dari tabel.** Nama itu sudah disusun pendek, satu kata, paling banyak 12 karakter, dan dipastikan belum dipakai peserta lain di kedua batch. Sebagian besar panjangnya 4 sampai 10 karakter.
 
-Bila Anda tidak tercantum di tabel dan memilih nama sendiri, panjangnya boleh sampai 12 karakter. Gunakan huruf kecil dan angka saja, tanpa spasi dan tanpa tanda hubung.
+Kalau Anda tidak menghendaki nama yang disarankan itu, Anda boleh membuat nama sendiri. Syaratnya sama: huruf kecil dan angka saja, tanpa spasi dan tanpa tanda hubung, paling banyak 12 karakter, dan belum dipakai peserta lain.
 
 Nama Peserta menjadi dasar penamaan seluruh resource Anda: nama VM, nama Service Account, nama trigger, dan subdomain. Karena itu nama yang sudah dipakai peserta lain akan menggagalkan pekerjaan Anda di tengah jalan, dan pada saat itu sebagian resource mungkin sudah terlanjur dibuat.
 

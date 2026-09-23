@@ -35,7 +35,7 @@ Kolom **Nama Peserta** berisi nama pendek huruf kecil tanpa spasi, misalnya `ame
 
 Nama lengkap tidak dipakai di Google Cloud, karena nama VM, Service Account, dan subdomain menolak spasi serta huruf besar.
 
-Gunakan nilai dari tabel, **jangan mengarang sendiri.** Nama Peserta sudah disusun agar tidak ada dua peserta yang memakai nama sama, termasuk antar batch. Bila Anda memilih nama lain, ada kemungkinan nama itu sudah dipakai peserta lain, dan pekerjaan Anda berhenti di tengah jalan.
+**Pakai nilai dari tabel.** Nama Peserta sudah disusun supaya tidak ada dua peserta yang memakai nama sama, termasuk antar batch. Kalau Anda tidak menghendaki nama itu, Anda boleh membuat nama sendiri, asalkan belum dipakai peserta lain. Nama yang bentrok akan menghentikan pekerjaan Anda di tengah jalan.
 :::
 
 ## Cari data Anda
