@@ -457,11 +457,22 @@
 }
 
 /* Peringatan yang hanya berlaku sebelum identitas peserta terisi. Kelas
-   `kit-terisi` dipasang pada elemen html oleh isi-otomatis.js begitu Kit
+   `kit-terisi` dipasang pada elemen html oleh blok-kode.js begitu Kit
    Identitas sudah memuat nama peserta dan Project ID, karena blok di bawahnya
    tidak lagi berisi bentuk contoh. */
 html.kit-terisi .bila-belum-terisi {
   display: none;
+}
+
+/* Nilai contoh di dalam blok kode yang harus diganti peserta sendiri.
+   Warnanya memakai merah yang sama dengan blok peringatan danger, dan
+   kontrasnya 7,46:1 pada latar terang serta 7,16:1 pada latar gelap. Garis
+   bawah dipakai supaya penandaannya tidak hanya bergantung pada warna. */
+.vp-doc div[class*="language-"] .harus-diganti {
+  color: var(--pelatihan-status-danger);
+  font-weight: 700;
+  text-decoration: underline dotted;
+  text-underline-offset: 2px;
 }
 
 /* ---------------------------------------------------------------------
