@@ -85,13 +85,6 @@ const pesanEmail = computed(() => {
 // akunnya sudah memakai yang lama.
 const siap = computed(() => sandi.value !== '')
 
-// Kata sandi juga dipecah menjadi potongan, sama seperti hash, sehingga
-// panjangnya terlihat tanpa harus menghitung karakternya. Yang disalin tetap
-// satu kesatuan tanpa spasi.
-const potongan = computed(() => (sandi.value ? sandi.value.match(/.{1,8}/g) || [] : []))
-
-const potonganHash = computed(() => (hash.value ? hash.value.match(/.{1,10}/g) || [] : []))
-
 function kabari(teks) {
   galat.value = teks
   if (timerGalat) clearTimeout(timerGalat)
@@ -366,14 +359,10 @@ onBeforeUnmount(() => {
           <span class="ps-tanda">Kata sandi</span>
           <output
             class="ps-nilai"
+            :class="{ 'ps-nilai--sandi': !tampilSandi }"
             aria-label="Kata sandi super admin"
             @copy="tampilSandi ? salinBersih($event, sandi) : null"
-          >
-            <template v-if="tampilSandi">
-              <span v-for="(bagian, i) in potongan" :key="i" class="ps-bagian">{{ bagian }}</span>
-            </template>
-            <span v-else class="ps-bagian ps-bagian--sandi">{{ sandiTampil }}</span>
-          </output>
+          >{{ sandiTampil }}</output>
         </div>
         <div class="ps-aksi">
           <button type="button" class="ps-tombol" @click="salin(sandi, 'sandi')">
@@ -397,9 +386,7 @@ onBeforeUnmount(() => {
             class="ps-nilai"
             aria-label="Hash bcrypt kata sandi super admin"
             @copy="salinBersih($event, hash)"
-          >
-            <span v-for="(bagian, i) in potonganHash" :key="i" class="ps-bagian">{{ bagian }}</span>
-          </output>
+          >{{ hash }}</output>
         </div>
         <div class="ps-aksi">
           <button type="button" class="ps-tombol ps-tombol--utama" @click="salin(hash, 'hash')">
@@ -591,7 +578,7 @@ onBeforeUnmount(() => {
 /* Tombol di dalam kotak diberi jarak lebih besar daripada tombol di luar.
    Alasannya terukur: tombolnya berbayang padat 4px dan bergerak 2px saat
    disorot, sedangkan nilai di atasnya berupa teks yang dapat membungkus
-   menjadi dua baris. Dengan jarak 12px, potongan terakhir nilai terlihat
+   menjadi dua baris. Dengan jarak 12px, baris terakhir nilai terlihat
    bersinggungan dengan sisi atas tombol. */
 .ps-kotak .ps-aksi {
   margin-top: 18px;
@@ -619,13 +606,12 @@ onBeforeUnmount(() => {
   color: var(--vp-c-text-2);
 }
 
-/* Kata sandi dan hash sama-sama dipecah menjadi potongan sepuluh karakter,
-   sehingga nilainya dapat diperiksa mata tanpa dihitung satu per satu. Yang
-   disalin tetap satu kesatuan tanpa spasi. */
+/* Kata sandi dan hash ditampilkan apa adanya, tanpa dikelompokkan, supaya yang
+   terlihat persis sama dengan yang tersalin. Sebelumnya keduanya dipecah
+   menjadi potongan, dan jarak antar potongan itu terbaca sebagai spasi
+   sehingga peserta menduga nilainya memuat spasi. */
 .ps-nilai {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2px 8px;
+  display: block;
   min-height: 20px;
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 13px;
@@ -636,15 +622,11 @@ onBeforeUnmount(() => {
   user-select: all;
 }
 
-/* Kata sandi yang disamarkan ditulis rapat tanpa pemisah, karena titik-titik
-   yang diberi jarak antar potongan terbaca seperti 32 nilai terpisah. */
-.ps-bagian--sandi {
+/* Kata sandi yang disamarkan ditulis lebih rapat dan lebih pudar, karena
+   isinya hanya titik-titik penanda panjang. */
+.ps-nilai--sandi {
   letter-spacing: 0.04em;
   color: var(--vp-c-text-2);
-}
-
-.ps-bagian {
-  font-family: inherit;
 }
 
 .ps-aksi {
