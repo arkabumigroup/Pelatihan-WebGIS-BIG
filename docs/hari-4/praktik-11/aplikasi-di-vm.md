@@ -124,7 +124,7 @@ exit
 
 Perintah `exit` menutup sesi SSH dan mengembalikan terminal ke Cloud Shell. Ini perlu dilakukan supaya keanggotaan grup docker berlaku pada sesi berikutnya.
 
-::: tip Sejak tahap berikutnya, perintah docker TANPA sudo
+::: tip Sejak tahap berikutnya, perintah docker tidak lagi perlu sudo
 Tahap 12 sampai 13 masih memakai `sudo docker`, karena akun Anda belum masuk grup `docker`.
 
 Setelah masuk kembali pada Tahap 14, seluruh perintah docker pada tahap berikutnya **tidak lagi memakai `sudo`**. Yang paling penting, Tahap 21 akan gagal bila memakai `sudo`, karena kredensial Artifact Registry tersimpan pada konfigurasi Docker milik akun Anda, bukan milik root.
@@ -226,7 +226,7 @@ Perintah itu menunggu masukan. Kursor turun ke baris baru tanpa menampilkan apa 
 ENVEOF
 ```
 
-Tanda kutip pada `'ENVEOF'` wajib. Tanpa kutip, shell menerjemahkan isi file, sehingga karakter seperti `$` berubah sebelum tersimpan.
+Tanda kutip pada `'ENVEOF'` wajib. Tanpa kutip, shell ikut mengubah isi file, sehingga karakter seperti `$` berubah sebelum tersimpan.
 
 **4.** Ubah kelima baris yang berbeda. Ganti `IP_EKSTERNAL_VM` dengan alamat IP statis VM Anda dari [Tahap 9 halaman Menyiapkan Project dan VM](/hari-4/praktik-11/google-cloud-platform#tahap-9-buat-ip-statis):
 
@@ -413,7 +413,7 @@ gcloud projects add-iam-policy-binding "$PROJECT_ID" \
   --condition=None
 ```
 
-::: warning Perintah ini JANGAN dijalankan di terminal VM
+::: warning Jangan jalankan perintah ini di terminal VM
 Di dalam VM, `gcloud` terautentikasi sebagai Service Account VM, dan akun itu
 tidak berwenang mengubah kebijakan IAM. Perintahnya akan gagal dengan:
 
@@ -447,7 +447,7 @@ gcloud auth configure-docker asia-southeast2-docker.pkg.dev --quiet
 docker push "asia-southeast2-docker.pkg.dev/${PROJECT_ID}/${REPOSITORY}/${IMAGE_NAME}:latest"
 ```
 
-::: warning Perintah docker di sini TANPA sudo
+::: warning Perintah docker di sini tidak perlu sudo
 Sejak Tahap 13, akun Anda sudah menjadi anggota grup `docker`, sehingga `sudo`
 tidak diperlukan lagi.
 

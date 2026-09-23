@@ -44,7 +44,7 @@ Gunakan nilai dari tabel, **jangan mengarang sendiri.** Nama Peserta sudah disus
 
 ## Bila data Anda tidak ada
 
-Halaman ini dibangkitkan dari rekapitulasi penugasan, jadi peserta yang baru terdaftar setelah rekapitulasi dibuat belum tercantum.
+Halaman ini dibuat dari rekapitulasi penugasan, jadi peserta yang baru terdaftar setelah rekapitulasi dibuat belum tercantum.
 
 Hubungi koordinator pelatihan bila:
 

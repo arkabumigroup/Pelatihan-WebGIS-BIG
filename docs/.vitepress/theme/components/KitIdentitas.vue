@@ -453,7 +453,7 @@ function pulihkan() {
     if (catatan.nilaiAcak && typeof catatan.nilaiAcak === 'object') {
       for (const kunci in catatan.nilaiAcak) {
         // Kunci yang tidak dikenal diabaikan, sehingga versi halaman yang
-        // lebih baru tidak menyuntikkan variabel asing ke dalam catatan.
+        // lebih baru tidak memasukkan variabel asing ke dalam catatan.
         if (kunci in nilaiAcak.value) nilaiAcak.value[kunci] = catatan.nilaiAcak[kunci] || ''
       }
     }
@@ -1050,7 +1050,7 @@ onMounted(() => {
   text-transform: uppercase;
   color: var(--vp-c-text-2);
   /* Latar harus pekat, bukan transparan. Baris yang tergulir di bawahnya
-     akan terlihat menembus kepala tabel bila latarnya tembus pandang. */
+     akan terlihat di kepala tabel bila latarnya tembus pandang. */
   background: var(--vp-c-bg-soft);
   border-bottom: var(--pelatihan-tebal, 2px) solid var(--vp-c-divider);
 }
