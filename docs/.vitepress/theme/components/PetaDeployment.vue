@@ -19,6 +19,36 @@ const props = defineProps({
 
 const terpilih = ref('')
 
+// Contoh yang dipakai selama identitas peserta belum diisi. Nilainya sengaja
+// dipilih yang benar-benar ada di pelatihan ini, supaya bentuk alurnya tetap
+// terbayang. Begitu nama peserta dan Project ID diisi, contoh ini diganti
+// nilai milik peserta sendiri.
+const CONTOH = {
+  PROJECT_ID: 'geoportal-kelompok-c-92650',
+  NAMA_PESERTA: 'nama01',
+  PARTICIPANT_ID: 'nama01',
+  ZONE: 'asia-southeast2-b',
+  REGION: 'asia-southeast2',
+  REPOSITORY: 'katalog-images',
+  APP_DIR: '/opt/webgis/app',
+  VM_NAME: 'webgis-nama01',
+  STATIC_IP_NAME: 'webgis-ip-nama01',
+  BUILD_SA_NAME: 'cb-nama01',
+  BUILD_SA: 'cb-nama01@geoportal-kelompok-c-92650.iam.gserviceaccount.com',
+  CONNECTION_NAME: 'github-nama01',
+  LINKED_REPO_NAME: 'repo-nama01',
+  TRIGGER_NAME: 'deploy-nama01',
+  IMAGE_NAME: 'nextjs-nama01',
+  SUBDOMAIN: 'nama01.webgisbig.com',
+  VM_REGION: 'asia-southeast2',
+}
+
+// Dibaca dari prop, bukan dari nilaiTampil, supaya keduanya tidak saling
+// menunggu. Rantai melingkar seperti itu membuat komponennya gagal dirender
+// tanpa pesan apa pun di layar.
+const adalahContoh = computed(() => !props.nilai.NAMA_PESERTA)
+const nilaiTampil = computed(() => (adalahContoh.value ? CONTOH : props.nilai))
+
 // Alur push. Setiap langkah menyebut nama resource yang dipakai peserta,
 // sehingga terlihat mana yang mengandung nama peserta dan mana yang tidak.
 const alurPush = computed(() => [
@@ -33,7 +63,7 @@ const alurPush = computed(() => [
   {
     kunci: 'koneksi',
     judul: 'Cloud Build membaca push',
-    nilai: props.nilai.CONNECTION_NAME,
+    nilai: nilaiTampil.value.CONNECTION_NAME,
     unik: true,
     keterangan:
       'Koneksi GitHub milik Anda. Namanya memuat nama peserta, jadi koneksi Anda tidak bertabrakan dengan milik peserta lain di project yang sama.',
@@ -41,7 +71,7 @@ const alurPush = computed(() => [
   {
     kunci: 'repo',
     judul: 'Repositori yang dihubungkan',
-    nilai: props.nilai.LINKED_REPO_NAME,
+    nilai: nilaiTampil.value.LINKED_REPO_NAME,
     unik: true,
     keterangan:
       'Nama repositori di dalam koneksi itu. Satu koneksi dapat memuat beberapa repositori, dan milik Anda dibedakan lewat nama ini.',
@@ -49,7 +79,7 @@ const alurPush = computed(() => [
   {
     kunci: 'trigger',
     judul: 'Trigger mulai berjalan',
-    nilai: props.nilai.TRIGGER_NAME,
+    nilai: nilaiTampil.value.TRIGGER_NAME,
     unik: true,
     keterangan:
       'Trigger yang menyalakan proses build. Satu trigger per peserta, supaya push Anda tidak membangun image milik orang lain.',
@@ -57,7 +87,7 @@ const alurPush = computed(() => [
   {
     kunci: 'sa',
     judul: 'Service Account build',
-    nilai: props.nilai.BUILD_SA,
+    nilai: nilaiTampil.value.BUILD_SA,
     unik: true,
     keterangan:
       'Identitas yang dipakai Cloud Build saat berjalan. Alamat inilah yang diperiksa tombol "Periksa nama ini belum dipakai" pada langkah 1, karena alamat yang sudah ada berarti nama itu sudah terpakai.',
@@ -65,7 +95,7 @@ const alurPush = computed(() => [
   {
     kunci: 'image',
     judul: 'Image disimpan',
-    nilai: `${props.nilai.REGION}-docker.pkg.dev/${props.nilai.PROJECT_ID}/${props.nilai.REPOSITORY}/${props.nilai.IMAGE_NAME}`,
+    nilai: `${nilaiTampil.value.REGION}-docker.pkg.dev/${nilaiTampil.value.PROJECT_ID}/${nilaiTampil.value.REPOSITORY}/${nilaiTampil.value.IMAGE_NAME}`,
     unik: true,
     keterangan:
       'Hasil build disimpan di Artifact Registry milik kelompok. Nama image memuat nama peserta, sehingga image Anda berdampingan dengan image peserta lain tanpa saling menimpa.',
@@ -73,7 +103,7 @@ const alurPush = computed(() => [
   {
     kunci: 'vm',
     judul: 'VM menarik image',
-    nilai: props.nilai.VM_NAME,
+    nilai: nilaiTampil.value.VM_NAME,
     unik: true,
     keterangan:
       'Cloud Build masuk ke VM Anda lewat SSH, memperbarui NEXTJS_IMAGE pada .env, menarik image baru, lalu menyalakan ulang container-nya.',
@@ -85,7 +115,7 @@ const alurPermintaan = computed(() => [
   {
     kunci: 'browser',
     judul: 'Browser membuka alamat',
-    nilai: `https://${props.nilai.SUBDOMAIN}/portal`,
+    nilai: `https://${nilaiTampil.value.SUBDOMAIN}/portal`,
     unik: true,
     keterangan:
       'Alamat yang Anda ketik. Subdomainnya memuat nama peserta, jadi setiap peserta punya alamat sendiri di domain yang sama.',
@@ -93,7 +123,7 @@ const alurPermintaan = computed(() => [
   {
     kunci: 'dns',
     judul: 'DNS menerjemahkan nama',
-    nilai: `${props.nilai.SUBDOMAIN} → IP statis`,
+    nilai: `${nilaiTampil.value.SUBDOMAIN} → IP statis`,
     unik: true,
     keterangan:
       'Record A yang ditambahkan penyelenggara. Ia menunjuk ke IP statis Anda, bukan ke IP sementara yang berubah setiap VM dinyalakan ulang.',
@@ -101,7 +131,7 @@ const alurPermintaan = computed(() => [
   {
     kunci: 'ip',
     judul: 'IP statis milik Anda',
-    nilai: props.nilai.STATIC_IP_NAME,
+    nilai: nilaiTampil.value.STATIC_IP_NAME,
     unik: true,
     keterangan:
       'Alamat tetap yang dipasang ke VM Anda. Karena tetap, record DNS di atas tidak perlu diubah lagi.',
@@ -158,6 +188,12 @@ function pilih(kunci) {
       tempatnya. Yang bertanda <span class="pd-bintang" aria-hidden="true">★</span>
       hanya milik Anda, {{ jumlahUnik }} dari {{ semua.length }} langkah. Sisanya
       dipakai bersama seluruh kelompok.
+    </p>
+
+    <p v-if="adalahContoh" class="pd-contoh">
+      <strong>Ini masih contoh</strong>, memakai nama peserta <code>nama01</code>.
+      Isi nama peserta dan Project ID pada langkah 1, dan seluruh nama di bawah
+      berganti menjadi milik Anda.
     </p>
 
     <p class="pd-antar">
@@ -221,6 +257,16 @@ function pilih(kunci) {
   font-size: 13px;
   line-height: 1.65;
   color: var(--vp-c-text-2);
+}
+
+.pd-contoh {
+  margin: 0 0 12px;
+  padding: 8px 10px;
+  font-size: 13px;
+  line-height: 1.6;
+  background: var(--vp-c-bg-soft);
+  border-left: 4px solid var(--pelatihan-oranye, #e08000);
+  border-radius: 2px;
 }
 
 .pd-subjudul {
