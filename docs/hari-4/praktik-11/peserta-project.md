@@ -54,7 +54,7 @@ Hubungi koordinator pelatihan bila:
 
 ## Setelah menemukan Project ID Anda
 
-Simpan nilai berikut, karena keduanya dipakai berulang pada halaman berikutnya.
+Simpan nilai berikut, karena Nama Peserta dan Project ID dipakai berulang pada halaman berikutnya.
 
 ```text
 Nama lengkap   :

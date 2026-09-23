@@ -47,4 +47,4 @@ Jadi seluruh pekerjaan manual ada di laptop dan di VM, dan berhenti pada satu ka
 
 Isi file yang perlu diperiksa ditampilkan di halaman ini supaya Anda dapat memahami maksudnya. Dua skrip pemeriksa pada folder `scripts` tidak ditampilkan karena filenya panjang, dan keduanya cukup dipastikan ada lalu dijalankan pada Tahap 8.
 
-Bandingkan dengan file di repositori Anda. Bila ada perbedaan, samakan dengan yang ada di repositori, bukan dengan yang tercetak di sini.
+Bandingkan dengan file di repositori Anda. Bila ada perbedaan, samakan dengan yang ada di repositori, bukan dengan yang tercetak di halaman bagiannya.

@@ -270,7 +270,7 @@ Variabel di atas hanya bertahan selama sesi Cloud Shell terbuka, sedangkan pelat
 
 Cloud Shell memutus sesinya setelah **sekitar 40 menit tanpa aktivitas di terminal**. Yang dihitung adalah aktivitas di terminalnya, bukan apakah Anda sedang sibuk: membaca modul, berdiskusi, atau menunggu instruktur selama 40 menit tetap terhitung menganggur, walaupun halaman Cloud Shell-nya terbuka di layar. Sesi juga diputus setelah 12 jam, dan kuota mingguannya 50 jam.
 
-Selain itu, sesi dapat terputus karena hal di luar kendali: tab peramban yang diistirahatkan, laptop yang tertidur, atau jaringan yang terputus sebentar. Karena itu **jangan pernah mengandalkan variabel shell untuk pekerjaan yang penting**.
+Selain itu, sesi dapat terputus karena hal di luar kendali: tab browser yang diistirahatkan, laptop yang tertidur, atau jaringan yang terputus sebentar. Karena itu **jangan pernah mengandalkan variabel shell untuk pekerjaan yang penting**.
 
 Errornya, perintah berhenti dengan **tanda kurung siku kosong**, atau alamat yang kehilangan salah satu bagiannya:
 

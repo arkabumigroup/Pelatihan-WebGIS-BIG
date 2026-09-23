@@ -1,6 +1,6 @@
 # Menyiapkan Aplikasi di VM
 
-Seluruh tahap di halaman ini dijalankan di dalam VM, bukan di Cloud Shell.
+Sebagian besar tahap di halaman ini dijalankan di dalam VM; tahap yang bertanda **Cloud Shell** atau **Google Cloud Console** dijalankan di luar VM.
 
 <PilihShell />
 
@@ -262,7 +262,7 @@ sed -i \
 grep -E '^(NEXTAUTH_URL|BASE_URL|NEXT_PUBLIC_URL_BASE_PATH|GEOSERVER_PUBLIC_URL|GEOSERVER_POSTGIS_DATASTORE)=' .env
 ```
 
-Kelima baris terakhir harus menampilkan alamat IP VM, bukan `localhost`.
+Empat dari kelima baris itu harus menampilkan alamat IP VM, bukan `localhost`, sedangkan `GEOSERVER_POSTGIS_DATASTORE` berisi `postgis_geoportal`.
 
 **5.** Periksa tidak ada nilai yang kosong:
 
@@ -299,7 +299,7 @@ Empat nilai berikut berbeda dari yang di laptop, karena alamat aplikasi dan alam
 
 Slash di akhir membuat alamat tidak cocok dengan `basePath` pada `next.config.mjs`, dan akibatnya, login berhasil di API tetapi gagal di browser.
 
-`GEOSERVER_PUBLIC_URL` adalah alamat GeoServer yang dapat dijangkau dari browser Anda. Nilai itu disimpan ke kolom `wms_url` dan `wfs_url` pada katalog, dan dipakai Anda untuk membuka layer di QGIS atau aplikasi lain. Nginx sudah mem-proxy `/geoserver/`, sehingga port 8080 tidak perlu dibuka.
+`GEOSERVER_PUBLIC_URL` adalah alamat GeoServer yang dapat dijangkau dari browser Anda. Nilai itu tidak dibaca aplikasi, dan hanya berguna sebagai catatan alamat GeoServer yang dapat Anda buka sendiri, misalnya dari QGIS. Nginx sudah mem-proxy `/geoserver/`, sehingga port 8080 tidak perlu dibuka.
 
 `GEOSERVER_URL` **tidak diubah**, tetap `http://geoserver:8080/geoserver`, karena variabel itu dipakai aplikasi untuk memanggil GeoServer dari dalam jaringan Docker.
 

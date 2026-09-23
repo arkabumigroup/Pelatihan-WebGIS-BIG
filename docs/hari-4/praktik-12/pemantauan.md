@@ -24,7 +24,7 @@ Cara membaca hasilnya:
 
 | Yang dibaca | Nilai normal | Bila menyimpang |
 |---|---|---|
-| `docker compose ps` | tiga container berstatus `running`, bernama `nextjs_portal`, `geoserver_app`, dan `nginx_proxy` | periksa log container yang berhenti, halaman ini bagian [Membaca log](#membaca-log) |
+| `docker compose ps` | tiga container berstatus `running`, bernama `nextjs_portal`, `geoserver_app`, dan `nginx_proxy` | periksa log container yang berhenti, halaman ini bagian [Membaca log](#tahap-3-membaca-log) |
 | Memori GeoServer pada `docker stats` | di bawah batas 2048 MiB, acuan terukur 1,2 GiB pada VM yang sudah menyala dua hari | turunkan `MAXIMUM_MEMORY` pada `docker-compose.yml`, lalu buat ulang container `geoserver` |
 | Memori tersedia pada `free -m` | di atas 300 MB | hentikan container yang tidak sedang dipakai, atau turunkan heap GeoServer |
 | Pemakaian disk `/` pada `df -h` | di bawah 80% | hapus model 3D yang tidak dipakai, lalu periksa ukuran `data` dan `geoserver-data` |

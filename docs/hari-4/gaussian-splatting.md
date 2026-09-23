@@ -93,7 +93,7 @@ Penampil Gaussian Splat mengunduh seluruh filenya lebih dahulu, dan itu memakan 
 
 ## Menempatkan model di peta
 
-Empat kolom pada formulir menentukan posisi dan orientasi model ketika dipanggil dari peta.
+Empat kolom pada formulir menentukan posisi dan orientasi model ketika dipanggil dari peta, sedangkan kolom **Skala** menentukan ukurannya.
 
 | Kolom | Artinya |
 |---|---|

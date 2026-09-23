@@ -78,7 +78,7 @@ Halaman connection string Supabase juga menampilkan `DIRECT_URL`. Untuk aplikasi
 
 Alasannya, GeoServer berjalan di dalam VM lewat `docker-compose.yml`, bukan di laptop Anda. Mengisi alamat `localhost:8080` sekarang berarti menunjuk ke sesuatu yang belum ada.
 
-Yang Anda perlukan di laptop hanya bagian **WAJIB** di atas, yaitu `DATABASE_URL`, `JWT_SECRET`, dan `NEXTAUTH_SECRET`. Itu sudah cukup untuk login dan menguji portal.
+Yang Anda perlukan di laptop hanya bagian **WAJIB** di atas, yaitu tiga nilai rahasia `DATABASE_URL`, `JWT_SECRET`, dan `NEXTAUTH_SECRET`. Itu sudah cukup untuk login dan menguji portal.
 
 #### Bila Anda menjalankan GeoServer di laptop
 
@@ -114,12 +114,12 @@ Biarkan kosong di laptop, lalu isi di VM:
 | Variabel | Nilai di VM | Mengapa |
 |---|---|---|
 | `GEOSERVER_URL` | `http://geoserver:8080/geoserver` | Dipanggil aplikasi dari dalam jaringan Docker, jadi memakai nama service |
-| `GEOSERVER_PUBLIC_URL` | `http://IP_EKSTERNAL_VM/geoserver` | Disimpan sebagai `wms_url`, lalu dibuka dari browser Anda, jadi harus alamat publik |
+| `GEOSERVER_PUBLIC_URL` | `http://IP_EKSTERNAL_VM/geoserver` | Tidak dibaca aplikasi, hanya catatan alamat publik GeoServer Anda |
 
 Bagian `POSTGIS_*` diisi dengan kredensial Supabase, sama seperti di laptop.
 
 ::: warning Jangan tertukar antara dua alamat itu
-`GEOSERVER_URL` dipanggil aplikasi dari dalam jaringan Docker, jadi memakai nama service. `GEOSERVER_PUBLIC_URL` disimpan ke katalog lalu dibuka dari browser, jadi memakai alamat publik.
+`GEOSERVER_URL` dipanggil aplikasi dari dalam jaringan Docker, jadi memakai nama service. `GEOSERVER_PUBLIC_URL` tidak dibaca aplikasi; isinya hanya catatan alamat publik GeoServer Anda.
 
 Bila keduanya tertukar, unggahan layer gagal dengan `connection refused`, atau alamat yang tersimpan tidak dapat dibuka tanpa pesan error yang menjelaskan sebabnya. Bila GeoServer Anda jalankan di laptop, kedua baris berisi `http://localhost:8080/geoserver`.
 :::
