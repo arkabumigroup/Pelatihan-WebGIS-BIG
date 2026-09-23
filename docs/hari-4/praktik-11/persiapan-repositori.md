@@ -257,7 +257,7 @@ Bila hasilnya BENTROK, jangan mencari jalan lain. Memakai Service Account milik 
 
 Variabel di atas hanya bertahan selama sesi Cloud Shell terbuka. Cloud Shell menutup sesinya sendiri setelah menganggur sekitar dua puluh menit, sedangkan pelatihan ini berlangsung berjam-jam.
 
-Gejalanya, perintah berhenti dengan **tanda kurung siku kosong**, atau alamat yang kehilangan salah satu bagiannya:
+Errornya, perintah berhenti dengan **tanda kurung siku kosong**, atau alamat yang kehilangan salah satu bagiannya:
 
 ```text
 ERROR: (gcloud.compute.instances.describe) could not parse resource []

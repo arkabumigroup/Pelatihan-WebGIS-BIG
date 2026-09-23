@@ -16,7 +16,7 @@ Sebagian pekerjaan Anda sudah aman di GitHub. Yang belum punya salinan sama seka
 
 File konfigurasi tidak perlu dipikirkan lagi. Setiap `git push` menyimpannya di GitHub, dan itu salah satu gunanya memakai repositori sejak Praktik 11.
 
-Dua yang tersisa justru yang paling sulit dibangun ulang kalau hilang. `geoserver-data` memuat seluruh workspace, datastore, dan layer yang Anda buat di GeoServer. File `.env` memuat kata sandi basis data, kata sandi GeoServer, dan kunci penanda tangan token.
+Dua yang tersisa justru yang paling sulit dibangun ulang kalau hilang. `geoserver-data` memuat seluruh workspace, datastore, dan layer yang Anda buat di GeoServer. File `.env` memuat kata sandi database, kata sandi GeoServer, dan kunci penanda tangan token.
 
 ::: danger Folder geoserver-data yang kosong tidak membuat GeoServer gagal
 Kalau folder `geoserver-data` hilang, image kartoza akan membuatkan data directory bawaan yang baru saat container dinyalakan. GeoServer tetap menyala dan tidak menampilkan satu pun pesan error.
@@ -216,7 +216,7 @@ Simpan file itu di pengelola kata sandi atau tempat aman lain di laptop Anda.
 ::: danger Jangan simpan .env di Git
 File `.env` sudah tercantum pada `.gitignore` repositori, dan itu memang disengaja. Jangan menghapus baris itu, jangan memaksa `git add -f`, dan jangan menempelkan isinya ke laporan, tangkapan layar, atau obrolan grup.
 
-Isinya adalah kunci penanda tangan token, kata sandi basis data Supabase, dan kata sandi admin GeoServer. Siapa pun yang membacanya dapat masuk ke portal Anda sebagai admin.
+Isinya adalah kunci penanda tangan token, kata sandi database Supabase, dan kata sandi admin GeoServer. Siapa pun yang membacanya dapat masuk ke portal Anda sebagai admin.
 :::
 
 ## Yang perlu diingat setelah pelatihan
@@ -235,7 +235,7 @@ Perintah itu menghapus bucket beserta seluruh arsip di dalamnya, jadi pastikan f
 
 ## Bila Ada yang Gagal
 
-| Gejala | Penyebab yang paling sering |
+| Error | Penyebab yang paling sering |
 |---|---|
 | `storage.googleapis.com` tidak muncul pada Tahap 1 | Layanan Cloud Storage belum menyala di project. Peserta tidak punya izin menyalakannya, jadi lapor ke koordinator |
 | `The requested bucket name is not available` | Nama bucket sudah dipakai orang lain di seluruh dunia. Tambahkan satu kata di belakangnya, lalu ulangi Tahap 2 |

@@ -85,7 +85,7 @@ function buat(baris) {
 
 // Nilai yang sudah ada tidak diganti begitu saja. Peserta yang menekan tombol
 // ini dua kali karena ragu akan kehilangan nilai yang mungkin sudah disalin ke
-// `.env`, dan gejalanya baru muncul jauh kemudian sebagai kegagalan login.
+// `.env`, dan errornya baru muncul jauh kemudian sebagai kegagalan login.
 function mintaKonfirmasi(baris) {
   if (props.isian[kunci(baris)]) {
     konfirmasi.value = kunci(baris)

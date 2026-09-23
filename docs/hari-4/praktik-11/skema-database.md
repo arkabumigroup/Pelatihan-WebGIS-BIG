@@ -42,7 +42,7 @@ Kolomnya sudah dicocokkan dengan kode aplikasi, jadi jangan mengubah nama atau t
 
 ## Gambaran Relasi Antar Tabel
 
-Diagram berikut menunjukkan ketiga tabel beserta kolomnya dan hubungan di antaranya. Bentuknya mengikuti notasi ERD standar, sehingga dapat dibandingkan dengan rancangan basis data lain.
+Diagram berikut menunjukkan ketiga tabel beserta kolomnya dan hubungan di antaranya. Bentuknya mengikuti notasi ERD standar, sehingga dapat dibandingkan dengan rancangan database lain.
 
 ![Diagram relasi tabel database: users, katalog_data_2d, dan katalog_data_3d. Tabel users menyimpan akun pengguna dengan kunci utama user_id. Tabel katalog_data_2d menyimpan metadata layer peta 2D, dan katalog_data_3d menyimpan metadata model 3D. Keduanya menunjuk ke users lewat kolom author.](erd-skema-database.webp)
 
@@ -555,4 +555,4 @@ Periksa berurutan:
     ```
 
 5. **Pesan menyebut tabel tidak ditemukan.** Prisma membaca schema `public`. Pastikan ketiga tabel dibuat di sana.
-6. **Kegagalan constraint yang sulit dilacak.** Jalankan `05-diagnosa-constraint.sql`. File itu memeriksa sepuluh hal sekaligus dan diakhiri tabel keputusan: gejala mana menunjuk ke perbaikan mana.
+6. **Kegagalan constraint yang sulit dilacak.** Jalankan `05-diagnosa-constraint.sql`. File itu memeriksa sepuluh hal sekaligus dan diakhiri tabel keputusan: error mana menunjuk ke perbaikan mana.

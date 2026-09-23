@@ -742,7 +742,7 @@ Yang harus terjadi:
 
 Bila login gagal, periksa berurutan:
 
-| Gejala | Penyebab yang paling sering |
+| Error | Penyebab yang paling sering |
 |---|---|
 | `Can't reach database server` | `DATABASE_URL` salah, atau memakai port 6543 tanpa `?pgbouncer=true` |
 | `Email atau password salah` | Kata sandi tidak cocok dengan hash di database |
@@ -753,7 +753,7 @@ Setelah berhasil login, hentikan server dengan `Ctrl+C`. Aplikasi siap dipindahk
 
 ## Tahap 10. Pastikan file .env tidak ikut ter-commit
 
-File `.env` memuat kata sandi basis data, `JWT_SECRET`, `NEXTAUTH_SECRET`, kata sandi admin GeoServer, dan token Cesium Ion Anda. Repositori GitHub bersifat publik, jadi file itu tidak boleh ikut ter-push.
+File `.env` memuat kata sandi database, `JWT_SECRET`, `NEXTAUTH_SECRET`, kata sandi admin GeoServer, dan token Cesium Ion Anda. Repositori GitHub bersifat publik, jadi file itu tidak boleh ikut ter-push.
 
 <p class="dijalankan dijalankan--lokal">Dijalankan di: <strong>Laptop</strong></p>
 
